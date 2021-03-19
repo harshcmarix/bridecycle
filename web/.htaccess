@@ -1,0 +1,60 @@
+# ----------------------------------------------------------------------
+# Added security for the Apache server configuration for use with
+# ----------------------------------------------------------------------
+
+# Settings to hide index.php and ensure pretty urls
+RewriteEngine on
+
+# "-Indexes" will have Apache block users from browsing folders without a default document
+# every folder on server (which includes rather private places like CMS system folders).
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
+
+# Block access to "hidden" directories whose names begin with a period. This
+# includes directories used by version control systems such as Git.
+<IfModule mod_rewrite.c>
+  RewriteCond %{SCRIPT_FILENAME} -d
+  RewriteCond %{SCRIPT_FILENAME} -f
+  RewriteRule "(^|/)\." - [F]
+</IfModule>
+
+
+#Disallow any .php file runs into folder
+<FilesMatch "(\.(bak|config|sql|fla|psd|ini|log|sh|inc|swp|dist|lock|json|yml|txt|phar|gitignore|bat|html|php|htaccess)|~)$">
+    Order Deny,Allow
+    Deny from all
+#    Allow from 127.0.0.1
+</FilesMatch>
+
+#disallows file
+<Files yii>
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+#allow only index.php file runs into folder
+<Files index.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+#allow only robots.txt file runs into folder
+<Files robots.txt>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Increase cookie security
+<IfModule php5_module>
+  php_value session.cookie_httponly true
+</IfModule>
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule . index.php
+
+ErrorDocument 403 /404
