@@ -13,6 +13,7 @@ use yii\web\IdentityInterface;
  * @property string|null $last_name
  * @property string|null $email
  * @property string|null $password_hash
+ * @property string|null $temporary_password
  * @property string|null $access_token
  * @property string|null $access_token_expired_at
  * @property int|null $mobile
@@ -61,6 +62,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
             [['password_hash', 'access_token'], 'string', 'max' => 255],
+            [['temporary_password'], 'string', 'max' => 8],
         ];
     }
 
@@ -75,6 +77,7 @@ class User extends ActiveRecord implements IdentityInterface
             'last_name' => 'Last Name',
             'email' => 'Email',
             'password_hash' => 'Password Hash',
+            'temporary_password' => 'Temporary Password',
             'access_token' => 'Access Token',
             'access_token_expired_at' => 'Access Token Expired At',
             'mobile' => 'Mobile',
@@ -149,11 +152,11 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param int|string $id
-     * @return IdentityInterface|static|null
+     * @return User|IdentityInterface|null
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne(['id' => $id]);
     }
 
     /**
@@ -163,13 +166,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['access_token' => $token]);
     }
 
     /**
@@ -224,5 +221,14 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->access_token = \Yii::$app->security->generateRandomString();
         return $this->access_token;
+    }
+
+    /**
+     * Generates password hash from password and sets it to the model.
+     * @param $password
+     * @throws \yii\base\Exception
+     */
+    public function setPassword($password) {
+        $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
     }
 }

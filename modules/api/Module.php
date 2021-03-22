@@ -25,6 +25,14 @@ class Module extends BaseModule
         \Yii::$app->response->charset = 'UTF-8';
         parent::init();
 
+        \Yii::$app->set('user', [
+            'class' => 'yii\web\User',
+            'identityClass' => 'app\modules\api\models\User',
+            'enableAutoLogin' => false,
+            'loginUrl' => null,
+            'identityCookie' => ['name' => '_apiUser', 'httpOnly' => true],
+        ]);
+
         \Yii::configure($this, require(__DIR__ . '/config/web.php'));
 
         // Code to manage response format globally

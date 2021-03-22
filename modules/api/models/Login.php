@@ -24,7 +24,6 @@ class Login extends Model
     public function rules()
     {
         return [
-            // username and password are both required
             [['email', 'password'], 'required'],
             [['access_token_expired_at', 'token_type'], 'safe'],
             [['access_token'], 'string', 'max' => 255],

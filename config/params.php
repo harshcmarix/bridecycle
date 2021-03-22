@@ -2,8 +2,8 @@
 
 return [
     'adminEmail' => 'admin@example.com',
-    'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
+    'from_email' => 'noreply@example.com',
     'token_type' => 'bearer',
     'token_expire_time' => 86400,
+    'token_segment' => 1
 ];

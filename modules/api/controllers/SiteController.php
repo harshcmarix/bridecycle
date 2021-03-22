@@ -61,6 +61,8 @@ class SiteController extends ActiveController
      */
     public function actionIndex()
     {
-        p("In");
+        return [
+            'message' => "You may customize this page by editing the following file:" . __FILE__,
+        ];
     }
 }
