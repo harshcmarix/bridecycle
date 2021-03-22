@@ -67,6 +67,16 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return array
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
+        unset($fields['password_hash'], $fields['temporary_password'], $fields['access_token'], $fields['access_token_expired_at']);
+        return $fields;
+    }
+
+    /**
      * @return string[]
      */
     public function attributeLabels()
@@ -228,7 +238,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param $password
      * @throws \yii\base\Exception
      */
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
     }
 }

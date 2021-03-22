@@ -96,7 +96,8 @@ class UserController extends ActiveController
     /**
      * @return array
      */
-    public function actions() {
+    public function actions()
+    {
         $actions = parent::actions();
         unset($actions['index']);
         unset($actions['update']);
