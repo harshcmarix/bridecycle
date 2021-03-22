@@ -2,7 +2,9 @@
 
 namespace app\modules\api\models\search;
 
+use Yii;
 use yii\base\Model;
+use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
 use app\modules\api\models\User;
 
@@ -13,13 +15,18 @@ use app\modules\api\models\User;
 class UserSearch extends User
 {
     /**
+     * @var $hiddenFields Array of hidden fields which not needed in APIs
+     */
+    protected $hiddenFields = ['password_hash', 'access_token', 'access_token_expired_at', 'temporary_password'];
+
+    /**
      * @return array[]
      */
     public function rules()
     {
         return [
             [['id', 'mobile'], 'integer'],
-            [['first_name', 'last_name', 'email', 'password_hash', 'access_token', 'access_token_expired_at', 'user_type', 'is_shop_owner', 'created_at', 'updated_at'], 'safe'],
+            [['first_name', 'last_name', 'email', 'password_hash', 'access_token', 'access_token_expired_at', 'user_type', 'is_shop_owner', 'created_at', 'updated_at', 'temporary_password'], 'safe'],
         ];
     }
 
@@ -33,47 +40,86 @@ class UserSearch extends User
     }
 
     /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
+     * @param $requestParams
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($requestParams)
     {
-        $query = User::find();
+        /* ########## Prepare Request Filter Start ######### */
+        if (!empty($requestParams['filter'])) {
+            foreach ($requestParams['filter'] as $key => $val) {
+                if ($key === 'dropdown') {
+                    if (is_array($val) && !empty($val)) {
+                        foreach ($val as $k => $v) {
+                            if (!empty($v['like'])) {
+                                $requestParams['filter'][$key][$k]['like'] = trim(urldecode($v['like']));
+                            } else {
+                                if (isset($v) && !is_array($v) && $v != '') {
+                                    $requestParams['filter'][$key][$k] = trim(urldecode($v));
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (!empty($val['like'])) {
+                        $requestParams['filter'][$key]['like'] = trim(urldecode($val['like']));
+                    } else {
+                        if (isset($val) && !is_array($val) && $val != '') {
+                            $requestParams['filter'][$key] = trim(urldecode($val));
+                        }
+                    }
+                }
+            }
+        }
+        /* ########## Prepare Request Filter End ######### */
 
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
-        $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
+        /* ########## Active Data Filter Start ######### */
+        $activeDataFilter = new ActiveDataFilter();
+        $activeDataFilter->setSearchModel($this);
+        $filter = null;
+        if (isset($requestParams['filter']['dropdown'])) {
+            unset($requestParams['filter']['dropdown']);
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'access_token_expired_at' => $this->access_token_expired_at,
-            'mobile' => $this->mobile,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+        if ($activeDataFilter !== null) {
+            if ($activeDataFilter->load($requestParams)) {
+                $filter = $activeDataFilter->build();
+
+                if ($filter === false) {
+                    return $activeDataFilter;
+                }
+            }
+        }
+        /* ########## Active Data Filter End ######### */
+
+        /* ########## Prepare Query With Default Filter Start ######### */
+        $query = self::find();
+        $fields = $this->hiddenFields;
+        if (!empty($requestParams['fields'])) {
+            $fieldsData = $requestParams['fields'];
+            $select = array_diff(explode(',', $fieldsData), $fields);
+        } else {
+            $select = ['id', 'email', 'first_name', 'last_name', 'mobile', 'user_type', 'is_shop_owner'];
+        }
+
+        $query->select($select);
+        if (!empty($filter)) {
+            $query->andWhere($filter);
+        }
+        /* ########## Prepare Query With Default Filter End ######### */
+
+        $query->groupBy('users.id');
+        //p($query->createCommand()->getRawSql());
+        return Yii::createObject([
+            'class' => ActiveDataProvider::class,
+            'query' => $query,
+            'pagination' => [
+                'params' => $requestParams,
+                'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : Yii::$app->params['default_page_size'], //set page size here
+            ],
+            'sort' => [
+                'params' => $requestParams,
+            ],
         ]);
-
-        $query->andFilterWhere(['like', 'first_name', $this->first_name])
-            ->andFilterWhere(['like', 'last_name', $this->last_name])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'access_token', $this->access_token])
-            ->andFilterWhere(['like', 'user_type', $this->user_type])
-            ->andFilterWhere(['like', 'is_shop_owner', $this->is_shop_owner]);
-
-        return $dataProvider;
     }
 }

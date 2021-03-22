@@ -2,23 +2,33 @@
 
 namespace app\modules\api\controllers;
 
-use app\modules\api\models\ChangePassword;
-use app\modules\api\models\ForgotPassword;
-use app\modules\api\models\Login;
-use app\modules\api\models\ResetPassword;
-use app\modules\api\models\User;
-use yii\base\InvalidArgumentException;
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBasicAuth;
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
+use Yii;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
+use yii\filters\auth\{
+    HttpBasicAuth,
+    CompositeAuth,
+    HttpBearerAuth,
+    QueryParamAuth
+};
+use yii\web\{
+    BadRequestHttpException,
+    ForbiddenHttpException,
+    NotFoundHttpException,
+    ServerErrorHttpException
+};
+use app\modules\api\models\{
+    Login,
+    User,
+    ResetPassword,
+    ForgotPassword,
+    ChangePassword
+};
 
+/**
+ * Class UserController
+ * @package app\modules\api\controllers
+ */
 class UserController extends ActiveController
 {
     /**
@@ -30,11 +40,6 @@ class UserController extends ActiveController
      * @var string
      */
     public $searchModelClass = 'app\modules\api\models\search\UserSearch';
-
-    /**
-     * @var $hiddenFields Array of hidden fields which not needed in APIs
-     */
-    protected $hiddenFields = ['password_hash', 'authKey', 'access_token', 'access_token_expired_at'];
 
     /**
      * @return array
@@ -86,6 +91,19 @@ class UserController extends ActiveController
         ];
 
         return $behaviors;
+    }
+
+    /**
+     * @return array
+     */
+    public function actions() {
+        $actions = parent::actions();
+        unset($actions['index']);
+        unset($actions['update']);
+        unset($actions['create']);
+        unset($actions['delete']);
+        unset($actions['view']);
+        return $actions;
     }
 
     /**
@@ -231,5 +249,18 @@ class UserController extends ActiveController
         return $model;
     }
 
-    
+    /**
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionIndex()
+    {
+        $model = new $this->searchModelClass;
+        $requestParams = Yii::$app->getRequest()->getBodyParams();
+
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }
+        return $model->search($requestParams);
+    }
 }
