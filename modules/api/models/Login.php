@@ -93,7 +93,8 @@ class Login extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByEmail($this->email);
+            // $this->_user = User::findByEmail($this->email);
+            $this->_user = User::findOne(['email' => $this->email,'user_type' => Yii::$app->params['normal_user']]);
         }
         return $this->_user;
     }

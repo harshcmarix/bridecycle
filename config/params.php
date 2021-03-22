@@ -6,5 +6,8 @@ return [
     'token_type' => 'bearer',
     'token_expire_time' => 86400,
     'token_segment' => 1,
-    'default_page_size' => 10
+    'default_page_size' => 10,
+    'admin' => 1,
+    'sub_admin' => 2,
+    'normal_user' => 3,
 ];

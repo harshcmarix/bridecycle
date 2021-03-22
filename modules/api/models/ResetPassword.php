@@ -82,7 +82,8 @@ class ResetPassword extends User
      */
     private function findUser()
     {
-        return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password])->one();
+        // return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password])->one();
+        return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password , 'user_type' => Yii::$app->params['normal_user']])->one();
     }
 
     /**

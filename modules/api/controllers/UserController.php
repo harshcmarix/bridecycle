@@ -201,8 +201,8 @@ class UserController extends ActiveController
         if (empty($postData) || empty($postData['tmp_password'])) {
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "tmp_password"');
         }
-
-        $model = User::find()->where(['temporary_password' => $postData['tmp_password']])->one();
+        // $model = User::find()->where(['temporary_password' => $postData['tmp_password']])->one();
+        $model = User::find()->where(['temporary_password' => $postData['tmp_password'],'user_type' => Yii::$app->params['normal_user']])->one();
         if (!$model instanceof User) {
             throw new NotFoundHttpException('Temporary password does\'t exist.');
         }

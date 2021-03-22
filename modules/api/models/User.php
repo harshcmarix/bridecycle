@@ -3,7 +3,11 @@
 namespace app\modules\api\models;
 
 use yii\db\ActiveRecord;
-use yii\web\IdentityInterface;
+use yii\web\{
+    IdentityInterface,
+    UnauthorizedHttpException
+};
+
 
 /**
  * This is the model class for table "users".
@@ -176,7 +180,17 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return static::findOne(['access_token' => $token]);
+        // return static::findOne(['access_token' => $token]);
+        $user = static::find()->where(['access_token' => $token])->one();
+       
+        if (!$user) {
+            return false;
+        }
+        if ($user->access_token_expired_at < date('Y-m-d h:i:s', time())) {
+            throw new UnauthorizedHttpException('the access - token expired ', -1);
+        } else {
+            return $user;
+        }
     }
 
     /**
