@@ -2,6 +2,8 @@
 
 namespace app\modules\api\models\search;
 
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
 use app\modules\api\models\User;
 
 /**
@@ -11,18 +13,18 @@ use app\modules\api\models\User;
 class UserSearch extends User
 {
     /**
-     * {@inheritdoc}
+     * @return array[]
      */
     public function rules()
     {
         return [
-            [['id', 'access_token_expired_at', 'mobile'], 'integer'],
-            [['first_name', 'last_name', 'email', 'password_hash', 'access_token', 'user_type', 'is_shop_owner', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'mobile'], 'integer'],
+            [['first_name', 'last_name', 'email', 'password_hash', 'access_token', 'access_token_expired_at', 'user_type', 'is_shop_owner', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * @return array|array[]
      */
     public function scenarios()
     {

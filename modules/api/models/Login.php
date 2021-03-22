@@ -6,19 +6,17 @@ use Yii;
 use yii\base\Model;
 
 /**
- * LoginForm is the model behind the login form.
- *
- * @property-read User|null $user This property is read-only.
- *
+ * Class Login
+ * @package app\modules\api\models
  */
-class LoginForm extends Model
+class Login extends Model
 {
     public $email;
     public $password;
-    public $rememberMe = true;
-
+    public $access_token;
+    public $access_token_expired_at;
+    public $token_type;
     private $_user = false;
-
 
     /**
      * @return array the validation rules.
@@ -28,19 +26,32 @@ class LoginForm extends Model
         return [
             // username and password are both required
             [['email', 'password'], 'required'],
-            // rememberMe must be a boolean value
-            ['rememberMe', 'boolean'],
+            [['access_token_expired_at', 'token_type'], 'safe'],
+            [['access_token'], 'string', 'max' => 255],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
         ];
     }
 
     /**
+     * @return array
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
+
+        // remove fields that contain sensitive information
+        unset($fields['email'], $fields['password']);
+
+        return $fields;
+    }
+
+    /**
      * Validates the password.
      * This method serves as the inline validation for password.
      *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
+     * @param $attribute
+     * @param $params
      */
     public function validatePassword($attribute, $params)
     {
@@ -54,19 +65,23 @@ class LoginForm extends Model
     }
 
     /**
-     * Logs in a user using the provided username and password.
-     * @return bool whether the user is logged in successfully
+     * Logs in a user using the provided email and password.
+     * @return false
      */
     public function login()
     {
         if ($this->validate()) {
-            // return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
             if ($this->getUser()) {
-                $access_token = $this->_user->generateAccessToken();
-                $this->_user->access_token_expired_at = time() + static::EXPIRE_TIME;
+                $accessToken = $this->_user->generateAccessToken();
+                $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+                $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 $this->_user->save();
-                Yii::$app->user->login($this->_user, static::EXPIRE_TIME);
-                return $access_token;
+                Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
+
+                $this->access_token = $accessToken;
+                $this->access_token_expired_at = $accessTokenExpiredAt;
+                $this->token_type = Yii::$app->params['token_type'];
+                return true;
             }
         }
         return false;
@@ -74,15 +89,13 @@ class LoginForm extends Model
 
     /**
      * Finds user by [[username]]
-     *
      * @return User|null
      */
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = User::findByEmail($this->email);
         }
-
         return $this->_user;
     }
 }

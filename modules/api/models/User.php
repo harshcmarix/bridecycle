@@ -2,6 +2,9 @@
 
 namespace app\modules\api\models;
 
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
 /**
  * This is the model class for table "users".
  *
@@ -11,7 +14,7 @@ namespace app\modules\api\models;
  * @property string|null $email
  * @property string|null $password_hash
  * @property string|null $access_token
- * @property int|null $access_token_expired_at
+ * @property string|null $access_token_expired_at
  * @property int|null $mobile
  * @property string|null $user_type
  * @property string $is_shop_owner
@@ -25,15 +28,21 @@ namespace app\modules\api\models;
  * @property UserSocialIdentities[] $userSocialIdentities
  * @property UserSubscriptions[] $userSubscriptions
  */
-class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
-    public $password;
+    /**
+     * Used for authentication
+     * @var string
+     */
     public $authKey;
 
-    const SCENARIO_LOGIN = 'login';
+    /**
+     * @var string
+     */
+    public $password;
 
-   /**
-     * {@inheritdoc}
+    /**
+     * @return string
      */
     public static function tableName()
     {
@@ -41,15 +50,14 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public function rules()
     {
         return [
-            [['email','password'], 'required', 'on' => self::SCENARIO_LOGIN],
-            [['access_token_expired_at', 'mobile'], 'integer'],
+            [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
+            [['mobile'], 'integer'],
             [['user_type', 'is_shop_owner'], 'string'],
-            [['created_at', 'updated_at','password'], 'safe'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
             [['password_hash', 'access_token'], 'string', 'max' => 255],
@@ -57,7 +65,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function attributeLabels()
     {
@@ -77,11 +85,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
-
-
- /**
-     * Gets query for [[FavouriteProducts]].
-     *
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getFavouriteProducts()
@@ -144,7 +148,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     /***********************************************************************/
 
     /**
-     * {@inheritdoc}
+     * @param int|string $id
+     * @return IdentityInterface|static|null
      */
     public static function findIdentity($id)
     {
@@ -152,7 +157,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param mixed $token
+     * @param null $type
+     * @return IdentityInterface|static|null
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -166,24 +173,16 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
+     * @param $email
+     * @return null|static
      */
-    public static function findByUsername($username)
+    public static function findByEmail($email)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['email' => $email]);
     }
 
     /**
-     * {@inheritdoc}
+     * @return int|string
      */
     public function getId()
     {
@@ -191,7 +190,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getAuthKey()
     {
@@ -199,7 +198,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $authKey
+     * @return bool
      */
     public function validateAuthKey($authKey)
     {
@@ -207,13 +207,22 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
+     * @param $password
+     * @return bool
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return \Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     * Generate accessToken string
+     * @return string
+     * @throws \yii\base\Exception
+     */
+    public function generateAccessToken()
+    {
+        $this->access_token = \Yii::$app->security->generateRandomString();
+        return $this->access_token;
     }
 }
