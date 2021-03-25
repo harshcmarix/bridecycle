@@ -47,6 +47,13 @@ class User extends ActiveRecord implements IdentityInterface
     public $password;
 
     /**
+     * Indetify user type
+     */
+    const USER_TYPE_ADMIN = 1;
+    const USER_TYPE_SUB_ADMIN = 2;
+    const USER_TYPE_NORMAL = 3;
+
+    /**
      * @return string
      */
     public static function tableName()
@@ -186,11 +193,12 @@ class User extends ActiveRecord implements IdentityInterface
         if (!$user) {
             return false;
         }
+        
         if ($user->access_token_expired_at < date('Y-m-d h:i:s', time())) {
-            throw new UnauthorizedHttpException('the access - token expired ', -1);
-        } else {
-            return $user;
+            throw new UnauthorizedHttpException('The access token has been expired.');
         }
+
+        return $user;
     }
 
     /**
@@ -199,7 +207,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByEmail($email)
     {
-        return static::findOne(['email' => $email]);
+        return static::findOne(['email' => $email, 'user_type' => User::USER_TYPE_NORMAL]);
     }
 
     /**

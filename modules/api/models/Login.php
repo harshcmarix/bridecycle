@@ -1,6 +1,7 @@
 <?php
 
 namespace app\modules\api\models;
+use app\modules\api\models\User;
 
 use Yii;
 use yii\base\Model;
@@ -94,7 +95,7 @@ class Login extends Model
     {
         if ($this->_user === false) {
             // $this->_user = User::findByEmail($this->email);
-            $this->_user = User::findOne(['email' => $this->email,'user_type' => Yii::$app->params['normal_user']]);
+            $this->_user = User::findOne(['email' => $this->email, 'user_type' => User::USER_TYPE_NORMAL]);
         }
         return $this->_user;
     }

@@ -1,7 +1,7 @@
 <?php
 
 namespace app\modules\api\models;
-
+use app\modules\api\models\User;
 use Yii;
 
 /**
@@ -83,7 +83,7 @@ class ResetPassword extends User
     private function findUser()
     {
         // return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password])->one();
-        return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password , 'user_type' => Yii::$app->params['normal_user']])->one();
+        return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password , 'user_type' => User::USER_TYPE_NORMAL])->one();
     }
 
     /**
