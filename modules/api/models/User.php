@@ -23,6 +23,11 @@ use yii\web\{
  * @property int|null $mobile
  * @property string|null $user_type
  * @property string $is_shop_owner
+ * @property string|null $user_type 1 => admin, 2 => sub admin, 3 => normal user
+ * @property string $is_shop_owner 1 => shop owner
+ * @property string|null $shop_name
+ * @property string|null $shop_email
+ * @property int|null $shop_phone_number
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -53,6 +58,9 @@ class User extends ActiveRecord implements IdentityInterface
     const USER_TYPE_SUB_ADMIN = 2;
     const USER_TYPE_NORMAL = 3;
 
+    const SCENARIO_SHOP_OWNER = 'shop_owner';
+    const SHOP_OWNER_YES = '1';
+
     /**
      * @return string
      */
@@ -68,14 +76,17 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
-            [['mobile'], 'integer'],
+            [['mobile', 'shop_phone_number'], 'integer'],
             [['user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
             [['password_hash', 'access_token'], 'string', 'max' => 255],
             [['temporary_password'], 'string', 'max' => 8],
+            [['profile_picture'], 'file','extensions' => 'jpg, png' ],
+            [['shop_name', 'shop_email'], 'string', 'max' => 100 ,'required','on' => self::SCENARIO_SHOP_OWNER],
         ];
     }
+   
 
     /**
      * @return array
@@ -94,6 +105,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'id' => 'ID',
+            'profile_picture' => 'Profile Picture',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'email' => 'Email',
@@ -104,6 +116,9 @@ class User extends ActiveRecord implements IdentityInterface
             'mobile' => 'Mobile',
             'user_type' => 'User Type',
             'is_shop_owner' => 'Is Shop Owner',
+            'shop_name' => 'Shop Name',
+            'shop_email' => 'Shop Email',
+            'shop_phone_number' => 'Shop Phone Number',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

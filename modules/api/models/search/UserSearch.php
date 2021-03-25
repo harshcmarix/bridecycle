@@ -25,8 +25,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'mobile'], 'integer'],
-            [['first_name', 'last_name', 'email', 'password_hash', 'access_token', 'access_token_expired_at', 'user_type', 'is_shop_owner', 'created_at', 'updated_at', 'temporary_password'], 'safe'],
+            [['id', 'mobile', 'shop_phone_number'], 'integer'],
+            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'user_type', 'is_shop_owner', 'shop_name', 'shop_email', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 

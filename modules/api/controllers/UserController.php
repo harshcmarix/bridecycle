@@ -68,7 +68,7 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'logout', 'change-password'],
+            'only' => ['index','create', 'view', 'update', 'logout', 'change-password'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -100,8 +100,8 @@ class UserController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
-        unset($actions['update']);
         unset($actions['create']);
+        unset($actions['update']);
         unset($actions['delete']);
         unset($actions['view']);
         return $actions;
@@ -114,7 +114,7 @@ class UserController extends ActiveController
     public function actionLogin()
     { 
         $model = new Login();
-        $data['Login'] = \Yii::$app->request->post();
+        $data['Login'] = Yii::$app->request->post();
 
         if ($model->load($data) && $model->validate()) {
             if (!$model->login()) {
@@ -263,5 +263,25 @@ class UserController extends ActiveController
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams);
+    }
+
+    public function actionCreate()
+    {
+        p("sdfsd");
+        $model = new User();
+       $postData = \Yii::$app->request->post();
+       $data['User'] = $postData;
+       if(!empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES)
+       {
+           $model->scenario = User::SCENARIO_SHOP_OWNER;
+       }
+
+        if ($model->load($data) && $model->validate()) {
+        //    p($model);
+            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->save();
+       }
+       return $model;
     }
 }
