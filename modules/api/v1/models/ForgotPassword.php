@@ -1,29 +1,19 @@
 <?php
 
-namespace app\modules\api\models;
-use app\modules\api\models\User;
+namespace app\modules\api\v1\models;
+
 use Yii;
 
 /**
- * Class ResetPassword
- * @package app\modules\api\models
+ * Class ForgotPassword
+ * @package app\modules\api\v1\models
  */
-class ResetPassword extends User
+class ForgotPassword extends User
 {
     /**
      * @var string
      */
-    public $tmp_password;
-
-    /**
-     * @var string
-     */
-    public $password;
-
-    /**
-     * @var string
-     */
-    public $confirm_password;
+    public $email;
 
     /**
      * @var bool
@@ -37,9 +27,9 @@ class ResetPassword extends User
     public function rules()
     {
         return [
-            [['tmp_password', 'password', 'confirm_password'], 'required'],
-            ['tmp_password', 'validateTmpPassword'],
-            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"]
+            [['email'], 'required'],
+            [['email'], 'email'],
+            [['email'], 'validateUser'],
         ];
     }
 
@@ -48,7 +38,7 @@ class ResetPassword extends User
      * @param $params
      * @return bool
      */
-    public function validateTmpPassword($attribute, $params)
+    public function validateUser($attribute, $params)
     {
         if ($this->hasErrors()) {
             return false;
@@ -57,7 +47,7 @@ class ResetPassword extends User
         $user = $this->getUser();
         // Display message if password is blank in database (This case will happen when user signed up using facebook or google)
         if (!$user instanceof User) {
-            $this->addError($attribute, 'Temporary password does not exist');
+            $this->addError($attribute, 'User does not exist');
         }
     }
 
@@ -68,9 +58,7 @@ class ResetPassword extends User
     public function attributeLabels()
     {
         return [
-            'tmp_password' => 'Temporary Password',
-            'password' => 'Password',
-            'confirm_password' => 'Confirm Password',
+            'email' => Yii::t('app', 'Email')
         ];
     }
 
@@ -82,8 +70,8 @@ class ResetPassword extends User
      */
     private function findUser()
     {
-        // return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password])->one();
-        return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password , 'user_type' => User::USER_TYPE_NORMAL])->one();
+        // return $this->_user = User::findByEmail($this->email);
+        return $this->_user = User::findOne(['email' => $this->email, 'user_type' => User::USER_TYPE_NORMAL]);
     }
 
     /**

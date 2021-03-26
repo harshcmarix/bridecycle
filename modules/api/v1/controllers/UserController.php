@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\api\controllers;
+namespace app\modules\api\v1\controllers;
 
 use Yii;
 use yii\filters\Cors;
@@ -17,7 +17,7 @@ use yii\web\{
     NotFoundHttpException,
     ServerErrorHttpException
 };
-use app\modules\api\models\{
+use app\modules\api\v1\models\{
     Login,
     User,
     ResetPassword,
@@ -27,19 +27,19 @@ use app\modules\api\models\{
 
 /**
  * Class UserController
- * @package app\modules\api\controllers
+ * @package app\modules\api\v1\controllers
  */
 class UserController extends ActiveController
 {
     /**
      * @var string
      */
-    public $modelClass = 'app\modules\api\models\User';
+    public $modelClass = 'app\modules\api\v1\models\User';
 
     /**
      * @var string
      */
-    public $searchModelClass = 'app\modules\api\models\search\UserSearch';
+    public $searchModelClass = 'app\modules\api\v1\models\search\UserSearch';
 
     /**
      * @return array
@@ -68,7 +68,7 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','create', 'view', 'update', 'logout', 'change-password'],
+            'only' => ['index', 'create', 'view', 'update', 'logout', 'change-password'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -107,12 +107,22 @@ class UserController extends ActiveController
         return $actions;
     }
 
+    public function actionCreate()
+    {
+        p("create");
+    }
+
+    public function actionUpdate()
+    {
+        p("update");
+    }
+
     /**
      * @return Login
      * @throws ForbiddenHttpException
      */
     public function actionLogin()
-    { 
+    {
         $model = new Login();
         $data['Login'] = Yii::$app->request->post();
 
@@ -202,7 +212,7 @@ class UserController extends ActiveController
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "tmp_password"');
         }
         // $model = User::find()->where(['temporary_password' => $postData['tmp_password']])->one();
-        $model = User::find()->where(['temporary_password' => $postData['tmp_password'],'user_type' => User::USER_TYPE_NORMAL])->one();
+        $model = User::find()->where(['temporary_password' => $postData['tmp_password'], 'user_type' => User::USER_TYPE_NORMAL])->one();
         if (!$model instanceof User) {
             throw new NotFoundHttpException('Temporary password does\'t exist.');
         }
@@ -263,25 +273,5 @@ class UserController extends ActiveController
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams);
-    }
-
-    public function actionCreate()
-    {
-        p("sdfsd");
-        $model = new User();
-       $postData = \Yii::$app->request->post();
-       $data['User'] = $postData;
-       if(!empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES)
-       {
-           $model->scenario = User::SCENARIO_SHOP_OWNER;
-       }
-
-        if ($model->load($data) && $model->validate()) {
-        //    p($model);
-            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
-            $model->created_at = date('Y-m-d H:i:s');
-            $model->save();
-       }
-       return $model;
     }
 }

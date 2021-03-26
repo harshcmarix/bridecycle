@@ -12,28 +12,39 @@ use \yii\base\Module as BaseModule;
 class Module extends BaseModule
 {
     /**
-     * @var string
-     */
-    public $controllerNamespace = 'app\modules\api\controllers';
-
-    /**
      * Set custom options
      */
     public function init()
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
         \Yii::$app->response->charset = 'UTF-8';
+
         parent::init();
 
-        \Yii::$app->set('user', [
-            'class' => 'yii\web\User',
-            'identityClass' => 'app\modules\api\models\User',
-            'enableAutoLogin' => false,
-            'loginUrl' => null,
-            'identityCookie' => ['name' => '_apiUser', 'httpOnly' => true],
-        ]);
+        // Setup module version automatically based on the api request
+        $absoluteUrl = explode('/', \Yii::$app->request->absoluteUrl);
+        if (count($absoluteUrl) > 2) {
+            $version = $absoluteUrl[count($absoluteUrl) - 2];
+            if (!empty($version)) {
+                $versionNumber = sprintf("%.1f", str_replace(['v'], '', $version));
+                $this->setVersion($versionNumber);
+            }
+        }
 
-        \Yii::configure($this, require(__DIR__ . '/config/web.php'));
+//        \Yii::$app->setComponents([
+//            'urlManager' => [
+//                'class' => 'yii\web\UrlManager',
+//                'enablePrettyUrl' => true,
+//                'showScriptName'=>false,
+//                'rules' => [
+//                    'POST <module:[\w-]+>/<controller:[\w-]+>' => '<module>/<controller>/create',
+//                ],
+//            ]
+//        ]);
+
+        //p(\Yii::$app->get('urlManager'));
+
+//        \Yii::configure($this, require(__DIR__ . '/config/web.php'));
 
         // Code to manage response format globally
         \Yii::$app->response->on(Response::EVENT_BEFORE_SEND, function ($event) {

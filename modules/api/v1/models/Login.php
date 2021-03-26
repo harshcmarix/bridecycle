@@ -1,14 +1,13 @@
 <?php
 
-namespace app\modules\api\models;
-use app\modules\api\models\User;
+namespace app\modules\api\v1\models;
 
 use Yii;
 use yii\base\Model;
 
 /**
  * Class Login
- * @package app\modules\api\models
+ * @package app\modules\api\v1\models
  */
 class Login extends Model
 {

@@ -12,6 +12,17 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
     ],
+    'modules' => [
+        'admin' => [
+            'class' => 'app\modules\admin\Module',
+        ],
+        'api' => [
+            'class' => 'app\modules\api\Module',
+            'modules' => ['v1' => [
+                'class' => 'app\modules\api\v1\Module',
+            ]],
+        ],
+    ],
     'components' => [
         'session' => [
             'cookieParams' => [
@@ -65,17 +76,19 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'admin' => '/admin/site/index',
-                'api' => '/api/site/index',
+                'api' => '/api/v1/site/index',
+//                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/user', 'pluralize' => false],
+                'POST <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>' => '<module>/<version>/<controller>/create',
+                'PUT,PATCH <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/update',
+                'PUT,PATCH <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/<action>/',
+                'DELETE <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/delete',
+                'DELETE <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/<action>/',
+                'GET,HEAD <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/view',
+                'GET,HEAD <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>' => '<module>/<version>/<controller>/index',
+                'GET,HEAD <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/<action>/',
+                'OPTIONS <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/options',
+                'POST,OPTIONS <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/<action>',
             ],
-        ],
-
-    ],
-    'modules' => [
-        'admin' => [
-            'class' => 'app\modules\admin\Module',
-        ],
-        'api' => [
-            'class' => 'app\modules\api\Module',
         ],
     ],
     'params' => $params,

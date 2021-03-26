@@ -1,13 +1,12 @@
 <?php
 
-namespace app\modules\api\models;
+namespace app\modules\api\v1\models;
 
 use yii\db\ActiveRecord;
 use yii\web\{
     IdentityInterface,
     UnauthorizedHttpException
 };
-
 
 /**
  * This is the model class for table "users".
@@ -23,8 +22,6 @@ use yii\web\{
  * @property int|null $mobile
  * @property string|null $user_type
  * @property string $is_shop_owner
- * @property string|null $user_type 1 => admin, 2 => sub admin, 3 => normal user
- * @property string $is_shop_owner 1 => shop owner
  * @property string|null $shop_name
  * @property string|null $shop_email
  * @property int|null $shop_phone_number
@@ -75,6 +72,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            [['first_name', 'last_name', 'email', 'password'], 'required'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
             [['user_type', 'is_shop_owner'], 'string'],
@@ -82,11 +80,11 @@ class User extends ActiveRecord implements IdentityInterface
             [['email'], 'string', 'max' => 60],
             [['password_hash', 'access_token'], 'string', 'max' => 255],
             [['temporary_password'], 'string', 'max' => 8],
-            [['profile_picture'], 'file','extensions' => 'jpg, png' ],
-            [['shop_name', 'shop_email'], 'string', 'max' => 100 ,'required','on' => self::SCENARIO_SHOP_OWNER],
+            [['profile_picture'], 'file', 'extensions' => 'jpg, png'],
+//            [['shop_name', 'shop_email'], 'string', 'max' => 100 ,'required','on' => self::SCENARIO_SHOP_OWNER],
         ];
     }
-   
+
 
     /**
      * @return array
@@ -204,11 +202,11 @@ class User extends ActiveRecord implements IdentityInterface
     {
         // return static::findOne(['access_token' => $token]);
         $user = static::find()->where(['access_token' => $token])->one();
-       
+
         if (!$user) {
             return false;
         }
-        
+
         if ($user->access_token_expired_at < date('Y-m-d h:i:s', time())) {
             throw new UnauthorizedHttpException('The access token has been expired.');
         }

@@ -1,16 +1,16 @@
 <?php
 
-namespace app\modules\api\models\search;
+namespace app\modules\api\v1\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
-use app\modules\api\models\User;
+use app\modules\api\v1\models\User;
 
 /**
  * Class UserSearch
- * @package app\modules\api\models\search
+ * @package app\modules\api\v1\models\search
  */
 class UserSearch extends User
 {

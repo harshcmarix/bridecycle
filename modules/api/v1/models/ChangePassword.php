@@ -1,12 +1,12 @@
 <?php
 
-namespace app\modules\api\models;
+namespace app\modules\api\v1\models;
 
 use Yii;
 
 /**
  * Class ChangePassword
- * @package app\modules\api\models
+ * @package app\modules\api\v1\models
  */
 class ChangePassword extends User
 {
