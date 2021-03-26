@@ -49,7 +49,7 @@ class User extends ActiveRecord implements IdentityInterface
     public $password;
 
     /**
-     * Indetify user type
+     * Identify user type
      */
     const USER_TYPE_ADMIN = 1;
     const USER_TYPE_SUB_ADMIN = 2;
@@ -72,7 +72,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email', 'password'], 'required'],
+            [['first_name', 'last_name', 'email', 'password'], 'required', 'on' => 'create'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
             [['user_type', 'is_shop_owner'], 'string'],

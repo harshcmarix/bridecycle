@@ -3,7 +3,6 @@
 namespace app\modules\api\v1;
 
 /**
- * v1 module definition class
  * Class Module
  * @package app\modules\api\v1
  */

@@ -107,15 +107,40 @@ class UserController extends ActiveController
         return $actions;
     }
 
+    /**
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionIndex()
+    {
+        $model = new $this->searchModelClass;
+        $requestParams = Yii::$app->getRequest()->getBodyParams();
+
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }
+        return $model->search($requestParams);
+    }
+
+    /**
+     *
+     */
     public function actionCreate()
     {
         p("create");
     }
 
+    /**
+     *
+     */
     public function actionUpdate()
     {
         p("update");
     }
+    
+    /***************************************************************************/
+    /*************************** Authentication Functions **********************/
+    /***************************************************************************/
 
     /**
      * @return Login
@@ -180,7 +205,6 @@ class UserController extends ActiveController
     {
         $model = new ForgotPassword();
         $data['ForgotPassword'] = \Yii::$app->request->post();
-
         if ($model->load($data) && $model->validate()) {
             $tmpPassword = \Yii::$app->security->generateRandomString(8);
             $userModel = $model->getUser();
@@ -258,20 +282,5 @@ class UserController extends ActiveController
         }
 
         return $model;
-    }
-
-    /**
-     * @return mixed
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function actionIndex()
-    {
-        $model = new $this->searchModelClass;
-        $requestParams = Yii::$app->getRequest()->getBodyParams();
-
-        if (empty($requestParams)) {
-            $requestParams = Yii::$app->getRequest()->getQueryParams();
-        }
-        return $model->search($requestParams);
     }
 }
