@@ -68,7 +68,7 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'create', 'view', 'update', 'logout', 'change-password'],
+            'only' => ['index', 'view', 'update', 'logout', 'change-password'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -137,7 +137,7 @@ class UserController extends ActiveController
     {
         p("update");
     }
-    
+
     /***************************************************************************/
     /*************************** Authentication Functions **********************/
     /***************************************************************************/

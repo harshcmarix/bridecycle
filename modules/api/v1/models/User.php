@@ -220,7 +220,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByEmail($email)
     {
-        return static::findOne(['email' => $email, 'user_type' => User::USER_TYPE_NORMAL]);
+        return self::find()->where(['email' => $email, 'user_type' => User::USER_TYPE_NORMAL])->one();
     }
 
     /**
