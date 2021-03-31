@@ -31,3 +31,7 @@ tests/_support/_generated
 
 #vagrant folder
 /.vagrant
+
+#uploaded images and thubnails
+web/uploads/images/*
+web/uploads/thumbnail/*
