@@ -3,27 +3,25 @@
 namespace app\modules\api\v1\controllers;
 
 use Yii;
+use yii\helpers\Url;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
-use yii\filters\auth\{
-    HttpBasicAuth,
-    CompositeAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
-use yii\web\{
-    BadRequestHttpException,
-    ForbiddenHttpException,
-    NotFoundHttpException,
-    ServerErrorHttpException
-};
-use app\modules\api\v1\models\{
-    Login,
-    User,
-    ResetPassword,
-    ForgotPassword,
-    ChangePassword
-};
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
+use yii\web\UploadedFile;
+use app\modules\api\v1\models\Login;
+use app\modules\api\v1\models\User;
+use app\modules\api\v1\models\ResetPassword;
+use app\modules\api\v1\models\ForgotPassword;
+use app\modules\api\v1\models\ChangePassword;
+use app\modules\api\v1\models\UserAddress;
+use yii\imagine\Image;
 
 /**
  * Class UserController
@@ -103,7 +101,7 @@ class UserController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['delete']);
-        unset($actions['view']);
+        // unset($actions['view']);
         return $actions;
     }
 
@@ -127,15 +125,89 @@ class UserController extends ActiveController
      */
     public function actionCreate()
     {
-        p("create");
+        $image_url = '';
+        $model = new User();
+        $postData = \Yii::$app->request->post();
+        $data['User'] = $postData;
+        $data1['UserAddress'] = $postData;
+        $model->scenario = User::SCENARIO_USER_CREATE;
+        if (!empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES) {
+            $model->scenario = User::SCENARIO_SHOP_OWNER;
+        }
+        if ($model->load($data) && $model->validate()) {
+            //file upload
+            $profile_image = UploadedFile::getInstanceByName('profile_picture');
+            if (is_object($profile_image)) {
+                $model->profile_picture = $profile_image;
+                $filename =  time() . '.' . $model->profile_picture->extension;
+                $model->profile_picture->saveAs('uploads/profile_images/image/' . $filename);
+                $model->profile_picture = $filename;
+                $thumbnail_path = 'uploads/profile_images/thumbnail/' . $filename;
+                $image_path = 'uploads/profile_images/image/' . $filename;
+                // Generate a thumbnail image
+                Image::thumbnail($image_path, 200, 200)->save($thumbnail_path, ['quality' => 80]);
+                if (file_exists($thumbnail_path)) {
+                    $image_url = Url::base('http') . '/uploads/profile_images/thumbnail/' . $filename;
+                }
+            }
+            //file upload end
+            $model->user_type = (string)User::USER_TYPE_NORMAL;
+            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+            $model->created_at = date('Y-m-d H:i:s');
+            if ($model->save()) {
+                if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
+                    $userAddressModel = new UserAddress();
+                    if ($userAddressModel->load($data1)) {
+                        $userAddressModel->user_id = $model->id;
+                        $userAddressModel->created_at = date('Y-m-d H:i:s');
+                        $userAddressModel->save(false);
+                    }
+                }
+                if (!empty($model->profile_picture)) {
+                    $model->profile_picture = $image_url;
+                }
+            }
+        }
+
+        return $model;
     }
 
     /**
      *
      */
-    public function actionUpdate()
+    public function actionUpdate($id)
     {
-        p("update");
+        $model = User::findOne($id);
+        if (!$model instanceof User) {
+            throw new NotFoundHttpException('User doesn\'t exist.');
+        }
+        $postData = \Yii::$app->request->post();
+        $data['User'] = $postData;
+        $data1['UserAddress'] = $postData;
+        $model->scenario = User::SCENARIO_USER_UPDATE;
+        // if(!empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES)
+        // {
+        //     $model->scenario = User::SCENARIO_SHOP_OWNER;
+        // }
+
+        if ($model->load($data) && $model->validate()) {
+            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+            $model->updated_at = date('Y-m-d H:i:s');
+            if ($model->save()) {
+                if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
+                    $get_address_id = UserAddress::find()->where(['user_id' => $id])->one();
+                    if (!empty($get_address_id->id)) {
+                        $userAddressModel =  UserAddress::findOne($get_address_id->id);
+                        if ($userAddressModel->load($data1)) {
+                            $userAddressModel->updated_at = date('Y-m-d H:i:s');
+                            $userAddressModel->save(false);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $model;
     }
 
     /***************************************************************************/

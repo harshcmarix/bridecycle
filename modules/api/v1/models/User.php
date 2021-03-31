@@ -3,15 +3,17 @@
 namespace app\modules\api\v1\models;
 
 use yii\db\ActiveRecord;
-use yii\web\{
-    IdentityInterface,
-    UnauthorizedHttpException
+use yii\web\IdentityInterface;
+use yii\web\UnauthorizedHttpException;
+use app\modules\api\v1\models\{
+    UserAddress
 };
 
 /**
  * This is the model class for table "users".
  *
  * @property int $id
+ * @property string|null $profile_picture
  * @property string|null $first_name
  * @property string|null $last_name
  * @property string|null $email
@@ -20,8 +22,11 @@ use yii\web\{
  * @property string|null $access_token
  * @property string|null $access_token_expired_at
  * @property int|null $mobile
- * @property string|null $user_type
- * @property string $is_shop_owner
+ * @property float|null $weight
+ * @property float|null $height
+ * @property string|null $personal_information
+ * @property string|null $user_type 1 => admin, 2 => sub admin, 3 => normal user
+ * @property string $is_shop_owner 1 => shop owner
  * @property string|null $shop_name
  * @property string|null $shop_email
  * @property int|null $shop_phone_number
@@ -47,7 +52,10 @@ class User extends ActiveRecord implements IdentityInterface
      * @var string
      */
     public $password;
-
+    /**
+     * @var string
+     */
+    public $confirm_password;
     /**
      * Identify user type
      */
@@ -57,6 +65,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     const SCENARIO_SHOP_OWNER = 'shop_owner';
     const SHOP_OWNER_YES = '1';
+    const SCENARIO_USER_CREATE = 'create';
+    const SCENARIO_USER_UPDATE = 'update';
 
     /**
      * @return string
@@ -72,16 +82,21 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email', 'password'], 'required', 'on' => 'create'],
+            [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE,self::SCENARIO_USER_UPDATE,self::SCENARIO_SHOP_OWNER]],
+            [['password','confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE,self::SCENARIO_SHOP_OWNER]],
+            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
-            [['user_type', 'is_shop_owner'], 'string'],
+            [['personal_information','user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
+            [['email'], 'unique'],
             [['email'], 'string', 'max' => 60],
             [['password_hash', 'access_token'], 'string', 'max' => 255],
             [['temporary_password'], 'string', 'max' => 8],
-            [['profile_picture'], 'file', 'extensions' => 'jpg, png'],
-//            [['shop_name', 'shop_email'], 'string', 'max' => 100 ,'required','on' => self::SCENARIO_SHOP_OWNER],
+            [['profile_picture'], 'file','extensions' =>'png,jpg'],
+            [['shop_name', 'shop_email'], 'string', 'max' => 100],
+            [['shop_name', 'shop_email'],'required','on' =>[self::SCENARIO_SHOP_OWNER]],
+            [['weight', 'height'], 'number'],
         ];
     }
 
@@ -112,6 +127,9 @@ class User extends ActiveRecord implements IdentityInterface
             'access_token' => 'Access Token',
             'access_token_expired_at' => 'Access Token Expired At',
             'mobile' => 'Mobile',
+            'weight' => 'Weight',
+            'height' => 'Height',
+            'personal_information' => 'Personal Information',
             'user_type' => 'User Type',
             'is_shop_owner' => 'Is Shop Owner',
             'shop_name' => 'Shop Name',
@@ -119,6 +137,16 @@ class User extends ActiveRecord implements IdentityInterface
             'shop_phone_number' => 'Shop Phone Number',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+        ];
+    }
+
+    /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'userAddresses' => 'userAddresses',
         ];
     }
 
@@ -157,7 +185,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserAddresses()
     {
-        return $this->hasMany(UserAddresses::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserAddress::className(), ['user_id' => 'id']);
     }
 
     /**
