@@ -32,6 +32,15 @@ class Module extends BaseModule
 
         parent::init();
 
-        \Yii::configure($this, require(__DIR__ . '/config/web.php'));
+        \Yii::$app->set('user', [
+            'class' => 'yii\web\User',
+            'identityClass' => 'app\modules\admin\models\User',
+            'enableAutoLogin' => true,
+            // 'loginUrl' => \Yii::$app->urlManager->createUrl(["admin/site/login"]),
+            'identityCookie' => ['name' => '_adminUser', 'httpOnly' => true],
+        ]);
+
+
+        // \Yii::configure($this, require(__DIR__ . '/config/web.php'));
     }
 }
