@@ -2,14 +2,7 @@
 
 namespace app\modules\api\v1\controllers;
 
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBasicAuth;
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
-use yii\filters\Cors;
 use yii\rest\ActiveController;
-use app\modules\api\models\User;
-use app\modules\api\models\Login;
 
 /**
  * Class SiteController
@@ -56,8 +49,7 @@ class SiteController extends ActiveController
     }
 
     /**
-     * @return mixed
-     * @throws \yii\base\InvalidConfigException
+     * @return string[]
      */
     public function actionIndex()
     {

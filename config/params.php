@@ -9,5 +9,11 @@ return [
     'default_page_size' => 10,
     // For reset password expire token admin panel
     'password_reset_token_expire_time' => 3600,
-    'support_email' => 'robot@devreadwrite.com'
+    'support_email' => 'robot@devreadwrite.com',
+    /**
+     * Used for profile picture thumb
+     */
+    'profile_picture_thumb_width' => 200,
+    'profile_picture_thumb_height' => 200,
+    'profile_picture_thumb_quality' => 80,
 ];

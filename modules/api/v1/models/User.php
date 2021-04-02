@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v1\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use yii\web\UnauthorizedHttpException;
@@ -77,25 +78,38 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
+        ];
+    }
+
+    /**
      * @return array
      */
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE,self::SCENARIO_USER_UPDATE,self::SCENARIO_SHOP_OWNER]],
-            [['password','confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE,self::SCENARIO_SHOP_OWNER]],
+            [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
+            [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
-            [['personal_information','user_type', 'is_shop_owner'], 'string'],
+            [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'unique'],
             [['email'], 'string', 'max' => 60],
             [['password_hash', 'access_token'], 'string', 'max' => 255],
             [['temporary_password'], 'string', 'max' => 8],
-            [['profile_picture'], 'file','extensions' =>'png,jpg'],
+            [['profile_picture'], 'file', 'extensions' => 'png,jpg'],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
-            [['shop_name', 'shop_email'],'required','on' =>[self::SCENARIO_SHOP_OWNER]],
+            [['shop_name', 'shop_email'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
             [['weight', 'height'], 'number'],
         ];
     }

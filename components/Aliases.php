@@ -18,8 +18,14 @@ class Aliases extends Component
         Yii::setAlias('@css', Yii::getAlias('@webroot') . '/css');
         Yii::setAlias('@js', Yii::getAlias('@webroot') . '/js');
 
-//        Yii::setAlias('@uploadsAbsolutePath', Yii::$app->request->baseUrl . '/uploads');
-//        Yii::setAlias('@uploadsRelativePath', Yii::getAlias('@webroot') . '/uploads');
+        Yii::setAlias('@uploadsAbsolutePath', Yii::$app->request->baseUrl . '/uploads');
+        Yii::setAlias('@uploadsRelativePath', Yii::getAlias('@webroot') . '/uploads');
+
+        Yii::setAlias('@profilePictureAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/profile_pictures');
+        Yii::setAlias('@profilePictureRelativePath', Yii::getAlias('@uploadsRelativePath') . '/profile_pictures');
+
+        Yii::setAlias('@profilePictureThumbAbsolutePath', Yii::getAlias('@profilePictureAbsolutePath') . '/thumbs');
+        Yii::setAlias('@profilePictureThumbRelativePath', Yii::getAlias('@profilePictureRelativePath') . '/thumbs');
 
     }
 }
