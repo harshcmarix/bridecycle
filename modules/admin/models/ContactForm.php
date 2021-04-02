@@ -6,7 +6,8 @@ use Yii;
 use yii\base\Model;
 
 /**
- * ContactForm is the model behind the contact form.
+ * Class ContactForm
+ * @package app\modules\admin\models
  */
 class ContactForm extends Model
 {
@@ -16,9 +17,8 @@ class ContactForm extends Model
     public $body;
     public $verifyCode;
 
-
     /**
-     * @return array the validation rules.
+     * @return array
      */
     public function rules()
     {
@@ -33,7 +33,7 @@ class ContactForm extends Model
     }
 
     /**
-     * @return array customized attribute labels
+     * @return string[]
      */
     public function attributeLabels()
     {
@@ -44,8 +44,8 @@ class ContactForm extends Model
 
     /**
      * Sends an email to the specified email address using the information collected by this model.
-     * @param string $email the target email address
-     * @return bool whether the model passes validation
+     * @param $email
+     * @return bool
      */
     public function contact($email)
     {

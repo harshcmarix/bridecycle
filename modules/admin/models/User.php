@@ -2,11 +2,10 @@
 
 namespace app\modules\admin\models;
 
-use yii\db\ActiveRecord;
-use yii\base\NotSupportedException;
-use yii\behaviors\TimestampBehavior;
-use yii\web\IdentityInterface;
 use Yii;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "users".
@@ -40,30 +39,44 @@ use Yii;
  * @property UserSocialIdentities[] $userSocialIdentities
  * @property UserSubscriptions[] $userSubscriptions
  */
-
 class User extends ActiveRecord implements IdentityInterface
 {
+    /**
+     * Identify auth key
+     * @var string
+     */
     public $authKey;
-    
+
+    /**
+     * Identify user type
+     */
     const USER_TYPE_ADMIN = 1;
     const USER_TYPE_SUB_ADMIN = 2;
     const USER_TYPE_NORMAL = 3;
 
-
-    
+    /**
+     * @return string
+     */
     public static function tableName()
     {
         return 'users';
     }
+
+    /**
+     * @return array[]
+     */
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public function rules()
     {
@@ -81,7 +94,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function attributeLabels()
     {
@@ -111,67 +124,57 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Gets query for [[FavouriteProducts]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getFavouriteProducts()
     {
-        return $this->hasMany(FavouriteProducts::className(), ['user_id' => 'id']);
+        return $this->hasMany(FavouriteProducts::class, ['user_id' => 'id']);
     }
 
     /**
-     * Gets query for [[Orders]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getOrders()
     {
-        return $this->hasMany(Orders::className(), ['user_id' => 'id']);
+        return $this->hasMany(Orders::class, ['user_id' => 'id']);
     }
 
     /**
-     * Gets query for [[ProductRatings]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getProductRatings()
     {
-        return $this->hasMany(ProductRatings::className(), ['user_id' => 'id']);
+        return $this->hasMany(ProductRatings::class, ['user_id' => 'id']);
     }
 
     /**
-     * Gets query for [[UserAddresses]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getUserAddresses()
     {
-        return $this->hasMany(UserAddresses::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserAddresses::class, ['user_id' => 'id']);
     }
 
     /**
-     * Gets query for [[UserSocialIdentities]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getUserSocialIdentities()
     {
-        return $this->hasMany(UserSocialIdentities::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSocialIdentities::class, ['user_id' => 'id']);
     }
 
     /**
-     * Gets query for [[UserSubscriptions]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getUserSubscriptions()
     {
-        return $this->hasMany(UserSubscriptions::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSubscriptions::class, ['user_id' => 'id']);
     }
 
-    
-    ////////////////////login functions/////////////////////////////
+    /************************************************************************************/
+    /******************************* Identity Helper Functions **************************/
+    /************************************************************************************/
+
     /**
      * @param int|string $id
      * @return User|IdentityInterface|null
@@ -188,7 +191,6 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        // return static::findOne(['access_token' => $token]);
         $user = static::find()->where(['access_token' => $token])->one();
 
         if (!$user) {
@@ -266,37 +268,54 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
     }
 
-    ////////////////////login functions end/////////////////////////////
+    /************************************************************************************/
+    /******************************* Reset Password Functions **************************/
+    /************************************************************************************/
 
-    ////////////////////////Reset Password////////////////////////////////
-
+    /**
+     * @param $token
+     * @return User|null
+     */
     public static function findByPasswordResetToken($token)
     {
         if (!static::isPasswordResetTokenValid($token)) {
             return null;
         }
+
         return static::findOne([
-        'password_reset_token' => $token,
-        'user_type' => User::USER_TYPE_ADMIN
-    ]);
+            'password_reset_token' => $token,
+            'user_type' => User::USER_TYPE_ADMIN
+        ]);
     }
+
+    /**
+     * @param $token
+     * @return bool
+     */
     public static function isPasswordResetTokenValid($token)
     {
         if (empty($token)) {
             return false;
         }
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
+        $expire = Yii::$app->params['password_reset_token_expire_time'];
         return $timestamp + $expire >= time();
     }
+
+    /**
+     * @throws \yii\base\Exception
+     */
     public function generatePasswordResetToken()
     {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
+
+    /**
+     * Remove password reset token
+     */
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
     }
-
-    ////////////////////////Reset Password End////////////////////////////////
 }

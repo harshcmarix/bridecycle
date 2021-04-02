@@ -2,15 +2,22 @@
 
 namespace app\modules\admin\controllers;
 
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
-use yii\web\Controller;
+use yii\filters\{
+    VerbFilter,
+    AccessControl
+};
+use app\modules\admin\models\{
+    LoginForm,
+    ForgotPasswordForm,
+    ResetPasswordForm
+};
+use yii\web\{
+    Response,
+    BadRequestHttpException,
+    Controller
+};
 use Yii;
-use yii\web\Response;
-use app\modules\admin\models\LoginForm;
-use app\modules\admin\models\ContactForm;
-use app\modules\admin\models\ForgotPasswordForm;
-use app\modules\admin\models\ResetPasswordForm;
+use yii\base\InvalidParamException;
 
 /**
  * Class SiteController
@@ -57,19 +64,20 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
-     *
      * @return string
      */
     public function actionIndex()
     {
+//        Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+//        $session = Yii::$app->session->getAllFlashes();
+//        p($session);
         return $this->render('index');
     }
+
     /**
-    * Login action.
-    *
-    * @return Response|string
-    */
+     * Login
+     * @return string|Response
+     */
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
@@ -81,15 +89,13 @@ class SiteController extends Controller
             return $this->redirect(['/admin']);
         }
 
-        $model->password = '';
         return $this->render('login', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Logout action.
-     *
+     * Logout
      * @return Response
      */
     public function actionLogout()
@@ -100,63 +106,32 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
-     *
-     * @return Response|string
+     * Forgot password
+     * @return string|Response
      */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
-
-
-    /**
-    * Requests password reset.
-    *
-    * @return mixed
-    */
     public function actionForgotPassword()
     {
         $model = new ForgotPasswordForm();
- 
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                 return $this->goHome();
-            } else {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for email provided.');
             }
+
+            Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for email provided.');
         }
-       
-        return $this->render('forgot-password-form', [
+
+        return $this->render('forgot-password', [
             'model' => $model,
         ]);
     }
- 
+
     /**
-     * Resets password.
-     *
-     * @param string $token
-     * @return mixed
+     * @param $token
+     * @return string|Response
      * @throws BadRequestHttpException
+     * @throws \yii\base\Exception
      */
     public function actionResetPassword($token)
     {
@@ -165,13 +140,13 @@ class SiteController extends Controller
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
- 
+
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->session->setFlash('success', 'New password was saved.');
+            Yii::$app->session->setFlash('success', 'Password reset successfully.');
             return $this->goHome();
         }
- 
-        return $this->render('reset-password-form', [
+
+        return $this->render('reset-password', [
             'model' => $model,
         ]);
     }

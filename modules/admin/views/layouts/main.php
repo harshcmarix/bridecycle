@@ -1,9 +1,11 @@
 <?php
 
-use app\widgets\Alert;
+use yii\bootstrap\{
+    Nav,
+    NavBar
+};
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
+use app\widgets\Alert;
 use yii\widgets\Breadcrumbs;
 use app\modules\admin\assets\AdminAsset;
 
@@ -36,10 +38,8 @@ AdminAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/admin/site/index']],
-            ['label' => 'About', 'url' => ['/admin/site/about']],
-            ['label' => 'Contact', 'url' => ['/admin/site/contact']],
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/admin/site/login']]
+            ['label' => 'Login', 'url' => ['/admin/site/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/admin/site/logout'], 'post')
@@ -67,7 +67,6 @@ AdminAsset::register($this);
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
 </footer>

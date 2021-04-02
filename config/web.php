@@ -77,17 +77,87 @@ $config = [
             'rules' => [
                 'admin' => '/admin/site/index',
                 'api' => '/api/v1/site/index',
-//                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/user', 'pluralize' => false],
-                'POST <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>' => '<module>/<version>/<controller>/create',
-                'PUT,PATCH <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/update',
-                'PUT,PATCH <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/<action>/',
-                'DELETE <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/delete',
-                'DELETE <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/<action>/',
-                'GET,HEAD <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/view',
-                'GET,HEAD <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>' => '<module>/<version>/<controller>/index',
-                'GET,HEAD <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/<action>/',
-                'OPTIONS <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/options',
-                'POST,OPTIONS <module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => '<module>/<version>/<controller>/<action>',
+                //  ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/user'], 'pluralize' => false],
+                [
+                    'pattern' => 'admin/<controller:\w+>/<action:[\w-]+>',
+                    'route' => 'admin/<controller>/<action>',
+                ],
+                // Set rest API rules
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>',
+                    'route' => '<module>/<version>/<controller>/create',
+                    'verb' => 'POST'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/<action>',
+                    'verb' => 'POST'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/update',
+                    'verb' => 'PUT'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/update',
+                    'verb' => 'PATCH'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/<action>/',
+                    'verb' => 'PUT'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/<action>/',
+                    'verb' => 'PATCH'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/delete',
+                    'verb' => 'DELETE'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/<action>/',
+                    'verb' => 'DELETE'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/view',
+                    'verb' => 'GET'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/view',
+                    'verb' => 'HEAD'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>',
+                    'route' => '<module>/<version>/<controller>/index',
+                    'verb' => 'GET'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>',
+                    'route' => '<module>/<version>/<controller>/index',
+                    'verb' => 'HEAD'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/<action>/',
+                    'verb' => 'GET'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/<action>/',
+                    'verb' => 'HEAD'
+                ],
+                [
+                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>/<id:\d+>',
+                    'route' => '<module>/<version>/<controller>/options',
+                    'verb' => 'OPTIONS'
+                ],
             ],
         ],
     ],

@@ -23,7 +23,7 @@ class Module extends BaseModule
     public $layout = 'main';
 
     /**
-     * Set custom options
+     * @throws \yii\base\InvalidConfigException
      */
     public function init()
     {
@@ -36,10 +36,8 @@ class Module extends BaseModule
             'class' => 'yii\web\User',
             'identityClass' => 'app\modules\admin\models\User',
             'enableAutoLogin' => true,
-            // 'loginUrl' => \Yii::$app->urlManager->createUrl(["admin/site/login"]),
             'identityCookie' => ['name' => '_adminUser', 'httpOnly' => true],
         ]);
-
 
         // \Yii::configure($this, require(__DIR__ . '/config/web.php'));
     }
