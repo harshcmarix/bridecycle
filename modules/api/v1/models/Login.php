@@ -58,7 +58,7 @@ class Login extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Incorrect email or password.');
             }
         }
     }
@@ -87,7 +87,7 @@ class Login extends Model
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds user by [[email]]
      * @return User|null
      */
     public function getUser()
