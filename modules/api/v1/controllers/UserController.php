@@ -117,6 +117,7 @@ class UserController extends ActiveController
      */
     public function actionIndex()
     {
+        p("Index");
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
@@ -132,6 +133,7 @@ class UserController extends ActiveController
      */
     public function actionCreate()
     {
+        p("Create");
         $model = new User();
         $postData = \Yii::$app->request->post();
         $userData['User'] = $postData;
@@ -203,6 +205,7 @@ class UserController extends ActiveController
      */
     public function actionUpdate($id)
     {
+        p("Update");
         $model = User::findOne($id);
         if (!$model instanceof User) {
             throw new NotFoundHttpException('User doesn\'t exist.');
