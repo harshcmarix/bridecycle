@@ -3,7 +3,10 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use app\modules\admin\models\SubAdmin;
+use app\modules\admin\models\{
+    SubAdmin,
+    User
+};
 use app\modules\admin\models\search\SubAdminSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -28,7 +31,6 @@ class SubAdminController extends Controller
             ],
         ];
     }
-
     /**
      * Lists all SubAdmin models.
      * @return mixed
@@ -52,8 +54,13 @@ class SubAdminController extends Controller
      */
     public function actionView($id)
     {
+        $Admin_model = $this->findModel($id);
+        if(!empty($Admin_model->user_type)){
+            $get_user_type = SubAdmin::USER_TYPE;
+            $Admin_model->user_type = $get_user_type[$Admin_model->user_type];
+        }
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $Admin_model,
         ]);
     }
 
@@ -64,10 +71,13 @@ class SubAdminController extends Controller
      */
     public function actionCreate()
     {
-        p('hi');
         $model = new SubAdmin();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model->scenario = SubAdmin::SUB_ADMIN_CREATE;
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->user_type = (string)User::USER_TYPE_SUB_ADMIN;
+            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+            
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

@@ -1,4 +1,3 @@
-×
 <?php
 
 use yii\helpers\Html;
@@ -7,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\SubAdmin */
 
-$this->title = $model->id;
+$this->title = 'View Sub Admin';
 $this->params['breadcrumbs'][] = ['label' => 'Sub Admin', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -31,24 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'profile_picture',
+            // 'profile_picture',
             'first_name',
             'last_name',
             'email:email',
-            'password_hash',
-            'temporary_password',
-            'access_token',
-            'access_token_expired_at',
-            'password_reset_token',
             'mobile',
-            'weight',
-            'height',
-            'personal_information:ntext',
             'user_type',
-            'is_shop_owner',
-            'shop_name',
-            'shop_email:email',
-            'shop_phone_number',
             'created_at',
             'updated_at',
         ],

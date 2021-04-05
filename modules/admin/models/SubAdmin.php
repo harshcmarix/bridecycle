@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\models;
 
+use yii\behaviors\TimestampBehavior;
 use Yii;
 
 /**
@@ -38,6 +39,19 @@ use Yii;
  */
 class SubAdmin extends \yii\db\ActiveRecord
 {
+    const SUB_ADMIN_CREATE = 'create';
+    const SUB_ADMIN_UPDATE = 'update';
+    const USER_TYPE = [
+        '1' => 'Admin',
+        '2' => 'Sub-admin',
+        '3' => 'User',
+    ];
+
+    public $password;
+    /**
+     * @var string
+     */
+    public $confirm_password;
     /**
      * {@inheritdoc}
      */
@@ -45,7 +59,18 @@ class SubAdmin extends \yii\db\ActiveRecord
     {
         return 'users';
     }
-
+     /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -56,11 +81,13 @@ class SubAdmin extends \yii\db\ActiveRecord
             [['mobile', 'shop_phone_number'], 'integer'],
             [['weight', 'height'], 'number'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
-            [['profile_picture', 'password_hash', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
+            [['password', 'confirm_password'], 'required','on'=>self::SUB_ADMIN_CREATE],
+            [['profile_picture', 'password', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['email'], 'unique'],
+             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
         ];
     }
 
@@ -75,7 +102,7 @@ class SubAdmin extends \yii\db\ActiveRecord
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'email' => 'Email',
-            'password_hash' => 'Password Hash',
+            'password_hash' => 'Password',
             'temporary_password' => 'Temporary Password',
             'access_token' => 'Access Token',
             'access_token_expired_at' => 'Access Token Expired At',
@@ -89,6 +116,7 @@ class SubAdmin extends \yii\db\ActiveRecord
             'shop_name' => 'Shop Name',
             'shop_email' => 'Shop Email',
             'shop_phone_number' => 'Shop Phone Number',
+            'password' => 'Password',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
