@@ -22,7 +22,7 @@ use yii\helpers\ArrayHelper;
     <?php 
     if(!empty($model->image)){?>
     <div class="form-group image-class">
-            <?= Html::a('Delete image',['javascript:(0)'],['class' => 'pjax-delete-link','delete-url'=>'../product-category/picture?id='.$model->id]) ?>
+            <?= Html::a('Delete image',['javascript:(0)'],['class' => 'pjax-delete-link','delete-url'=>'../product-category/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
              <?= Html::img(Yii::getAlias('@productCategoryImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image']); ?>

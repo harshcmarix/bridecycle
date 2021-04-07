@@ -210,7 +210,7 @@ class ProductCategoryController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionPicture($id){
+    public function actionImageDelete($id){
         $model = $this->findModel($id);
         
          $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
