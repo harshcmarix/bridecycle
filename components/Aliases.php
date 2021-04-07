@@ -24,6 +24,9 @@ class Aliases extends Component
         Yii::setAlias('@profilePictureAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/profile_pictures');
         Yii::setAlias('@profilePictureRelativePath', Yii::getAlias('@uploadsRelativePath') . '/profile_pictures');
 
+        Yii::setAlias('@shopLogoAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/shop_logos');
+        Yii::setAlias('@shopLogoRelativePath', Yii::getAlias('@uploadsRelativePath') . '/shop_logos');
+
         Yii::setAlias('@profilePictureThumbAbsolutePath', Yii::getAlias('@profilePictureAbsolutePath') . '/thumbs');
         Yii::setAlias('@profilePictureThumbRelativePath', Yii::getAlias('@profilePictureRelativePath') . '/thumbs');
 

@@ -16,4 +16,7 @@ return [
     'profile_picture_thumb_width' => 200,
     'profile_picture_thumb_height' => 200,
     'profile_picture_thumb_quality' => 80,
+
+    // Send mail from email id
+    'adminEmail' => 'admin@yopmail.com'
 ];

@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\modules\admin\models\User;
 use Yii;
 use app\modules\admin\models\Users;
 use app\modules\admin\models\UsersSearch;
@@ -9,6 +10,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 
 /**
@@ -68,13 +70,37 @@ class UsersController extends Controller
     {
         $model = new Users();
         $model->scenario = Users::SCENARIO_CREATE_NORMAL_USER;
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return ActiveForm::validate($model);
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->save()) {
+        if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
+            $password = $model->password_hash;
+            $model->password_hash = password_hash($model->password_hash, PASSWORD_DEFAULT);
+
+            $model->user_type = Users::USER_TYPE_NORMAL_USER;
+
+            $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
+            if (isset($newShopLogoFile) && isset($model->is_shop_owner)) {
+                $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
+//                if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile)) {
+//                    unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
+//                }
+                $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
+                $model->shop_logo = $shop_logo_picture;
+            }
+
+            if ($model->save(false)) {
+                \Yii::$app->getSession()->setFlash('success', 'You have successfully created User!');
+
+                Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($model->email)
+                    ->setSubject('Thank you for Registration!')
+                    ->send();
+
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
@@ -96,14 +122,63 @@ class UsersController extends Controller
         $model = $this->findModel($id);
         $model->scenario = Users::SCENARIO_UPDATE_NORMAL_USER;
 
-//p(Yii::$app->request->post());
-        if (Yii::$app->request->isAjax) {
+        // Old file and Password
+        $oldProfileFile = $model->profile_picture;
+        $oldShopLogoFile = $model->shop_logo;
+        $oldpwd = $model->password_hash;
+        $model->password_hash = '';
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $postData = Yii::$app->request->post('Users');
+
+        if ($model->load(Yii::$app->request->post())) { // && $model->save()
+
+            // Update new password
+            $new_password = $model->password_hash;
+            if (empty($new_password)) {
+                $model->password_hash = $oldpwd;
+            } else {
+                $model->password_hash = Yii::$app->getSecurity()->generatePasswordHash($new_password);
+            }
+
+            $model->profile_picture = $oldProfileFile;
+
+            $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
+            if (isset($newShopLogoFile) && isset($postData['is_shop_owner'])) {
+                $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
+                if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile)) {
+                    unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
+                }
+                $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
+                $model->shop_logo = $shop_logo_picture;
+            } else if (isset($postData['is_shop_owner']) && empty($newShopLogoFile)) {
+                $model->shop_logo = $oldShopLogoFile;
+            } else {
+                $model->shop_logo = "";
+            }
+
+            if (isset($postData['is_shop_owner'])) {
+                $model->is_shop_owner = Users::IS_SHOP_OWNER_YES;
+                $model->shop_name = $postData['shop_name'];
+                $model->shop_email = $postData['shop_email'];
+                $model->shop_phone_number = $postData['shop_phone_number'];
+                $model->shop_address = $postData['shop_address'];
+            } else {
+                $model->is_shop_owner = Users::IS_SHOP_OWNER_NO;
+                $model->shop_name = $model->shop_email = $model->shop_phone_number = $model->shop_address = "";
+            }
+
+            $model->user_type = Users::USER_TYPE_NORMAL_USER;
+            $model->updated_at = date('Y-m-d H:i:s');
+
+            if ($model->save()) {
+                \Yii::$app->getSession()->setFlash('success', 'You have successfully updated User!');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -120,8 +195,23 @@ class UsersController extends Controller
      */
     public function actionDelete($id)
     {
+        $model = $this->findModel($id);
+
         $this->findModel($id)->delete();
 
+        if (!empty($model)) {
+            $oldProfileFile = $model->profile_picture;
+            $oldShopLogoFile = $model->shop_logo;
+
+            if (!empty($oldProfileFile) && file_exists(Yii::getAlias('@profilePictureRelativePath') . "/" . $oldProfileFile)) {
+                unlink(Yii::getAlias('@profilePictureRelativePath') . "/" . $oldProfileFile);
+            }
+
+            if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile)) {
+                unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
+            }
+        }
+        \Yii::$app->getSession()->setFlash('success', 'You have successfully deleted User!');
         return $this->redirect(['index']);
     }
 

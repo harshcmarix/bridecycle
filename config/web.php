@@ -61,6 +61,30 @@ $config = [
                 'encryption' => 'tls',
             ],
         ],
+//        'mailer' => [
+//            'class' => 'yii\swiftmailer\Mailer',
+//            'useFileTransport' => false,
+//            'transport' => [
+//                'class' => 'Swift_SmtpTransport',
+//                'host' => 'smtp.gmail.com',
+//                //'username' => 'smtp.ctpl@gmail.com',
+//                'username' => 'harshil.cmarix@gmail.com',
+//                //'password' => 'ctpl@dev',
+//                //'password' => 'awqowsukxhhsncep',
+//                'password' => 'harshil#8989#?',
+//
+//
+//                'port' => '587',
+//                'encryption' => 'tls',
+//                'streamOptions' => [
+//                    'ssl' => [
+//                        'allow_self_signed' => true,
+//                        'verify_peer' => false,
+//                        'verify_peer_name' => false,
+//                    ],
+//                ]
+//            ],
+//        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

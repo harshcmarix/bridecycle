@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class="col col-md-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col col-md-6">
             <?= $form->field($model, 'mobile')->textInput() ?>
@@ -29,10 +29,10 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class="col col-md-5">
-            <?= $form->field($model, 'password_hash')->passwordInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'password_hash')->passwordInput(['maxlength' => true, 'value' => ""]) ?>
         </div>
         <div class="col col-md-5">
-            <?= $form->field($model, 'confirm_password')->passwordInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'confirm_password')->passwordInput(['maxlength' => true, 'value' => ""]) ?>
         </div>
         <div class="col col-md-2">
             <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
@@ -49,12 +49,24 @@ use yii\widgets\ActiveForm;
                 <?= $form->field($model, 'shop_email')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
-        <?= $form->field($model, 'shop_logo')->textInput(['maxlength' => true]) ?>
+        <div class="row">
+            <div class="col col-md-6">
+                <?= $form->field($model, 'shop_logo')->fileInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'shop_phone_number')->textInput() ?>
-
-        <?= $form->field($model, 'shop_address')->textInput() ?>
-
+                <?php
+                if (!empty($model->shop_logo)) {
+                    $profile = Html::img(Yii::getAlias('@shopLogoAbsolutePath') . '/' . $model->shop_logo, ['alt' => 'shop logo', 'class' => 'your_class', 'height' => '100px', 'width' => '100px']);
+                    echo $profile;
+                }
+                ?>
+            </div>
+            <div class="col col-md-6">
+                <?= $form->field($model, 'shop_phone_number')->textInput() ?>
+            </div>
+            <div class="col col-md-12">
+                <?= $form->field($model, 'shop_address')->textInput() ?>
+            </div>
+        </div>
     </div>
 
     <div class="form-group">
@@ -66,6 +78,16 @@ use yii\widgets\ActiveForm;
 <script type="text/javascript">
     $(document).ready(function () {
         $('#shop-details').hide();
+
+        "<?php if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->is_shop_owner)) { ?>"
+        $('#shop-details').show();
+        "<?php } ?>"
+
+        if ( $('#users-is_shop_owner').prop('checked') == true) {
+            $('#shop-details').show();
+        } else {
+            $('#shop-details').hide();
+        }
 
         $('#users-is_shop_owner').change(function () {
             if ($(this).prop('checked') == true) {
