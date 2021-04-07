@@ -10,7 +10,7 @@ use app\modules\admin\models\{
 use app\modules\admin\models\search\SubAdminSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * SubAdminController implements the CRUD actions for SubAdmin model.
@@ -23,10 +23,15 @@ class SubAdminController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+           'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'update','view','delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'create', 'update','view','delete'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
