@@ -58,6 +58,16 @@ class Users extends \yii\db\ActiveRecord
         self::IS_SHOP_OWNER_NO => 'No'
     ];
 
+    /**
+     * Users type
+     *
+     * @var
+     */
+
+    const USER_TYPE_ADMIN = '1';
+    const USER_TYPE_SUB_ADMIN = '2';
+    const USER_TYPE_NORMAL_USER = '3';
+
     public $confirm_password;
 
     /**
@@ -78,12 +88,14 @@ class Users extends \yii\db\ActiveRecord
             [['email'], 'string', 'max' => 60],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['email'], 'unique'],
-            ['confirm_password', 'compare', 'skipOnEmpty' => false, 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match"],
+            [['email', 'shop_email'], 'email'],
+            //['confirm_password', 'compare', 'skipOnEmpty' => false, 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match"],
+            ['confirm_password', 'compare', 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match",],
             [['confirm_password'], 'safe'],
             //[['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address'], 'required',
             [['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address'], 'required',
                 'when' => function ($model) {
-                    return ($model->is_shop_owner == "1");
+                    //return ($model->is_shop_owner == "1");
                 },
                 'whenClient' => "function (attribute, value) {
                     if ($('#users-is_shop_owner').prop('checked') == true) {            
