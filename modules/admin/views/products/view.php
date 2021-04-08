@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\admin\models\Users */
+/* @var $model app\modules\admin\models\Products */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="users-view">
+<div class="products-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,24 +30,26 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'profile_picture',
-            'first_name',
-            'last_name',
-            'email:email',
-            'password_hash',
-            'temporary_password',
-            'access_token',
-            'access_token_expired_at',
-            'password_reset_token',
-            'mobile',
-            'weight',
+            'name',
+            'number',
+            'category_id',
+            'sub_category_id',
+            'price',
+            'option_size',
+            'option_price',
+            'option_conditions',
+            'option_show_only',
+            'description:ntext',
+            'available_quantity',
+            'is_top_selling',
+            'is_top_trending',
+            'brand_id',
+            'gender',
+            'is_cleaned',
             'height',
-            'personal_information:ntext',
-            'user_type',
-            'is_shop_owner',
-            'shop_name',
-            'shop_email:email',
-            'shop_phone_number',
+            'weight',
+            'width',
+            'receipt',
             'created_at',
             'updated_at',
         ],

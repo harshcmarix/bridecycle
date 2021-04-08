@@ -83,20 +83,15 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'attribute' => 'is_shop_owner',
-            'filter' => Select2::widget([
-                'model' => $searchModel,
-                'attribute' => 'is_shop_owner',
-                'value' => $searchModel->is_shop_owner,
-                'data' => $searchModel->isShopOwner,
-                'size' => Select2::MEDIUM,
-                'options' => [
-                    'placeholder' => '',
-                ],
+            'filter' => $searchModel->isShopOwner,
+            'filterType' => GridView::FILTER_SELECT2,
+            'filterWidgetOptions' => [
+                'options' => ['prompt' => 'Select'],
                 'pluginOptions' => [
-                    'allowClear' => true
-                ]
-            ]),
-            'content' => function ($data) {
+                    'allowClear' => true,
+                ],
+            ],
+            'value' => function ($data) {
                 return isset($data->isShopOwner[$data['is_shop_owner']]) ? $data->isShopOwner[$data['is_shop_owner']] : '-';
             },
             'header' => '',
