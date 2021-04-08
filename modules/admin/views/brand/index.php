@@ -66,22 +66,15 @@ $gridColumns = [
         return 'no';
     },
     'filter'=>Brand::IS_TOP_BRAND_OR_NOT,
-    // 'filter' => Select2::widget([
-    //             'model' => $searchModel,
-    //             'attribute' => 'is_top_brand',
-    //             // 'value' => $searchModel->is_top_brand,
-    //             'data' => Brand::IS_TOP_BRAND_OR_NOT,
-    //             'size' => Select2::MEDIUM,
-    //             'options' => [
-    //                 'placeholder' => 'select',
-    //             ],
-    //             'pluginOptions' => [
-    //                 'allowClear' => true
-    //             ]
-    //         ]),
-            // 'content' => function ($data) {
-            //     return isset($data->isShopOwner[$data['is_shop_owner']]) ? $data->isShopOwner[$data['is_shop_owner']] : '-';
-            // },
+    'filterType' => GridView::FILTER_SELECT2,
+    'filterWidgetOptions' => [
+        'options' => ['prompt' => ''],
+        'pluginOptions' => [
+            'allowClear' => true,
+            // 'width'=>'20px'
+        ],
+    ],
+   
     'header'=>'',
     'headerOptions'=>['class'=>'kartik-sheet-style']
 ],

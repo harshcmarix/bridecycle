@@ -64,8 +64,17 @@ $gridColumns = [
         }
             return null;
     },
-    'header'=>'',
+    
     'filter'=>ArrayHelper::map($parent_category,'id','name'),
+    'filterType' => GridView::FILTER_SELECT2,
+    'filterWidgetOptions' => [
+        'options' => ['prompt' => ''],
+        'pluginOptions' => [
+            'allowClear' => true,
+            // 'width'=>'20px'
+        ],
+    ],
+    'header'=>'',
     'headerOptions'=>['class'=>'kartik-sheet-style']
 ],
 [
