@@ -56,9 +56,14 @@ class ProductCategory extends \yii\db\ActiveRecord
             [['image'], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required','on'=>self::SCENARIO_PRODUCT_CATEGORY_CREATE],
-            [['image'], 'required','when' => function($model) {
-                return $model->is_image_empty == '1';
-            }],
+            [['image'], 'required', 'when' => function ($model) {
+                //return $model->is_image_empty == '1';
+            },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#productcategory-is_image_empty').val() == 1) {            
+                                    return $('#productcategory-image').val() == '';                                    
+                                    }
+                                }",],
             [['parent_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['parent_category_id' => 'id']],
         ];
     }

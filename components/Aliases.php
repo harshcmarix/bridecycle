@@ -29,12 +29,17 @@ class Aliases extends Component
 
         Yii::setAlias('@profilePictureThumbAbsolutePath', Yii::getAlias('@profilePictureAbsolutePath') . '/thumbs');
         Yii::setAlias('@profilePictureThumbRelativePath', Yii::getAlias('@profilePictureRelativePath') . '/thumbs');
-        // Product Categories
+        // Product Categories Image
         Yii::setAlias('@productCategoryImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/product_images');
         Yii::setAlias('@productCategoryImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/product_images');
 
         Yii::setAlias('@productCategoryImageThumbAbsolutePath', Yii::getAlias('@productCategoryImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@productCategoryImageThumbRelativePath', Yii::getAlias('@productCategoryImageRelativePath') . '/thumbs');
+         // Brand Image
+        Yii::setAlias('@brandImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/brand_images');
+        Yii::setAlias('@brandImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/brand_images');
 
+        Yii::setAlias('@brandImageThumbAbsolutePath', Yii::getAlias('@brandImageAbsolutePath') . '/thumbs');
+        Yii::setAlias('@brandImageThumbRelativePath', Yii::getAlias('@brandImageRelativePath') . '/thumbs');
     }
 }

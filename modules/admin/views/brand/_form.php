@@ -2,15 +2,13 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use yii\helpers\ArrayHelper;
-use kartik\select2\Select2;
-
+use app\models\Brand;
 /* @var $this yii\web\View */
-/* @var $model app\models\ProductCategory */
+/* @var $model app\models\Brand */
 /* @var $form yii\widgets\ActiveForm */
-// p($parent_category);
 ?>
-<div class="product-category-form">
+
+<div class="brand-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
@@ -18,29 +16,19 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
 
-    <!-- $form->field($model, 'parent_category_id')->dropDownList(ArrayHelper::map($parent_category,'id','name'),['prompt'=>'select parent category']) -->
+    <?= $form->field($model, 'is_top_brand')->checkbox(['label' => 'Is Top Brand', 'selected' => false])->label(false) ?>
 
-   <?= $form->field($model, 'parent_category_id')->widget(Select2::classname(), [
-    'data' => ArrayHelper::map($parent_category,'id','name'),
-    'size' => Select2::MEDIUM,
-     'options' => [
-                    'placeholder' => 'Select Parent Category',
-                ],
-    'pluginOptions' => [
-        'allowClear' => true
-    ],
-]);?>
-    
-    <?= $form->field($model, 'is_image_empty')->hiddenInput(['value' => 0])->label(false) ?>
-    
+    <?= $form->field($model, 'is_brand_image_empty')->hiddenInput(['value' => 0])->label(false) ?>
     <?php 
     if(!empty($model->image)){?>
+
     <div class="form-group image-class">
-            <?= Html::a('Delete image',['javascript:(0)'],['class' => 'pjax-delete-link','delete-url'=>'../product-category/image-delete?id='.$model->id]) ?>
+            <?= Html::a('',['javascript:(0)'],['class' => 'glyphicon glyphicon-trash pjax-delete-link','delete-url'=>'../brand/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img(Yii::getAlias('@productCategoryImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
+             <?= Html::img(Yii::getAlias('@brandImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
     </div>
+
     <?php } ?>
 
     <div class="form-group">
@@ -50,8 +38,8 @@ use kartik\select2\Select2;
     <?php ActiveForm::end(); ?>
 
 </div>
-<?php
-$this->registerJs("
+<script>
+var image_empty = <?php echo Brand::BRAND_IMAGE_EMPTY?>;
         $('.pjax-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
@@ -66,9 +54,8 @@ $this->registerJs("
                     }
                 }).done(function(data) {
                    $('.image-class').hide();
-                    $('#productcategory-is_image_empty').val('1');
+                   $('#brand-is_brand_image_empty').val(image_empty);
                 });
             }
         });
-");
-?>
+</script>

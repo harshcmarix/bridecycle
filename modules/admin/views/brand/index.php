@@ -4,15 +4,16 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\Modal;
 use kartik\editable\Editable;
-use app\models\ProductCategory;
+use app\models\Brand;
+use kartik\select2\Select2;
 ?>
 
 <div class="users-index table-responsive">
 <?php
 $gridColumns = [
-[
-'class' => 'kartik\grid\SerialColumn',
-],
+    [
+    'class' => 'kartik\grid\SerialColumn',
+    ],
 // [
 //     'attribute' => 'id',
 //     'value' => function ($model) {
@@ -28,22 +29,22 @@ $gridColumns = [
 'attribute' => 'image',
 'value' => function ($model) {
     $image_path = "";
-    if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageRelativePath') . '/' . $model->image)) {
-        $image_path = Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+    if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageRelativePath') . '/' . $model->image)) {
+        $image_path = Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
     } else {
         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
     }
     Modal::begin([
-        'id' => 'productcategorymodal_' . $model->id,
-        'header' => '<h3>Category Image</h3>',
+        'id' => 'brandmodal_' . $model->id,
+        'header' => '<h3>Brand Image</h3>',
         'size' => Modal::SIZE_DEFAULT
     ]);
 
     echo Html::img($image_path, ['width' => '570']);
 
     Modal::end();
-    $productcategorymodal = "productcategorymodal('" . $model->id . "');";
-    return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $productcategorymodal, 'height' => '100px', 'width' => '100px']);
+    $brandmodal = "brandmodal('" . $model->id . "');";
+    return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $brandmodal, 'height' => '100px', 'width' => '100px']);
 },
 'header' => '',
 'headerOptions' => ['class' => 'kartik-sheet-style']
@@ -57,15 +58,31 @@ $gridColumns = [
     'headerOptions'=>['class'=>'kartik-sheet-style']
 ],
 [
- 'attribute' => 'parent_category_id',
+    'attribute' => 'is_top_brand',
     'value' => function ($model) {
-        if($model->parent instanceof ProductCategory){
-            return $model->parent->name;
+        if(!empty($model->is_top_brand) && $model->is_top_brand == '1'){
+                return 'yes';
         }
-            return null;
+        return 'no';
     },
+    'filter'=>Brand::IS_TOP_BRAND_OR_NOT,
+    // 'filter' => Select2::widget([
+    //             'model' => $searchModel,
+    //             'attribute' => 'is_top_brand',
+    //             // 'value' => $searchModel->is_top_brand,
+    //             'data' => Brand::IS_TOP_BRAND_OR_NOT,
+    //             'size' => Select2::MEDIUM,
+    //             'options' => [
+    //                 'placeholder' => 'select',
+    //             ],
+    //             'pluginOptions' => [
+    //                 'allowClear' => true
+    //             ]
+    //         ]),
+            // 'content' => function ($data) {
+            //     return isset($data->isShopOwner[$data['is_shop_owner']]) ? $data->isShopOwner[$data['is_shop_owner']] : '-';
+            // },
     'header'=>'',
-    'filter'=>ArrayHelper::map($parent_category,'id','name'),
     'headerOptions'=>['class'=>'kartik-sheet-style']
 ],
 [
@@ -95,10 +112,10 @@ echo GridView::widget([
     'toolbar' =>  [
         [
             'content' =>
-                Html::button('Add Category', [
+                Html::button('Add Brand', [
                     'class' => 'btn btn-success',
-                    'title' => \Yii::t('kvgrid', 'Add Category'),
-                    'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/product-category/create']) . "';",
+                    'title' => \Yii::t('kvgrid', 'Add Brand'),
+                    'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/create']) . "';",
                 ]), 
             'options' => ['class' => 'btn-group mr-2']
         ],
@@ -119,20 +136,20 @@ echo GridView::widget([
     // 'showPageSummary' => $pageSummary,
     'panel' => [
         'type' => GridView::TYPE_PRIMARY,
-        'heading' => 'Product Categories',
+        'heading' => 'Brands',
     ],
     'persistResize' => false,
     'toggleDataOptions' => ['minCount' => 10],
     //'exportConfig' => $exportConfig,
-    'itemLabelSingle' => 'Product Category',
-    'itemLabelPlural' => 'Product Categories'
+    'itemLabelSingle' => 'Brand',
+    'itemLabelPlural' => 'Brands'
 ]);
 
 
 ?>
 </div>
 <script type="text/javascript">
-    function productcategorymodal(id) {
-        $('#productcategorymodal_' + id).modal('show');
+    function brandmodal(id) {
+        $('#brandmodal_' + id).modal('show');
     }
 </script>

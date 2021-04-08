@@ -7,13 +7,16 @@ use kartik\editable\Editable;
 
 $gridColumns = [
 [
-    'attribute' => 'id',
-    'value' => function ($model) {
-        return $model->id;
-    },
-    'header'=>'',
-    'headerOptions'=>['class'=>'kartik-sheet-style']
+'class' => 'kartik\grid\SerialColumn',
 ],
+// [
+//     'attribute' => 'id',
+//     'value' => function ($model) {
+//         return $model->id;
+//     },
+//     'header'=>'',
+//     'headerOptions'=>['class'=>'kartik-sheet-style']
+// ],
 [
  'attribute' => 'first_name',
     'value' => function ($model) {
