@@ -21,7 +21,7 @@ use Yii;
 class ProductCategory extends \yii\db\ActiveRecord
 {
     const SCENARIO_PRODUCT_CATEGORY_CREATE = 'create';
-    
+    public $is_image_empty;
     /**
      * {@inheritdoc}
      */
@@ -56,6 +56,9 @@ class ProductCategory extends \yii\db\ActiveRecord
             [['image'], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required','on'=>self::SCENARIO_PRODUCT_CATEGORY_CREATE],
+            [['image'], 'required','when' => function($model) {
+                return $model->is_image_empty == '1';
+            }],
             [['parent_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['parent_category_id' => 'id']],
         ];
     }
