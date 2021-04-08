@@ -77,14 +77,14 @@ echo GridView::widget([
                 ]), 
             'options' => ['class' => 'btn-group mr-2']
         ],
-        '{export}',
+//        '{export}',
         '{toggleData}',
     ],
     'toggleDataContainer' => ['class' => 'btn-group mr-2'],
     // set export properties
-    'export' => [
-        'fontAwesome' => true
-    ],
+//    'export' => [
+//        'fontAwesome' => true
+//    ],
     // parameters from the demo form
     'bordered' => true,
     'striped' => true,

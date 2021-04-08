@@ -77,6 +77,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return [
             [['first_name', 'last_name', 'email', 'mobile'], 'required'],
+
             [['first_name', 'last_name', 'email', 'mobile', 'password_hash', 'confirm_password'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
             [['first_name', 'last_name', 'email', 'mobile'], 'required', 'on' => [self::SCENARIO_UPDATE_NORMAL_USER]],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
@@ -87,8 +88,8 @@ class Users extends \yii\db\ActiveRecord
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
-            [['email'], 'unique'],
             [['email', 'shop_email'], 'email'],
+            [['email'], 'unique'],
             //['confirm_password', 'compare', 'skipOnEmpty' => false, 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match"],
             ['confirm_password', 'compare', 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match",],
             [['confirm_password'], 'safe'],

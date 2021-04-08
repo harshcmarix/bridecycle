@@ -77,6 +77,7 @@ class UsersController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
+
             $password = $model->password_hash;
             $model->password_hash = password_hash($model->password_hash, PASSWORD_DEFAULT);
 

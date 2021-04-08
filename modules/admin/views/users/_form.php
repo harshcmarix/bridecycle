@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class="col col-md-6">
-            <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col col-md-6">
             <?= $form->field($model, 'mobile')->textInput() ?>
@@ -83,7 +83,7 @@ use yii\widgets\ActiveForm;
         $('#shop-details').show();
         "<?php } ?>"
 
-        if ( $('#users-is_shop_owner').prop('checked') == true) {
+        if ($('#users-is_shop_owner').prop('checked') == true) {
             $('#shop-details').show();
         } else {
             $('#shop-details').hide();
