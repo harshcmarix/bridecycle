@@ -77,6 +77,7 @@ class SubAdmin extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['first_name', 'last_name', 'email'], 'required'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
             [['weight', 'height'], 'number'],
