@@ -2,18 +2,21 @@
 
 namespace app\modules\admin\models\search;
 
+use app\modules\admin\models\{
+    User,
+    SubAdmin
+};
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\admin\models\SubAdmin;
-use app\modules\admin\models\User;
 
 /**
- * SubAdminSearch represents the model behind the search form of `app\modules\admin\models\SubAdmin`.
+ * Class SubAdminSearch
+ * @package app\modules\admin\models\search
  */
 class SubAdminSearch extends SubAdmin
 {
     /**
-     * {@inheritdoc}
+     * @return array[]
      */
     public function rules()
     {
@@ -25,7 +28,7 @@ class SubAdminSearch extends SubAdmin
     }
 
     /**
-     * {@inheritdoc}
+     * @return array|array[]
      */
     public function scenarios()
     {
@@ -34,17 +37,12 @@ class SubAdminSearch extends SubAdmin
     }
 
     /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
+     * @param $params
      * @return ActiveDataProvider
      */
     public function search($params)
     {
-        $query = SubAdmin::find()->where(['user_type'=>User::USER_TYPE_SUB_ADMIN]);
-
-        // add conditions that should always apply here
+        $query = SubAdmin::find()->where(['user_type' => User::USER_TYPE_SUB_ADMIN]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -66,8 +64,6 @@ class SubAdminSearch extends SubAdmin
             'weight' => $this->weight,
             'height' => $this->height,
             'shop_phone_number' => $this->shop_phone_number,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'profile_picture', $this->profile_picture])

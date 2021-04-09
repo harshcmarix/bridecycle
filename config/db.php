@@ -11,9 +11,9 @@ $config = [
 ];
 
 if (YII_ENV == 'dev') {
-    $config['dsn'] = 'mysql:host=localhost;dbname=bridecycle';
-    $config['username'] = 'root';
-    $config['password'] = 'admin';
+    $config['dsn'] = 'mysql:host=192.168.1.189;dbname=bridecycle';
+    $config['username'] = 'bridecycle';
+    $config['password'] = 'bridecycle@20221#!!';
 } else if (YII_ENV == 'test') {
     $config['dsn'] = 'mysql:host=localhost;dbname=bridecycle';
     $config['username'] = 'root';

@@ -7,7 +7,7 @@ return [
     'token_expire_time' => 86400,
     'token_segment' => 1,
     'default_page_size' => 10,
-    // For reset password expire token admin panel
+    // Used in reset password expire token
     'password_reset_token_expire_time' => 3600,
     'support_email' => 'robot@devreadwrite.com',
     /**

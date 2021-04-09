@@ -7,9 +7,9 @@ if (empty(getenv('ENVIRONMENT'))) {
 defined('YII_ENV') or define('YII_ENV', getenv('ENVIRONMENT'));
 
 if (YII_ENV == 'dev') {
-    header("location: /bridecycle/web/");
+    header("location: /bridecycle/web/admin");
 } else if (YII_ENV == 'prod') {
-    header("location: /bridecycle/web/");
+    header("location: /bridecycle/web/admin");
 } else {
-    header("location: /bridecycle/web/");
+    header("location: /bridecycle/web/admin");
 }

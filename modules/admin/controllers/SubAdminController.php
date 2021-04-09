@@ -7,35 +7,38 @@ use app\modules\admin\models\{
     SubAdmin,
     User
 };
-use app\modules\admin\models\search\SubAdminSearch;
+use kartik\growl\Growl;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
+use yii\web\NotFoundHttpException;
+use app\modules\admin\models\search\SubAdminSearch;
 
 /**
- * SubAdminController implements the CRUD actions for SubAdmin model.
+ * Class SubAdminController
+ * @package app\modules\admin\controllers
  */
 class SubAdminController extends Controller
 {
     /**
-     * {@inheritdoc}
+     * @return array[]
      */
     public function behaviors()
     {
         return [
-           'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update','view','delete'],
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'update', 'view', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update','view','delete'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
                         'roles' => ['@'],
                     ],
                 ],
             ],
         ];
     }
+
     /**
      * Lists all SubAdmin models.
      * @return mixed
@@ -60,7 +63,7 @@ class SubAdminController extends Controller
     public function actionView($id)
     {
         $Admin_model = $this->findModel($id);
-        if(!empty($Admin_model->user_type)){
+        if (!empty($Admin_model->user_type)) {
             $get_user_type = SubAdmin::USER_TYPE;
             $Admin_model->user_type = $get_user_type[$Admin_model->user_type];
         }
@@ -72,18 +75,23 @@ class SubAdminController extends Controller
     /**
      * Creates a new SubAdmin model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     * @return string|\yii\web\Response
+     * @throws \yii\base\Exception
      */
     public function actionCreate()
     {
         $model = new SubAdmin();
-        $model->scenario = SubAdmin::SUB_ADMIN_CREATE;
+        $model->scenario = SubAdmin::SCENARIO_CREATE;
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->user_type = (string)User::USER_TYPE_SUB_ADMIN;
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
-            
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Sub admin created successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating sub admin.");
+            }
+
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -103,7 +111,12 @@ class SubAdminController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Sub admin updated successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating sub admin.");
+            }
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -114,13 +127,20 @@ class SubAdminController extends Controller
     /**
      * Deletes an existing SubAdmin model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if ($model->delete()) {
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Sub admin deleted successfully.");
+        } else {
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting sub admin.");
+        }
 
         return $this->redirect(['index']);
     }

@@ -6,6 +6,7 @@ use yii\bootstrap\{
 };
 use yii\helpers\Html;
 use app\widgets\Alert;
+use \kartik\growl\Growl;
 use yii\widgets\Breadcrumbs;
 use app\modules\admin\assets\AdminAsset;
 
@@ -59,7 +60,20 @@ AdminAsset::register($this);
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
-        <?= Alert::widget() ?>
+        <?php
+        $flash_messages = Yii::$app->session->getAllFlashes();
+        if (!empty($flash_messages)) {
+            foreach ($flash_messages as $flash_message_type => $message) {
+                echo Growl::widget([
+                    'type' => $flash_message_type,
+                    'icon' => 'glyphicon glyphicon-ok-sign',
+                    'title' => ($flash_message_type == 'danger') ? ucfirst($flash_message_type = "error") : ucfirst($flash_message_type),
+                    'showSeparator' => true,
+                    'body' => $message
+                ]);
+            }
+        }
+        ?>
         <?= $content ?>
     </div>
 </div>

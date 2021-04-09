@@ -2,11 +2,12 @@
 
 namespace app\modules\admin\models;
 
-use yii\behaviors\TimestampBehavior;
 use Yii;
+use \yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
 
 /**
- * This is the model class for table "SubAdmin".
+ * This is the model class for table "users".
  *
  * @property int $id
  * @property string|null $profile_picture
@@ -37,29 +38,50 @@ use Yii;
  * @property UserSocialIdentities[] $userSocialIdentities
  * @property UserSubscriptions[] $userSubscriptions
  */
-class SubAdmin extends \yii\db\ActiveRecord
+class SubAdmin extends ActiveRecord
 {
-    const SUB_ADMIN_CREATE = 'create';
-    const SUB_ADMIN_UPDATE = 'update';
+    /**
+     * Used for create
+     */
+    const SCENARIO_CREATE = 'create';
+
+    /**
+     * Identify user type
+     */
+    const USER_TYPE_ADMIN = '1';
+    const USER_TYPE_SUB_ADMIN = '2';
+    const USER_TYPE_NORMAL = '3';
+
+    /**
+     * Used for user type dropdown
+     */
     const USER_TYPE = [
-        '1' => 'Admin',
-        '2' => 'Sub-admin',
-        '3' => 'User',
+        self::USER_TYPE_ADMIN => 'Admin',
+        self::USER_TYPE_SUB_ADMIN => 'Sub-admin',
+        self::USER_TYPE_NORMAL => 'User',
     ];
 
-    public $password;
     /**
+     * Used in create user
+     * @var string
+     */
+    public $password;
+
+    /**
+     * Used in create user
      * @var string
      */
     public $confirm_password;
+
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public static function tableName()
     {
         return 'users';
     }
-     /**
+
+    /**
      * @return array[]
      */
     public function behaviors()
@@ -71,29 +93,30 @@ class SubAdmin extends \yii\db\ActiveRecord
             ],
         ];
     }
+
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public function rules()
     {
         return [
             [['first_name', 'last_name', 'email'], 'required'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
-            [['mobile', 'shop_phone_number'], 'integer'],
-            [['weight', 'height'], 'number'],
+            [['shop_phone_number'], 'integer'],
+            [['mobile', 'weight', 'height'], 'number'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
-            [['password', 'confirm_password'], 'required','on'=>self::SUB_ADMIN_CREATE],
+            [['password', 'confirm_password'], 'required', 'on' => self::SCENARIO_CREATE],
             [['profile_picture', 'password', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
-            [['email'], 'unique'],
-             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
+            [['email'], 'unique', 'message' => 'Email already exist.'],
+            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function attributeLabels()
     {
@@ -124,8 +147,6 @@ class SubAdmin extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[FavouriteProducts]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getFavouriteProducts()
@@ -134,8 +155,6 @@ class SubAdmin extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Orders]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getOrders()
@@ -144,8 +163,6 @@ class SubAdmin extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[ProductRatings]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getProductRatings()
@@ -154,8 +171,6 @@ class SubAdmin extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[UserAddresses]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getUserAddresses()
@@ -164,8 +179,6 @@ class SubAdmin extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[UserSocialIdentities]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getUserSocialIdentities()
@@ -174,8 +187,6 @@ class SubAdmin extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[UserSubscriptions]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getUserSubscriptions()
