@@ -1,6 +1,6 @@
 <?php
 
-use kartik\grid\GridView;
+use \app\modules\admin\widgets\GridView;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\editable\Editable;
@@ -10,76 +10,106 @@ use app\models\Subscription;
 /* @var $searchModel app\models\SubscriptionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+$this->title = 'Subscription';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="subscription-index">
+<h1><?= Html::encode($this->title) ?></h1>
 <?php
 
 $gridColumns = [
-[
-'class' => 'kartik\grid\SerialColumn',
-],
-[
- 'attribute' => 'name',
-    'value' => function ($model) {
-        return $model->name;
-    },
-    'header'=>'',
-    'headerOptions'=>['class'=>'kartik-sheet-style']
-],
-[
- 'attribute' => 'amount',
-    'value' => function ($model) {
-        return $model->amount;
-    },
-    'header'=>'',
-    'headerOptions'=>['class'=>'kartik-sheet-style']
-],
-[
- 'attribute' => 'status',
-    'value' => function ($model) {
-            return Subscription::SUBSCRIPTION_STATUS_ARRAY[$model->status];
-    },
-    
-    'filter'=>Subscription::SUBSCRIPTION_STATUS_ARRAY,
-    'filterType' => GridView::FILTER_SELECT2,
-    'filterWidgetOptions' => [
-        'options' => ['prompt' => ''],
-        'pluginOptions' => [
-            'allowClear' => true,
-            // 'width'=>'20px'
-        ],
-    ],
-    'header'=>'',
-    'headerOptions'=>['class'=>'kartik-sheet-style']
-],
-[
- 'attribute' => 'created_at',
-    'value' => function ($model) {
-        return $model->created_at;
-    },
-    'filter'=>false,
-    'header'=>'',
-    'headerOptions'=>['class'=>'kartik-sheet-style']
-],
-[
-    'class' => 'kartik\grid\ActionColumn',
-],
+
 
 ];
 echo GridView::widget([
     'id' => 'kv-grid-demo',
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
-    'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
-    'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-    'filterRowOptions' => ['class' => 'kartik-sheet-style'],
+    'columns' => [
+         [
+        'attribute' => 'id',
+        'value' => function ($model) {
+            $id = '';
+             if($model instanceof Subscription){
+                 $id = $model->id;
+             }
+             return $id;
+        },
+        'width' => '8%',
+        'header'=>'',
+        'headerOptions'=>['class'=>'kartik-sheet-style']
+        ],
+        [
+        'attribute' => 'name',
+            'value' => function ($model) {
+                $name = '';
+                if($model instanceof Subscription){
+                   $name = $model->name;
+                }
+                return $name;
+            },
+            'header'=>'',
+            'headerOptions'=>['class'=>'kartik-sheet-style']
+        ],
+        [
+        'attribute' => 'amount',
+            'value' => function ($model) {
+                $amount = '';
+                 if($model instanceof Subscription){
+                    $amount = $model->amount;
+                 }
+                 return $amount;
+            },
+            'header'=>'',
+            'headerOptions'=>['class'=>'kartik-sheet-style']
+        ],
+        [
+        'attribute' => 'status',
+            'value' => function ($model) {
+                $status = '';
+                 if($model instanceof Subscription){
+                     $status = Subscription::SUBSCRIPTION_STATUS_ARRAY[$model->status];
+                 }
+                 return $status;
+            },
+            
+            'filter'=>Subscription::SUBSCRIPTION_STATUS_ARRAY,
+            'filterType' => GridView::FILTER_SELECT2,
+            'filterWidgetOptions' => [
+                'options' => ['prompt' => ''],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    // 'width'=>'20px'
+                ],
+            ],
+            'header'=>'',
+            'headerOptions'=>['class'=>'kartik-sheet-style']
+        ],
+        [
+        'attribute' => 'created_at',
+            'value' => function ($model) {
+                $created_at = '';
+                if($model instanceof Subscription){
+                    $created_at = $model->created_at;
+                }
+                return $created_at;
+            },
+            'filter'=>false,
+            'header'=>'',
+            'headerOptions'=>['class'=>'kartik-sheet-style']
+        ],
+        [
+            'class' => 'kartik\grid\ActionColumn',
+            'width' => '12%'
+        ],
+    ],
+   
     'pjax' => true, // pjax is set to always true for this demo
     // set your toolbar
     'toolbar' =>  [
         [
             'content' =>
-                Html::button('Add Subscription', [
+                Html::button('<i class="fa fa-plus-circle"> Add Subscription</i>', [
                     'class' => 'btn btn-success',
                     'title' => \Yii::t('kvgrid', 'Add Subscription'),
                     'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/subscription/create']) . "';",

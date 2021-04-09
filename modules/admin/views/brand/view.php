@@ -1,8 +1,12 @@
 <?php
 
-use yii\helpers\Html;
+use yii\helpers\{
+    Html,
+    Url
+};
 use yii\widgets\DetailView;
 use yii\bootstrap\Modal;
+use app\models\Brand;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Brand */
@@ -15,23 +19,34 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="brand-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
+    
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'name',                 
+             [
+                'attribute' => 'id',
+                'value' => function ($model) {
+                    $id = '';
+                    if($model instanceof Brand){
+                        $id = $model->id;
+                    }
+                    return $id;
+                },
+                'header'=>'',
+                'headerOptions'=>['class'=>'kartik-sheet-style']
+            ],   
+            [
+                'attribute' => 'name',
+                'value' => function ($model) {
+                    $name = '';
+                    if($model instanceof Brand){
+                        $name = $model->name;
+                    }
+                    return $name;
+                },
+                'header'=>'',
+                'headerOptions'=>['class'=>'kartik-sheet-style']
+            ],                
             [
                 'format' => ['raw'],
                 'attribute' => 'image',
@@ -60,18 +75,44 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'is_top_brand',
                 'value' => function ($model) {
-                    if(!empty($model->is_top_brand) && $model->is_top_brand == '1'){
-                            return 'yes';
+                    $is_top_brand = '';
+                    if($model instanceof Brand){
+                        $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
                     }
-                    return 'no';
+                    return $is_top_brand;
                 },
                 'header'=>'',
                 'headerOptions'=>['class'=>'kartik-sheet-style']
             ],
-                'created_at',
-                'updated_at',
+            [
+                'attribute' => 'created_at',
+                'value' => function ($model) {
+                    $created_at = '';
+                    if($model instanceof Brand){
+                        $created_at = $model->created_at;
+                    }
+                    return $created_at;
+                },
+                'header'=>'',
+                'headerOptions'=>['class'=>'kartik-sheet-style']
+            ],
+            [
+                'attribute' => 'updated_at',
+                'value' => function ($model) {
+                    $updated_at = '';
+                    if($model instanceof Brand){
+                        $updated_at = $model->updated_at;
+                    }
+                    return $updated_at;
+                },
+                'header'=>'',
+                'headerOptions'=>['class'=>'kartik-sheet-style']
+            ],
                         ],
     ]) ?>
+    <p>
+       <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+    </p>
 
 </div>
 <script type="text/javascript">

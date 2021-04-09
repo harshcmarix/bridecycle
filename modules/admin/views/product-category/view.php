@@ -1,6 +1,9 @@
 <?php
 
-use yii\helpers\Html;
+use yii\helpers\{
+    Html,
+    Url
+};
 use yii\widgets\DetailView;
 use app\models\ProductCategory;
 use yii\bootstrap\Modal;
@@ -16,22 +19,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'name',
+            [
+            'attribute' => 'id',
+            'value' => function ($model) {
+                $id = '';
+                if($model instanceof ProductCategory)
+                {
+                   $id = $model->id;
+                }
+                return $id;
+             },
+            ],
             [
             'format' => ['raw'],
             'attribute' => 'image',
@@ -57,20 +58,53 @@ $this->params['breadcrumbs'][] = $this->title;
             'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
-
-            [
-                'attribute'=>'product_category_id',
+           [
+            'attribute' => 'name',
                 'value' => function ($model) {
-                    if($model->parent instanceof ProductCategory){
-                        return $model->parent->name;
+                    $name = '';
+                    if($model instanceof ProductCategory){
+                        $name = $model->name;
                     }
-                        return null;
+                    return $name;
                 },
             ],
-            'created_at',
-            'updated_at',
+            [
+                'attribute'=>'product_category_id',
+                'label'=>'Parent Category',
+                 'value' => function ($model) {
+                    $parent_name = '';
+                    if($model->parent instanceof ProductCategory){
+                        $parent_name = $model->parent->name;
+                    }
+                    return $parent_name;
+                },
+            ],
+            [
+            'attribute' => 'created_at',
+                'value' => function ($model) {
+                    $created_at = '';
+                     if($model instanceof ProductCategory){
+                        $created_at = $model->created_at;
+                     }
+                     return $created_at;
+                },
+               
+            ],
+             [
+            'attribute' => 'updated_at',
+                'value' => function ($model) {
+                    $updated_at = '';
+                     if($model instanceof ProductCategory){
+                        $updated_at = $model->updated_at;
+                     }
+                     return $updated_at;
+                },
+            ],
         ],
     ]) ?>
+    <p>
+        <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+    </p>
 
 </div>
 

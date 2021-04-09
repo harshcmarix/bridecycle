@@ -10,6 +10,7 @@ use yii\web\{
     NotFoundHttpException,
     UploadedFile
 };
+use kartik\growl\Growl;
 use yii\imagine\Image;
 use yii\filters\AccessControl;
 use \yii\helpers\Json;
@@ -108,8 +109,12 @@ class BrandController extends Controller
                     $model->image = $fileName;
             }
 
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Brand created successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Brand.");
+            }
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -172,8 +177,12 @@ class BrandController extends Controller
                 $model->image = $old_image;
             }
             
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Brand updated successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Brand.");
+            }
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -201,7 +210,11 @@ class BrandController extends Controller
          if(file_exists($uploadThumbDirPath.'/'.$image) && !empty($image)){
                 unlink($uploadThumbDirPath.'/'.$image);
          }
-        $model->delete();
+        if ($model->delete()) {
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Brand deleted successfully.");
+        } else {
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Brand.");
+        }
 
         return $this->redirect(['index']);
     }

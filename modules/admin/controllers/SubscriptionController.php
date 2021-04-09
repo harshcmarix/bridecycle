@@ -8,6 +8,7 @@ use app\models\search\SubscriptionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
+use kartik\growl\Growl;
 
 /**
  * SubscriptionController implements the CRUD actions for Subscription model.
@@ -71,8 +72,14 @@ class SubscriptionController extends Controller
     {
         $model = new Subscription();
         $subscription_status = Subscription::SUBSCRIPTION_STATUS_ARRAY;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+        if ($model->save()) {
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Subscription created successfully.");
+        } else {
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Subscription.");
+        }
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -93,8 +100,14 @@ class SubscriptionController extends Controller
         // p(Yii::$app->request->post());
         $model = $this->findModel($id);
         $subscription_status = Subscription::SUBSCRIPTION_STATUS_ARRAY;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+        if ($model->save()) {
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Subscription updated successfully.");
+        } else {
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Subscription.");
+        }
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -112,7 +125,12 @@ class SubscriptionController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+         if ($model->delete()) {
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Subscription deleted successfully.");
+        } else {
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Subscription.");
+        }
 
         return $this->redirect(['index']);
     }

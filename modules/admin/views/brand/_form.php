@@ -1,6 +1,9 @@
 <?php
 
-use yii\helpers\Html;
+use yii\helpers\{
+    Html,
+    Url
+};
 use yii\widgets\ActiveForm;
 use app\models\Brand;
 /* @var $this yii\web\View */
@@ -32,6 +35,7 @@ use app\models\Brand;
     <?php } ?>
 
     <div class="form-group">
+        <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 

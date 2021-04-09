@@ -13,6 +13,7 @@ use yii\web\{
 use yii\imagine\Image;
 use yii\filters\AccessControl;
 use \yii\helpers\Json;
+use kartik\growl\Growl;
 
 /**
  * ProductCategoryController implements the CRUD actions for ProductCategory model.
@@ -117,8 +118,12 @@ class ProductCategoryController extends Controller
                 $model->image = $fileName;
             }
 
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id,]);
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Product category created successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Product category.");
+            }
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -185,15 +190,20 @@ class ProductCategoryController extends Controller
         } else {
             $model->image = $old_image;
         }
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+
+        if ($model->save()) {
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Product category updated successfully.");
+        } else {
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Product category.");
+        }
+            return $this->redirect(['index']);
         }
 
-    return $this->render('update', [
-    'model' => $model,
-    'parent_category' => $parent_category,
+        return $this->render('update', [
+        'model' => $model,
+        'parent_category' => $parent_category,
 
-        ]);
+            ]);
     }
 
     /**
@@ -216,7 +226,11 @@ class ProductCategoryController extends Controller
          if(file_exists($uploadThumbDirPath.'/'.$image) && !empty($image)){
                 unlink($uploadThumbDirPath.'/'.$image);
          }
-        $model->delete();
+        if ($model->delete()) {
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Product category deleted successfully.");
+        } else {
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Product category.");
+        }
         return $this->redirect(['index']);
     }
     /**

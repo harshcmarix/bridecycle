@@ -1,6 +1,9 @@
 <?php
 
-use yii\helpers\Html;
+use yii\helpers\{
+    Html,
+    Url
+};
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -19,6 +22,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'status')->dropDownList($subscription_status, ['prompt' => '']) ?>
 
     <div class="form-group">
+        <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
