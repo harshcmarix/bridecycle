@@ -4,8 +4,7 @@ namespace app\modules\admin\controllers;
 
 use app\modules\admin\models\User;
 use Yii;
-use app\modules\admin\models\Users;
-use app\modules\admin\models\UsersSearch;
+use app\modules\admin\models\search\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -16,7 +15,7 @@ use yii\widgets\ActiveForm;
 /**
  * UsersController implements the CRUD actions for Users model.
  */
-class UsersController extends Controller
+class UserController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -39,7 +38,7 @@ class UsersController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new UsersSearch();
+        $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -68,8 +67,8 @@ class UsersController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Users();
-        $model->scenario = Users::SCENARIO_CREATE_NORMAL_USER;
+        $model = new User();
+        $model->scenario = User::SCENARIO_CREATE_NORMAL_USER;
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -81,7 +80,7 @@ class UsersController extends Controller
             $password = $model->password_hash;
             $model->password_hash = password_hash($model->password_hash, PASSWORD_DEFAULT);
 
-            $model->user_type = Users::USER_TYPE_NORMAL_USER;
+            $model->user_type = User::USER_TYPE_NORMAL_USER;
 
             $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
             if (isset($newShopLogoFile) && isset($model->is_shop_owner)) {
@@ -121,7 +120,7 @@ class UsersController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->scenario = Users::SCENARIO_UPDATE_NORMAL_USER;
+        $model->scenario = User::SCENARIO_UPDATE_NORMAL_USER;
 
         // Old file and Password
         $oldProfileFile = $model->profile_picture;
@@ -163,17 +162,17 @@ class UsersController extends Controller
             }
 
             if (isset($postData['is_shop_owner'])) {
-                $model->is_shop_owner = Users::IS_SHOP_OWNER_YES;
+                $model->is_shop_owner = User::IS_SHOP_OWNER_YES;
                 $model->shop_name = $postData['shop_name'];
                 $model->shop_email = $postData['shop_email'];
                 $model->shop_phone_number = $postData['shop_phone_number'];
                 $model->shop_address = $postData['shop_address'];
             } else {
-                $model->is_shop_owner = Users::IS_SHOP_OWNER_NO;
+                $model->is_shop_owner = User::IS_SHOP_OWNER_NO;
                 $model->shop_name = $model->shop_email = $model->shop_phone_number = $model->shop_address = "";
             }
 
-            $model->user_type = Users::USER_TYPE_NORMAL_USER;
+            $model->user_type = User::USER_TYPE_NORMAL_USER;
             $model->updated_at = date('Y-m-d H:i:s');
 
             if ($model->save()) {
@@ -220,15 +219,15 @@ class UsersController extends Controller
      * Finds the Users model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Users the loaded model
+     * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Users::findOne($id)) !== null) {
+        if (($model = User::findOne($id)) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw  NotFoundHttpException('The requested page does not exist.');
     }
 }

@@ -15,8 +15,8 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Products[] $products
- * @property Products[] $products0
+ * @property Product[] $products
+ * @property Product[] $products0
  */
 class ProductCategory extends \yii\db\ActiveRecord
 {
@@ -90,7 +90,7 @@ class ProductCategory extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Products::className(), ['category_id' => 'id']);
+        return $this->hasMany(Product::className(), ['category_id' => 'id']);
     }
 
     /**
@@ -100,7 +100,7 @@ class ProductCategory extends \yii\db\ActiveRecord
      */
     public function getProducts0()
     {
-        return $this->hasMany(Products::className(), ['sub_category_id' => 'id']);
+        return $this->hasMany(Product::className(), ['sub_category_id' => 'id']);
     }
     /**
      * Gets query for [[ProductCategories]].

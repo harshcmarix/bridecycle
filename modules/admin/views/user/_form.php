@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\admin\models\Users */
+/* @var $model app\modules\admin\models\User */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -83,13 +83,13 @@ use yii\widgets\ActiveForm;
         $('#shop-details').show();
         "<?php } ?>"
 
-        if ($('#users-is_shop_owner').prop('checked') == true) {
+        if ($('#user-is_shop_owner').prop('checked') == true) {
             $('#shop-details').show();
         } else {
             $('#shop-details').hide();
         }
 
-        $('#users-is_shop_owner').change(function () {
+        $('#user-is_shop_owner').change(function () {
             if ($(this).prop('checked') == true) {
                 $('#shop-details').show();
             } else {

@@ -47,12 +47,26 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public $authKey;
 
+    const SCENARIO_CREATE_NORMAL_USER = 'create_normal_user';
+    const SCENARIO_UPDATE_NORMAL_USER = 'update_normal_user';
+
+    const IS_SHOP_OWNER_YES = '1';
+    const IS_SHOP_OWNER_NO = '0';
+
+    public $isShopOwner = [
+        //' ' => 'Select',
+        self::IS_SHOP_OWNER_YES => 'Yes',
+        self::IS_SHOP_OWNER_NO => 'No'
+    ];
+
     /**
      * Identify user type
      */
     const USER_TYPE_ADMIN = 1;
     const USER_TYPE_SUB_ADMIN = 2;
-    const USER_TYPE_NORMAL = 3;
+    const USER_TYPE_NORMAL_USER = '3';
+
+    public $confirm_password;
 
     /**
      * @return string
@@ -81,7 +95,12 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email'], 'required'],
+            [['first_name', 'last_name', 'email', 'mobile'], 'required'],
+
+            [['first_name', 'last_name', 'email', 'mobile', 'password_hash', 'confirm_password'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
+            [['first_name', 'last_name', 'email', 'mobile'], 'required', 'on' => [self::SCENARIO_UPDATE_NORMAL_USER]],
+
+
             [['email', 'shop_email'], 'email'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
@@ -92,6 +111,21 @@ class User extends ActiveRecord implements IdentityInterface
             [['email'], 'string', 'max' => 60],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['email'], 'unique'],
+
+            ['confirm_password', 'compare', 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match",],
+            [['confirm_password'], 'safe'],
+            [['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address'], 'required',
+                'when' => function ($model) {
+                },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#user-is_shop_owner').prop('checked') == true) {            
+                                    return $('#user-shop_name').val() == '';
+                                    return $('#user-shop_logo').val() == '';
+                                    return $('#user-shop_address').val() == '';
+                                    return $('#user-shop_phone_number').val() == '';
+                                    return $('#user-shop_email').val() == '';
+                                    }
+                                }",],
         ];
     }
 

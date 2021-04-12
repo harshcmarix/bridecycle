@@ -12,7 +12,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\admin\models\UsersSearch */
+/* @var $searchModel app\modules\admin\models\search\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Users';
@@ -117,7 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     Html::button('Add User', [
                         'class' => 'btn btn-success',
                         'title' => 'Add User',
-                        'onclick' => "window.location.href = '" . Url::to(['users/create']) . "';",
+                        'onclick' => "window.location.href = '" . Url::to(['user/create']) . "';",
                     ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\admin\models;
+namespace app\models;
 
 use Yii;
 
@@ -34,11 +34,11 @@ use Yii;
  * @property FavouriteProducts[] $favouriteProducts
  * @property OrderItems[] $orderItems
  * @property ProductRatings[] $productRatings
- * @property Brands $brand
- * @property ProductCategories $category
- * @property ProductCategories $subCategory
+ * @property Brand $brand
+ * @property Category $category
+ * @property SubCategory $subCategory
  */
-class Products extends \yii\db\ActiveRecord
+class Product extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -54,6 +54,9 @@ class Products extends \yii\db\ActiveRecord
     const IS_TOP_TRENDING_YES = '1';
     const IS_TOP_TRENDING_NO = '0';
 
+    const OPTION_IS_SHOW_ONLY_YES = '1';
+    const OPTION_IS_SHOW_ONLY_NO = '0';
+
     public $arrIsTopSelling = [
         self::IS_TOP_SELLING_YES => 'Yes',
         self::IS_TOP_SELLING_NO => 'No',
@@ -62,6 +65,11 @@ class Products extends \yii\db\ActiveRecord
     public $arrIsTopTrending = [
         self::IS_TOP_TRENDING_YES => 'Yes',
         self::IS_TOP_TRENDING_NO => 'No',
+    ];
+
+    public $arrOptionIsShowOnly = [
+        self::OPTION_IS_SHOW_ONLY_YES => 'Yes',
+        self::OPTION_IS_SHOW_ONLY_NO => 'No',
     ];
 
     /**
@@ -79,9 +87,9 @@ class Products extends \yii\db\ActiveRecord
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
             [['receipt'], 'string', 'max' => 255],
-            [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brands::className(), 'targetAttribute' => ['brand_id' => 'id']],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategories::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategories::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
+            [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
+            [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
         ];
     }
 
@@ -154,7 +162,7 @@ class Products extends \yii\db\ActiveRecord
      */
     public function getBrand()
     {
-        return $this->hasOne(Brands::className(), ['id' => 'brand_id']);
+        return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
     }
 
     /**
@@ -164,7 +172,7 @@ class Products extends \yii\db\ActiveRecord
      */
     public function getCategory()
     {
-        return $this->hasOne(ProductCategories::className(), ['id' => 'category_id']);
+        return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
     }
 
     /**
@@ -174,6 +182,6 @@ class Products extends \yii\db\ActiveRecord
      */
     public function getSubCategory()
     {
-        return $this->hasOne(ProductCategories::className(), ['id' => 'sub_category_id']);
+        return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
     }
 }

@@ -1,9 +1,6 @@
 <?php
 
-use yii\bootstrap\{
-    Nav,
-    NavBar
-};
+use yii\bootstrap\{Nav,NavBar};
 use yii\helpers\Html;
 use app\widgets\Alert;
 use \kartik\growl\Growl;

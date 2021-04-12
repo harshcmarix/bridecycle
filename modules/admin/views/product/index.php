@@ -6,10 +6,10 @@ use kartik\select2\Select2;
 use kartik\grid\GridView;
 use kartik\editable\Editable;
 use yii\helpers\Url;
-use app\modules\admin\models\ProductCategories;
+use app\models\ProductCategory;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\admin\models\ProductsSearch */
+/* @var $searchModel app\models\search\ProductSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Products';
@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'category_id',
             'value' => function ($model) {
-                return (!empty($model->category) && $model->category instanceof ProductCategories && !empty($model->category->name)) ? $model->category->name : "";
+                return (!empty($model->category) && $model->category instanceof ProductCategory && !empty($model->category->name)) ? $model->category->name : "";
             },
             'filter' => $categories,
             'filterType' => GridView::FILTER_SELECT2,
@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'sub_category_id',
             'value' => function ($model) {
-                return (!empty($model->subCategory) && $model->subCategory instanceof ProductCategories && !empty($model->subCategory->name)) ? $model->subCategory->name : "";
+                return (!empty($model->subCategory) && $model->subCategory instanceof ProductCategory && !empty($model->subCategory->name)) ? $model->subCategory->name : "";
             },
             'filter' => $subCategories,
             'filterType' => GridView::FILTER_SELECT2,
@@ -111,8 +111,16 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'option_show_only',
             'value' => function ($model) {
-                return $model->option_show_only;
+                return ($model->option_show_only == '1') ? "Yes" : "No";
             },
+            'filter' => $searchModel->arrOptionIsShowOnly,
+            'filterType' => GridView::FILTER_SELECT2,
+            'filterWidgetOptions' => [
+                'options' => ['prompt' => 'Select'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                ],
+            ],
             'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style'],
         ],
@@ -179,7 +187,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     Html::button('Add Product', [
                         'class' => 'btn btn-success',
                         'title' => 'Add Product',
-                        'onclick' => "window.location.href = '" . Url::to(['products/create']) . "';",
+                        'onclick' => "window.location.href = '" . Url::to(['product/create']) . "';",
                     ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],

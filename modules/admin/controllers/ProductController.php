@@ -2,10 +2,10 @@
 
 namespace app\modules\admin\controllers;
 
-use app\modules\admin\models\ProductCategories;
+use app\models\ProductCategory;
+use app\models\search\ProductSearch;
 use Yii;
-use app\modules\admin\models\Products;
-use app\modules\admin\models\ProductsSearch;
+use app\models\Product;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -14,7 +14,7 @@ use yii\filters\VerbFilter;
 /**
  * ProductsController implements the CRUD actions for Products model.
  */
-class ProductsController extends Controller
+class ProductController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -37,16 +37,16 @@ class ProductsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ProductsSearch();
+        $searchModel = new ProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $categories = ArrayHelper::map(ProductCategories::find()->where(['parent_category_id' => null])->all(), 'id', function ($data) {
+        $categories = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', function ($data) {
             return $data['name'];
         });
 
-        $subCategories = ArrayHelper::map(ProductCategories::find()->where(['IS NOT', 'parent_category_id', null])->all(), 'id', function ($data) {
+        $subCategories = ArrayHelper::map(ProductCategory::find()->where(['IS NOT', 'parent_category_id', null])->all(), 'id', function ($data) {
             //return $data['name'] . ' (' . $data['parentCategory']['name'] . ')';
-            return $data['name'] ;
+            return $data['name'];
         });
 
         return $this->render('index', [
@@ -77,7 +77,7 @@ class ProductsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Products();
+        $model = new Product();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -126,15 +126,14 @@ class ProductsController extends Controller
      * Finds the Products model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Products the loaded model
+     * @return Product the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Products::findOne($id)) !== null) {
+        if (($model = Product::findOne($id)) !== null) {
             return $model;
         }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw NotFoundHttpException('The requested page does not exist.');
     }
 }
