@@ -4,14 +4,14 @@ namespace app\modules\admin\controllers;
 
 use Yii;
 use app\modules\admin\models\{
-    SubAdmin,
     User
 };
+use app\models\SubAdmin;
 use kartik\growl\Growl;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
-use app\modules\admin\models\search\SubAdminSearch;
+use app\models\search\SubAdminSearch;
 
 /**
  * Class SubAdminController

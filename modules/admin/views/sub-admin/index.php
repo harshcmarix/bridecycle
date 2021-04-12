@@ -5,7 +5,7 @@ use yii\helpers\ArrayHelper;
 use \app\modules\admin\widgets\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\admin\models\search\SubAdminSearch */
+/* @var $searchModel app\models\search\SubAdminSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Sub Admin';
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php
     echo GridView::widget([
-        'id' => 'kv-grid-demo',
+        'id' => 'sub-admin-grid',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
