@@ -76,7 +76,7 @@ class BrandController extends Controller
     public function actionCreate()
     {
         $model = new Brand();
-        $model->scenario = Brand::SCENARIO_BRAND_CREATE;
+        $model->scenario = Brand::SCENARIO_CREATE;
         $brand_image = UploadedFile::getInstance($model, 'image');
         if ($model->load(Yii::$app->request->post())) {
             

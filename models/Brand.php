@@ -18,7 +18,7 @@ use Yii;
  */
 class Brand extends \yii\db\ActiveRecord
 {
-    const SCENARIO_BRAND_CREATE = 'create';
+    const SCENARIO_CREATE = 'create';
     const BRAND_IMAGE_EMPTY = '1';
     const IS_TOP_BRAND_OR_NOT = [
         '1' => 'yes',
@@ -56,7 +56,7 @@ class Brand extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50],
             [['image'], 'string', 'max' => 250],
             [['image'], 'file', 'extensions' => 'png,jpg'],
-            [['image'], 'required', 'on' => self::SCENARIO_BRAND_CREATE],
+            [['image'], 'required', 'on' => self::SCENARIO_CREATE],
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
             },'whenClient' => "function (attribute, value) {

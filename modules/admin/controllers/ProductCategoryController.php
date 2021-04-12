@@ -79,7 +79,7 @@ class ProductCategoryController extends Controller
     {
         $model = new ProductCategory();
         $parent_category = ProductCategory::find()->where(['parent_category_id' => null])->all();
-        $model->scenario = ProductCategory::SCENARIO_PRODUCT_CATEGORY_CREATE;
+        $model->scenario = ProductCategory::SCENARIO_CREATE;
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
