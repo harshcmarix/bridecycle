@@ -6,9 +6,18 @@ use yii\helpers\{
 };
 use yii\widgets\ActiveForm;
 use app\models\Brand;
+use kartik\dialog\Dialog;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\Brand */
 /* @var $form yii\widgets\ActiveForm */
+
+/**
+ * defined custom alert widget
+ */
+echo Dialog::widget(
+   ['overrideYiiConfirm' => true]
+);
 ?>
 
 <div class="brand-form">
@@ -48,7 +57,7 @@ var image_empty = <?php echo Brand::BRAND_IMAGE_EMPTY?>;
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
             var pjaxContainer = $(this).attr('pjax-container');
-            var result = confirm('Delete this image, are you sure?');                                
+            var result = krajeeDialog.confirm('Are you sure You want to delete this image ?', function(result){                                     
             if(result) {
                 $.ajax({
                     url: deleteUrl,
@@ -61,5 +70,6 @@ var image_empty = <?php echo Brand::BRAND_IMAGE_EMPTY?>;
                    $('#brand-is_brand_image_empty').val(image_empty);
                 });
             }
+            });
         });
 </script>

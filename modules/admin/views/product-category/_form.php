@@ -7,11 +7,19 @@ use yii\helpers\{
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
+use kartik\dialog\Dialog;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\ProductCategory */
 /* @var $form yii\widgets\ActiveForm */
-// p($parent_category);
+
+/**
+ * defined custom alert widget
+ */
+
+echo Dialog::widget(
+   ['overrideYiiConfirm' => true]
+);
 ?>
 <div class="product-category-form">
 
@@ -39,7 +47,7 @@ use kartik\select2\Select2;
     <?php 
     if(!empty($model->image)){?>
     <div class="form-group image-class">
-            <?= Html::a('Delete image',['javascript:(0)'],['class' => 'pjax-delete-link','delete-url'=>'../product-category/image-delete?id='.$model->id]) ?>
+            <?= Html::a('',['javascript:(0)'],['class' => 'glyphicon glyphicon-trash pjax-delete-link','delete-url'=>'../product-category/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
              <?= Html::img(Yii::getAlias('@productCategoryImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
@@ -58,9 +66,10 @@ use kartik\select2\Select2;
 $this->registerJs("
         $('.pjax-delete-link').on('click', function(e) {
             e.preventDefault();
+            // krajeeDialog.alert('An alert');
             var deleteUrl = $(this).attr('delete-url');
             var pjaxContainer = $(this).attr('pjax-container');
-            var result = confirm('Delete this image, are you sure?');                                
+            var result = krajeeDialog.confirm('Are you sure You want to delete this image ?', function(result){                                
             if(result) {
                 $.ajax({
                     url: deleteUrl,
@@ -73,6 +82,7 @@ $this->registerJs("
                     $('#productcategory-is_image_empty').val('1');
                 });
             }
+           }); 
         });
 ");
 ?>
