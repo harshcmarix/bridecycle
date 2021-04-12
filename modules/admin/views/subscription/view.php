@@ -24,13 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
               [
         'attribute' => 'id',
-        'value' => function ($model) {
-            $id = '';
-             if($model instanceof Subscription){
-                 $id = $model->id;
-             }
-             return $id;
-           },
+            'value' => function ($model) {
+                $id = '';
+                if($model instanceof Subscription){
+                    $id = $model->id;
+                }
+                return $id;
+            },
         ],
         [
         'attribute' => 'name',
