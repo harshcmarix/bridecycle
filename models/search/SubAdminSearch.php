@@ -1,13 +1,11 @@
 <?php
 
-namespace app\modules\admin\models\search;
+namespace app\models\search;
 
-use app\modules\admin\models\{
-    User,
-    SubAdmin
-};
 use yii\base\Model;
+use \app\models\SubAdmin;
 use yii\data\ActiveDataProvider;
+use app\modules\admin\models\User;
 
 /**
  * Class SubAdminSearch
