@@ -70,6 +70,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="form-group">
+        <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
     <?php ActiveForm::end(); ?>

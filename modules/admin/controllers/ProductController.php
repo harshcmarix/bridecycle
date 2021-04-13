@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Brand;
 use app\models\ProductCategory;
 use app\models\search\ProductSearch;
 use Yii;
@@ -10,6 +11,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * ProductsController implements the CRUD actions for Products model.
@@ -45,7 +47,6 @@ class ProductController extends Controller
         });
 
         $subCategories = ArrayHelper::map(ProductCategory::find()->where(['IS NOT', 'parent_category_id', null])->all(), 'id', function ($data) {
-            //return $data['name'] . ' (' . $data['parentCategory']['name'] . ')';
             return $data['name'];
         });
 
@@ -78,6 +79,9 @@ class ProductController extends Controller
     public function actionCreate()
     {
         $model = new Product();
+        $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
+        $subcategory = [];
+        $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -85,6 +89,9 @@ class ProductController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'category' => $category,
+            'subcategory' => $subcategory,
+            'brand' => $brand
         ]);
     }
 
@@ -99,12 +106,21 @@ class ProductController extends Controller
     {
         $model = $this->findModel($id);
 
+
+        $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
+        $subcategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $model->category_id])->all(), 'id', 'name');;
+        $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
+
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'category' => $category,
+            'subcategory' => $subcategory,
+            'brand' => $brand
         ]);
     }
 
@@ -135,5 +151,21 @@ class ProductController extends Controller
             return $model;
         }
         throw NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGetSubCategoryList($category_id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $subCategoryList = [];
+        if (!empty($category_id)) {
+            $subCategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $category_id])->all(), 'id', 'name');
+            if (!empty($subCategory)) {
+                foreach ($subCategory as $key => $subCategoryRow) {
+                    $subCategoryList[] = "<option value='" . $key . "'>" . $subCategoryRow . "</option>";
+                }
+            }
+        }
+        return ['success' => true, 'dataList' => $subCategoryList];
+
     }
 }

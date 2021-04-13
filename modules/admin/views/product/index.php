@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\Pjax;
 use kartik\select2\Select2;
-use kartik\grid\GridView;
+use \app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
 use yii\helpers\Url;
 use app\models\ProductCategory;
@@ -173,18 +173,18 @@ $this->params['breadcrumbs'][] = $this->title;
     ];
 
     echo GridView::widget([
-        'id' => 'kv-grid-demo-product',
+        'id' => 'product-grid',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
-        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
-        'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-        'filterRowOptions' => ['class' => 'kartik-sheet-style'],
+//        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
+//        'headerRowOptions' => ['class' => 'kartik-sheet-style'],
+//        'filterRowOptions' => ['class' => 'kartik-sheet-style'],
         'pjax' => true, // pjax is set to always true for this demo
         'toolbar' => [
             [
                 'content' =>
-                    Html::button('Add Product', [
+                    Html::button('<i class="fa fa-plus-circle"> Add Product </i>', [
                         'class' => 'btn btn-success',
                         'title' => 'Add Product',
                         'onclick' => "window.location.href = '" . Url::to(['product/create']) . "';",
@@ -202,6 +202,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'type' => GridView::TYPE_PRIMARY,
             'heading' => 'Product',
         ],
+        'emptyTextOptions' => [
+            'class' => 'empty text-center'
+        ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
         'itemLabelSingle' => 'Product',
@@ -209,3 +212,21 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
 </div>
+
+<script type="text/javascript">
+    $(document).on('change', '#productsearch-category_id', function () {
+        var categoryId = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: '<?php echo Url::to(['product/get-sub-category-list', 'category_id' => ""]); ?>' + categoryId,
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    $('#productsearch-sub_category_id').html("");
+                    $('#productsearch-sub_category_id').html(response.dataList);
+                }
+            }
+        })
+    });
+
+</script>
