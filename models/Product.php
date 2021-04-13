@@ -57,6 +57,13 @@ class Product extends \yii\db\ActiveRecord
     const OPTION_IS_SHOW_ONLY_YES = '1';
     const OPTION_IS_SHOW_ONLY_NO = '0';
 
+    const IS_CLEANED_YES = '1';
+    const IS_CLEANED_NO = '0';
+
+    const GENDER_FOR_FEMALE = '1';
+    const GENDER_FOR_MALE = '2';
+    const GENDER_FOR_ALL = '3';
+
     public $arrIsTopSelling = [
         self::IS_TOP_SELLING_YES => 'Yes',
         self::IS_TOP_SELLING_NO => 'No',
@@ -72,17 +79,28 @@ class Product extends \yii\db\ActiveRecord
         self::OPTION_IS_SHOW_ONLY_NO => 'No',
     ];
 
+    public $arrGender = [
+        self::GENDER_FOR_FEMALE => 'Female',
+        self::GENDER_FOR_MALE => 'Male',
+       // self::GENDER_FOR_ALL => 'All',
+    ];
+
+    public $arrIsCleaned = [
+        self::IS_CLEANED_YES => 'Yes',
+        self::IS_CLEANED_NO => 'No',
+    ];
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'number', 'sub_category_id', 'price'], 'required'],
-            [['number', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width'], 'integer'],
+            [['name', 'number', 'category_id', 'price', 'available_quantity','gender','is_cleaned'], 'required'],
+            [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width'], 'integer'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['number', 'created_at', 'updated_at'], 'safe'],
             [['name', 'option_size'], 'string', 'max' => 50],
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
@@ -102,8 +120,8 @@ class Product extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'number' => 'Number',
-            'category_id' => 'Category ID',
-            'sub_category_id' => 'Sub Category ID',
+            'category_id' => 'Category',
+            'sub_category_id' => 'Sub Category',
             'price' => 'Price',
             'option_size' => 'Option Size',
             'option_price' => 'Option Price',
@@ -113,7 +131,7 @@ class Product extends \yii\db\ActiveRecord
             'available_quantity' => 'Available Quantity',
             'is_top_selling' => 'Is Top Selling',
             'is_top_trending' => 'Is Top Trending',
-            'brand_id' => 'Brand ID',
+            'brand_id' => 'Brand',
             'gender' => 'Gender',
             'is_cleaned' => 'Is Cleaned',
             'height' => 'Height',

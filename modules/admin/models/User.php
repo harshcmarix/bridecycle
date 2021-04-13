@@ -112,8 +112,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['email'], 'unique'],
 
-            ['confirm_password', 'compare', 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match",],
             [['confirm_password'], 'safe'],
+            ['confirm_password', 'compare', 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match",],
             [['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address'], 'required',
                 'when' => function ($model) {
                 },

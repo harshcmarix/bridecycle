@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\modules\admin\models\User;
+use kartik\growl\Growl;
 use Yii;
 use app\modules\admin\models\search\UserSearch;
 use yii\web\Controller;
@@ -93,7 +94,7 @@ class UserController extends Controller
             }
 
             if ($model->save(false)) {
-                \Yii::$app->getSession()->setFlash('success', 'You have successfully created User!');
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully created User!');
 
                 Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
                     ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
@@ -211,7 +212,7 @@ class UserController extends Controller
                 unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
             }
         }
-        \Yii::$app->getSession()->setFlash('success', 'You have successfully deleted User!');
+        \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully deleted User!');
         return $this->redirect(['index']);
     }
 

@@ -60,6 +60,7 @@ AdminAsset::register($this);
         <?php
         $flash_messages = Yii::$app->session->getAllFlashes();
         if (!empty($flash_messages)) {
+            p($flash_messages);
             foreach ($flash_messages as $flash_message_type => $message) {
                 echo Growl::widget([
                     'type' => $flash_message_type,

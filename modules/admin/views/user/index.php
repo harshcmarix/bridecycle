@@ -1,6 +1,6 @@
 <?php
 
-use kartik\grid\GridView;
+use \app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
 use kartik\select2\Select2;
 use yii\bootstrap\Modal;
@@ -114,7 +114,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'toolbar' => [
             [
                 'content' =>
-                    Html::button('Add User', [
+                    Html::button('<i class="fa fa-plus-circle"> Add User </i>', [
                         'class' => 'btn btn-success',
                         'title' => 'Add User',
                         'onclick' => "window.location.href = '" . Url::to(['user/create']) . "';",
