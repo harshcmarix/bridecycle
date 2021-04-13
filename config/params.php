@@ -18,5 +18,12 @@ return [
     'profile_picture_thumb_quality' => 80,
 
     // Send mail from email id
-    'adminEmail' => 'admin@yopmail.com'
+    'adminEmail' => 'admin@yopmail.com',
+    //settings attributes
+    'transaction_fees' => [
+          'option_key'=>'transaction_fees'
+    ],
+    'km_range' => [
+          'option_key'=>'km_range'
+    ],
 ];
