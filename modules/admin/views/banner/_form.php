@@ -5,13 +5,12 @@ use yii\helpers\{
     Url
 };
 use yii\widgets\ActiveForm;
-use app\models\Brand;
+use app\models\Banner;
 use kartik\dialog\Dialog;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Brand */
+/* @var $model app\models\Banner */
 /* @var $form yii\widgets\ActiveForm */
-
 /**
  * defined custom alert widget
  */
@@ -20,30 +19,28 @@ echo Dialog::widget(
 );
 ?>
 
-<div class="brand-form">
+<div class="banner-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'is_top_brand')->checkbox(['label' => 'Is Top Brand', 'selected' => false])->label(false) ?>
-    <?php
-       $is_brand_image_empty = Brand::BRAND_IMAGE_EMPTY;
+    <?php 
+        $is_banner_image_empty = Banner::BANNER_IMAGE_EMPTY;
     if(!empty($model->image)){
-       $is_brand_image_empty = Brand::BRAND_IMAGE_NOT_EMPTY;
-    }?>
+        $is_banner_image_empty = Banner::BANNER_IMAGE_NOT_EMPTY;
+    }
+    ?>
 
-    <?= $form->field($model, 'is_brand_image_empty')->hiddenInput(['value' => $is_brand_image_empty])->label(false) ?>
+      <?= $form->field($model, 'is_banner_image_empty')->hiddenInput(['value' => $is_banner_image_empty])->label(false) ?>
     <?php 
     if(!empty($model->image)){?>
 
     <div class="form-group image-class">
-            <?= Html::a('',['javascript:(0)'],['class' => 'glyphicon glyphicon-trash pjax-delete-link','delete-url'=>'../brand/image-delete?id='.$model->id]) ?>
+            <?= Html::a('',['javascript:(0)'],['class' => 'glyphicon glyphicon-trash banner-delete-link','delete-url'=>'../banner/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img(Yii::getAlias('@brandImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
+             <?= Html::img(Yii::getAlias('@bannerImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
     </div>
 
     <?php } ?>
@@ -57,8 +54,8 @@ echo Dialog::widget(
 
 </div>
 <script>
-var image_empty = <?php echo Brand::BRAND_IMAGE_EMPTY?>;
-        $('.pjax-delete-link').on('click', function(e) {
+var image_empty = <?php echo Banner::BANNER_IMAGE_EMPTY?>;
+        $('.banner-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
             var pjaxContainer = $(this).attr('pjax-container');
@@ -72,7 +69,7 @@ var image_empty = <?php echo Brand::BRAND_IMAGE_EMPTY?>;
                     }
                 }).done(function(data) {
                    $('.image-class').hide();
-                   $('#brand-is_brand_image_empty').val(image_empty);
+                   $('#banner-is_banner_image_empty').val(image_empty);
                 });
             }
             });

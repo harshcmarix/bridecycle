@@ -21,6 +21,8 @@ use Yii;
 class ProductCategory extends \yii\db\ActiveRecord
 {
     const SCENARIO_CREATE = 'create';
+    const IMAGE_EMPTY = 1;
+    const IMAGE_NOT_EMPTY = 0;
     public $is_image_empty;
     /**
      * {@inheritdoc}

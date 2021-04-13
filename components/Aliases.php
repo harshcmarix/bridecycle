@@ -44,5 +44,11 @@ class Aliases extends Component
         // Used for brand image thumbnail
         Yii::setAlias('@brandImageThumbAbsolutePath', Yii::getAlias('@brandImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@brandImageThumbRelativePath', Yii::getAlias('@brandImageRelativePath') . '/thumbs');
+        // Used for banner image
+        Yii::setAlias('@bannerImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/banner_images');
+        Yii::setAlias('@bannerImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/banner_images');
+        // Used for banner image thumbnail
+        Yii::setAlias('@bannerImageThumbAbsolutePath', Yii::getAlias('@bannerImageAbsolutePath') . '/thumbs');
+        Yii::setAlias('@bannerImageThumbRelativePath', Yii::getAlias('@bannerImageRelativePath') . '/thumbs');
     }
 }

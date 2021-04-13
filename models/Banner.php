@@ -1,39 +1,32 @@
 <?php
 
 namespace app\models;
-use yii\behaviors\TimestampBehavior;
+
 use Yii;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
 
 /**
- * This is the model class for table "brands".
+ * This is the model class for table "banners".
  *
  * @property int $id
- * @property string $name
- * @property string|null $image
- * @property string $is_top_brand 1 => top brand
+ * @property string $image
  * @property string|null $created_at
  * @property string|null $updated_at
- *
- * @property Products[] $products
  */
-class Brand extends \yii\db\ActiveRecord
+class Banner extends ActiveRecord
 {
     const SCENARIO_CREATE = 'create';
-    const BRAND_IMAGE_EMPTY = 1;
-    const BRAND_IMAGE_NOT_EMPTY = 0;
-    const IS_TOP_BRAND_OR_NOT = [
-        '1' => 'yes',
-        '0' => 'no',
-    ];
-    public $is_brand_image_empty;
+    const BANNER_IMAGE_EMPTY = 1;
+    const BANNER_IMAGE_NOT_EMPTY = 0;
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'brands';
+        return 'banners';
     }
-    /**
+     /**
      * @return array[]
      */
     public function behaviors()
@@ -45,24 +38,22 @@ class Brand extends \yii\db\ActiveRecord
             ],
         ];
     }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['is_top_brand'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name'], 'string', 'max' => 50],
-            [['image'], 'string', 'max' => 250],
+            [['image'], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
-            [['image'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['image'], 'required','on'=>self::SCENARIO_CREATE],
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
             },'whenClient' => "function (attribute, value) {
-                    if ($('#brand-is_brand_image_empty').val() == 1) {            
-                                    return $('#brand-image').val() == '';                                    
+                    if ($('#banner-is_banner_image_empty').val() == 1) {            
+                                    return $('#banner-image').val() == '';                                    
                                     }
             }",],
         ];
@@ -75,21 +66,9 @@ class Brand extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
             'image' => 'Image',
-            'is_top_brand' => 'Is Top Brand',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
-    }
-
-    /**
-     * Gets query for [[Products]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProducts()
-    {
-        return $this->hasMany(Products::className(), ['brand_id' => 'id']);
     }
 }
