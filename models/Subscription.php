@@ -3,6 +3,7 @@
 namespace app\models;
 
 use yii\behaviors\TimestampBehavior;
+use \yii\db\ActiveRecord;
 use Yii;
 
 /**
@@ -17,11 +18,19 @@ use Yii;
  *
  * @property UserSubscriptions[] $userSubscriptions
  */
-class Subscription extends \yii\db\ActiveRecord
+class Subscription extends ActiveRecord
 {
+    /**
+     * use to identify subscription is active or not
+     */
+    const ACTIVE = '1';
+    const INACTIVE = '0';
+    /**
+     * used for dropdown
+     */
     const SUBSCRIPTION_STATUS_ARRAY = [
-        '1'=>'Active',
-        '0'=>'Inactive'
+        self::ACTIVE =>'Active',
+        self::INACTIVE =>'Inactive'
     ];
     /**
      * {@inheritdoc}

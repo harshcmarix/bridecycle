@@ -45,10 +45,10 @@ class CmsPage extends ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'slug', 'description'], 'required'],
+            [['title', 'description'], 'required'],
             [['description'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['title', 'slug'], 'string', 'max' => 50],
+            [['title'], 'string', 'max' => 50],
         ];
     }
 

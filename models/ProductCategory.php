@@ -20,7 +20,13 @@ use Yii;
  */
 class ProductCategory extends \yii\db\ActiveRecord
 {
+    /**
+     * used for create
+     */
     const SCENARIO_CREATE = 'create';
+    /**
+     * used for image validation 
+     */
     const IMAGE_EMPTY = 1;
     const IMAGE_NOT_EMPTY = 0;
     public $is_image_empty;

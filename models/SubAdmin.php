@@ -108,6 +108,7 @@ class SubAdmin extends ActiveRecord
             [['password', 'confirm_password'], 'required', 'on' => self::SCENARIO_CREATE],
             [['profile_picture', 'password', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 50],
+            [['email','shop_email'], 'email'],
             [['email'], 'string', 'max' => 60],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['email'], 'unique', 'message' => 'Email already exist.'],

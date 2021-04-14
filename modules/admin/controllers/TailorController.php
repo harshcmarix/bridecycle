@@ -3,8 +3,8 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use app\models\Banner;
-use app\models\Search\BannerSearch;
+use app\models\Tailor;
+use app\models\search\TailorSearch;
 use yii\web\{
     Controller,
     NotFoundHttpException,
@@ -16,11 +16,11 @@ use kartik\growl\Growl;
 use \yii\helpers\Json;
 
 /**
- * BannerController implements the CRUD actions for Banner model.
+ * TailorController implements the CRUD actions for Tailor model.
  */
-class BannerController extends Controller
+class TailorController extends Controller
 {
-    /**
+     /**
      * {@inheritdoc}
      */
      public function behaviors()
@@ -41,12 +41,12 @@ class BannerController extends Controller
     }
 
     /**
-     * Lists all Banner models.
+     * Lists all Tailor models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new BannerSearch();
+        $searchModel = new TailorSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -56,7 +56,7 @@ class BannerController extends Controller
     }
 
     /**
-     * Displays a single Banner model.
+     * Displays a single Tailor model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -69,20 +69,20 @@ class BannerController extends Controller
     }
 
     /**
-     * Creates a new Banner model.
+     * Creates a new Tailor model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Banner();
-        $model->scenario = Banner::SCENARIO_CREATE;
-        $banner_image = UploadedFile::getInstance($model, 'image');
+        $model = new Tailor();
+        $model->scenario = Tailor::SCENARIO_CREATE;
+        $shop_image = UploadedFile::getInstance($model, 'shop_image');
         if ($model->load(Yii::$app->request->post())) {
             
-            if(!empty($banner_image)){
-                $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-                $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+            if(!empty($shop_image)){
+                $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
                 $thumbImagePath = '';
 
                 // Create profile upload directory if not exist
@@ -95,24 +95,24 @@ class BannerController extends Controller
                     mkdir($uploadThumbDirPath, 0777);
                 }
 
-                    $ext = $banner_image->extension;
-                    $fileName = pathinfo($banner_image->name, PATHINFO_FILENAME);
+                    $ext = $shop_image->extension;
+                    $fileName = pathinfo($shop_image->name, PATHINFO_FILENAME);
                     $fileName = $fileName . '_' . time() . '.' . $ext;
                     // Upload profile picture
-                    $banner_image->saveAs($uploadDirPath . '/' . $fileName);
+                    $shop_image->saveAs($uploadDirPath . '/' . $fileName);
                     // Create thumb of profile picture
                     $actualImagePath = $uploadDirPath . '/' . $fileName;
                     $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
                     // p($actualImagePath);
                     Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                     // Insert profile picture name into database
-                    $model->image = $fileName;
+                    $model->shop_image = $fileName;
             }
 
             if ($model->save()) {
-                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Banner created successfully.");
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Tailor created successfully.");
             } else {
-                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Banner.");
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Tailor.");
             }
              return $this->redirect(['index']);
         }
@@ -123,7 +123,7 @@ class BannerController extends Controller
     }
 
     /**
-     * Updates an existing Banner model.
+     * Updates an existing Tailor model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -131,16 +131,16 @@ class BannerController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-            $old_image = $model->image;
+         $model = $this->findModel($id);
 
-            $new_image = UploadedFile::getInstance($model, 'image');
+         $old_image = $model->shop_image;
+         $new_image = UploadedFile::getInstance($model, 'shop_image');
 
         if ($model->load(Yii::$app->request->post())) {
            
             if (!empty($new_image)) {
-                    $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-                    $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+                    $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
+                    $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
                     $thumbImagePath = '';
 
                 // Create product image upload directory if not exist
@@ -171,16 +171,16 @@ class BannerController extends Controller
                     // p($actualImagePath);
                     Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                     // Insert profile picture name into database
-                    $model->image = $fileName;
+                    $model->shop_image = $fileName;
 
             } else {
-                $model->image = $old_image;
+                $model->shop_image = $old_image;
             }
             
             if ($model->save()) {
-                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Banner updated successfully.");
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Tailor updated successfully.");
             } else {
-                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Banner.");
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Tailor.");
             }
             return $this->redirect(['index']);
         }
@@ -191,7 +191,7 @@ class BannerController extends Controller
     }
 
     /**
-     * Deletes an existing Banner model.
+     * Deletes an existing Tailor model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -199,57 +199,62 @@ class BannerController extends Controller
      */
     public function actionDelete($id)
     {
-         $model = $this->findModel($id);
-         $image = $model->image;
-         $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+       $model = $this->findModel($id);
+         $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
+         $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
          // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$image) && !empty($image)){
-                unlink($uploadDirPath.'/'.$image);
+         if(file_exists($uploadDirPath.'/'.$model->shop_image) && !empty($model->shop_image)){
+                unlink($uploadDirPath.'/'.$model->shop_image);
          }
-         if(file_exists($uploadThumbDirPath.'/'.$image) && !empty($image)){
-                unlink($uploadThumbDirPath.'/'.$image);
+         if(file_exists($uploadThumbDirPath.'/'.$model->shop_image) && !empty($model->shop_image)){
+                unlink($uploadThumbDirPath.'/'.$model->shop_image);
          }
         if ($model->delete()) {
-            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Banner deleted successfully.");
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Tailor deleted successfully.");
         } else {
-            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Banner.");
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Tailor.");
         }
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Banner model based on its primary key value.
+     * Finds the Tailor model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Banner the loaded model
+     * @return Tailor the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Banner::findOne($id)) !== null) {
+        if (($model = Tailor::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-    public function actionImageDelete($id)
-    {
-         $model = $this->findModel($id);
-         $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+     /**
+     * Deletes an existing image from perticular field.
+     * If deletion is successful, success message will get in update page result.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionImageDelete($id){
+        $model = $this->findModel($id);
+        
+         $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
+         $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
          // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$model->image) && !empty($model->image)){
-                unlink($uploadDirPath.'/'.$model->image);
+         if(file_exists($uploadDirPath.'/'.$model->shop_image) && !empty($model->shop_image)){
+                unlink($uploadDirPath.'/'.$model->shop_image);
          }
-         if(file_exists($uploadThumbDirPath.'/'.$model->image) && !empty($model->image)){
-                unlink($uploadThumbDirPath.'/'.$model->image);
+         if(file_exists($uploadThumbDirPath.'/'.$model->shop_image) && !empty($model->shop_image)){
+                unlink($uploadThumbDirPath.'/'.$model->shop_image);
          }
-         $model->image = null;
+         $model->shop_image = null;
         if($model->save()){
            return Json::encode(['success'=>'image successfully deleted']);
         }
-
     }
 }

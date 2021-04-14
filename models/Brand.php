@@ -2,6 +2,7 @@
 
 namespace app\models;
 use yii\behaviors\TimestampBehavior;
+use \yii\db\ActiveRecord;
 use Yii;
 
 /**
@@ -16,16 +17,33 @@ use Yii;
  *
  * @property Products[] $products
  */
-class Brand extends \yii\db\ActiveRecord
+class Brand extends ActiveRecord
 {
+    /**
+     * used for create
+     */
     const SCENARIO_CREATE = 'create';
-    const BRAND_IMAGE_EMPTY = 1;
-    const BRAND_IMAGE_NOT_EMPTY = 0;
-    const IS_TOP_BRAND_OR_NOT = [
-        '1' => 'yes',
-        '0' => 'no',
-    ];
+
+    /**
+     * used for image validation
+     */
+    const IMAGE_EMPTY = 1;
+    const IMAGE_NOT_EMPTY = 0;
     public $is_brand_image_empty;
+
+    /**
+     * use to identify top brand or not 
+     */
+    const TOP_BRAND = '1';
+    const NOT_TOP_BRAND = '0';
+    /**
+     * used for dropdown
+     */
+    const IS_TOP_BRAND_OR_NOT = [
+        self::TOP_BRAND => 'yes',
+        self::NOT_TOP_BRAND => 'no',
+    ];
+
     /**
      * {@inheritdoc}
      */
