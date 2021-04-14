@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use kartik\dialog\Dialog;
+use app\models\ProductCategory;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\ProductCategory */
@@ -41,8 +42,13 @@ echo Dialog::widget(
         'allowClear' => true
     ],
 ]);?>
-    
-    <?= $form->field($model, 'is_image_empty')->hiddenInput(['value' => 0])->label(false) ?>
+    <?php 
+       $is_image_empty = ProductCategory::IMAGE_EMPTY;
+    if(!empty($model->image)){
+       $is_image_empty = ProductCategory::IMAGE_NOT_EMPTY;
+    }
+    ?>
+    <?= $form->field($model, 'is_image_empty')->hiddenInput(['value' => $is_image_empty])->label(false) ?>
     
     <?php 
     if(!empty($model->image)){?>
