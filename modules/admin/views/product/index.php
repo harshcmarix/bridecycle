@@ -22,6 +22,54 @@ $this->params['breadcrumbs'][] = $this->title;
     $gridColumns = [
         ['class' => 'kartik\grid\SerialColumn'],
         [
+            'attribute' => 'name',
+            'value' => function ($model) {
+                return $model->name;
+            },
+            'header' => 'Name',
+            'headerOptions' => ['class' => 'kartik-sheet-style']
+        ],
+        [
+            'format' => 'raw',
+            'value' => function ($model) {
+                $images = $model->productImages;
+                $dataImages = [];
+                foreach ($images as $imageRow) {
+
+                    if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
+                        $image_path = Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $imageRow->name;
+                    } else {
+                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                    }
+
+                    $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
+                        // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
+                        'options' => ['interval' => '600']
+                    ];
+                }
+
+                $result = "";
+                if (!empty($dataImages)) {
+                    $result = \yii\bootstrap\Carousel::widget(
+                        ['items' => $dataImages]
+                    );
+                }
+
+                return $result;
+            },
+            'header' => 'Images',
+            'headerOptions' => ['class' => 'kartik-sheet-style',],
+
+        ],
+        [
+            'attribute' => 'number',
+            'value' => function ($model) {
+                return $model->number;
+            },
+            'header' => '',
+            'headerOptions' => ['class' => 'kartik-sheet-style']
+        ],
+        [
             'attribute' => 'category_id',
             'value' => function ($model) {
                 return (!empty($model->category) && $model->category instanceof ProductCategory && !empty($model->category->name)) ? $model->category->name : "";
@@ -51,54 +99,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
             'header' => 'Sub Category',
-            'headerOptions' => ['class' => 'kartik-sheet-style']
-        ],
-        [
-            'attribute' => 'name',
-            'value' => function ($model) {
-                return $model->name;
-            },
-            'header' => 'Name',
-            'headerOptions' => ['class' => 'kartik-sheet-style']
-        ],
-        [
-            'format' => 'raw',
-            'value' => function ($model) {
-                $images = $model->productImages;
-                $dataImages = [];
-                foreach ($images as $imageRow) {
-
-                    if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
-                        $image_path = Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $imageRow->name;
-                    } else {
-                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                    }
-
-                    $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
-                       // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
-                        'options' => ['interval' => '600']
-                    ];
-                }
-
-                $result = "";
-                if(!empty($dataImages)){
-                    $result = \yii\bootstrap\Carousel::widget(
-                        ['items' => $dataImages]
-                    );
-                }
-
-                return $result;
-            },
-            'header' => 'Images',
-            'headerOptions' => ['class' => 'kartik-sheet-style',],
-
-        ],
-        [
-            'attribute' => 'number',
-            'value' => function ($model) {
-                return $model->number;
-            },
-            'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style']
         ],
         [
@@ -199,7 +199,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style']
         ],
-
         [
             'class' => 'kartik\grid\ActionColumn',
         ],
