@@ -26,9 +26,9 @@ echo Dialog::widget(
     <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
 
     <?php 
-        $is_banner_image_empty = Banner::BANNER_IMAGE_EMPTY;
+        $is_banner_image_empty = Banner::IMAGE_EMPTY;
     if(!empty($model->image)){
-        $is_banner_image_empty = Banner::BANNER_IMAGE_NOT_EMPTY;
+        $is_banner_image_empty = Banner::IMAGE_NOT_EMPTY;
     }
     ?>
 
@@ -54,7 +54,7 @@ echo Dialog::widget(
 
 </div>
 <script>
-var image_empty = <?php echo Banner::BANNER_IMAGE_EMPTY?>;
+var image_empty = <?php echo Banner::IMAGE_EMPTY?>;
         $('.banner-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');

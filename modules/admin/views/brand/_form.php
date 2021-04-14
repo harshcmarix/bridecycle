@@ -30,9 +30,9 @@ echo Dialog::widget(
 
     <?= $form->field($model, 'is_top_brand')->checkbox(['label' => 'Is Top Brand', 'selected' => false])->label(false) ?>
     <?php
-       $is_brand_image_empty = Brand::BRAND_IMAGE_EMPTY;
+       $is_brand_image_empty = Brand::IMAGE_EMPTY;
     if(!empty($model->image)){
-       $is_brand_image_empty = Brand::BRAND_IMAGE_NOT_EMPTY;
+       $is_brand_image_empty = Brand::IMAGE_NOT_EMPTY;
     }?>
 
     <?= $form->field($model, 'is_brand_image_empty')->hiddenInput(['value' => $is_brand_image_empty])->label(false) ?>
@@ -57,7 +57,7 @@ echo Dialog::widget(
 
 </div>
 <script>
-var image_empty = <?php echo Brand::BRAND_IMAGE_EMPTY?>;
+var image_empty = <?php echo Brand::IMAGE_EMPTY?>;
         $('.pjax-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');

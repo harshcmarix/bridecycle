@@ -82,6 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         // 'width'=>'20px'
                     ],
                 ],
+                'width' => '10%',
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style']
             ],

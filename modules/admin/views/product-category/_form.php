@@ -4,11 +4,11 @@ use yii\helpers\{
     Html,
     Url
 };
+use app\models\ProductCategory;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use kartik\dialog\Dialog;
-use app\models\ProductCategory;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\ProductCategory */

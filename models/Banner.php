@@ -17,8 +17,8 @@ use yii\behaviors\TimestampBehavior;
 class Banner extends ActiveRecord
 {
     const SCENARIO_CREATE = 'create';
-    const BANNER_IMAGE_EMPTY = 1;
-    const BANNER_IMAGE_NOT_EMPTY = 0;
+    const IMAGE_EMPTY = 1;
+    const IMAGE_NOT_EMPTY = 0;
     /**
      * {@inheritdoc}
      */

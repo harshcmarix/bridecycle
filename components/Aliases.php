@@ -58,5 +58,11 @@ class Aliases extends Component
         // Used for banner image thumbnail
         Yii::setAlias('@bannerImageThumbAbsolutePath', Yii::getAlias('@bannerImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@bannerImageThumbRelativePath', Yii::getAlias('@bannerImageRelativePath') . '/thumbs');
+         // Used for tailor shop image
+        Yii::setAlias('@tailorShopImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/tailor_images');
+        Yii::setAlias('@tailorShopImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/tailor_images');
+        // Used for tailor image thumbnail
+        Yii::setAlias('@tailorShopImageThumbAbsolutePath', Yii::getAlias('@tailorShopImageAbsolutePath') . '/thumbs');
+        Yii::setAlias('@tailorShopImageThumbRelativePath', Yii::getAlias('@tailorShopImageRelativePath') . '/thumbs');
     }
 }
