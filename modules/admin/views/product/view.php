@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 use app\models\ProductCategory;
 use app\models\Brand;
 use app\models\Product;
+use app\models\ProductImage;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
@@ -60,6 +61,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'description:ntext',
+            [
+                'attribute' => 'images',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $data = "";
+                    $images = $model->productImages;
+                    if (!empty($images)) {
+                        foreach ($images as $imageRow) {
+                            if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
+                                $image_path = Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $imageRow->name;
+                            } else {
+                                $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                            }
+
+                            $data .= Html::img($image_path, ['alt' => 'some', 'class' => 'your_class_product_img', 'height' => '100px', 'width' => '100px']);
+                        }
+                    }
+                    return $data;
+                },
+            ],
+
             'available_quantity',
             [
                 'attribute' => 'is_top_selling',
