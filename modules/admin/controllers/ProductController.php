@@ -4,14 +4,20 @@ namespace app\modules\admin\controllers;
 
 use app\models\Brand;
 use app\models\ProductCategory;
+use app\models\ProductImage;
 use app\models\search\ProductSearch;
 use Yii;
 use app\models\Product;
+use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
+use yii\imagine\Image;
+use yii\log\EmailTarget;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use kartik\growl\Growl;
+use yii\web\UploadedFile;
 
 /**
  * ProductsController implements the CRUD actions for Products model.
@@ -83,7 +89,46 @@ class ProductController extends Controller
         $subcategory = [];
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $images = UploadedFile::getInstances($model, 'images');
+            if ($model->save()) {
+                if (!empty($images)) {
+                    foreach ($images as $img) {
+                        $modelImage = new ProductImage();
+
+                        $uploadDirPath = Yii::getAlias('@productImageRelativePath');
+                        $uploadThumbDirPath = Yii::getAlias('@productImageThumbRelativePath');
+                        $thumbImagePath = '';
+
+                        // Create product upload directory if not exist
+                        if (!is_dir($uploadDirPath)) {
+                            mkdir($uploadDirPath, 0777);
+                        }
+
+                        // Create product thumb upload directory if not exist
+                        if (!is_dir($uploadThumbDirPath)) {
+                            mkdir($uploadThumbDirPath, 0777);
+                        }
+
+                        $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
+                        // Upload product picture
+                        $img->saveAs($uploadDirPath . '/' . $fileName);
+                        // Create thumb of product picture
+                        $actualImagePath = $uploadDirPath . '/' . $fileName;
+                        $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        // Insert product picture name into database
+
+                        $modelImage->product_id = $model->id;
+                        $modelImage->name = $fileName;
+                        $modelImage->created_at = date('Y-m-d H:i:s');
+                        $modelImage->save(false);
+                    }
+                }
+            }
+
+            //Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'You have successfully created Product!');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -112,7 +157,56 @@ class ProductController extends Controller
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
 
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            $images = UploadedFile::getInstances($model, 'images');
+
+            if ($model->save()) {
+                if (!empty($images)) {
+
+                    $oldImages = $model->productImages;
+                    if (!empty($oldImages)) {
+                        foreach ($oldImages as $oldImageRow) {
+                            $oldImageRow->delete();
+                        }
+                    }
+
+                    foreach ($images as $img) {
+                        $modelImage = new ProductImage();
+
+                        $uploadDirPath = Yii::getAlias('@productImageRelativePath');
+                        $uploadThumbDirPath = Yii::getAlias('@productImageThumbRelativePath');
+                        $thumbImagePath = '';
+
+                        // Create product upload directory if not exist
+                        if (!is_dir($uploadDirPath)) {
+                            mkdir($uploadDirPath, 0777);
+                        }
+
+                        // Create product thumb upload directory if not exist
+                        if (!is_dir($uploadThumbDirPath)) {
+                            mkdir($uploadThumbDirPath, 0777);
+                        }
+
+                        $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
+                        // Upload product picture
+                        $img->saveAs($uploadDirPath . '/' . $fileName);
+                        // Create thumb of product picture
+                        $actualImagePath = $uploadDirPath . '/' . $fileName;
+                        $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        // Insert product picture name into database
+
+                        $modelImage->product_id = $model->id;
+                        $modelImage->name = $fileName;
+                        $modelImage->created_at = date('Y-m-d H:i:s');
+                        $modelImage->save(false);
+                    }
+                }
+            }
+
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -133,8 +227,23 @@ class ProductController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if (!empty($model->productImages)) {
+            foreach ($model->productImages as $key => $imageRow) {
+                if ($imageRow instanceof ProductImage) {
+                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
+                        unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
+                    }
 
+                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
+                        unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
+                    }
+                    $imageRow->delete();
+                }
+            }
+        }
+        $this->findModel($id)->delete();
+        //Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully deleted Product!');
         return $this->redirect(['index']);
     }
 
@@ -153,6 +262,10 @@ class ProductController extends Controller
         throw NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**
+     * @param $category_id
+     * @return array
+     */
     public function actionGetSubCategoryList($category_id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -168,4 +281,67 @@ class ProductController extends Controller
         return ['success' => true, 'dataList' => $subCategoryList];
 
     }
+
+    /**
+     * @return bool[]|false[]
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdateTopSelling()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = Yii::$app->request->post('id');
+        $is_top_selling = Yii::$app->request->post('is_top_selling');
+
+        $response = ['success' => false];
+        if (!empty($id)) {
+            $model = $this->findModel($id);
+            if ($model) {
+                $model->is_top_selling = (!empty($is_top_selling) && $is_top_selling == 1) ? Product::IS_TOP_SELLING_YES : Product::IS_TOP_SELLING_NO;
+                $model->save(false);
+                // \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
+                $response = ['success' => true];
+            }
+        }
+        return $response;
+    }
+
+    /**
+     * @return bool[]|false[]
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdateTopTrending()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = Yii::$app->request->post('id');
+        $is_top_trending = Yii::$app->request->post('is_top_trending');
+
+        $response = ['success' => false];
+        if (!empty($id)) {
+            $model = $this->findModel($id);
+            if ($model) {
+                $model->is_top_trending = (!empty($is_top_trending) && $is_top_trending == 1) ? Product::IS_TOP_TRENDING_YES : Product::IS_TOP_TRENDING_NO;
+                $model->save(false);
+                //\Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
+                $response = ['success' => true];
+            }
+        }
+        return $response;
+    }
+
+    public function actionDeleteProductImage($id, $product_id)
+    {
+        $model = ProductImage::findOne($id);
+        if (!empty($model)) {
+            if (!empty($model->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $model->name)) {
+                unlink(Yii::getAlias('@productImageRelativePath') . "/" . $model->name);
+            }
+
+            if (!empty($model->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $model->name)) {
+                unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $model->name);
+            }
+            $model->delete();
+        }
+        return $this->redirect(['update', 'id' => $product_id]);
+    }
+
 }

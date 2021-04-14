@@ -34,6 +34,7 @@ use Yii;
  * @property FavouriteProducts[] $favouriteProducts
  * @property OrderItems[] $orderItems
  * @property ProductRatings[] $productRatings
+ * @property ProductImages[] $productImages
  * @property Brand $brand
  * @property Category $category
  * @property SubCategory $subCategory
@@ -47,6 +48,8 @@ class Product extends \yii\db\ActiveRecord
     {
         return 'products';
     }
+
+    public $images;
 
     const IS_TOP_SELLING_YES = '1';
     const IS_TOP_SELLING_NO = '0';
@@ -82,7 +85,7 @@ class Product extends \yii\db\ActiveRecord
     public $arrGender = [
         self::GENDER_FOR_FEMALE => 'Female',
         self::GENDER_FOR_MALE => 'Male',
-       // self::GENDER_FOR_ALL => 'All',
+        // self::GENDER_FOR_ALL => 'All',
     ];
 
     public $arrIsCleaned = [
@@ -96,7 +99,7 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'number', 'category_id', 'price', 'available_quantity','gender','is_cleaned'], 'required'],
+            [['name', 'number', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'is_top_selling', 'is_top_trending'], 'required'],
             [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width'], 'integer'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
@@ -104,6 +107,7 @@ class Product extends \yii\db\ActiveRecord
             [['name', 'option_size'], 'string', 'max' => 50],
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
+            [['images'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             [['receipt'], 'string', 'max' => 255],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
@@ -171,6 +175,16 @@ class Product extends \yii\db\ActiveRecord
     public function getProductRatings()
     {
         return $this->hasMany(ProductRatings::className(), ['product_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[ProductRatings]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductImages()
+    {
+        return $this->hasMany(ProductImage::className(), ['product_id' => 'id']);
     }
 
     /**

@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
 use yii\helpers\Url;
+use app\models\ProductImage;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
@@ -12,7 +13,7 @@ use yii\helpers\Url;
 
 <div class="products-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <div class="row">
         <div class="col col-md-6">
@@ -71,6 +72,40 @@ use yii\helpers\Url;
         <div class="col col-md-12">
             <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
         </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-md-<?php echo (Yii::$app->controller->action->id == 'update') ? '4' : '8' ?>">
+            <?= $form->field($model, 'images')->fileInput(['name' => 'Product[images][]', 'multiple' => true, 'accept' => 'image/*']) ?>
+        </div>
+        <?php if (Yii::$app->controller->action->id == 'update') { ?>
+            <div class="col col-md-8 edit-product_images">
+                <?php if (!empty($model->productImages)) {
+                    $data = "";
+                    foreach ($model->productImages as $imageRow) {
+
+                        if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
+                            $image_path = Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $imageRow->name;
+                        } else {
+                            $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        }
+
+                        $data .= Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']) . "</a>";
+                    }
+                    echo $data;
+
+                    echo \kartik\dialog\Dialog::widget([
+                        'libName' => 'krajeeDialog',
+                        'options' => [
+                            //'class' => 'admin_delete_record',
+                            //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
+                        ], // default options
+                    ]);
+
+                } ?>
+            </div>
+        <?php } ?>
+
     </div>
 
     <div class="row">

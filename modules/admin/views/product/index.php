@@ -7,6 +7,7 @@ use \app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
 use yii\helpers\Url;
 use app\models\ProductCategory;
+use app\models\ProductImage;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\ProductSearch */
@@ -59,6 +60,38 @@ $this->params['breadcrumbs'][] = $this->title;
             },
             'header' => 'Name',
             'headerOptions' => ['class' => 'kartik-sheet-style']
+        ],
+        [
+            'format' => 'raw',
+            'value' => function ($model) {
+                $images = $model->productImages;
+                $dataImages = [];
+                foreach ($images as $imageRow) {
+
+                    if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
+                        $image_path = Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $imageRow->name;
+                    } else {
+                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                    }
+
+                    $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
+                       // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
+                        'options' => ['interval' => '600']
+                    ];
+                }
+
+                $result = "";
+                if(!empty($dataImages)){
+                    $result = \yii\bootstrap\Carousel::widget(
+                        ['items' => $dataImages]
+                    );
+                }
+
+                return $result;
+            },
+            'header' => 'Images',
+            'headerOptions' => ['class' => 'kartik-sheet-style',],
+
         ],
         [
             'attribute' => 'number',
@@ -136,7 +169,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => ['raw'],
             'attribute' => 'is_top_selling',
             'value' => function ($model) {
-                return Html::checkbox("", $model->is_top_selling);
+                return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id]);
             },
             'filter' => $searchModel->arrIsTopSelling,
             'filterType' => GridView::FILTER_SELECT2,
@@ -153,7 +186,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => ['raw'],
             'attribute' => 'is_top_trending',
             'value' => function ($model) {
-                return Html::checkbox("", $model->is_top_trending);
+                return Html::checkbox("", $model->is_top_trending, ['class' => 'topTrending', 'data-key' => $model->id]);
             },
             'filter' => $searchModel->arrIsTopTrending,
             'filterType' => GridView::FILTER_SELECT2,
@@ -229,4 +262,99 @@ $this->params['breadcrumbs'][] = $this->title;
         })
     });
 
+    $(document).on('click', '.topSelling', function () {
+        var id = $(this).attr('data-key');
+
+        if ($(this).prop('checked') == true) {
+            krajeeDialog.confirm('Are you sure you want to add this product to top selling?', function (out) {
+                if (out) {
+                    var is_top_selling = '1';
+                    $.ajax({
+                        url: "<?php echo Url::to(['product/update-top-selling']); ?>",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            '_csrf': '<?php echo Yii::$app->request->getCsrfToken()?>',
+                            'id': id,
+                            'is_top_selling': is_top_selling
+                        },
+                        success: function (response) {
+                            // location.reload(true);
+                        }
+                    });
+                } else {
+                    location.reload(true);
+                }
+            });
+        } else {
+            krajeeDialog.confirm('Are you sure you want to remove this product from top selling?', function (out) {
+                if (out) {
+                    var is_top_selling = '0';
+                    $.ajax({
+                        url: "<?php echo Url::to(['product/update-top-selling']); ?>",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            '_csrf': '<?php echo Yii::$app->request->getCsrfToken()?>',
+                            'id': id,
+                            'is_top_selling': is_top_selling
+                        },
+                        success: function (response) {
+                            // location.reload(true);
+                        }
+                    });
+                } else {
+                    location.reload(true);
+                }
+            });
+        }
+    });
+
+    $(document).on('click', '.topTrending', function () {
+        var id = $(this).attr('data-key');
+
+        if ($(this).prop('checked') == true) {
+            krajeeDialog.confirm('Are you sure you want to add this product to top trending?', function (out) {
+                if (out) {
+                    var is_top_trending = '1';
+                    $.ajax({
+                        url: "<?php echo Url::to(['product/update-top-trending']); ?>",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            '_csrf': '<?php echo Yii::$app->request->getCsrfToken()?>',
+                            'id': id,
+                            'is_top_trending': is_top_trending
+                        },
+                        success: function (response) {
+                            //location.reload(true);
+                        }
+                    });
+                } else {
+                    location.reload(true);
+                }
+            });
+        } else {
+            krajeeDialog.confirm('Are you sure you want to remove this product from top trending?', function (out) {
+                if (out) {
+                    var is_top_trending = '0';
+                    $.ajax({
+                        url: "<?php echo Url::to(['product/update-top-trending']); ?>",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            '_csrf': '<?php echo Yii::$app->request->getCsrfToken()?>',
+                            'id': id,
+                            'is_top_trending': is_top_trending
+                        },
+                        success: function (response) {
+                            //location.reload(true);
+                        }
+                    });
+                } else {
+                    location.reload(true);
+                }
+            });
+        }
+    });
 </script>
