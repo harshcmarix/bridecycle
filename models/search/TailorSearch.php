@@ -16,7 +16,7 @@ class TailorSearch extends Tailor
      */
     public function rules()
     {
-        return [
+       return [
             [['id', 'mobile'], 'integer'],
             [['name', 'shop_name', 'shop_image', 'address', 'created_at', 'updated_at'], 'safe'],
         ];

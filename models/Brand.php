@@ -73,6 +73,7 @@ class Brand extends ActiveRecord
             [['is_top_brand'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],
+            [['name'], 'unique'],
             [['image'], 'string', 'max' => 250],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],

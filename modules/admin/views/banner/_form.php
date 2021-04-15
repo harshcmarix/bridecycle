@@ -37,7 +37,7 @@ echo Dialog::widget(
     if(!empty($model->image)){?>
 
     <div class="form-group image-class">
-            <?= Html::a('',['javascript:(0)'],['class' => 'glyphicon glyphicon-trash banner-delete-link','delete-url'=>'../banner/image-delete?id='.$model->id]) ?>
+            <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'banner-delete-link','delete-url'=>'../banner/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
              <?= Html::img(Yii::getAlias('@bannerImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
@@ -58,7 +58,6 @@ var image_empty = <?php echo Banner::IMAGE_EMPTY?>;
         $('.banner-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
-            var pjaxContainer = $(this).attr('pjax-container');
             var result = krajeeDialog.confirm('Are you sure You want to delete this image ?', function(result){                                     
             if(result) {
                 $.ajax({

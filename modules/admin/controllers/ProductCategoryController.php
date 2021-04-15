@@ -151,7 +151,7 @@ class ProductCategoryController extends Controller
     }
 
     $new_image = UploadedFile::getInstance($model, 'image');
-    if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+    if ($model->load(Yii::$app->request->post())) {
         if (!empty($new_image)) {
             $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
             $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');

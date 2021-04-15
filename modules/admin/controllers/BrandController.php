@@ -78,6 +78,11 @@ class BrandController extends Controller
         $model = new Brand();
         $model->scenario = Brand::SCENARIO_CREATE;
         $brand_image = UploadedFile::getInstance($model, 'image');
+
+         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
         if ($model->load(Yii::$app->request->post())) {
             
             if(!empty($brand_image)){
@@ -135,6 +140,11 @@ class BrandController extends Controller
             $old_image = $model->image;
 
             $new_image = UploadedFile::getInstance($model, 'image');
+
+         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
 
         if ($model->load(Yii::$app->request->post())) {
            

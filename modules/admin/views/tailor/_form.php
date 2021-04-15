@@ -24,7 +24,7 @@ echo Dialog::widget(
 
     <?= $form->field($model, 'shop_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'address')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'mobile')->textInput(['maxlength' => 10]) ?>
 
@@ -41,7 +41,7 @@ echo Dialog::widget(
     <?php 
     if(!empty($model->shop_image)){?>
     <div class="form-group image-class">
-            <?= Html::a('',['javascript:(0)'],['class' => 'glyphicon glyphicon-trash shop_image-delete-link','delete-url'=>'../tailor/image-delete?id='.$model->id]) ?>
+            <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'shop_image-delete-link','delete-url'=>'../tailor/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
              <?= Html::img(Yii::getAlias('@tailorShopImageThumbAbsolutePath').'/'.$model->shop_image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
@@ -60,9 +60,7 @@ echo Dialog::widget(
 var image_empty = <?php echo Tailor::IMAGE_EMPTY?>;
  $('.shop_image-delete-link').on('click', function(e) {
             e.preventDefault();
-            // krajeeDialog.alert('An alert');
             var deleteUrl = $(this).attr('delete-url');
-            var pjaxContainer = $(this).attr('pjax-container');
             var result = krajeeDialog.confirm('Are you sure You want to delete this image ?', function(result){                                
             if(result) {
                 $.ajax({
