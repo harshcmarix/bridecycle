@@ -2,10 +2,12 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\UserAddress;
 use app\modules\admin\models\User;
 use kartik\growl\Growl;
 use Yii;
 use app\modules\admin\models\search\UserSearch;
+use yii\base\BaseObject;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -56,8 +58,10 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
+        $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'shopAddress'=>$userShopAddress,
         ]);
     }
 
@@ -94,6 +98,22 @@ class UserController extends Controller
             }
 
             if ($model->save(false)) {
+
+                if (!empty($model->is_shop_owner) || $model->is_shop_owner != '0' || $model->is_shop_owner != '') {
+                    $modelShopAddress = new UserAddress();
+                    $postData = Yii::$app->request->post('User');
+                    $shopFullAddress = $postData['shop_address_street'] . ", " . $postData['shop_address_city'] . ", " . $postData['shop_address_zip_code'];
+                    $modelShopAddress->user_id = $model->id;
+                    $modelShopAddress->type = UserAddress::TYPE_SHOP;
+                    $modelShopAddress->street = $postData['shop_address_street'];
+                    $modelShopAddress->city = $postData['shop_address_city'];
+                    $modelShopAddress->state = $postData['shop_address_state'];
+                    $modelShopAddress->zip_code = $postData['shop_address_zip_code'];
+                    $modelShopAddress->country = $postData['shop_address_country'];
+                    $modelShopAddress->address = $shopFullAddress;
+                    $modelShopAddress->save();
+                }
+
                 \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully created User!');
 
                 Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
@@ -102,7 +122,8 @@ class UserController extends Controller
                     ->setSubject('Thank you for Registration!')
                     ->send();
 
-                return $this->redirect(['view', 'id' => $model->id]);
+                //return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
             }
         }
 
@@ -121,6 +142,7 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $modelShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
         $model->scenario = User::SCENARIO_UPDATE_NORMAL_USER;
 
         // Old file and Password
@@ -134,7 +156,16 @@ class UserController extends Controller
             return ActiveForm::validate($model);
         }
 
-        $postData = Yii::$app->request->post('Users');
+        $model->shop_address_street = $model->shop_address_city = $model->shop_address_state = $model->shop_address_country = $model->shop_address_zip_code = "";
+        if (!empty($modelShopAddress) && $modelShopAddress instanceof UserAddress) {
+            $model->shop_address_street = $modelShopAddress->street;
+            $model->shop_address_city = $modelShopAddress->city;
+            $model->shop_address_state = $modelShopAddress->state;
+            $model->shop_address_country = $modelShopAddress->country;
+            $model->shop_address_zip_code = $modelShopAddress->zip_code;
+        }
+
+        $postData = Yii::$app->request->post('User');
 
         if ($model->load(Yii::$app->request->post())) { // && $model->save()
 
@@ -162,23 +193,38 @@ class UserController extends Controller
                 $model->shop_logo = "";
             }
 
-            if (isset($postData['is_shop_owner'])) {
+            if (isset($postData['is_shop_owner']) && $postData['is_shop_owner'] == '1') {
                 $model->is_shop_owner = User::IS_SHOP_OWNER_YES;
                 $model->shop_name = $postData['shop_name'];
                 $model->shop_email = $postData['shop_email'];
                 $model->shop_phone_number = $postData['shop_phone_number'];
-                $model->shop_address = $postData['shop_address'];
+
+                if (empty($modelShopAddress)) {
+                    $modelShopAddress = new UserAddress();
+                }
+                $shopFullAddress = $postData['shop_address_street'] . ", " . $postData['shop_address_city'] . ", " . $postData['shop_address_zip_code'];
+                $modelShopAddress->user_id = $id;
+                $modelShopAddress->type = UserAddress::TYPE_SHOP;
+                $modelShopAddress->street = $postData['shop_address_street'];
+                $modelShopAddress->city = $postData['shop_address_city'];
+                $modelShopAddress->state = $postData['shop_address_state'];
+                $modelShopAddress->zip_code = $postData['shop_address_zip_code'];
+                $modelShopAddress->country = $postData['shop_address_country'];
+                $modelShopAddress->address = $shopFullAddress;
+                $modelShopAddress->save();
+
             } else {
                 $model->is_shop_owner = User::IS_SHOP_OWNER_NO;
-                $model->shop_name = $model->shop_email = $model->shop_phone_number = $model->shop_address = "";
+                $model->shop_name = $model->shop_email = $model->shop_phone_number = ""; //= $model->shop_address
             }
 
             $model->user_type = User::USER_TYPE_NORMAL_USER;
             $model->updated_at = date('Y-m-d H:i:s');
 
             if ($model->save()) {
-                \Yii::$app->getSession()->setFlash('success', 'You have successfully updated User!');
-                return $this->redirect(['view', 'id' => $model->id]);
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated User!');
+                //return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
             }
         }
 

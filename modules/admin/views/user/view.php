@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'mobile',
             //'weight',
             //'height',
-            'personal_information:ntext',
+            //'personal_information:ntext',
             [
                 'attribute' => "user_type",
                 'value' => function ($model) {
@@ -84,9 +84,33 @@ $this->params['breadcrumbs'][] = $this->title;
                     return ($model->is_shop_owner == 1) ? "Yes" : "No";
                 }
             ],
+            [
+                'format' => 'raw',
+                'attribute' => 'shop_logo',
+                'value' => function ($data) {
+                    $image_path = "";
+                    if (!empty($data->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $data->shop_logo)) {
+                        $image_path = Yii::getAlias('@shopLogoAbsolutePath') . '/' . $data->shop_logo;
+                    } else {
+                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                    }
+                    Modal::begin([
+                        'id' => 'contentmodalShopLogo_' . $data->id,
+                        'header' => '<h3>Shop Logo</h3>',
+                    ]);
+                    echo Html::img($image_path, ['width' => '570']);
+                    Modal::end();
+                    $contentmodelShopLogo = "contentmodalShopLogo('" . $data->id . "');";
+                    return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodelShopLogo, 'height' => '100px', 'width' => '100px']);
+                },
+            ],
             'shop_name',
             'shop_email:email',
             'shop_phone_number',
+            [
+                'label' => 'Shop Address',
+                'value' => (!empty($shopAddress) && $shopAddress instanceof \app\models\UserAddress && !empty($shopAddress->address)) ? $shopAddress->address : "",
+            ],
             'created_at',
             'updated_at',
         ],
@@ -98,5 +122,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <script type="text/javascript">
     function contentmodel(id) {
         $('#contentmodal_' + id).modal('show');
+    }
+
+    function contentmodelShopLogo(id) {
+        $('#contentmodalShopLogo_' + id).modal('show');
     }
 </script>

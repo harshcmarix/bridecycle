@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "products".
@@ -49,6 +50,20 @@ class Product extends \yii\db\ActiveRecord
         return 'products';
     }
 
+    /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
+        ];
+    }
+
+
     public $images;
 
     const IS_TOP_SELLING_YES = '1';
@@ -64,7 +79,7 @@ class Product extends \yii\db\ActiveRecord
     const IS_CLEANED_NO = '0';
 
     const GENDER_FOR_FEMALE = '1';
-    const GENDER_FOR_MALE = '2';
+    const GENDER_FOR_MALE = '0';
     const GENDER_FOR_ALL = '3';
 
     public $arrIsTopSelling = [
@@ -92,6 +107,9 @@ class Product extends \yii\db\ActiveRecord
         self::IS_CLEANED_YES => 'Yes',
         self::IS_CLEANED_NO => 'No',
     ];
+
+
+
 
     /**
      * {@inheritdoc}

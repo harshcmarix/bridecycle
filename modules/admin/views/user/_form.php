@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col col-md-6">
-            <?= $form->field($model, 'mobile')->textInput() ?>
+            <?= $form->field($model, 'mobile',['enableAjaxValidation' => true])->textInput() ?>
         </div>
     </div>
     <div class="row">
@@ -61,19 +61,36 @@ use yii\widgets\ActiveForm;
                 ?>
             </div>
             <div class="col col-md-6">
-                <?= $form->field($model, 'shop_phone_number')->textInput() ?>
+                <?= $form->field($model, 'shop_phone_number',['enableAjaxValidation' => true])->textInput() ?>
             </div>
-            <div class="col col-md-12">
-                <?= $form->field($model, 'shop_address')->textInput() ?>
+            <div class="row">
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'shop_address_street')->textInput() ?>
+                </div>
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'shop_address_city')->textInput() ?>
+                </div>
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'shop_address_state')->textInput() ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'shop_address_country')->textInput() ?>
+                </div>
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'shop_address_zip_code')->textInput() ?>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-    </div>
-    <?php ActiveForm::end(); ?>
+<div class="form-group">
+    <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+    <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+</div>
+<?php ActiveForm::end(); ?>
 </div>
 
 <script type="text/javascript">

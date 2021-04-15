@@ -21,7 +21,15 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="users-index table-responsive">
     <?php
     $gridColumns = [
-        ['class' => 'kartik\grid\SerialColumn'],
+        //['class' => 'kartik\grid\SerialColumn'],
+        [
+            'attribute' => 'id',
+            'value' => function ($model) {
+                return $model->id;
+            },
+            'header' => 'User ID',
+            'headerOptions' => ['class' => 'kartik-sheet-style']
+        ],
         [
             'attribute' => 'first_name',
             'value' => function ($model) {

@@ -38,7 +38,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -128,8 +128,9 @@ class ProductController extends Controller
                 }
             }
 
-            //Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'You have successfully created Product!');
-            return $this->redirect(['view', 'id' => $model->id]);
+            \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'You have successfully created Product!');
+            //return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -206,8 +207,9 @@ class ProductController extends Controller
                 }
             }
 
-            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
-            return $this->redirect(['view', 'id' => $model->id]);
+            \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
+            //return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -243,7 +245,7 @@ class ProductController extends Controller
             }
         }
         $this->findModel($id)->delete();
-        //Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully deleted Product!');
+        \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully deleted Product!');
         return $this->redirect(['index']);
     }
 
@@ -259,7 +261,7 @@ class ProductController extends Controller
         if (($model = Product::findOne($id)) !== null) {
             return $model;
         }
-        throw NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     /**
@@ -298,7 +300,7 @@ class ProductController extends Controller
             if ($model) {
                 $model->is_top_selling = (!empty($is_top_selling) && $is_top_selling == 1) ? Product::IS_TOP_SELLING_YES : Product::IS_TOP_SELLING_NO;
                 $model->save(false);
-                // \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
                 $response = ['success' => true];
             }
         }
@@ -321,7 +323,7 @@ class ProductController extends Controller
             if ($model) {
                 $model->is_top_trending = (!empty($is_top_trending) && $is_top_trending == 1) ? Product::IS_TOP_TRENDING_YES : Product::IS_TOP_TRENDING_NO;
                 $model->save(false);
-                //\Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated Product!');
                 $response = ['success' => true];
             }
         }
@@ -340,6 +342,7 @@ class ProductController extends Controller
                 unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $model->name);
             }
             $model->delete();
+            \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully Deleted Product Image!');
         }
         return $this->redirect(['update', 'id' => $product_id]);
     }

@@ -86,8 +86,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h3 class="box-title"> Order Products</h3>
                 </div>
                 <div class="box-body table-responsive">
-
-
                     <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
@@ -166,11 +164,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                     ]); ?>
-
-
                 </div>
             </div>
         </div>
     </div>
+    <p>
+        <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+    </p>
 
 </div>

@@ -13,7 +13,7 @@ use app\models\ProductImage;
 $this->title = 'Orders';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="order-index table-responsive">
+<div class="order-index">
 
     <?php
     $gridColumns = [
@@ -177,7 +177,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'bordered' => true,
         'striped' => true,
         'condensed' => true,
-        'responsive' => true,
+        'responsive' => false,
         'panel' => [
             'type' => GridView::TYPE_PRIMARY,
             'heading' => 'Order',

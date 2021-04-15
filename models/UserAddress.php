@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use app\modules\admin\models\User;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "user_addresses".
@@ -33,6 +35,24 @@ class UserAddress extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
+        ];
+    }
+
+    const TYPE_BILLING = '1';
+    const TYPE_SHIPPING = '2';
+    const TYPE_SHOP = '3';
+
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
@@ -44,7 +64,7 @@ class UserAddress extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['address', 'zip_code'], 'string', 'max' => 100],
             [['street', 'city', 'state', 'country'], 'string', 'max' => 50],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -75,7 +95,7 @@ class UserAddress extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Orders::className(), ['user_address_id' => 'id']);
+        return $this->hasMany(Order::className(), ['user_address_id' => 'id']);
     }
 
     /**
@@ -85,6 +105,6 @@ class UserAddress extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 }

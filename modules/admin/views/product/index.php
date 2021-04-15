@@ -109,14 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style']
         ],
-        [
-            'attribute' => 'option_size',
-            'value' => function ($model) {
-                return $model->option_size;
-            },
-            'header' => '',
-            'headerOptions' => ['class' => 'kartik-sheet-style'],
-        ],
+
         [
             'attribute' => 'option_price',
             'value' => function ($model) {

@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\modules\admin\models\User;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "orders".
@@ -28,6 +29,19 @@ class Order extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'orders';
+    }
+
+    /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
+        ];
     }
 
     const STATUS_ORDER_PENDING = '1';
