@@ -110,7 +110,9 @@ class SubAdminController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->user_type = (string)User::USER_TYPE_SUB_ADMIN;
+            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
             if ($model->save()) {
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Sub admin updated successfully.");
             } else {
