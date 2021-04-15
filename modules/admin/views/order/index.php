@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'created_at',
             'value' => function ($model) {
-                return $model->created_at;
+                return date('Y-m-d',strtotime($model->created_at));
             },
             'filter' => '',
             'header' => 'Order Date',
