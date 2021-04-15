@@ -57,6 +57,7 @@ class Tailor extends ActiveRecord
     {
         return [
             [['name', 'shop_name', 'address'], 'required'],
+            [['address'], 'string'],
             [['mobile'], 'integer'],
             [['shop_image'], 'file', 'extensions' => 'png,jpg'],
             [['shop_image'],'required','on'=>self::SCENARIO_CREATE],
@@ -68,7 +69,7 @@ class Tailor extends ActiveRecord
                                     }
             }",],
             [['created_at', 'updated_at'], 'safe'],
-            [['name', 'shop_image', 'address'], 'string', 'max' => 255],
+            [['name', 'shop_image'], 'string', 'max' => 255],
             [['shop_name'], 'string', 'max' => 50],
         ];
     }

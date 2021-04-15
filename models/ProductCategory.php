@@ -61,6 +61,7 @@ class ProductCategory extends \yii\db\ActiveRecord
             [['parent_category_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],
+            [['name'], 'unique'],
             [['image'], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required','on'=>self::SCENARIO_CREATE],

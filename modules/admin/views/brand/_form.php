@@ -24,7 +24,7 @@ echo Dialog::widget(
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name',['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
 
@@ -40,7 +40,7 @@ echo Dialog::widget(
     if(!empty($model->image)){?>
 
     <div class="form-group image-class">
-            <?= Html::a('',['javascript:(0)'],['class' => 'glyphicon glyphicon-trash pjax-delete-link','delete-url'=>'../brand/image-delete?id='.$model->id]) ?>
+            <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'pjax-delete-link','delete-url'=>'../brand/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
              <?= Html::img(Yii::getAlias('@brandImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
@@ -61,7 +61,6 @@ var image_empty = <?php echo Brand::IMAGE_EMPTY?>;
         $('.pjax-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
-            var pjaxContainer = $(this).attr('pjax-container');
             var result = krajeeDialog.confirm('Are you sure You want to delete this image ?', function(result){                                     
             if(result) {
                 $.ajax({
