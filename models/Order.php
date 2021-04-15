@@ -30,6 +30,18 @@ class Order extends \yii\db\ActiveRecord
         return 'orders';
     }
 
+    const STATUS_ORDER_PENDING = '1';
+    const STATUS_ORDER_INPROGRESS = '2';
+    const STATUS_ORDER_COMPLETED = '3';
+    const STATUS_ORDER_CANCELLED = '4';
+
+    public $arrOrderStatus = [
+        self::STATUS_ORDER_PENDING => 'Pending',
+        self::STATUS_ORDER_INPROGRESS => 'In Progress',
+        self::STATUS_ORDER_COMPLETED => 'Completed',
+        self::STATUS_ORDER_CANCELLED => 'Cancelled',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -51,9 +63,9 @@ class Order extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
-            'user_address_id' => 'User Address ID',
+            'id' => 'Order ID',
+            'user_id' => 'User',
+            'user_address_id' => 'User Address',
             'total_amount' => 'Total Amount',
             'status' => 'Status',
             'created_at' => 'Created At',

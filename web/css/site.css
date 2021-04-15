@@ -172,3 +172,41 @@ a.right.carousel-control {
    margin-top: 40%;
 
 }
+
+table.order-products_tbl > tbody > tr > th{
+    border: solid 2px #ddd;
+    padding: 5px;
+}
+table.order-products_tbl > tbody > tr > td{
+    text-align: justify;
+    border: solid 2px #ddd;
+    padding: 5px;
+}
+
+.box {
+    position: relative;
+    border-radius: 3px;
+    background: #ffffff;
+    border: 3px solid #d2d6de;
+    margin-bottom: 2px;
+    width: 100%;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 10%);
+}
+.box-header {
+    color: #444;
+    display: block;
+    padding: 10px;
+    position: relative;
+}
+.box-header>.fa, .box-header>.glyphicon, .box-header>.ion, .box-header .box-title {
+    display: inline-block;
+    font-size: 18px;
+    margin: 0;
+    line-height: 1;
+}
+.h3, h3 {
+    font-size: 24px;
+}
+/*.box-border {*/
+/*    border-bottom: 1px solid #f4f4f4;*/
+/*}*/
