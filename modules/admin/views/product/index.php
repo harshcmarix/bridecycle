@@ -16,7 +16,7 @@ use app\models\ProductImage;
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="products-index">
+<div class="products-index table-responsive">
 
     <?php
     $gridColumns = [
@@ -205,7 +205,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ];
 
     echo GridView::widget([
-        'id' => 'product-grid',
+        'id' => 'kv-grid-demo',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $gridColumns, // check the configuration for grid columns by clicking button above

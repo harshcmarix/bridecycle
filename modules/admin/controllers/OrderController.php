@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\search\OrderItemSearch;
 use Yii;
 use app\models\Order;
 use app\models\search\OrderSearch;
@@ -52,8 +53,14 @@ class OrderController extends Controller
      */
     public function actionView($id)
     {
+
+        $searchModelOrderItem = new OrderItemSearch();
+        $dataProviderOrderItem = $searchModelOrderItem->searchByOrder(Yii::$app->request->queryParams, $id);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'searchModel' => $searchModelOrderItem,
+            'dataProvider' => $dataProviderOrderItem,
         ]);
     }
 
