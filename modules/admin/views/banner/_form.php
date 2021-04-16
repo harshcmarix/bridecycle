@@ -7,6 +7,7 @@ use yii\helpers\{
 use yii\widgets\ActiveForm;
 use app\models\Banner;
 use kartik\dialog\Dialog;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Banner */
@@ -24,7 +25,7 @@ echo Dialog::widget(
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
-
+<!-- image validation -->
     <?php 
         $is_banner_image_empty = Banner::IMAGE_EMPTY;
     if(!empty($model->image)){
@@ -33,14 +34,29 @@ echo Dialog::widget(
     ?>
 
       <?= $form->field($model, 'is_banner_image_empty')->hiddenInput(['value' => $is_banner_image_empty])->label(false) ?>
+      <!-- image display and popup -->
     <?php 
-    if(!empty($model->image)){?>
+    if(!empty($model->image)){
+         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+          if (!empty($model->image) && file_exists(Yii::getAlias('@bannerImageRelativePath') . '/' . $model->image)) {
+                        $image_path = Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $model->image;
+            } 
+            Modal::begin([
+                'id' => 'bannermodal_' . $model->id,
+                'header' => '<h3>Banner Image</h3>',
+                'size' => Modal::SIZE_DEFAULT
+            ]);
 
+            echo Html::img($image_path, ['width' => '570']);
+
+            Modal::end();
+            $bannermodal = "bannermodal('" . $model->id . "');";
+        ?>
     <div class="form-group image-class">
             <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'banner-delete-link','delete-url'=>'../banner/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img(Yii::getAlias('@bannerImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
+             <?= Html::img($image_path,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px', 'onclick' => $bannermodal]); ?>
     </div>
 
     <?php } ?>
@@ -73,4 +89,9 @@ var image_empty = <?php echo Banner::IMAGE_EMPTY?>;
             }
             });
         });
+       
+    function bannermodal(id) {
+        $('#bannermodal_' + id).modal('show');
+    }
+
 </script>
