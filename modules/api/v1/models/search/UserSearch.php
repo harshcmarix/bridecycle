@@ -24,9 +24,15 @@ class UserSearch extends User
      */
     public function rules()
     {
-        return [
-            [['id', 'mobile', 'shop_phone_number'], 'integer'],
-            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'personal_information', 'user_type', 'is_shop_owner', 'shop_name', 'shop_email', 'created_at', 'updated_at'], 'safe'],
+        // return [
+        //     [['id', 'mobile', 'shop_phone_number'], 'integer'],
+        //     [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'personal_information', 'user_type', 'is_shop_owner', 'shop_name', 'shop_email', 'created_at', 'updated_at'], 'safe'],
+        //     [['weight', 'height'], 'number'],
+        // ];
+
+         return [
+            [['id'], 'integer'],
+            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'mobile', 'personal_information', 'user_type', 'is_shop_owner', 'shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website', 'shop_address', 'created_at', 'updated_at'], 'safe'],
             [['weight', 'height'], 'number'],
         ];
     }
@@ -100,7 +106,7 @@ class UserSearch extends User
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id', 'email', 'first_name', 'last_name', 'mobile', 'user_type', 'is_shop_owner'];
+            $select = ['id', 'email', 'first_name', 'last_name', 'mobile', 'user_type', 'is_shop_owner','profile_picture','shop_cover_picture','shop_name','shop_email','shop_phone_number','shop_logo','website'];
         }
 
         $query->select($select);
@@ -111,7 +117,7 @@ class UserSearch extends User
 
         $query->groupBy('users.id');
         //p($query->createCommand()->getRawSql());
-        return Yii::createObject([
+        $activeDataProvider =  Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
             'pagination' => [
@@ -122,5 +128,20 @@ class UserSearch extends User
                 'params' => $requestParams,
             ],
         ]);
+        $userModelData = $activeDataProvider->getModels();
+        // p($userModelData);
+        foreach($userModelData as $key=>$value){
+            if(!empty($userModelData[$key]['profile_picture'])){
+                 $userModelData[$key]['profile_picture'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture; 
+            }
+            if(!empty($userModelData[$key]['shop_cover_picture'])){
+                 $userModelData[$key]['shop_cover_picture'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $value->shop_cover_picture;
+            }
+            if(!empty($userModelData[$key]['shop_logo'])){
+                 $userModelData[$key]['shop_logo'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
+            }
+        }
+        $activeDataProvider->setModels($userModelData);
+        return $activeDataProvider;
     }
 }

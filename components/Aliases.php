@@ -32,6 +32,15 @@ class Aliases extends Component
         // Used for shop logo
         Yii::setAlias('@shopLogoAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/shop_logos');
         Yii::setAlias('@shopLogoRelativePath', Yii::getAlias('@uploadsRelativePath') . '/shop_logos');
+        // Used for shop logo thumbnail 
+        Yii::setAlias('@shopLogoThumbAbsolutePath', Yii::getAlias('@shopLogoAbsolutePath') . '/thumbs');
+        Yii::setAlias('@shopLogoThumbRelativePath', Yii::getAlias('@shopLogoRelativePath') . '/thumbs');
+         // Used for shop cover picture
+        Yii::setAlias('@shopCoverPictureAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/shop_cover_picture');
+        Yii::setAlias('@shopCoverPictureRelativePath', Yii::getAlias('@uploadsRelativePath') . '/shop_cover_picture');
+        // Used for shop cover picture thumbnail 
+        Yii::setAlias('@shopCoverPictureThumbAbsolutePath', Yii::getAlias('@shopCoverPictureAbsolutePath') . '/thumbs');
+        Yii::setAlias('@shopCoverPictureThumbRelativePath', Yii::getAlias('@shopCoverPictureRelativePath') . '/thumbs');
         // Used for product category image
         Yii::setAlias('@productCategoryImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/product_images');
         Yii::setAlias('@productCategoryImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/product_images');

@@ -6,6 +6,7 @@ use Yii;
 use app\modules\api\v1\models\{
     User
 };
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "user_addresses".
@@ -33,6 +34,18 @@ class UserAddress extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'user_addresses';
+    }
+     /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
+        ];
     }
 
     /**
