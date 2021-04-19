@@ -22,21 +22,27 @@ use app\modules\api\v1\models\{
  * @property string|null $temporary_password
  * @property string|null $access_token
  * @property string|null $access_token_expired_at
- * @property int|null $mobile
+ * @property string|null $password_reset_token
+ * @property string|null $mobile
  * @property float|null $weight
  * @property float|null $height
  * @property string|null $personal_information
  * @property string|null $user_type 1 => admin, 2 => sub admin, 3 => normal user
  * @property string $is_shop_owner 1 => shop owner
+ * @property string|null $shop_cover_picture
  * @property string|null $shop_name
  * @property string|null $shop_email
- * @property int|null $shop_phone_number
+ * @property string|null $shop_phone_number
+ * @property string|null $shop_logo
+ * @property string|null $website
+ * @property string|null $shop_address
  * @property string|null $created_at
  * @property string|null $updated_at
  *
  * @property FavouriteProducts[] $favouriteProducts
  * @property Orders[] $orders
  * @property ProductRatings[] $productRatings
+ * @property PromoCodes[] $promoCodes
  * @property UserAddresses[] $userAddresses
  * @property UserSocialIdentities[] $userSocialIdentities
  * @property UserSubscriptions[] $userSubscriptions
@@ -103,13 +109,17 @@ class User extends ActiveRecord implements IdentityInterface
             [['mobile', 'shop_phone_number'], 'integer'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
+            [['email','shop_email'], 'email'],
             [['email'], 'unique'],
             [['email'], 'string', 'max' => 60],
-            [['password_hash', 'access_token'], 'string', 'max' => 255],
+            [[ 'password_hash', 'temporary_password', 'access_token', 'password_reset_token', 'shop_address','website'], 'string', 'max' => 255],
+            [['website'],'url', 'defaultScheme' => ''],
             [['temporary_password'], 'string', 'max' => 8],
+            [['shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
             [['profile_picture'], 'file', 'extensions' => 'png,jpg'],
+            [['shop_logo'], 'file', 'extensions' => 'png,jpg'],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
-            [['shop_name', 'shop_email'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
+            [['shop_name', 'shop_email','shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
             [['weight', 'height'], 'number'],
         ];
     }

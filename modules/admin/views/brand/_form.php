@@ -7,6 +7,7 @@ use yii\helpers\{
 use yii\widgets\ActiveForm;
 use app\models\Brand;
 use kartik\dialog\Dialog;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Brand */
@@ -29,6 +30,7 @@ echo Dialog::widget(
     <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'is_top_brand')->checkbox(['label' => 'Is Top Brand', 'selected' => false])->label(false) ?>
+    <!-- image validation -->
     <?php
        $is_brand_image_empty = Brand::IMAGE_EMPTY;
     if(!empty($model->image)){
@@ -36,14 +38,30 @@ echo Dialog::widget(
     }?>
 
     <?= $form->field($model, 'is_brand_image_empty')->hiddenInput(['value' => $is_brand_image_empty])->label(false) ?>
+    <!-- image display and image popup -->
     <?php 
-    if(!empty($model->image)){?>
+    if(!empty($model->image)){
+         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+         if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageRelativePath') . '/' . $model->image)) {
+                        $image_path = Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+                    } 
+                    Modal::begin([
+                        'id' => 'brandmodal_' . $model->id,
+                        'header' => '<h3>Brand Image</h3>',
+                        'size' => Modal::SIZE_DEFAULT
+                    ]);
+
+                    echo Html::img($image_path, ['width' => '570']);
+
+                    Modal::end();
+                    $brandmodal = "brandmodal('" . $model->id . "');";
+        ?>
 
     <div class="form-group image-class">
             <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'pjax-delete-link','delete-url'=>'../brand/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img(Yii::getAlias('@brandImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
+             <?= Html::img($image_path,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px', 'onclick' => $brandmodal]); ?>
     </div>
 
     <?php } ?>
@@ -76,4 +94,7 @@ var image_empty = <?php echo Brand::IMAGE_EMPTY?>;
             }
             });
         });
+         function brandmodal(id) {
+        $('#brandmodal_' + id).modal('show');
+    }
 </script>

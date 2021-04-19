@@ -78,6 +78,12 @@ class TailorController extends Controller
         $model = new Tailor();
         $model->scenario = Tailor::SCENARIO_CREATE;
         $shop_image = UploadedFile::getInstance($model, 'shop_image');
+
+         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return \yii\widgets\ActiveForm::validate($model);
+        }
+
         if ($model->load(Yii::$app->request->post())) {
             
             if(!empty($shop_image)){
@@ -136,8 +142,13 @@ class TailorController extends Controller
          $old_image = $model->shop_image;
          $new_image = UploadedFile::getInstance($model, 'shop_image');
 
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return \yii\widgets\ActiveForm::validate($model);
+            }
+
         if ($model->load(Yii::$app->request->post())) {
-           
+       
             if (!empty($new_image)) {
                     $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
                     $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
@@ -163,20 +174,20 @@ class TailorController extends Controller
                     $ext = $new_image->extension;
                     $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
                     $fileName = $fileName . '_' . time() . '.' . $ext;
-                    // Upload profile picture
+                    // Upload tailor shop image
                     $new_image->saveAs($uploadDirPath . '/' . $fileName);
-                    // Create thumb of profile picture
+                    // Create thumb of tailor shop image
                     $actualImagePath = $uploadDirPath . '/' . $fileName;
                     $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
                     // p($actualImagePath);
                     Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                    // Insert profile picture name into database
+                    // Insert tailor shop image name into database
                     $model->shop_image = $fileName;
 
             } else {
                 $model->shop_image = $old_image;
             }
-            
+           
             if ($model->save()) {
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Tailor updated successfully.");
             } else {

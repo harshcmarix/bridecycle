@@ -9,6 +9,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use kartik\dialog\Dialog;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\ProductCategory */
@@ -42,6 +43,7 @@ echo Dialog::widget(
         'allowClear' => true
     ],
 ]);?>
+<!-- image validation code -->
     <?php 
        $is_image_empty = ProductCategory::IMAGE_EMPTY;
     if(!empty($model->image)){
@@ -49,14 +51,29 @@ echo Dialog::widget(
     }
     ?>
     <?= $form->field($model, 'is_image_empty')->hiddenInput(['value' => $is_image_empty])->label(false) ?>
-    
+
+    <!-- image display and image popup -->
     <?php 
-    if(!empty($model->image)){?>
+    if(!empty($model->image)){
+        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+         if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageRelativePath') . '/' . $model->image)) {
+              $image_path = Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        }
+        Modal::begin([
+                        'id' => 'productcategorymodal_' . $model->id,
+                        'header' => '<h3>Category Image</h3>',
+                        'size' => Modal::SIZE_DEFAULT
+                    ]);
+
+                echo Html::img($image_path, ['width' => '570']);
+                Modal::end();
+                $productcategorymodal = "productcategorymodal('" . $model->id . "');";
+    ?>                    
     <div class="form-group image-class">
             <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'pjax-delete-link','delete-url'=>'../product-category/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img(Yii::getAlias('@productCategoryImageThumbAbsolutePath').'/'.$model->image,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px']); ?>
+             <?= Html::img($image_path,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px','onclick' => $productcategorymodal]); ?>
     </div>
     <?php } ?>
 
@@ -68,8 +85,8 @@ echo Dialog::widget(
     <?php ActiveForm::end(); ?>
 
 </div>
-<?php
-$this->registerJs("
+<!-- image validation -->
+<script type="text/javascript">
         $('.pjax-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
@@ -88,5 +105,8 @@ $this->registerJs("
             }
            }); 
         });
-");
-?>
+    // image modal popup
+    function productcategorymodal(id) {
+        $('#productcategorymodal_' + id).modal('show');
+    }
+</script>

@@ -105,6 +105,7 @@ class SubAdmin extends ActiveRecord
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['shop_phone_number'], 'integer'],
             [['mobile', 'weight', 'height'], 'number'],
+            [['mobile', 'shop_phone_number'],'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['password', 'confirm_password'], 'required', 'on' => self::SCENARIO_CREATE],
             [['profile_picture', 'password', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
