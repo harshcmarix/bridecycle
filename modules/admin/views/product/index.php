@@ -8,6 +8,7 @@ use kartik\editable\Editable;
 use yii\helpers\Url;
 use app\models\ProductCategory;
 use app\models\ProductImage;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\ProductSearch */
@@ -42,9 +43,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }
 
+                    Modal::begin([
+                        'id' => 'contentmodalProductImgIndex_' . $imageRow->id,
+                        'header' => '<h4>Product Picture</h4>',
+                        'size' => Modal::SIZE_DEFAULT
+                    ]);
+
+                    echo Html::img($image_path, ['width' => '570']);
+
+                    Modal::end();
+
+                    $contentmodel = "contentmodelProductImgIndex('" . $imageRow->id . "');";
+
                     $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
                         // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
-                        'options' => ['interval' => '600']
+                        'caption' => '<a href="javascript:void(0);" class="product-index_img_view" onclick="' . $contentmodel . '" ><i class="fa fa-eye"></i></a>',
+                        'options' => ['interval' => '600',]
                     ];
                 }
 
@@ -349,4 +363,10 @@ $this->params['breadcrumbs'][] = $this->title;
             });
         }
     });
+
+
+    function contentmodelProductImgIndex(id) {
+        $('#contentmodalProductImgIndex_' + id).modal('show');
+    }
+
 </script>

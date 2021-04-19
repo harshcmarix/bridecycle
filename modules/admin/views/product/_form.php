@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
 use yii\helpers\Url;
 use app\models\ProductImage;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
@@ -90,7 +91,19 @@ use app\models\ProductImage;
                             $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                         }
 
-                        $data .= Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']) . "</a>";
+
+                        Modal::begin([
+                            'id' => 'contentmodalProductImgEdit_' . $imageRow->id,
+                            'header' => '<h4>Product Picture</h4>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
+
+                        echo Html::img($image_path, ['width' => '570']);
+
+                        Modal::end();
+                        // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
+                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_picture' onclick='contentmodelProductImgEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']);
+
                     }
                     echo $data;
 
@@ -199,4 +212,8 @@ use app\models\ProductImage;
             })
         });
     });
+
+    function contentmodelProductImgEdit(id) {
+        $('#contentmodalProductImgEdit_' + id).modal('show');
+    }
 </script>

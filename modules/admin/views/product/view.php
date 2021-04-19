@@ -6,6 +6,7 @@ use app\models\ProductCategory;
 use app\models\Brand;
 use app\models\Product;
 use app\models\ProductImage;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
@@ -75,7 +76,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                             }
 
-                            $data .= Html::img($image_path, ['alt' => 'some', 'class' => 'your_class_product_img', 'height' => '100px', 'width' => '100px']);
+                            Modal::begin([
+                                'id' => 'contentmodalProductImg_' . $imageRow->id,
+                                'header' => '<h4>Product Picture</h4>',
+                                'size' => Modal::SIZE_DEFAULT
+                            ]);
+
+                            echo Html::img($image_path, ['width' => '570']);
+
+                            Modal::end();
+
+                            $contentmodel = "contentmodelProductImg('" . $imageRow->id . "');";
+                            $data .= Html::img($image_path, ['alt' => 'some', 'class' => 'your_class_product_img', 'height' => '100px', 'width' => '100px', 'onclick' => $contentmodel]);
                         }
                     }
                     return $data;
@@ -133,3 +145,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
     </p>
 </div>
+
+<script type="text/javascript">
+    function contentmodelProductImg(id) {
+        $('#contentmodalProductImg_' + id).modal('show');
+    }
+</script>
