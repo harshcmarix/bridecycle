@@ -33,5 +33,6 @@ tests/_support/_generated
 /.vagrant
 
 #uploaded images and thubnails
+uploads 
 web/uploads/images
 web/uploads/thumbnail

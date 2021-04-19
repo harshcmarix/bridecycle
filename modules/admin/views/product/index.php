@@ -17,7 +17,7 @@ use yii\bootstrap\Modal;
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="products-index table-responsive">
+<div class="products-index">
 
     <?php
     $gridColumns = [
