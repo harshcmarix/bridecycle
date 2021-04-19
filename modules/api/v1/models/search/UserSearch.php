@@ -30,10 +30,10 @@ class UserSearch extends User
         //     [['weight', 'height'], 'number'],
         // ];
 
-         return [
+           return [
             [['id'], 'integer'],
             [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'mobile', 'personal_information', 'user_type', 'is_shop_owner', 'shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website', 'shop_address', 'created_at', 'updated_at'], 'safe'],
-            [['weight', 'height'], 'number'],
+            [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
         ];
     }
 
@@ -116,7 +116,7 @@ class UserSearch extends User
         /* ########## Prepare Query With Default Filter End ######### */
 
         $query->groupBy('users.id');
-        //p($query->createCommand()->getRawSql());
+        
         $activeDataProvider =  Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
@@ -129,7 +129,7 @@ class UserSearch extends User
             ],
         ]);
         $userModelData = $activeDataProvider->getModels();
-        // p($userModelData);
+       
         foreach($userModelData as $key=>$value){
             if(!empty($userModelData[$key]['profile_picture'])){
                  $userModelData[$key]['profile_picture'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture; 

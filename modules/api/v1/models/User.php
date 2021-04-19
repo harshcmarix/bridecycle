@@ -26,6 +26,11 @@ use app\modules\api\v1\models\{
  * @property string|null $mobile
  * @property float|null $weight
  * @property float|null $height
+ * @property float|null $top_size
+ * @property float|null $pant_size
+ * @property float|null $bust_size
+ * @property float|null $waist_size
+ * @property float|null $hip_size
  * @property string|null $personal_information
  * @property string|null $user_type 1 => admin, 2 => sub admin, 3 => normal user
  * @property string $is_shop_owner 1 => shop owner
@@ -120,7 +125,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['shop_logo'], 'file', 'extensions' => 'png,jpg'],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['shop_name', 'shop_email','shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
-            [['weight', 'height'], 'number'],
+            [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
         ];
     }
 
@@ -153,6 +158,11 @@ class User extends ActiveRecord implements IdentityInterface
             'mobile' => 'Mobile',
             'weight' => 'Weight',
             'height' => 'Height',
+            'top_size' => 'Top Size',
+            'pant_size' => 'Pant Size',
+            'bust_size' => 'Bust Size',
+            'waist_size' => 'Waist Size',
+            'hip_size' => 'Hip Size',
             'personal_information' => 'Personal Information',
             'user_type' => 'User Type',
             'is_shop_owner' => 'Is Shop Owner',

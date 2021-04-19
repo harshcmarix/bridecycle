@@ -61,7 +61,7 @@ class UserController extends ActiveController
             'verify-reset-password' => ['POST', 'OPTIONS'],
             'reset-password' => ['POST', 'OPTIONS'],
             'change-password' => ['POST', 'OPTIONS'],
-            'profile-picture-update' => ['POST', 'OPTIONS'],
+            'update-profile-picture' => ['POST', 'OPTIONS'],
         ];
     }
 
@@ -73,7 +73,7 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'update', 'logout', 'change-password','profile-picture-update'],
+            'only' => ['index', 'view', 'update', 'logout', 'change-password','update-profile-picture'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -299,12 +299,26 @@ class UserController extends ActiveController
                         }
                     }
                 }
+           
+           
+                $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+                $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
+                if (!empty($thumbImagePath) && file_exists($thumbImagePath)) {
+                        $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                }
             }
         }
 
         return $model;
     }
-    public function actionProfilePictureUpdate($id)
+
+    /**
+     * use to update profile picture
+     * @return User
+     * @throws NotFoundHttpException
+     * @throws \yii\base\Exception
+     */
+    public function actionUpdateProfilePicture($id)
     {
         $model = User::findOne($id);
        
