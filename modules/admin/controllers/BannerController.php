@@ -4,7 +4,7 @@ namespace app\modules\admin\controllers;
 
 use Yii;
 use app\models\Banner;
-use app\models\Search\BannerSearch;
+use app\models\search\BannerSearch;
 use yii\web\{
     Controller,
     NotFoundHttpException,
