@@ -21,8 +21,8 @@ use app\modules\api\v1\models\{
     ResetPassword,
     ForgotPassword,
     ChangePassword,
-    UserAddress
 };
+use app\models\UserAddress;
 use Yii;
 use yii\helpers\Url;
 use yii\filters\Cors;
@@ -62,6 +62,7 @@ class UserController extends ActiveController
             'reset-password' => ['POST', 'OPTIONS'],
             'change-password' => ['POST', 'OPTIONS'],
             'update-profile-picture' => ['POST', 'OPTIONS'],
+            'delete-user-address' => ['POST', 'OPTIONS'],
         ];
     }
 
@@ -73,7 +74,7 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'update', 'logout', 'change-password','update-profile-picture'],
+            'only' => ['index', 'view', 'update', 'logout', 'change-password','update-profile-picture','delete-user-address'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -239,13 +240,13 @@ class UserController extends ActiveController
                 $model->profile_picture = '';
                 $model->shop_logo ='';
                 $model->shop_cover_picture ='';
-                if (!empty($thumbImagePath) && file_exists($thumbImagePath)) {
+                if (!empty($fileName) && file_exists($thumbImagePath)) {
                     $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
                 }
-                 if (!empty($thumbImagePathLogo) && file_exists($thumbImagePathLogo)) {
+                 if (!empty($shopLogoFileName) && file_exists($thumbImagePathLogo)) {
                     $model->shop_logo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $shopLogoFileName;
                 }
-                 if (!empty($thumbImagePathCoverPicture) && file_exists($thumbImagePathCoverPicture)) {
+                 if (!empty($shopCoverPictureFileName) && file_exists($thumbImagePathCoverPicture)) {
                     $model->shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $shopCoverPictureFileName;
                 }
 
@@ -255,7 +256,7 @@ class UserController extends ActiveController
                     $userAddressData['UserAddress'] = $postData;
                     if ($userAddressModel->load($userAddressData)) {
                         $userAddressModel->user_id = $model->id;
-                        $userAddressModel->type = (string)User::USER_TYPE_NORMAL;
+                        $userAddressModel->type = UserAddress::TYPE_SHOP;
                         $userAddressModel->save(false);
                     }
                 }
@@ -273,7 +274,7 @@ class UserController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = User::findOne($id);
+        $model = User::find()->where(['id'=>$id,'is_shop_owner'=>User::SHOP_OWNER_NO])->one();
         if (!$model instanceof User) {
             throw new NotFoundHttpException('User doesn\'t exist.');
         }
@@ -281,29 +282,14 @@ class UserController extends ActiveController
         $data['User'] = $postData;
         $data1['UserAddress'] = $postData;
         $model->scenario = User::SCENARIO_USER_UPDATE;
-        // if(!empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES)
-        // {
-        //     $model->scenario = User::SCENARIO_SHOP_OWNER;
-        // }
 
         if ($model->load($data) && $model->validate()) {
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
-            $model->updated_at = date('Y-m-d H:i:s');
+           
             if ($model->save()) {
-                if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
-                    $get_address_id = UserAddress::find()->where(['user_id' => $id])->one();
-                    if (!empty($get_address_id->id)) {
-                        $userAddressModel = UserAddress::findOne($get_address_id->id);
-                        if ($userAddressModel->load($data1)) {
-                            $userAddressModel->save(false);
-                        }
-                    }
-                }
-           
-           
                 $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
                 $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
-                if (!empty($thumbImagePath) && file_exists($thumbImagePath)) {
+                if (file_exists($thumbImagePath) && !empty($model->profile_picture)) {
                         $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
                 }
             }
@@ -312,6 +298,30 @@ class UserController extends ActiveController
         return $model;
     }
 
+   /**
+     * use to get users data
+     * @return User
+     * @throws NotFoundHttpException
+     * @throws \yii\base\Exception
+     */
+    public function actionView($id)
+    {
+         $model = User::findOne($id);
+         $profile_picture = '';
+        if (!$model instanceof User) {
+            throw new NotFoundHttpException('User doesn\'t exist.');
+        }
+        
+        $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+        $thumbImagePath = $uploadThumbDirPath.'/'.$model->profile_picture;
+        
+        if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
+                $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+        }
+        $model->profile_picture = $profile_picture;
+        return $model;
+    }
+    
     /**
      * use to update profile picture
      * @return User
@@ -369,11 +379,20 @@ class UserController extends ActiveController
         }
         if($model->save()){
             $model->profile_picture ='';
-            if (!empty($thumbImagePath) && file_exists($thumbImagePath)) {
+            if (!empty($fileName) && file_exists($thumbImagePath)) {
                     $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
             }
         }
         return $model;
+    }
+ 
+    public function actionDeleteUserAddress($id)
+    {
+        $model = UserAddress::findOne($id);
+        if (!$model instanceof UserAddress) {
+            throw new NotFoundHttpException('Address doesn\'t exist.');
+        }
+        $model->delete();
     }
 
     /***************************************************************************/

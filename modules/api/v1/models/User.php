@@ -77,6 +77,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     const SCENARIO_SHOP_OWNER = 'shop_owner';
     const SHOP_OWNER_YES = '1';
+    const SHOP_OWNER_NO = '0';
     const SCENARIO_USER_CREATE = 'create';
     const SCENARIO_USER_UPDATE = 'update';
 
