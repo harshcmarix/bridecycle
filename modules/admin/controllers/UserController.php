@@ -108,7 +108,7 @@ class UserController extends Controller
                     $modelUserShopDetail->user_id = $model->id;
                     $modelUserShopDetail->shop_name = $postData['shop_name'];
                     $modelUserShopDetail->shop_email = $postData['shop_email'];
-                    $modelUserShopDetail->shop_phone_number =$postData['shop_phone_number'];
+                    $modelUserShopDetail->shop_phone_number = $postData['shop_phone_number'];
 
 
                     $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
@@ -150,13 +150,20 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
         $modelShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
+        $modelShopDetail = $model->shopDetail;
         $model->scenario = User::SCENARIO_UPDATE_NORMAL_USER;
 
         // Old file and Password
         $oldProfileFile = $model->profile_picture;
-        $oldShopLogoFile = $model->shop_logo;
+        $oldShopLogoFile = (!empty($modelShopDetail->shop_logo)) ? $modelShopDetail->shop_logo : "";
         $oldpwd = $model->password_hash;
         $model->password_hash = '';
+
+        $model->shop_name = (!empty($modelShopDetail->shop_name)) ? $modelShopDetail->shop_name : "";
+        $model->shop_email = (!empty($modelShopDetail->shop_email)) ? $modelShopDetail->shop_email : "";
+        $model->shop_phone_number = (!empty($modelShopDetail->shop_phone_number)) ? $modelShopDetail->shop_phone_number : "";
+        $model->shop_logo = (!empty($modelShopDetail->shop_logo)) ? $modelShopDetail->shop_logo : "";
+
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -186,25 +193,41 @@ class UserController extends Controller
 
             $model->profile_picture = $oldProfileFile;
 
-            $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
-            if (isset($newShopLogoFile) && isset($postData['is_shop_owner'])) {
-                $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
-                if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile)) {
-                    unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
-                }
-                $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
-                $model->shop_logo = $shop_logo_picture;
-            } else if (isset($postData['is_shop_owner']) && empty($newShopLogoFile)) {
-                $model->shop_logo = $oldShopLogoFile;
-            } else {
-                $model->shop_logo = "";
+            if (empty($modelShopDetail)) {
+                $modelShopDetail = new ShopDetail();
             }
 
             if (isset($postData['is_shop_owner']) && $postData['is_shop_owner'] == '1') {
+                $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
+
+                if (isset($newShopLogoFile) && isset($postData['is_shop_owner'])) {
+                    $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
+                    if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile)) {
+                        unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
+                    }
+                    if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $oldShopLogoFile)) {
+                        unlink(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $oldShopLogoFile);
+                    }
+
+                    $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
+                    $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture);
+
+                    $modelShopDetail->shop_logo = $shop_logo_picture;
+                } else if (isset($postData['is_shop_owner']) && empty($newShopLogoFile)) {
+                    $modelShopDetail->shop_logo = $oldShopLogoFile;
+                } else {
+                    $modelShopDetail->shop_logo = "";
+                }
+            }
+
+
+            if (isset($postData['is_shop_owner']) && $postData['is_shop_owner'] == '1') {
                 $model->is_shop_owner = User::IS_SHOP_OWNER_YES;
-                $model->shop_name = $postData['shop_name'];
-                $model->shop_email = $postData['shop_email'];
-                $model->shop_phone_number = $postData['shop_phone_number'];
+
+
+                $modelShopDetail->shop_name = $postData['shop_name'];
+                $modelShopDetail->shop_email = $postData['shop_email'];
+                $modelShopDetail->shop_phone_number = $postData['shop_phone_number'];
 
                 if (empty($modelShopAddress)) {
                     $modelShopAddress = new UserAddress();
@@ -220,9 +243,26 @@ class UserController extends Controller
                 $modelShopAddress->address = $shopFullAddress;
                 $modelShopAddress->save();
 
+                $modelShopDetail->user_id = $id;
+                $modelShopDetail->save(false);
             } else {
                 $model->is_shop_owner = User::IS_SHOP_OWNER_NO;
-                $model->shop_name = $model->shop_email = $model->shop_phone_number = ""; //= $model->shop_address
+                //$modelShopDetail->shop_name = $modelShopDetail->shop_email = $modelShopDetail->shop_phone_number = ""; //= $model->shop_address
+                if (!empty($modelShopDetail)) {
+
+                    if (!empty($modelShopDetail->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $modelShopDetail->shop_logo)) {
+                        unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $modelShopDetail->shop_logo);
+                    }
+
+                    if (!empty($modelShopDetail->shop_logo) && file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $oldShopLogoFile)) {
+                        unlink(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $modelShopDetail->shop_logo);
+                    }
+                    $modelShopDetail->delete();
+
+                }
+                if (!empty($modelShopAddress)) {
+                    $modelShopAddress->delete();
+                }
             }
 
             $model->user_type = User::USER_TYPE_NORMAL_USER;
@@ -250,21 +290,34 @@ class UserController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+        $modelShopDetail = $model->shopDetail;
 
         $this->findModel($id)->delete();
 
         if (!empty($model)) {
             $oldProfileFile = $model->profile_picture;
-            $oldShopLogoFile = $model->shop_logo;
 
             if (!empty($oldProfileFile) && file_exists(Yii::getAlias('@profilePictureRelativePath') . "/" . $oldProfileFile)) {
                 unlink(Yii::getAlias('@profilePictureRelativePath') . "/" . $oldProfileFile);
             }
 
+            if (!empty($oldProfileFile) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . "/" . $oldProfileFile)) {
+                unlink(Yii::getAlias('@profilePictureThumbRelativePath') . "/" . $oldProfileFile);
+            }
+        }
+
+        if (!empty($modelShopDetail) && $modelShopDetail instanceof ShopDetail) {
+            $oldShopLogoFile = $modelShopDetail->shop_logo;
+
             if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile)) {
                 unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
             }
+
+            if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $oldShopLogoFile)) {
+                unlink(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $oldShopLogoFile);
+            }
         }
+
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully deleted User!');
         return $this->redirect(['index']);
     }

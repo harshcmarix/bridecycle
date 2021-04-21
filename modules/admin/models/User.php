@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\models;
 
+use app\models\ShopDetail;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -74,6 +75,11 @@ class User extends ActiveRecord implements IdentityInterface
     public $shop_address_state;
     public $shop_address_country;
     public $shop_address_zip_code;
+    public $shop_logo;
+    public $shop_phone_number;
+    public $shop_name;
+    public $shop_email;
+
 
     /**
      * @return string
@@ -111,7 +117,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['email', 'shop_email'], 'email'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
 
-            [['mobile', 'shop_phone_number'],'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
+            [['mobile', 'shop_phone_number'], 'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
 
             [['weight', 'height'], 'number'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
@@ -171,6 +177,17 @@ class User extends ActiveRecord implements IdentityInterface
             'updated_at' => 'Updated At',
         ];
     }
+
+    /**
+     * Gets query for [[ShopDetail]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShopDetail()
+    {
+        return $this->hasOne(ShopDetail::className(), ['user_id' => 'id']);
+    }
+
 
     /**
      * @return \yii\db\ActiveQuery
