@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\ShopDetail;
 use app\models\UserAddress;
 use app\modules\admin\models\User;
 use kartik\growl\Growl;
@@ -61,7 +62,7 @@ class UserController extends Controller
         $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'shopAddress'=>$userShopAddress,
+            'shopAddress' => $userShopAddress,
         ]);
     }
 
@@ -87,16 +88,6 @@ class UserController extends Controller
 
             $model->user_type = User::USER_TYPE_NORMAL_USER;
 
-            $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
-            if (isset($newShopLogoFile) && isset($model->is_shop_owner)) {
-                $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
-//                if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile)) {
-//                    unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
-//                }
-                $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
-                $model->shop_logo = $shop_logo_picture;
-            }
-
             if ($model->save(false)) {
 
                 if (!empty($model->is_shop_owner) || $model->is_shop_owner != '0' || $model->is_shop_owner != '') {
@@ -112,6 +103,22 @@ class UserController extends Controller
                     $modelShopAddress->country = $postData['shop_address_country'];
                     $modelShopAddress->address = $shopFullAddress;
                     $modelShopAddress->save();
+
+                    $modelUserShopDetail = new ShopDetail();
+                    $modelUserShopDetail->user_id = $model->id;
+                    $modelUserShopDetail->shop_name = $postData['shop_name'];
+                    $modelUserShopDetail->shop_email = $postData['shop_email'];
+                    $modelUserShopDetail->shop_phone_number =$postData['shop_phone_number'];
+
+
+                    $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
+                    if (isset($newShopLogoFile) && isset($model->is_shop_owner)) {
+                        $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
+                        $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
+                        $modelUserShopDetail->shop_logo = $shop_logo_picture;
+                    }
+                    $modelUserShopDetail->save(false);
+
                 }
 
                 \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully created User!');
