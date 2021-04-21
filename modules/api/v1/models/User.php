@@ -9,6 +9,7 @@ use yii\web\UnauthorizedHttpException;
 use app\modules\api\v1\models\{
     UserAddress
 };
+use app\models\ShopDetail;
 
 /**
  * This is the model class for table "users".
@@ -40,7 +41,6 @@ use app\modules\api\v1\models\{
  * @property string|null $shop_phone_number
  * @property string|null $shop_logo
  * @property string|null $website
- * @property string|null $shop_address
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -68,7 +68,18 @@ class User extends ActiveRecord implements IdentityInterface
      * @var string
      */
     public $confirm_password;
+   
     /**
+     * variables for shop detail tables validation
+     */
+    public $shop_cover_picture;
+    public $shop_name;
+    public $shop_email;
+    public $shop_phone_number;
+    public $shop_logo;
+    public $website;
+    
+   /**
      * Identify user type
      */
     const USER_TYPE_ADMIN = 1;
@@ -118,12 +129,12 @@ class User extends ActiveRecord implements IdentityInterface
             [['email','shop_email'], 'email'],
             [['email'], 'unique'],
             [['email'], 'string', 'max' => 60],
-            [[ 'password_hash', 'temporary_password', 'access_token', 'password_reset_token', 'shop_address','website'], 'string', 'max' => 255],
+            [[ 'password_hash', 'temporary_password', 'access_token', 'password_reset_token','website'], 'string', 'max' => 255],
             [['website'],'url', 'defaultScheme' => ''],
             [['temporary_password'], 'string', 'max' => 8],
-            [['shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
-            [['profile_picture'], 'file', 'extensions' => 'png,jpg'],
-            [['shop_logo'], 'file', 'extensions' => 'png,jpg'],
+            // [['shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
+            // [['profile_picture','shop_cover_picture','shop_logo'], 'file', 'extensions' => 'png,jpg'],
+            [['shop_logo','profile_picture','shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['shop_name', 'shop_email','shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
             [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
@@ -141,8 +152,8 @@ class User extends ActiveRecord implements IdentityInterface
         return $fields;
     }
 
-    /**
-     * @return string[]
+   /**
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -156,6 +167,7 @@ class User extends ActiveRecord implements IdentityInterface
             'temporary_password' => 'Temporary Password',
             'access_token' => 'Access Token',
             'access_token_expired_at' => 'Access Token Expired At',
+            'password_reset_token' => 'Password Reset Token',
             'mobile' => 'Mobile',
             'weight' => 'Weight',
             'height' => 'Height',
@@ -167,13 +179,11 @@ class User extends ActiveRecord implements IdentityInterface
             'personal_information' => 'Personal Information',
             'user_type' => 'User Type',
             'is_shop_owner' => 'Is Shop Owner',
-            'shop_name' => 'Shop Name',
-            'shop_email' => 'Shop Email',
-            'shop_phone_number' => 'Shop Phone Number',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
     }
+
 
     /**
      * @return array|false
@@ -182,6 +192,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'userAddresses' => 'userAddresses',
+            'shopDetails'=>'shopDetails'
         ];
     }
 
@@ -191,6 +202,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function getFavouriteProducts()
     {
         return $this->hasMany(FavouriteProducts::className(), ['user_id' => 'id']);
+    }
+    /**
+     * Gets query for [[ShopDetails]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShopDetails()
+    {
+        return $this->hasMany(ShopDetail::className(), ['user_id' => 'id']);
     }
 
     /**

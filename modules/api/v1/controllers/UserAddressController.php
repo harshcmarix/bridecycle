@@ -86,27 +86,8 @@ class UserAddressController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
-        unset($actions['delete']);
-        // unset($actions['view']);
         return $actions;
     }
-
-    /**
-     * Lists all UserAddress models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        // $searchModel = new UserAddressSearch();
-        // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        // return $this->render('index', [
-        //     'searchModel' => $searchModel,
-        //     'dataProvider' => $dataProvider,
-        // ]);
-    }
-
-
     /**
      * Creates a new UserAddress model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -135,7 +116,7 @@ class UserAddressController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = UserAddress::findOne($id);
         $addressData = \Yii::$app->request->post();
         $address['UserAddress'] = $addressData;
     
@@ -145,37 +126,5 @@ class UserAddressController extends ActiveController
             $model->save();
         }
             return $model;
-    }
-
-    /**
-     * Deletes an existing UserAddress model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $model = UserAddress::findOne($id);
-        if (!$model instanceof UserAddress) {
-            throw new NotFoundHttpException('Address doesn\'t exist.');
-        }
-        $model->delete();
-    }
-
-    /**
-     * Finds the UserAddress model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return UserAddress the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = UserAddress::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

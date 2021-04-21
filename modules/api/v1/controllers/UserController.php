@@ -22,7 +22,10 @@ use app\modules\api\v1\models\{
     ForgotPassword,
     ChangePassword,
 };
-use app\models\UserAddress;
+use app\models\{
+    UserAddress,
+    ShopDetail
+};
 use Yii;
 use yii\helpers\Url;
 use yii\filters\Cors;
@@ -143,11 +146,14 @@ class UserController extends ActiveController
         if (!empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES) {
             $model->scenario = User::SCENARIO_SHOP_OWNER;
         }
-
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
         $model->profile_picture = UploadedFile::getInstanceByName('profile_picture');
         $model->shop_logo = UploadedFile::getInstanceByName('shop_logo');
         $model->shop_cover_picture = UploadedFile::getInstanceByName('shop_cover_picture');
-
+        
         if ($model->load($userData) && $model->validate()) {
             // Profile picture upload
             $uploadDirPath = Yii::getAlias('@profilePictureRelativePath');
@@ -179,78 +185,8 @@ class UserController extends ActiveController
             $model->user_type = (string)User::USER_TYPE_NORMAL;
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
 
-            if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
-                //shop logo code
-                    $uploadDirPathLogo = Yii::getAlias('@shopLogoRelativePath');
-                    $uploadThumbDirPathLogo = Yii::getAlias('@shopLogoThumbRelativePath');
-                    $thumbImagePathLogo = '';
-                    if ($model->shop_logo instanceof UploadedFile) {
-                        // Create Shop logo upload directory if not exist
-                        if (!is_dir($uploadDirPathLogo)) {
-                            mkdir($uploadDirPathLogo, 0777);
-                        }
-
-                        // Create Shop logo thumb upload directory if not exist
-                        if (!is_dir($uploadThumbDirPathLogo)) {
-                            mkdir($uploadThumbDirPathLogo, 0777);
-                        }
-
-                        $logoExt = $model->shop_logo->extension;
-                        $shopLogoFileName = pathinfo($model->shop_logo->name, PATHINFO_FILENAME);
-                        $shopLogoFileName = $shopLogoFileName . '_' . time() . '.' . $logoExt;
-                        // Upload shop logo
-                        $model->shop_logo->saveAs($uploadDirPathLogo . '/' . $shopLogoFileName);
-                        // Create thumb of shoplogo
-                        $actualImagePathLogo = $uploadDirPathLogo . '/' . $shopLogoFileName;
-                        $thumbImagePathLogo = $uploadThumbDirPathLogo . '/' . $shopLogoFileName;
-                        Image::thumbnail($actualImagePathLogo, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathLogo, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                        // Insert shop logo name into database
-                        $model->shop_logo = $shopLogoFileName;
-                    }
-                    // shop cover picture
-                    $uploadDirPathCoverPicture = Yii::getAlias('@shopCoverPictureRelativePath');
-                    $uploadThumbDirPathCoverPicture = Yii::getAlias('@shopCoverPictureThumbRelativePath');
-                    $thumbImagePathCoverPicture = '';
-                    if ($model->shop_cover_picture instanceof UploadedFile) {
-                        // Create Shop cover picture upload directory if not exist
-                        if (!is_dir($uploadDirPathCoverPicture)) {
-                            mkdir($uploadDirPathCoverPicture, 0777);
-                        }
-
-                        // Create Shop cover picture thumb upload directory if not exist
-                        if (!is_dir($uploadThumbDirPathCoverPicture)) {
-                            mkdir($uploadThumbDirPathCoverPicture, 0777);
-                        }
-
-                        $shopCoverPictureExt = $model->shop_cover_picture->extension;
-                        $shopCoverPictureFileName = pathinfo($model->shop_cover_picture->name, PATHINFO_FILENAME);
-                        $shopCoverPictureFileName = $shopCoverPictureFileName . '_' . time() . '.' . $shopCoverPictureExt;
-                        // Upload shop cover picture
-                        $model->shop_cover_picture->saveAs($uploadDirPathCoverPicture . '/' . $shopCoverPictureFileName);
-                        // Create thumb of shoplogo
-                        $actualImagePathCoverPicture = $uploadDirPathCoverPicture . '/' . $shopCoverPictureFileName;
-                        $thumbImagePathCoverPicture = $uploadThumbDirPathCoverPicture . '/' . $shopCoverPictureFileName;
-                        Image::thumbnail($actualImagePathCoverPicture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathCoverPicture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                        // Insert shop cover picture name into database
-                        $model->shop_cover_picture = $shopCoverPictureFileName;
-            }
-
-            }
             if ($model->save()) {
-                // Get profile picture
-                $model->profile_picture = '';
-                $model->shop_logo ='';
-                $model->shop_cover_picture ='';
-                if (!empty($fileName) && file_exists($thumbImagePath)) {
-                    $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
-                }
-                 if (!empty($shopLogoFileName) && file_exists($thumbImagePathLogo)) {
-                    $model->shop_logo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $shopLogoFileName;
-                }
-                 if (!empty($shopCoverPictureFileName) && file_exists($thumbImagePathCoverPicture)) {
-                    $model->shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $shopCoverPictureFileName;
-                }
-
+ 
                 // Insert shop details
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
                     $userAddressModel = new UserAddress();
@@ -260,7 +196,87 @@ class UserController extends ActiveController
                         $userAddressModel->type = UserAddress::TYPE_SHOP;
                         $userAddressModel->save(false);
                     }
+             
+                    // shop owner detail start
+                    $shopDetailModel = new ShopDetail();
+                    $shopDetailModel->shop_logo = UploadedFile::getInstanceByName('shop_logo');
+                    $shopDetailModel->shop_cover_picture = UploadedFile::getInstanceByName('shop_cover_picture');
+                    $shopDetails['ShopDetail'] = $postData;
+                    
+                    if ($shopDetailModel->load($shopDetails)) {
+                        $shopDetailModel->user_id = $model->id;
+                        //shop logo code
+                        $uploadDirPathLogo = Yii::getAlias('@shopLogoRelativePath');
+                        $uploadThumbDirPathLogo = Yii::getAlias('@shopLogoThumbRelativePath');
+                        $thumbImagePathLogo = '';
+                      
+                        if ($shopDetailModel->shop_logo instanceof UploadedFile) {
+                            // Create Shop logo upload directory if not exist
+                            if (!is_dir($uploadDirPathLogo)) {
+                                mkdir($uploadDirPathLogo, 0777);
+                            }
+
+                            // Create Shop logo thumb upload directory if not exist
+                            if (!is_dir($uploadThumbDirPathLogo)) {
+                                mkdir($uploadThumbDirPathLogo, 0777);
+                            }
+
+                            $logoExt = $shopDetailModel->shop_logo->extension;
+                            $shopLogoFileName = pathinfo($shopDetailModel->shop_logo->name, PATHINFO_FILENAME);
+                            $shopLogoFileName = $shopLogoFileName . '_' . time() . '.' . $logoExt;
+                            // Upload shop logo
+                            $shopDetailModel->shop_logo->saveAs($uploadDirPathLogo . '/' . $shopLogoFileName);
+                            // Create thumb of shoplogo
+                            $actualImagePathLogo = $uploadDirPathLogo . '/' . $shopLogoFileName;
+                            $thumbImagePathLogo = $uploadThumbDirPathLogo . '/' . $shopLogoFileName;
+                            Image::thumbnail($actualImagePathLogo, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathLogo, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                            // Insert shop logo name into database
+                            $shopDetailModel->shop_logo = $shopLogoFileName;
+                        }
+                        // shop cover picture
+                        $uploadDirPathCoverPicture = Yii::getAlias('@shopCoverPictureRelativePath');
+                        $uploadThumbDirPathCoverPicture = Yii::getAlias('@shopCoverPictureThumbRelativePath');
+                        $thumbImagePathCoverPicture = '';
+                        if ($shopDetailModel->shop_cover_picture instanceof UploadedFile) {
+                            // Create Shop cover picture upload directory if not exist
+                            if (!is_dir($uploadDirPathCoverPicture)) {
+                                mkdir($uploadDirPathCoverPicture, 0777);
+                            }
+
+                            // Create Shop cover picture thumb upload directory if not exist
+                            if (!is_dir($uploadThumbDirPathCoverPicture)) {
+                                mkdir($uploadThumbDirPathCoverPicture, 0777);
+                            }
+
+                            $shopCoverPictureExt = $shopDetailModel->shop_cover_picture->extension;
+                            $shopCoverPictureFileName = pathinfo($shopDetailModel->shop_cover_picture->name, PATHINFO_FILENAME);
+                            $shopCoverPictureFileName = $shopCoverPictureFileName . '_' . time() . '.' . $shopCoverPictureExt;
+                            // Upload shop cover picture
+                            $shopDetailModel->shop_cover_picture->saveAs($uploadDirPathCoverPicture . '/' . $shopCoverPictureFileName);
+                            // Create thumb of shoplogo
+                            $actualImagePathCoverPicture = $uploadDirPathCoverPicture . '/' . $shopCoverPictureFileName;
+                            $thumbImagePathCoverPicture = $uploadThumbDirPathCoverPicture . '/' . $shopCoverPictureFileName;
+                            Image::thumbnail($actualImagePathCoverPicture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathCoverPicture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                            // Insert shop cover picture name into database
+                            $shopDetailModel->shop_cover_picture = $shopCoverPictureFileName;
+                        }
+                        $shopDetailModel->save(false);
+                    }
+                    // Get profile picture
+                    $model->profile_picture = '';
+                    // $shopDetailModel->shop_logo ='';
+                    // $shopDetailModel->shop_cover_picture ='';
+                    if (!empty($fileName) && file_exists($thumbImagePath)) {
+                        $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
+                    }
+                    // if (!empty($shopLogoFileName) && file_exists($thumbImagePathLogo)) {
+                    //     $shopDetailModel->shop_logo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $shopLogoFileName;
+                    // }
+                    // if (!empty($shopCoverPictureFileName) && file_exists($thumbImagePathCoverPicture)) {
+                    //     $shopDetailModel->shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $shopCoverPictureFileName;
+                    // }
                 }
+                // shop owner detail end
             }
         }
 
@@ -291,7 +307,7 @@ class UserController extends ActiveController
                 $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
                 $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
                 if (file_exists($thumbImagePath) && !empty($model->profile_picture)) {
-                        $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                    $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
                 }
             }
         }
@@ -299,16 +315,16 @@ class UserController extends ActiveController
         return $model;
     }
 
-   /**
-     * use to get users data
-     * @return User
-     * @throws NotFoundHttpException
-     * @throws \yii\base\Exception
-     */
+    /**
+      * use to get users data
+      * @return User
+      * @throws NotFoundHttpException
+      * @throws \yii\base\Exception
+      */
     public function actionView($id)
     {
-         $model = User::findOne($id);
-         $profile_picture = '';
+        $model = User::findOne($id);
+        $profile_picture = '';
         if (!$model instanceof User) {
             throw new NotFoundHttpException('User doesn\'t exist.');
         }
@@ -317,7 +333,7 @@ class UserController extends ActiveController
         $thumbImagePath = $uploadThumbDirPath.'/'.$model->profile_picture;
         
         if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
-                $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+            $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
         }
         $model->profile_picture = $profile_picture;
         return $model;
@@ -361,7 +377,7 @@ class UserController extends ActiveController
                 if (!is_dir($uploadThumbDirPath)) {
                     mkdir($uploadThumbDirPath, 0777);
                 }
-                 //unlink thumb image if update
+                //unlink thumb image if update
                 if (file_exists($uploadThumbDirPath . '/' . $old_image) && !empty($old_image)) {
                     unlink($uploadThumbDirPath . '/' . $old_image);
                 }
@@ -378,10 +394,10 @@ class UserController extends ActiveController
                 $model->profile_picture = $fileName;
             }
         }
-        if($model->save()){
+        if ($model->save()) {
             $model->profile_picture ='';
             if (!empty($fileName) && file_exists($thumbImagePath)) {
-                    $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
+                $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
             }
         }
         return $model;
