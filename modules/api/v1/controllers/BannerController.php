@@ -4,20 +4,22 @@ namespace app\modules\api\v1\controllers;
 
 use Yii;
 use app\models\Banner;
-use app\models\search\BannerSearch;
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBasicAuth;
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
+use app\modules\api\v1\models\search\BannerSearch;
+use yii\filters\auth\{
+    HttpBasicAuth,
+    CompositeAuth,
+    HttpBearerAuth,
+    QueryParamAuth
+};
 use yii\filters\Cors;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\rest\ActiveController;
 
 /**
  * BannerController implements the CRUD actions for Banner model.
  */
-class BannerController extends Controller
+class BannerController extends ActiveController
 {
     /**
      * @var string
@@ -37,16 +39,6 @@ class BannerController extends Controller
     {
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
-//            'view' => ['GET', 'HEAD', 'OPTIONS'],
-//            'create' => ['POST', 'OPTIONS'],
-//            'update' => ['PUT', 'PATCH'],
-//            'login' => ['POST', 'OPTIONS'],
-//            'logout' => ['GET'],
-//            'forgot-password' => ['POST', 'OPTIONS'],
-//            'verify-reset-password' => ['POST', 'OPTIONS'],
-//            'reset-password' => ['POST', 'OPTIONS'],
-//            'change-password' => ['POST', 'OPTIONS'],
-//            'profile-picture-update' => ['POST', 'OPTIONS'],
         ];
     }
 
@@ -90,10 +82,6 @@ class BannerController extends Controller
     {
         $actions = parent::actions();
         unset($actions['index']);
-        unset($actions['create']);
-        unset($actions['update']);
-        unset($actions['delete']);
-        unset($actions['view']);
         return $actions;
     }
 
@@ -111,72 +99,6 @@ class BannerController extends Controller
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams);
-
-    }
-
-    /**
-     * Displays a single Banner model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Creates a new Banner model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Banner();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Updates an existing Banner model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Deletes an existing Banner model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**

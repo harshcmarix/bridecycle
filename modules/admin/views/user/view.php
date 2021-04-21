@@ -3,6 +3,7 @@
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\ShopDetail;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\User */
@@ -89,8 +90,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'shop_logo',
                 'value' => function ($data) {
                     $image_path = "";
-                    if (!empty($data->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $data->shop_logo)) {
-                        $image_path = Yii::getAlias('@shopLogoAbsolutePath') . '/' . $data->shop_logo;
+                    if (!empty($data->shopDetail) && $data->shopDetail instanceof ShopDetail && !empty($data->shopDetail->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $data->shopDetail->shop_logo)) {
+                        $image_path = Yii::getAlias('@shopLogoAbsolutePath') . '/' . $data->shopDetail->shop_logo;
                     } else {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }
@@ -104,9 +105,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodelShopLogo, 'height' => '100px', 'width' => '100px']);
                 },
             ],
-            'shop_name',
-            'shop_email:email',
-            'shop_phone_number',
+            [
+                'attribute' => 'shop_name',
+                'value' => function ($model) {
+                    return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_name)) ? $model->shopDetail->shop_name : "";
+                }
+            ],
+            [
+                'format' => 'email',
+                'attribute' => 'shop_email',
+                'value' => function ($model) {
+                    return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_email)) ? $model->shopDetail->shop_email : "";
+                }
+            ],
+            [
+                'attribute' => 'shop_phone_number',
+                'value' => function ($model) {
+                    return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_phone_number)) ? $model->shopDetail->shop_phone_number : "";
+                }
+            ],
             [
                 'label' => 'Shop Address',
                 'value' => (!empty($shopAddress) && $shopAddress instanceof \app\models\UserAddress && !empty($shopAddress->address)) ? $shopAddress->address : "",

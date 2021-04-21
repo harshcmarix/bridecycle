@@ -3,7 +3,6 @@
 namespace app\modules\api\v1\models\search;
 
 use Yii;
-use yii\base\BaseObject;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
@@ -42,12 +41,13 @@ class BannerSearch extends Banner
     /**
      * Creates data provider instance with search query applied
      *
-     * @param array $requestParams
+     * @param array $params
      *
      * @return ActiveDataProvider
      */
     public function search($requestParams)
     {
+
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
             foreach ($requestParams['filter'] as $key => $val) {
@@ -102,7 +102,7 @@ class BannerSearch extends Banner
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id', 'image', ];
+            $select = ['id','image','created_at','updated_at'];
         }
 
         $query->select($select);
@@ -124,19 +124,14 @@ class BannerSearch extends Banner
                 'params' => $requestParams,
             ],
         ]);
+
         $bannerModelData = $activeDataProvider->getModels();
 
-//        foreach ($userModelData as $key => $value) {
-//            if (!empty($userModelData[$key]['profile_picture'])) {
-//                $userModelData[$key]['profile_picture'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture;
-//            }
-//            if (!empty($userModelData[$key]['shop_cover_picture'])) {
-//                $userModelData[$key]['shop_cover_picture'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $value->shop_cover_picture;
-//            }
-//            if (!empty($userModelData[$key]['shop_logo'])) {
-//                $userModelData[$key]['shop_logo'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
-//            }
-//        }
+        foreach($bannerModelData as $key=>$value){
+            if(!empty($bannerModelData[$key]['image'])){
+                $bannerModelData[$key]['image'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $value->image;
+            }
+        }
         $activeDataProvider->setModels($bannerModelData);
         return $activeDataProvider;
     }
