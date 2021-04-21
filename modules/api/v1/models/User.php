@@ -10,6 +10,7 @@ use app\modules\api\v1\models\{
     UserAddress
 };
 use app\models\ShopDetail;
+use Yii;
 
 /**
  * This is the model class for table "users".
@@ -210,7 +211,22 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getShopDetails()
     {
-        return $this->hasMany(ShopDetail::className(), ['user_id' => 'id']);
+        // $data = $this->hasMany(ShopDetail::className(), ['user_id' => 'id']);
+         
+       $data = ShopDetail::find()->where(['user_id' => $this->id])->all();
+        if(!empty($data)){
+            foreach($data as $key=>$value){
+                  if(!empty($value->shop_logo)){
+                       $value->shop_logo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
+                  }
+                  if(!empty($value->shop_cover_picture)){
+                       $value->shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $value->shop_cover_picture;
+                  }
+
+            }
+        }
+       
+        return $data;
     }
 
     /**
