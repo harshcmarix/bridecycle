@@ -184,8 +184,20 @@ use yii\bootstrap\Modal;
         </div>
     </div>
 
+    <div class="row">
+        <?php //echo $form->field($model, 'receipt')->textInput(['maxlength' => true]) ?>
+        <div class="col col-md-2">
+            <?= $form->field($model, 'status_id')->widget(Select2::classname(), [
+                'data' => $status,
+                'options' => ['placeholder' => 'Select'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+        </div>
+    </div>
 
-    <?php //echo $form->field($model, 'receipt')->textInput(['maxlength' => true]) ?>
+
 
     <div class="form-group">
         <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>

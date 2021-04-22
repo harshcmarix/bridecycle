@@ -4,11 +4,13 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use app\modules\admin\models\User;
 
 /**
  * This is the model class for table "products".
  *
  * @property int $id
+ * @property int|null $user_id
  * @property string $name
  * @property int $number
  * @property int|null $category_id
@@ -29,6 +31,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int|null $weight
  * @property int|null $width
  * @property string|null $receipt
+ * @property int $status_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -109,16 +112,14 @@ class Product extends \yii\db\ActiveRecord
     ];
 
 
-
-
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'number', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'is_top_selling', 'is_top_trending'], 'required'],
-            [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width'], 'integer'],
+            [['name', 'number', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'is_top_selling', 'is_top_trending', 'status_id'], 'required'],
+            [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'status_id', 'user_id'], 'integer'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
             [['number', 'created_at', 'updated_at'], 'safe'],
@@ -130,6 +131,8 @@ class Product extends \yii\db\ActiveRecord
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
+            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductStatus::className(), 'targetAttribute' => ['status_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -140,6 +143,7 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'user_id' => 'User',
             'name' => 'Name',
             'number' => 'Number',
             'category_id' => 'Category',
@@ -160,6 +164,7 @@ class Product extends \yii\db\ActiveRecord
             'weight' => 'Weight',
             'width' => 'Width',
             'receipt' => 'Receipt',
+            'status_id' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -172,7 +177,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getFavouriteProducts()
     {
-        return $this->hasMany(FavouriteProducts::className(), ['product_id' => 'id']);
+        return $this->hasMany(FavouriteProduct::className(), ['product_id' => 'id']);
     }
 
     /**
@@ -182,7 +187,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItems::className(), ['product_id' => 'id']);
+        return $this->hasMany(OrderItem::className(), ['product_id' => 'id']);
     }
 
     /**
@@ -213,6 +218,26 @@ class Product extends \yii\db\ActiveRecord
     public function getBrand()
     {
         return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+    }
+
+    /**
+     * Gets query for [[User]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * Gets query for [[Status]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStatus()
+    {
+        return $this->hasOne(ProductStatus::className(), ['id' => 'status_id']);
     }
 
     /**

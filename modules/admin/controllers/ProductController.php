@@ -5,6 +5,7 @@ namespace app\modules\admin\controllers;
 use app\models\Brand;
 use app\models\ProductCategory;
 use app\models\ProductImage;
+use app\models\ProductStatus;
 use app\models\search\ProductSearch;
 use Yii;
 use app\models\Product;
@@ -88,9 +89,11 @@ class ProductController extends Controller
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = [];
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
+        $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $images = UploadedFile::getInstances($model, 'images');
+            $model->user_id = Yii::$app->user->identity->id;
             if ($model->save()) {
                 if (!empty($images)) {
                     foreach ($images as $img) {
@@ -137,7 +140,8 @@ class ProductController extends Controller
             'model' => $model,
             'category' => $category,
             'subcategory' => $subcategory,
-            'brand' => $brand
+            'brand' => $brand,
+            'status' => $status
         ]);
     }
 
@@ -151,15 +155,17 @@ class ProductController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        $oldUserId = $model->user_id;
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $model->category_id])->all(), 'id', 'name');;
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
-
+        $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-
+            if (empty($oldUserId)) {
+                $model->user_id = Yii::$app->user->identity->id;
+            }
             $images = UploadedFile::getInstances($model, 'images');
 
             if ($model->save()) {
@@ -216,7 +222,8 @@ class ProductController extends Controller
             'model' => $model,
             'category' => $category,
             'subcategory' => $subcategory,
-            'brand' => $brand
+            'brand' => $brand,
+            'status' => $status
         ]);
     }
 

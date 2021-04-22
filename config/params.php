@@ -21,9 +21,12 @@ return [
     'adminEmail' => 'admin@yopmail.com',
     //settings attributes
     'transaction_fees' => [
-          'option_key'=>'transaction_fees'
+        'option_key' => 'transaction_fees'
     ],
     'km_range' => [
-          'option_key'=>'km_range'
+        'option_key' => 'km_range'
     ],
+
+    // Recent time for general uses in system
+    'recent_time' => '1 week',
 ];
