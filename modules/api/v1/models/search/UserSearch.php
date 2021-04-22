@@ -101,12 +101,13 @@ class UserSearch extends User
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+        
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id', 'email', 'first_name', 'last_name', 'mobile', 'user_type', 'is_shop_owner','profile_picture','shop_cover_picture','shop_name','shop_email','shop_phone_number','shop_logo','website'];
+            $select = ['id', 'email', 'first_name', 'last_name', 'mobile', 'user_type', 'is_shop_owner','profile_picture'];
         }
 
         $query->select($select);
@@ -129,19 +130,14 @@ class UserSearch extends User
             ],
         ]);
         $userModelData = $activeDataProvider->getModels();
-       
+   
         foreach($userModelData as $key=>$value){
             if(!empty($userModelData[$key]['profile_picture'])){
                  $userModelData[$key]['profile_picture'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture; 
             }
-            if(!empty($userModelData[$key]['shop_cover_picture'])){
-                 $userModelData[$key]['shop_cover_picture'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $value->shop_cover_picture;
-            }
-            if(!empty($userModelData[$key]['shop_logo'])){
-                 $userModelData[$key]['shop_logo'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
-            }
         }
         $activeDataProvider->setModels($userModelData);
+       
         return $activeDataProvider;
     }
 }
