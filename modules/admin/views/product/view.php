@@ -35,6 +35,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
+            [
+                'attribute' => 'user_id',
+                'label' => 'User',
+                'value' => function ($model) {
+                    return (!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\admin\models\User) ? $model->user->first_name . " " . $model->user->last_name : '';
+                },
+            ],
             'name',
             'number',
             [
@@ -137,6 +144,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'weight',
             'width',
             'receipt',
+            [
+                'attribute' => 'status_id',
+                'value' => function ($model) {
+                    return (!empty($model) && !empty($model->status) && $model->status instanceof \app\models\ProductStatus) ? ucfirst($model->status->status) : '';
+                },
+            ],
             'created_at:datetime',
             'updated_at:datetime',
         ],
