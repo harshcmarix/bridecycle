@@ -169,6 +169,15 @@ class Product extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+     /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'productImages0' => 'productImages0',
+        ];
+    }
 
     /**
      * Gets query for [[FavouriteProducts]].
@@ -258,5 +267,23 @@ class Product extends \yii\db\ActiveRecord
     public function getSubCategory()
     {
         return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+    }
+
+     ///////////////////////For api use only /////////////////////////////////////////////
+     /**
+     * Gets query for [[ProductImages]] with path for api.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductImages0()
+    {
+        // return $this->hasMany(ProductImage::className(), ['product_id' => 'id']);
+        $productImages = ProductImage::find()->where(['product_id'=>$this->id])->all();
+        foreach($productImages as $key=>$value){
+            if(!empty($value->name)){
+            $value->name = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $value->name;
+            }
+        }
+        return $productImages;
     }
 }
