@@ -176,6 +176,8 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             'productImages0' => 'productImages0',
+            'brand'=>'brand',
+            'category0'=>'category0'
         ];
     }
 
@@ -285,5 +287,36 @@ class Product extends \yii\db\ActiveRecord
             }
         }
         return $productImages;
+    }
+     /**
+     * Gets query for [[Category]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory0()
+    {
+        // return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
+        $productCategory = ProductCategory::find()->where(['id'=>$this->category_id])->one();
+         if(!empty($productCategory->image))
+         {
+            $productCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productCategory->image;
+         }
+        
+         return $productCategory;
+    }
+    /**
+     * Gets query for [[SubCategory]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSubCategory0()
+    {
+        // return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+         $productSubCategory = ProductCategory::find()->where(['id'=>$this->sub_category_id])->one();
+         if(!empty($productSubCategory->image))
+         {
+            $productSubCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productSubCategory->image;
+         }
+         return $productSubCategory;
     }
 }

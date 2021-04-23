@@ -3,32 +3,32 @@
 namespace app\models;
 
 use Yii;
+use \yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use app\modules\api\v1\models\user;
 
 /**
- * This is the model class for table "order_items".
+ * This is the model class for table "favourite_products".
  *
  * @property int $id
- * @property int $order_id
+ * @property int $user_id
  * @property int $product_id
- * @property int $quantity
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Orders $order
+ * @property Users $user
  * @property Products $product
  */
-class OrderItem extends \yii\db\ActiveRecord
+class FavouriteProduct extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'order_items';
+        return 'favourite_products';
     }
-
-    /**
+     /**
      * @return array[]
      */
     public function behaviors()
@@ -47,10 +47,10 @@ class OrderItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'product_id', 'quantity'], 'required'],
-            [['order_id', 'product_id', 'quantity'], 'integer'],
+            [['user_id', 'product_id'], 'required'],
+            [['user_id', 'product_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
@@ -62,9 +62,8 @@ class OrderItem extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'order_id' => 'Order ID',
+            'user_id' => 'User ID',
             'product_id' => 'Product ID',
-            'quantity' => 'Quantity',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -75,18 +74,19 @@ class OrderItem extends \yii\db\ActiveRecord
     public function extraFields()
     {
         return [
-            'product' => 'product',
+            'user'=>'user',
+            'product'=>'product'
         ];
     }
 
     /**
-     * Gets query for [[Order]].
+     * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getOrder()
+    public function getUser()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**

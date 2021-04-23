@@ -86,6 +86,17 @@ class Order extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+   /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'orderItems' => 'orderItems',
+            'userAddress'=>'userAddress',
+            'user'=>'user'
+        ];
+    }
 
     /**
      * Gets query for [[OrderItems]].
