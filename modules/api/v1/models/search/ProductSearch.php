@@ -104,6 +104,11 @@ class ProductSearch extends Product
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+
+//        if(!empty($requestParams) && !empty($requestParams['user_id']) && !empty($requestParams['is_favourite']) && $requestParams['is_favourite'] == '1'){
+//            $query->leftJoin('');
+//        }
+
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
@@ -139,6 +144,106 @@ class ProductSearch extends Product
             $brandToDate = date("Y-m-d 23:59:59");
             $query->andWhere(['between', 'products.created_at', $brandFromDate, $brandToDate]);
         }
+
+        if (!empty($requestParams['name'])) {
+            $query->andFilterWhere([
+                'and',
+                ['like', 'products.name', $requestParams['name']],
+            ]);
+        }
+
+        if (!empty($requestParams['brand_id'])) {
+            $brandIDs = explode(",", $requestParams['brand_id']);
+            $query->andFilterWhere([
+                'and',
+                ['in', 'products.brand_id', $brandIDs],
+            ]);
+        }
+
+        if (!empty($requestParams['category_id'])) {
+            $categoryIDs = explode(",", $requestParams['category_id']);
+            $query->andFilterWhere([
+                'and',
+                ['in', 'products.category_id', $categoryIDs],
+            ]);
+        }
+
+        if (!empty($requestParams['color'])) {
+            $colors = explode(",", $requestParams['color']);
+            if (!empty($colors)) {
+                foreach ($colors as $keyColor => $colorRow) {
+                    $query->andFilterWhere([
+                        'or',
+                        ['like', 'products.option_color', $colorRow],
+                    ]);
+                }
+            }
+        }
+
+        if (!empty($requestParams['size'])) {
+            $sizes = explode(",", $requestParams['size']);
+            if (!empty($sizes)) {
+                foreach ($sizes as $keySize => $sizeRow) {
+                    $query->andFilterWhere([
+                        'or',
+                        ['like', 'products.option_size', $sizeRow],
+                    ]);
+                }
+            }
+        }
+
+        if (!empty($requestParams['price'])) {
+            $prices = explode("-", $requestParams['size']);
+            if (!empty($prices)) {
+                $query->andFilterWhere([
+                    'or',
+                    ['between', 'products.option_price', $prices[0], $prices[1]],
+                    ['between', 'products.price', $prices[0], $prices[1]],
+                ]);
+            }
+        }
+
+        if (!empty($requestParams['conditions'])) {
+            $conditions = explode(",", $requestParams['conditions']);
+            if (!empty($conditions)) {
+                foreach ($conditions as $keyCondition => $conditionRow) {
+                    $query->andFilterWhere([
+                        'or',
+                        ['like', 'products.option_conditions', $conditionRow],
+                    ]);
+                }
+            }
+        }
+
+        if (!empty($requestParams['show_only'])) {
+            $showonlies = explode(",", $requestParams['show_only']);
+            if (!empty($showonlies)) {
+                foreach ($showonlies as $keyShowonly => $showonlyRow) {
+                    $query->andFilterWhere([
+                        'or',
+                        ['like', 'products.option_show_only', $showonlyRow],
+                    ]);
+                }
+            }
+        }
+
+        if (!empty($requestParams['gender']) && strtolower($requestParams['gender']) == 'f') {
+            $query->andWhere(['products.gender' => Product::GENDER_FOR_FEMALE]);
+        }
+
+        if (!empty($requestParams['sort_by'])) {
+            if (strtolower($requestParams['sort_by']) == 'nf') {
+                $query->orderBy(['products.created_at' => SORT_DESC]);
+            } elseif (strtolower($requestParams['sort_by']) == 'of') {
+                $query->orderBy(['products.created_at' => SORT_ASC]);
+            } elseif (strtolower($requestParams['sort_by']) == 'phl') {
+                $query->orderBy(['products.price' => SORT_DESC, 'products.option_price' => SORT_DESC]);
+            } elseif (strtolower($requestParams['sort_by']) == 'plh') {
+                $query->orderBy(['products.price' => SORT_ASC, 'products.option_price' => SORT_ASC]);
+            }
+        }
+
+
 
         /* ########## Prepare Query With custom Filter End ######### */
 

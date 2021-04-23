@@ -127,7 +127,7 @@ class Product extends \yii\db\ActiveRecord
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
             [['images'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
-            [['receipt'], 'string', 'max' => 255],
+            [['receipt', 'option_color'], 'string', 'max' => 255],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
@@ -153,6 +153,7 @@ class Product extends \yii\db\ActiveRecord
             'option_price' => 'Option Price',
             'option_conditions' => 'Option Conditions',
             'option_show_only' => 'Option Show Only',
+            'option_color' => 'Option Color',
             'description' => 'Description',
             'available_quantity' => 'Available Quantity',
             'is_top_selling' => 'Is Top Selling',
@@ -197,7 +198,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductRatings()
     {
-        return $this->hasMany(ProductRatings::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductRating::className(), ['product_id' => 'id']);
     }
 
     /**
