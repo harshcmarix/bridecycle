@@ -177,7 +177,8 @@ class Product extends \yii\db\ActiveRecord
         return [
             'productImages0' => 'productImages0',
             'brand'=>'brand',
-            'category0'=>'category0'
+            'category0'=>'category0',
+            'brand0'=>'brand0'
         ];
     }
 
@@ -318,5 +319,20 @@ class Product extends \yii\db\ActiveRecord
             $productSubCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productSubCategory->image;
          }
          return $productSubCategory;
+    }
+    /**
+     * Gets query for [[Brand]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBrand0()
+    {
+        // return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+        $brand = Brand::find()->where(['id'=>$this->brand_id])->one();
+        if(!empty($brand->image))
+         {
+            $brand->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $brand->image;
+         }
+         return $brand;
     }
 }
