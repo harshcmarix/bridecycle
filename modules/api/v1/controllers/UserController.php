@@ -262,22 +262,17 @@ class UserController extends ActiveController
                         }
                         $shopDetailModel->save(false);
                     }
-                    // Get profile picture
-                    $model->profile_picture = '';
-                    // $shopDetailModel->shop_logo ='';
-                    // $shopDetailModel->shop_cover_picture ='';
-                    if (!empty($fileName) && file_exists($thumbImagePath)) {
-                        $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
-                    }
-                    // if (!empty($shopLogoFileName) && file_exists($thumbImagePathLogo)) {
-                    //     $shopDetailModel->shop_logo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $shopLogoFileName;
-                    // }
-                    // if (!empty($shopCoverPictureFileName) && file_exists($thumbImagePathCoverPicture)) {
-                    //     $shopDetailModel->shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $shopCoverPictureFileName;
-                    // }
+                   
+                   
                 }
                 // shop owner detail end
             }
+             // Get profile picture
+                $model->profile_picture = '';
+                
+                if (!empty($fileName) && file_exists($thumbImagePath)) {
+                    $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
+                }
         }
 
         return $model;

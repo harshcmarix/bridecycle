@@ -170,6 +170,18 @@ class Product extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+     /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'productImages0' => 'productImages0',
+            'brand'=>'brand',
+            'category0'=>'category0',
+            'brand0'=>'brand0'
+        ];
+    }
 
     /**
      * Gets query for [[FavouriteProducts]].
@@ -259,5 +271,69 @@ class Product extends \yii\db\ActiveRecord
     public function getSubCategory()
     {
         return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+    }
+
+     ///////////////////////For api use only /////////////////////////////////////////////
+     /**
+     * Gets query for [[ProductImages]] with path for api.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductImages0()
+    {
+        // return $this->hasMany(ProductImage::className(), ['product_id' => 'id']);
+        $productImages = ProductImage::find()->where(['product_id'=>$this->id])->all();
+        foreach($productImages as $key=>$value){
+            if(!empty($value->name)){
+            $value->name = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $value->name;
+            }
+        }
+        return $productImages;
+    }
+     /**
+     * Gets query for [[Category]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory0()
+    {
+        // return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
+        $productCategory = ProductCategory::find()->where(['id'=>$this->category_id])->one();
+         if(!empty($productCategory->image))
+         {
+            $productCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productCategory->image;
+         }
+        
+         return $productCategory;
+    }
+    /**
+     * Gets query for [[SubCategory]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSubCategory0()
+    {
+        // return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+         $productSubCategory = ProductCategory::find()->where(['id'=>$this->sub_category_id])->one();
+         if(!empty($productSubCategory->image))
+         {
+            $productSubCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productSubCategory->image;
+         }
+         return $productSubCategory;
+    }
+    /**
+     * Gets query for [[Brand]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBrand0()
+    {
+        // return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+        $brand = Brand::find()->where(['id'=>$this->brand_id])->one();
+        if(!empty($brand->image))
+         {
+            $brand->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $brand->image;
+         }
+         return $brand;
     }
 }
