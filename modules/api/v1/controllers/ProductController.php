@@ -56,7 +56,7 @@ class ProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view'],
+            'only' => ['index', 'view'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -112,7 +112,6 @@ class ProductController extends ActiveController
     }
 
 
-
     /**
      * Displays a single Product model.
      * @param integer $id
@@ -122,8 +121,7 @@ class ProductController extends ActiveController
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        if(!empty($model)){
-
+        if (!empty($model)) {
 
             $productImg = [];
             if (!empty($model->productImages)) {
@@ -139,7 +137,7 @@ class ProductController extends ActiveController
             $data['brand'] = (!empty($model->brand_id) && !empty($model->brand) && !empty($model->brand->name)) ? $model->brand->name : "";
             $data['image'] = $productImg;
 
-            $model = array_merge($model->toArray(),$data);
+            $model = array_merge($model->toArray(), $data);
 
         }
         return $model;
