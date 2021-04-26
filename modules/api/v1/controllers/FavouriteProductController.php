@@ -84,6 +84,7 @@ class FavouriteProductController extends ActiveController
         $actions = parent::actions();
         unset($actions['index']);
         unset($actions['update']);
+        unset($actions['create']);
         unset($actions['view']);
         return $actions;
     }
@@ -101,5 +102,22 @@ class FavouriteProductController extends ActiveController
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams);
+    }
+     /**
+     * Creates a new SearchHistory model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $model = new FavouriteProduct();
+        $postData = Yii::$app->request->post();
+        $favouriteProduct['FavouriteProduct'] = $postData;
+        $favouriteProduct['FavouriteProduct']['user_id'] = Yii::$app->user->identity->id;
+        if ($model->load($favouriteProduct) && $model->validate()) {
+            $model->save();
+        }
+
+       return $model;
     }
 }

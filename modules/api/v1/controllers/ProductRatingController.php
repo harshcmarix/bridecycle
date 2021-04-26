@@ -3,12 +3,11 @@
 namespace app\modules\api\v1\controllers;
 
 use Yii;
-use app\models\{
-    CartItem,
-    Product
-};
-use app\modules\api\v1\models\search\CartItemSearch;
+use app\models\ProductRating;
+use app\modules\api\v1\models\search\ProductRatingSearch;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
 use yii\filters\auth\{
     HttpBasicAuth,
@@ -19,19 +18,19 @@ use yii\filters\auth\{
 use yii\filters\Cors;
 
 /**
- * CartItemController implements the CRUD actions for CartItem model.
+ * ProductRatingController implements the CRUD actions for ProductRating model.
  */
-class CartItemController extends ActiveController
+class ProductRatingController extends ActiveController
 {
     /**
      * @var string
      */
-    public $modelClass = 'app\models\CartItem';
+    public $modelClass = 'app\models\ProductRating';
 
     /**
      * @var string
      */
-    public $searchModelClass = 'app\modules\api\v1\models\search\CartItemSearch';
+    public $searchModelClass = 'app\modules\api\v1\models\search\ProductRatingSearch';
 
        /**
      * @return array
@@ -78,7 +77,7 @@ class CartItemController extends ActiveController
 
         return $behaviors;
     }
-    /**
+     /**
      * @return array
      */
      public function actions()
@@ -86,18 +85,17 @@ class CartItemController extends ActiveController
         $actions = parent::actions();
         unset($actions['index']);
         unset($actions['create']);
-        unset($actions['update']);
-       
+        unset($actions['view']);
         return $actions;
     }
 
     /**
-     * Lists all CartItem models.
+     * Lists all ProductRating models.
      * @return mixed
      */
     public function actionIndex()
     {
-         $model = new $this->searchModelClass;
+        $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
         if (empty($requestParams)) {
@@ -107,32 +105,63 @@ class CartItemController extends ActiveController
     }
 
     /**
-     * Displays a single CartItem model.
+     * Displays a single ProductRating model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = ProductRating::find()->where(['product_id'=>$id])->all();
+        $totalRatings = count($model);
+         
+        $ratings = [];
+        $i=$j=$k=$l=$m=$sum_ratings=$rating = 0;
+        foreach($model as $data_ratings)
+        {  
+           if($data_ratings->rating == 5){
+            $i++; 
+           }
+           if($data_ratings->rating == 4){
+            $j++; 
+           }
+           if($data_ratings->rating == 3){
+            $k++; 
+           }
+           if($data_ratings->rating == 2){
+            $l++; 
+           }
+           if($data_ratings->rating == 1){
+            $m++; 
+           }
+           $sum_ratings +=$data_ratings->rating;
+        }
+
+        $ratings['5'] = $i;
+        $ratings['4'] = $j;
+        $ratings['3'] = $k;
+        $ratings['2'] = $l;
+        $ratings['1'] = $m;
+        
+        if($totalRatings != 0){
+            $rating = $sum_ratings/$totalRatings;
+        }
+        $ratings['averageRatings'] = number_format((float)$rating,1, '.', '');
+        return $ratings;
     }
 
     /**
-     * Creates a new CartItem model.
+     * Creates a new ProductRating model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new CartItem();
+        $model = new ProductRating();
         $postData = Yii::$app->request->post();
-        $cartIteam['CartItem'] = $postData;
-        $cartIteam['CartItem']['user_id'] = Yii::$app->user->identity->id;
-        if ($model->load($cartIteam) && $model->validate()) {
-            $productData = Product::find()->where(['id'=>$model->product_id])->one();
-            $model->price = !empty($productData->price) ? $productData->price * $model->quantity : 0; 
+        $productRating['ProductRating'] = $postData;
+        $productRating['ProductRating']['user_id'] = Yii::$app->user->identity->id;
+        if ($model->load($productRating) && $model->validate()) {
             $model->save();
         }
 
@@ -140,7 +169,7 @@ class CartItemController extends ActiveController
     }
 
     /**
-     * Updates an existing CartItem model.
+     * Updates an existing ProductRating model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -148,18 +177,28 @@ class CartItemController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = CartItem::findOne($id);
-         if (!$model instanceof CartItem) {
-            throw new NotFoundHttpException('Cart item doesn\'t exist.');
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
-        $postData = Yii::$app->request->post();
-        $cartIteam['CartItem'] = $postData;
-        $cartIteam['CartItem']['user_id'] = Yii::$app->user->identity->id;
-        if ($model->load($cartIteam) && $model->validate()) {
-            $productData = Product::find()->where(['id'=>$model->product_id])->one();
-            $model->price = !empty($productData->price) ? $productData->price * $model->quantity : 0; 
-            $model->save();
-        }
-        return $model;
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Deletes an existing ProductRating model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
     }
 }

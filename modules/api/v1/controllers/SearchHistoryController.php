@@ -86,6 +86,7 @@ class SearchHistoryController extends ActiveController
         unset($actions['index']);
         unset($actions['update']);
         unset($actions['view']);
+        unset($actions['create']);
         return $actions;
     }
 
@@ -102,5 +103,22 @@ class SearchHistoryController extends ActiveController
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams);
+    }
+     /**
+     * Creates a new SearchHistory model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $model = new SearchHistory();
+        $postData = Yii::$app->request->post();
+        $searchHistory['SearchHistory'] = $postData;
+        $searchHistory['SearchHistory']['user_id'] = Yii::$app->user->identity->id;
+        if ($model->load($searchHistory) && $model->validate()) {
+            $model->save();
+        }
+
+       return $model;
     }
 }
