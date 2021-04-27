@@ -3,35 +3,32 @@
 namespace app\modules\api\v1\controllers;
 
 use Yii;
-use app\models\{
-    CartItem,
-    Product
-};
-use app\modules\api\v1\models\search\CartItemSearch;
+use app\models\Tailor;
+use app\modules\api\v1\models\search\TailorSearch;
 use yii\web\NotFoundHttpException;
-use yii\rest\ActiveController;
+use yii\filters\VerbFilter;
 use yii\filters\auth\{
     HttpBasicAuth,
     CompositeAuth,
     HttpBearerAuth,
     QueryParamAuth
 };
+use yii\rest\ActiveController;
 use yii\filters\Cors;
-
 /**
- * CartItemController implements the CRUD actions for CartItem model.
+ * TailorController implements the CRUD actions for Tailor model.
  */
-class CartItemController extends ActiveController
+class TailorController extends ActiveController
 {
     /**
      * @var string
      */
-    public $modelClass = 'app\models\CartItem';
+    public $modelClass = 'app\models\Tailor';
 
     /**
      * @var string
      */
-    public $searchModelClass = 'app\modules\api\v1\models\search\CartItemSearch';
+    public $searchModelClass = 'app\modules\api\v1\models\search\TailorSearch';
 
        /**
      * @return array
@@ -85,19 +82,20 @@ class CartItemController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
-        unset($actions['create']);
         unset($actions['update']);
-       
+        unset($actions['view']);
+        unset($actions['delete']);
+        unset($actions['create']);
         return $actions;
     }
 
     /**
-     * Lists all CartItem models.
+     * Lists all Tailor models.
      * @return mixed
      */
     public function actionIndex()
     {
-         $model = new $this->searchModelClass;
+        $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
         if (empty($requestParams)) {
@@ -107,59 +105,87 @@ class CartItemController extends ActiveController
     }
 
     /**
-     * Displays a single CartItem model.
+     * Displays a single Tailor model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = Tailor::findOne($id);
+        $tailor_shop_image = '';
+        if(!empty($model->shop_image) && file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $model->shop_image)){
+            $tailor_shop_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorShopImageThumbAbsolutePath') . '/' . $model->shop_image;
+        }
+        $model->shop_image = $tailor_shop_image;
+        return $model;
     }
 
     /**
-     * Creates a new CartItem model.
+     * Creates a new Tailor model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new CartItem();
-        $postData = Yii::$app->request->post();
-        $cartIteam['CartItem'] = $postData;
-        $cartIteam['CartItem']['user_id'] = Yii::$app->user->identity->id;
-        if ($model->load($cartIteam) && $model->validate()) {
-            $productData = Product::find()->where(['id'=>$model->product_id])->one();
-            $model->price = !empty($productData->price) ? $productData->price * $model->quantity : 0; 
-            $model->save();
-        }
+    // public function actionCreate()
+    // {
+    //     $model = new Tailor();
 
-       return $model;
-    }
+    //     if ($model->load(Yii::$app->request->post()) && $model->save()) {
+    //         return $this->redirect(['view', 'id' => $model->id]);
+    //     }
+
+    //     return $this->render('create', [
+    //         'model' => $model,
+    //     ]);
+    // }
 
     /**
-     * Updates an existing CartItem model.
+     * Updates an existing Tailor model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = CartItem::findOne($id);
-         if (!$model instanceof CartItem) {
-            throw new NotFoundHttpException('Cart item doesn\'t exist.');
-        }
-        $postData = Yii::$app->request->post();
-        $cartIteam['CartItem'] = $postData;
-        $cartIteam['CartItem']['user_id'] = Yii::$app->user->identity->id;
-        if ($model->load($cartIteam) && $model->validate()) {
-            $productData = Product::find()->where(['id'=>$model->product_id])->one();
-            $model->price = !empty($productData->price) ? $productData->price * $model->quantity : 0; 
-            $model->save();
-        }
-        return $model;
-    }
+    // public function actionUpdate($id)
+    // {
+    //     $model = $this->findModel($id);
+
+    //     if ($model->load(Yii::$app->request->post()) && $model->save()) {
+    //         return $this->redirect(['view', 'id' => $model->id]);
+    //     }
+
+    //     return $this->render('update', [
+    //         'model' => $model,
+    //     ]);
+    // }
+
+    /**
+     * Deletes an existing Tailor model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    // public function actionDelete($id)
+    // {
+    //     $this->findModel($id)->delete();
+
+    //     return $this->redirect(['index']);
+    // }
+
+    /**
+     * Finds the Tailor model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Tailor the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    // protected function findModel($id)
+    // {
+    //     if (($model = Tailor::findOne($id)) !== null) {
+    //         return $model;
+    //     }
+
+    //     throw new NotFoundHttpException('The requested page does not exist.');
+    // }
 }

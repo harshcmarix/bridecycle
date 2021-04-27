@@ -98,6 +98,8 @@ class UserAddressController extends ActiveController
         $model = new UserAddress();
         $addressData = \Yii::$app->request->post();
         $address['UserAddress'] = $addressData;
+        $address['UserAddress']['user_id'] = Yii::$app->user->identity->id;
+        // p(Yii::$app->user->identity->id);
         if ($model->load($address) && $model->validate()) {
             $model->type = UserAddress::TYPE_BILLING;
             $model->address = $model->street.' '.$model->city.' '.$model->state.' '.$model->country.' '.$model->zip_code;
@@ -117,9 +119,12 @@ class UserAddressController extends ActiveController
     public function actionUpdate($id)
     {
         $model = UserAddress::findOne($id);
+        if (!$model instanceof UserAddress) {
+            throw new NotFoundHttpException('Address doesn\'t exist.');
+        }
         $addressData = \Yii::$app->request->post();
         $address['UserAddress'] = $addressData;
-    
+        $address['UserAddress']['user_id'] = Yii::$app->user->identity->id;
         if ($model->load($address) && $model->validate()) {
             $model->type = UserAddress::TYPE_BILLING;
             $model->address = $model->street.' '.$model->city.' '.$model->state.' '.$model->country.' '.$model->zip_code;

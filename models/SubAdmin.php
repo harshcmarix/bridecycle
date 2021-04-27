@@ -101,17 +101,15 @@ class SubAdmin extends ActiveRecord
     {
         return [
             [['first_name', 'last_name', 'email'], 'required'],
-            [['email','shop_email'], 'email'],
+            [['email'], 'email'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
-            [['shop_phone_number'], 'integer'],
             [['mobile', 'weight', 'height'], 'number'],
-            [['mobile', 'shop_phone_number'],'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
+            [['mobile'],'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['password', 'confirm_password'], 'required', 'on' => self::SCENARIO_CREATE],
             [['profile_picture', 'password', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
-            [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['email'], 'unique', 'message' => 'Email already exist.'],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
         ];

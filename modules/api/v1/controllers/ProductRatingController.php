@@ -3,8 +3,8 @@
 namespace app\modules\api\v1\controllers;
 
 use Yii;
-use app\models\FavouriteProduct;
-use app\modules\api\v1\models\search\FavouriteProductSearch;
+use app\models\ProductRating;
+use app\modules\api\v1\models\search\ProductRatingSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
@@ -17,19 +17,19 @@ use yii\filters\auth\{
 use yii\filters\Cors;
 
 /**
- * FavouriteProductController implements the CRUD actions for FavouriteProduct model.
+ * ProductRatingController implements the CRUD actions for ProductRating model.
  */
-class FavouriteProductController extends ActiveController
+class ProductRatingController extends ActiveController
 {
-   /**
+    /**
      * @var string
      */
-    public $modelClass = 'app\models\FavouriteProduct';
+    public $modelClass = 'app\models\ProductRating';
 
     /**
      * @var string
      */
-    public $searchModelClass = 'app\modules\api\v1\models\search\FavouriteProductSearch';
+    public $searchModelClass = 'app\modules\api\v1\models\search\ProductRatingSearch';
 
        /**
      * @return array
@@ -83,14 +83,15 @@ class FavouriteProductController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
-        unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);
+        unset($actions['update']);
+        unset($actions['delete']);
         return $actions;
     }
 
     /**
-     * Lists all FavouriteProduct models.
+     * Lists all ProductRating models.
      * @return mixed
      */
     public function actionIndex()
@@ -103,21 +104,71 @@ class FavouriteProductController extends ActiveController
         }
         return $model->search($requestParams);
     }
-     /**
-     * Creates a new SearchHistory model.
+
+    /**
+     * Displays a single ProductRating model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {
+        $model = ProductRating::find()->where(['product_id'=>$id])->all();
+        $totalRatings = count($model);
+         
+        $ratings = [];
+        $i=$j=$k=$l=$m=$sumRatings=$rating = 0;
+        foreach($model as $dataRatings)
+        {  
+           if($dataRatings->rating == 5){
+               $i++; 
+           }
+           if($dataRatings->rating == 4){
+               $j++; 
+           }
+           if($dataRatings->rating == 3){
+               $k++; 
+           }
+           if($dataRatings->rating == 2){
+               $l++; 
+           }
+           if($dataRatings->rating == 1){
+               $m++; 
+           }
+           $sumRatings +=$dataRatings->rating;
+        }
+
+        $ratings['5'] = $i;
+        $ratings['4'] = $j;
+        $ratings['3'] = $k;
+        $ratings['2'] = $l;
+        $ratings['1'] = $m;
+        
+        if($totalRatings != 0){
+            $rating = $sumRatings/$totalRatings;
+        }
+        $ratings['averageRatings'] = number_format((float)$rating,1, '.', '');
+        // $ratings['averageRatings'] = (int)$rating;
+        return $ratings;
+    }
+
+    /**
+     * Creates a new ProductRating model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new FavouriteProduct();
+        $model = new ProductRating();
         $postData = Yii::$app->request->post();
-        $favouriteProduct['FavouriteProduct'] = $postData;
-        $favouriteProduct['FavouriteProduct']['user_id'] = Yii::$app->user->identity->id;
-        if ($model->load($favouriteProduct) && $model->validate()) {
+        $productRating['ProductRating'] = $postData;
+        $productRating['ProductRating']['user_id'] = Yii::$app->user->identity->id;
+        if ($model->load($productRating) && $model->validate()) {
             $model->save();
         }
 
        return $model;
     }
+
+   
 }

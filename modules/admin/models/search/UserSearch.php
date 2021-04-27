@@ -18,8 +18,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'mobile', 'shop_phone_number'], 'integer'],
-            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'personal_information', 'user_type', 'is_shop_owner', 'shop_name', 'shop_email', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'mobile'], 'integer'],
+            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'personal_information', 'user_type', 'created_at', 'updated_at'], 'safe'],
             [['weight', 'height'], 'number'],
         ];
     }
@@ -58,7 +58,6 @@ class UserSearch extends User
             'mobile' => $this->mobile,
             'weight' => $this->weight,
             'height' => $this->height,
-            'shop_phone_number' => $this->shop_phone_number,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
@@ -73,9 +72,8 @@ class UserSearch extends User
             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
             ->andFilterWhere(['like', 'personal_information', $this->personal_information])
             ->andFilterWhere(['like', 'user_type', $this->user_type])
-            ->andFilterWhere(['like', 'is_shop_owner', $this->is_shop_owner])
-            ->andFilterWhere(['like', 'shop_name', $this->shop_name])
-            ->andFilterWhere(['like', 'shop_email', $this->shop_email]);
+            ->andFilterWhere(['like', 'is_shop_owner', $this->is_shop_owner]);
+           
 
         return $dataProvider;
     }
