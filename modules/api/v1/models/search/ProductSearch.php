@@ -274,14 +274,14 @@ class ProductSearch extends Product
                 }
             }
 
-            $data['status'] = (!empty($productModelData[$key]['status_id']) && !empty($value->status) && !empty($value->status->status)) ? $value->status->status : "";
-            $data['user'] = (!empty($productModelData[$key]['user_id']) && !empty($value->user)) ? $value->user->first_name . " " . $value->user->last_name : "";
-            $data['brand'] = (!empty($productModelData[$key]['brand_id']) && !empty($value->brand) && !empty($value->brand->name)) ? $value->brand->name : "";
-            $data['image'] = $productImg;
-
-            $productData[] = array_merge($value->toArray(), $data);
+//            $data['status'] = (!empty($productModelData[$key]['status_id']) && !empty($value->status) && !empty($value->status->status)) ? $value->status->status : "";
+//            $data['user'] = (!empty($productModelData[$key]['user_id']) && !empty($value->user)) ? $value->user->first_name . " " . $value->user->last_name : "";
+//            $data['brand'] = (!empty($productModelData[$key]['brand_id']) && !empty($value->brand) && !empty($value->brand->name)) ? $value->brand->name : "";
+//            $data['image'] = $productImg;
+//
+//            $productData[] = array_merge($value->toArray(), $data);
         }
-        $productModelData = $productData;
+        //$productModelData = $productData;
         $activeDataProvider->setModels($productModelData);
         return $activeDataProvider;
     }

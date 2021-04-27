@@ -32,6 +32,7 @@ use app\modules\admin\models\User;
  * @property int|null $width
  * @property string|null $receipt
  * @property int $status_id
+ * @property int $address_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -42,6 +43,7 @@ use app\modules\admin\models\User;
  * @property Brand $brand
  * @property Category $category
  * @property SubCategory $subCategory
+ * @property UserAddress $address
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -119,10 +121,10 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'number', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'is_top_selling', 'is_top_trending', 'status_id'], 'required'],
-            [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'status_id', 'user_id'], 'integer'],
+            [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'status_id', 'user_id', 'address_id'], 'integer'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
-            [['number', 'created_at', 'updated_at'], 'safe'],
+            [['number', 'other_info', 'created_at', 'updated_at'], 'safe'],
             [['name', 'option_size'], 'string', 'max' => 50],
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
@@ -133,6 +135,7 @@ class Product extends \yii\db\ActiveRecord
             [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductStatus::className(), 'targetAttribute' => ['status_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
         ];
     }
 
@@ -166,20 +169,25 @@ class Product extends \yii\db\ActiveRecord
             'width' => 'Width',
             'receipt' => 'Receipt',
             'status_id' => 'Status',
+            'address_id' => 'Address',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
     }
-     /**
+
+    /**
      * @return array|false
      */
     public function extraFields()
     {
         return [
             'productImages0' => 'productImages0',
-            'brand'=>'brand',
-            'category0'=>'category0',
-            'brand0'=>'brand0'
+            'category0' => 'category0',
+            'brand0' => 'brand0',
+            'user0' => 'user0',
+            'subCategory0' => 'subCategory0',
+            'status' => 'status',
+            'address' => 'address',
         ];
     }
 
@@ -244,6 +252,16 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Address]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddress()
+    {
+        return $this->hasOne(UserAddress::className(), ['id' => 'address_id']);
+    }
+
+    /**
      * Gets query for [[Status]].
      *
      * @return \yii\db\ActiveQuery
@@ -273,8 +291,9 @@ class Product extends \yii\db\ActiveRecord
         return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
     }
 
-     ///////////////////////For api use only /////////////////////////////////////////////
-     /**
+    ///////////////////////For api use only /////////////////////////////////////////////
+
+    /**
      * Gets query for [[ProductImages]] with path for api.
      *
      * @return \yii\db\ActiveQuery
@@ -282,15 +301,16 @@ class Product extends \yii\db\ActiveRecord
     public function getProductImages0()
     {
         // return $this->hasMany(ProductImage::className(), ['product_id' => 'id']);
-        $productImages = ProductImage::find()->where(['product_id'=>$this->id])->all();
-        foreach($productImages as $key=>$value){
-            if(!empty($value->name)){
-            $value->name = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $value->name;
+        $productImages = ProductImage::find()->where(['product_id' => $this->id])->all();
+        foreach ($productImages as $key => $value) {
+            if (!empty($value->name)) {
+                $value->name = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $value->name;
             }
         }
         return $productImages;
     }
-     /**
+
+    /**
      * Gets query for [[Category]].
      *
      * @return \yii\db\ActiveQuery
@@ -298,14 +318,14 @@ class Product extends \yii\db\ActiveRecord
     public function getCategory0()
     {
         // return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
-        $productCategory = ProductCategory::find()->where(['id'=>$this->category_id])->one();
-         if(!empty($productCategory->image))
-         {
+        $productCategory = ProductCategory::find()->where(['id' => $this->category_id])->one();
+        if (!empty($productCategory->image)) {
             $productCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productCategory->image;
-         }
-        
-         return $productCategory;
+        }
+
+        return $productCategory;
     }
+
     /**
      * Gets query for [[SubCategory]].
      *
@@ -314,13 +334,13 @@ class Product extends \yii\db\ActiveRecord
     public function getSubCategory0()
     {
         // return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
-         $productSubCategory = ProductCategory::find()->where(['id'=>$this->sub_category_id])->one();
-         if(!empty($productSubCategory->image))
-         {
+        $productSubCategory = ProductCategory::find()->where(['id' => $this->sub_category_id])->one();
+        if (!empty($productSubCategory->image)) {
             $productSubCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productSubCategory->image;
-         }
-         return $productSubCategory;
+        }
+        return $productSubCategory;
     }
+
     /**
      * Gets query for [[Brand]].
      *
@@ -329,11 +349,21 @@ class Product extends \yii\db\ActiveRecord
     public function getBrand0()
     {
         // return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
-        $brand = Brand::find()->where(['id'=>$this->brand_id])->one();
-        if(!empty($brand->image))
-         {
+        $brand = Brand::find()->where(['id' => $this->brand_id])->one();
+        if (!empty($brand->image)) {
             $brand->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $brand->image;
-         }
-         return $brand;
+        }
+        return $brand;
     }
+
+    public function getUser0()
+    {
+        //return $this->hasOne(User::className(), ['id' => 'user_id']);
+        $data = User::find()->where(['id' => $this->user_id])->one();
+        if (!empty($data->profile_picture)) {
+            $data->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+        }
+        return $data;
+    }
+
 }

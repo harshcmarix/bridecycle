@@ -174,7 +174,19 @@ class ProductController extends Controller
                     $oldImages = $model->productImages;
                     if (!empty($oldImages)) {
                         foreach ($oldImages as $oldImageRow) {
-                            $oldImageRow->delete();
+
+                            if (!empty($oldImageRow) && $oldImageRow instanceof ProductImage) {
+
+                                if (!empty($oldImageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $oldImageRow->name)) {
+                                    unlink(Yii::getAlias('@productImageRelativePath') . "/" . $oldImageRow->name);
+                                }
+
+                                if (!empty($oldImageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $oldImageRow->name)) {
+                                    unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $oldImageRow->name);
+                                }
+
+                                $oldImageRow->delete();
+                            }
                         }
                     }
 
