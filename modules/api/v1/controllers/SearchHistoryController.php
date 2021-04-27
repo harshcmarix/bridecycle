@@ -5,7 +5,6 @@ namespace app\modules\api\v1\controllers;
 use Yii;
 use app\models\SearchHistory;
 use app\modules\api\v1\models\search\SearchHistorySearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\auth\{

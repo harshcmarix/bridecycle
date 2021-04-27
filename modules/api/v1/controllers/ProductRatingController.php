@@ -5,7 +5,6 @@ namespace app\modules\api\v1\controllers;
 use Yii;
 use app\models\ProductRating;
 use app\modules\api\v1\models\search\ProductRatingSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
@@ -86,6 +85,8 @@ class ProductRatingController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['view']);
+        unset($actions['update']);
+        unset($actions['delete']);
         return $actions;
     }
 
@@ -116,25 +117,25 @@ class ProductRatingController extends ActiveController
         $totalRatings = count($model);
          
         $ratings = [];
-        $i=$j=$k=$l=$m=$sum_ratings=$rating = 0;
-        foreach($model as $data_ratings)
+        $i=$j=$k=$l=$m=$sumRatings=$rating = 0;
+        foreach($model as $dataRatings)
         {  
-           if($data_ratings->rating == 5){
-            $i++; 
+           if($dataRatings->rating == 5){
+               $i++; 
            }
-           if($data_ratings->rating == 4){
-            $j++; 
+           if($dataRatings->rating == 4){
+               $j++; 
            }
-           if($data_ratings->rating == 3){
-            $k++; 
+           if($dataRatings->rating == 3){
+               $k++; 
            }
-           if($data_ratings->rating == 2){
-            $l++; 
+           if($dataRatings->rating == 2){
+               $l++; 
            }
-           if($data_ratings->rating == 1){
-            $m++; 
+           if($dataRatings->rating == 1){
+               $m++; 
            }
-           $sum_ratings +=$data_ratings->rating;
+           $sumRatings +=$dataRatings->rating;
         }
 
         $ratings['5'] = $i;
@@ -144,9 +145,10 @@ class ProductRatingController extends ActiveController
         $ratings['1'] = $m;
         
         if($totalRatings != 0){
-            $rating = $sum_ratings/$totalRatings;
+            $rating = $sumRatings/$totalRatings;
         }
         $ratings['averageRatings'] = number_format((float)$rating,1, '.', '');
+        // $ratings['averageRatings'] = (int)$rating;
         return $ratings;
     }
 
@@ -168,37 +170,5 @@ class ProductRatingController extends ActiveController
        return $model;
     }
 
-    /**
-     * Updates an existing ProductRating model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Deletes an existing ProductRating model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
+   
 }
