@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = 'Forgot Password';
-$this->params['breadcrumbs'][] = $this->title;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\ForgotPasswordForm */

@@ -117,7 +117,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['email', 'shop_email'], 'email'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
 
-            [['mobile', 'shop_phone_number'], 'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
+            // [['mobile', 'shop_phone_number'], 'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
+            [['mobile', 'shop_phone_number'], 'string', 'max' => 15,'min' => 5],
 
             [['weight', 'height'], 'number'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],

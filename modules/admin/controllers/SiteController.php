@@ -18,6 +18,7 @@ use yii\web\{
 };
 use Yii;
 use yii\base\InvalidParamException;
+use kartik\growl\Growl;
 
 /**
  * Class SiteController
@@ -83,7 +84,8 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['/admin']);
+            Yii::$app->session->setFlash('success', "You are successfully logged in");
+            return $this->redirect(['/admin/site/index']);
         }
 
         return $this->render('login', [
@@ -99,7 +101,8 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
-        return $this->goHome();
+        // return $this->goHome();
+        return $this->redirect(['/admin']);
     }
 
     /**
@@ -112,11 +115,11 @@ class SiteController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                 return $this->goHome();
             }
 
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for email provided.');
+            Yii::$app->session->setFlash('danger', 'Sorry, we are unable to reset password for email provided.');
         }
 
         return $this->render('forgot-password', [

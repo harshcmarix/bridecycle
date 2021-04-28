@@ -32,13 +32,32 @@ AdminAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+
+    $isVisible = false;
+    if(!Yii::$app->user->isGuest){
+           $isVisible = true;
+    }
+   
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/admin/site/index']],
+            // ['label' => 'Home', 'url' => ['/admin/site/index']],
+            ['label' => 'Sub admin', 'url' => ['/admin/sub-admin'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='sub-admin')? 'active' :'']],
+            ['label' => 'Category', 'url' => ['/admin/product-category'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='product-category')? 'active' :'']],
+            ['label' => 'Brand', 'url' => ['/admin/brand'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='brand')? 'active' :'']],
+            ['label' => 'Promo code', 'url' => ['/admin/promo-code'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='promo-code')? 'active' :'']],
+            ['label' => 'Subscription', 'url' => ['/admin/subscription'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='subscription')? 'active' :'']],
+            ['label' => 'Content', 'url' => ['/admin/cms-page'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='cms-page')? 'active' :'']],
+            ['label' => 'Settings', 'url' => ['/admin/setting'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='setting')? 'active' :'']],
+            ['label' => 'Banner', 'url' => ['/admin/banner'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='banner')? 'active' :'']],
+            ['label' => 'Tailor', 'url' => ['/admin/tailor'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='tailor')? 'active' :'']],
+            ['label' => 'Product', 'url' => ['/admin/product'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='product')? 'active' :'']],
+            ['label' => 'Order', 'url' => ['/admin/order'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='order')? 'active' :'']],
+            ['label' => 'User', 'url' => ['/admin/user'],'visible'=>$isVisible,'options'=>['class'=>(Yii::$app->controller->id =='user')? 'active' :'']],
             Yii::$app->user->isGuest ? (
             ['label' => 'Login', 'url' => ['/admin/site/login']]
-            ) : (
+            ) :
+            (
                 '<li>'
                 . Html::beginForm(['/admin/site/logout'], 'post')
                 . Html::submitButton(
