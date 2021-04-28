@@ -11,7 +11,7 @@ use app\models\Banner;
 /* @var $this yii\web\View */
 /* @var $model app\models\Banner */
 
-$this->title = $model->id;
+$this->title = 'View Banner';
 $this->params['breadcrumbs'][] = ['label' => 'Banners', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -23,17 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-           [
-                'attribute' => 'id',
-                'value' => function ($model) {
-                    $id = '';
-                    if ($model instanceof Banner) {
-                        $id = $model->id;
-                    }
-                    return $id;
-                },
-                
-            ],
             [
                 'format' => ['raw'],
                 'enableSorting' => false,
@@ -59,28 +48,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $bannermodal, 'height' => '100px', 'width' => '100px']);
                 },
               
-            ],
-            [
-                'attribute' => 'created_at',
-                'value' => function ($model) {
-                    $created_at = '';
-                    if ($model instanceof Banner) {
-                        $created_at = $model->created_at;
-                    }
-                    return $created_at;
-                },
-               
-            ],
-             [
-                'attribute' => 'updated_at',
-                'value' => function ($model) {
-                    $updated_at = '';
-                    if ($model instanceof Banner) {
-                        $updated_at = $model->updated_at;
-                    }
-                    return $updated_at;
-                },
-               
             ],
         ],
     ]) ?>

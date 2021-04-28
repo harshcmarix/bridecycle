@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use \app\modules\admin\widgets\GridView;
 use yii\bootstrap\Modal;
 use app\models\Tailor;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\TailorSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -117,6 +118,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
+             [
+                'content' =>
+                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Reset Filter',
+                        'onclick' => "window.location.href = '" . Url::to(['tailor/index']) . "';",
+                    ]),
+                'options' => ['class' => 'btn-group mr-2']
+            ],
             '{toggleData}',
         ],
         'toggleDataContainer' => ['class' => 'btn-group mr-2'],
@@ -132,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'Tailor',
+        'itemLabelSingle' => 'tailor',
         'itemLabelPlural' => 'Tailors'
     ]); ?>
 

@@ -10,7 +10,7 @@ use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $model app\models\ProductCategory */
 
-$this->title = $model->name;
+$this->title = 'View Product Category';
 $this->params['breadcrumbs'][] = ['label' => 'Product Categories', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -22,17 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            [
-            'attribute' => 'id',
-            'value' => function ($model) {
-                $id = '';
-                if($model instanceof ProductCategory)
-                {
-                   $id = $model->id;
-                }
-                return $id;
-             },
-            ],
             [
             'format' => ['raw'],
             'attribute' => 'image',
@@ -77,27 +66,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         $parent_name = $model->parent->name;
                     }
                     return $parent_name;
-                },
-            ],
-            [
-            'attribute' => 'created_at',
-                'value' => function ($model) {
-                    $created_at = '';
-                     if($model instanceof ProductCategory){
-                        $created_at = $model->created_at;
-                     }
-                     return $created_at;
-                },
-               
-            ],
-             [
-            'attribute' => 'updated_at',
-                'value' => function ($model) {
-                    $updated_at = '';
-                     if($model instanceof ProductCategory){
-                        $updated_at = $model->updated_at;
-                     }
-                     return $updated_at;
                 },
             ],
         ],

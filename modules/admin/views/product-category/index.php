@@ -1,8 +1,11 @@
 <?php
 
 use \app\modules\admin\widgets\GridView;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
+use yii\helpers\{
+    Html,
+    ArrayHelper,
+    Url
+};
 use yii\bootstrap\Modal;
 use kartik\editable\Editable;
 use app\models\ProductCategory;
@@ -128,6 +131,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
+            [
+                'content' =>
+                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Reset Filter',
+                        'onclick' => "window.location.href = '" . Url::to(['product-category/index']) . "';",
+                    ]),
+                'options' => ['class' => 'btn-group mr-2']
+            ],
             '{toggleData}',
         ],
         'toggleDataContainer' => ['class' => 'btn-group mr-2'],
@@ -143,7 +155,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'Product Category',
+        'itemLabelSingle' => 'product category',
         'itemLabelPlural' => 'Product Categories'
     ]);
 

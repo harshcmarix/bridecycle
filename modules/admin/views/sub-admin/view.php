@@ -4,6 +4,7 @@ use yii\helpers\{
     Html,
     Url
 };
+use app\models\SubAdmin;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -19,15 +20,59 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+           
             // 'profile_picture',
-            'first_name',
-            'last_name',
-            'email:email',
-            'mobile',
-            'user_type',
-            'created_at',
-            'updated_at',
+            // 'first_name',
+             [
+                'attribute' => 'first_name',
+                'value' => function ($model) {
+                    $first_name = '';
+                    if ($model instanceof SubAdmin) {
+                        $first_name = $model->first_name;
+                    }
+                    return $first_name;
+                },
+            ],
+            [
+                'attribute' => 'last_name',
+                'value' => function ($model) {
+                    $last_name = '';
+                    if ($model instanceof SubAdmin) {
+                        $last_name = $model->last_name;
+                    }
+                    return $last_name;
+                },
+            ],
+            [
+                'attribute' => 'email',
+                'value' => function ($model) {
+                    $email = '';
+                    if ($model instanceof SubAdmin) {
+                        $email = $model->email;
+                    }
+                    return $email;
+                },
+            ],
+            [
+                'attribute' => 'mobile',
+                'value' => function ($model) {
+                    $mobile = '';
+                    if ($model instanceof SubAdmin) {
+                        $mobile = $model->mobile;
+                    }
+                    return $mobile;
+                },
+            ],
+            [
+                'attribute' => 'user_type',
+                'value' => function ($model) {
+                    $user_type = '';
+                    if ($model instanceof SubAdmin) {
+                        $user_type = $model->user_type;
+                    }
+                    return $user_type;
+                },
+            ],
         ],
     ]) ?>
 

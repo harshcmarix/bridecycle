@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\CmsPage */
 
-$this->title = 'Update Cms Page: ' . $model->title;
+$this->title = 'Update Cms Page';
 $this->params['breadcrumbs'][] = ['label' => 'Cms Pages', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cms-page-update">
 

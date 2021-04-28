@@ -11,7 +11,7 @@ use app\models\Tailor;
 /* @var $this yii\web\View */
 /* @var $model app\models\Tailor */
 
-$this->title = $model->name;
+$this->title = 'View Tailor';
 $this->params['breadcrumbs'][] = ['label' => 'Tailors', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -23,16 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-             [
-                'attribute' => 'id',
-                'value' => function ($model) {
-                    $id = '';
-                    if ($model instanceof Tailor) {
-                        $id = $model->id;
-                    }
-                    return $id;
-                },
-            ],
             [
                 'format' => ['raw'],
                 'enableSorting' => false,
@@ -98,27 +88,6 @@ $this->params['breadcrumbs'][] = $this->title;
                      return $mobile;
                 },
                
-            ],
-             [
-            'attribute' => 'created_at',
-                'value' => function ($model) {
-                    $created_at = '';
-                     if($model instanceof Tailor){
-                        $created_at = $model->created_at;
-                     }
-                     return $created_at;
-                },
-               
-            ],
-             [
-            'attribute' => 'updated_at',
-                'value' => function ($model) {
-                    $updated_at = '';
-                     if($model instanceof Tailor){
-                        $updated_at = $model->updated_at;
-                     }
-                     return $updated_at;
-                },
             ],
         ],
     ]) ?>

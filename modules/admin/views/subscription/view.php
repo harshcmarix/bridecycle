@@ -10,7 +10,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Subscription */
 
-$this->title = $model->name;
+$this->title = 'View Subscription';
 $this->params['breadcrumbs'][] = ['label' => 'Subscriptions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -22,16 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-              [
-        'attribute' => 'id',
-            'value' => function ($model) {
-                $id = '';
-                if($model instanceof Subscription){
-                    $id = $model->id;
-                }
-                return $id;
-            },
-        ],
         [
         'attribute' => 'name',
             'value' => function ($model) {
@@ -61,26 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
                  }
                  return $status;
             }, 
-        ],
-        [
-        'attribute' => 'created_at',
-            'value' => function ($model) {
-                $created_at = '';
-                if($model instanceof Subscription){
-                    $created_at = $model->created_at;
-                }
-                return $created_at;
-            },
-        ],
-        [
-             'attribute' => 'updated_at',
-            'value' => function ($model) {
-                $updated_at = '';
-                if($model instanceof Subscription){
-                    $updated_at = $model->updated_at;
-                }
-                return $updated_at;
-            },
         ],
     ],
     ]) ?>

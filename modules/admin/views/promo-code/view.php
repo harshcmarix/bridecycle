@@ -10,7 +10,7 @@ use app\models\PromoCode;
 /* @var $this yii\web\View */
 /* @var $model app\models\PromoCode */
 
-$this->title = $model->id;
+$this->title = 'View Promo Code';
 $this->params['breadcrumbs'][] = ['label' => 'Promo Codes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -22,16 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            [
-                'attribute' => 'id',
-                'value' => function ($model) {
-                    $id = '';
-                    if ($model instanceof PromoCode) {
-                        $id = $model->id;
-                    }
-                    return $id;
-                },
-            ],
              [
                 'attribute' => 'code',
                 'value' => function ($model) {
@@ -51,26 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         $user_name = $model->user->first_name.' '.$model->user->last_name;
                     }
                     return $user_name;
-                },
-            ],
-             [
-                'attribute' => 'created_at',
-                'value' => function ($model) {
-                    $created_at = '';
-                    if ($model instanceof PromoCode) {
-                        $created_at = $model->created_at;
-                    }
-                    return $created_at;
-                },
-            ],
-            [
-                'attribute' => 'updated_at',
-                'value' => function ($model) {
-                    $updated_at = '';
-                    if ($model instanceof PromoCode) {
-                        $updated_at = $model->updated_at;
-                    }
-                    return $updated_at;
                 },
             ],
         ],

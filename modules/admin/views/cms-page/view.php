@@ -10,7 +10,7 @@ use app\models\CmsPage;
 /* @var $this yii\web\View */
 /* @var $model app\models\CmsPage */
 
-$this->title = $model->title;
+$this->title = 'View Cms Page';
 $this->params['breadcrumbs'][] = ['label' => 'Cms Pages', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -21,17 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= DetailView::widget([
         'model' => $model,
-        'attributes' => [
-           [
-                'attribute' => 'id',
-                'value' => function ($model) {
-                    $id = '';
-                    if ($model instanceof CmsPage) {
-                        $id = $model->id;
-                    }
-                    return $id;
-                },
-            ],           
+        'attributes' => [         
             [
                 'attribute' => 'title',
                 'value' => function ($model) {
@@ -54,26 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'format' => ['raw'],
                 'filter'=>false,
-            ],
-             [
-                'attribute' => 'created_at',
-                'value' => function ($model) {
-                    $created_at = '';
-                    if ($model instanceof CmsPage) {
-                        $created_at = $model->created_at;
-                    }
-                    return $created_at;
-                },
-            ],
-             [
-                'attribute' => 'updated_at',
-                'value' => function ($model) {
-                    $updated_at = '';
-                    if ($model instanceof CmsPage) {
-                        $updated_at = $model->updated_at;
-                    }
-                    return $updated_at;
-                },
             ],
         ],
     ]) ?>

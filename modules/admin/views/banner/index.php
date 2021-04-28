@@ -1,6 +1,9 @@
 <?php
 
-use yii\helpers\Html;
+use yii\helpers\{
+    Html,
+    Url
+};
 use \app\modules\admin\widgets\GridView;
 use app\models\Banner;
 use yii\bootstrap\Modal;
@@ -94,6 +97,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
+            [
+                'content' =>
+                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Reset Filter',
+                        'onclick' => "window.location.href = '" . Url::to(['banner/index']) . "';",
+                    ]),
+                'options' => ['class' => 'btn-group mr-2']
+            ],
             '{toggleData}',
         ],
         'toggleDataContainer' => ['class' => 'btn-group mr-2'],
@@ -109,7 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'Banner',
+        'itemLabelSingle' => 'banner',
         'itemLabelPlural' => 'Banners'
     ]);
 

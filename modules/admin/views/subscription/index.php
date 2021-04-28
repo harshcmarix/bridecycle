@@ -1,8 +1,11 @@
 <?php
 
 use \app\modules\admin\widgets\GridView;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
+use yii\helpers\{
+    Html,
+    ArrayHelper,
+    Url
+};
 use kartik\editable\Editable;
 use app\models\Subscription;
 
@@ -117,6 +120,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
+            [
+                'content' =>
+                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Reset Filter',
+                        'onclick' => "window.location.href = '" . Url::to(['subscription/index']) . "';",
+                    ]),
+                'options' => ['class' => 'btn-group mr-2']
+            ],
 
             '{toggleData}',
         ],
@@ -136,7 +148,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
         //'exportConfig' => $exportConfig,
-        'itemLabelSingle' => 'Subscription',
+        'itemLabelSingle' => 'subscription',
         'itemLabelPlural' => 'Subscriptions'
     ]);
     ?>

@@ -1,6 +1,9 @@
 <?php
 
-use yii\helpers\Html;
+use yii\helpers\{
+    Html,
+    Url
+};
 use \app\modules\admin\widgets\GridView;
 use app\models\CmsPage;
 
@@ -92,6 +95,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
+            [
+                'content' =>
+                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Reset Filter',
+                        'onclick' => "window.location.href = '" . Url::to(['cms-page/index']) . "';",
+                    ]),
+                'options' => ['class' => 'btn-group mr-2']
+            ],
             '{toggleData}',
         ],
         'toggleDataContainer' => ['class' => 'btn-group mr-2'],
@@ -107,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'Content',
+        'itemLabelSingle' => 'content',
         'itemLabelPlural' => 'Contents'
     ]);
 

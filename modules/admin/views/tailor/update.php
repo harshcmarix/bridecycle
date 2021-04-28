@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Tailor */
 
-$this->title = 'Update Tailor: ' . $model->name;
+$this->title = 'Update Tailor';
 $this->params['breadcrumbs'][] = ['label' => 'Tailors', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tailor-update">
 

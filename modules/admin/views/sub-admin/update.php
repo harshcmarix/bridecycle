@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Update Sub Admin';
 $this->params['breadcrumbs'][] = ['label' => 'Sub Admin', 'url' => ['index']];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="sub-admin-update">
 

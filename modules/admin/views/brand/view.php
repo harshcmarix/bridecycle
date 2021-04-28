@@ -11,7 +11,7 @@ use app\models\Brand;
 /* @var $this yii\web\View */
 /* @var $model app\models\Brand */
 
-$this->title = $model->name;
+$this->title = 'View Brand';
 $this->params['breadcrumbs'][] = ['label' => 'Brands', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -22,19 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     
     <?= DetailView::widget([
         'model' => $model,
-        'attributes' => [
-             [
-                'attribute' => 'id',
-                'value' => function ($model) {
-                    $id = '';
-                    if($model instanceof Brand){
-                        $id = $model->id;
-                    }
-                    return $id;
-                },
-                'header'=>'',
-                'headerOptions'=>['class'=>'kartik-sheet-style']
-            ],   
+        'attributes' => [ 
             [
                 'attribute' => 'name',
                 'value' => function ($model) {
@@ -80,30 +68,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
                     }
                     return $is_top_brand;
-                },
-                'header'=>'',
-                'headerOptions'=>['class'=>'kartik-sheet-style']
-            ],
-            [
-                'attribute' => 'created_at',
-                'value' => function ($model) {
-                    $created_at = '';
-                    if($model instanceof Brand){
-                        $created_at = $model->created_at;
-                    }
-                    return $created_at;
-                },
-                'header'=>'',
-                'headerOptions'=>['class'=>'kartik-sheet-style']
-            ],
-            [
-                'attribute' => 'updated_at',
-                'value' => function ($model) {
-                    $updated_at = '';
-                    if($model instanceof Brand){
-                        $updated_at = $model->updated_at;
-                    }
-                    return $updated_at;
                 },
                 'header'=>'',
                 'headerOptions'=>['class'=>'kartik-sheet-style']

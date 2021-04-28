@@ -1,7 +1,10 @@
 <?php
 
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
+use yii\helpers\{
+    Html,
+    ArrayHelper,
+    Url
+};
 use \app\modules\admin\widgets\GridView;
 
 /* @var $this yii\web\View */
@@ -69,6 +72,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => 'btn btn-success',
                         'title' => \Yii::t('kvgrid', 'Add Sub Admin'),
                         'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/sub-admin/create']) . "';",
+                    ]),
+                'options' => ['class' => 'btn-group mr-2']
+            ],
+             [
+                'content' =>
+                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Reset Filter',
+                        'onclick' => "window.location.href = '" . Url::to(['sub-admin/index']) . "';",
                     ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
