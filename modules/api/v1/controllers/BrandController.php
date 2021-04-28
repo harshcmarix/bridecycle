@@ -39,6 +39,8 @@ class BrandController extends ActiveController
     {
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
+            'create' => ['POST', 'OPTIONS'],
+            'delete' => ['POST', 'DELETE'],
         ];
     }
 
@@ -82,6 +84,8 @@ class BrandController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
+        unset($actions['create']);
+        unset($actions['delete']);
         return $actions;
     }
 
@@ -123,13 +127,11 @@ class BrandController extends ActiveController
     {
         $model = new Brand();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->save();
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $model;
     }
 
     /**
@@ -139,18 +141,18 @@ class BrandController extends ActiveController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
+//    public function actionUpdate($id)
+//    {
+//        $model = $this->findModel($id);
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        }
+//
+//        return $this->render('update', [
+//            'model' => $model,
+//        ]);
+//    }
 
     /**
      * Deletes an existing Brand model.
@@ -163,7 +165,7 @@ class BrandController extends ActiveController
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+       // return $this->redirect(['index']);
     }
 
     /**
