@@ -22,6 +22,7 @@ $config = [
                 'class' => 'app\modules\api\v1\Module',
             ]],
         ],
+         'gridview' => ['class' => 'kartik\grid\Module']
     ],
     'components' => [
         'session' => [
@@ -55,36 +56,12 @@ $config = [
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.mailtrap.io',
-                'username' => '1d307e3736a892',
-                'password' => '07ac69fb9b8f36',
+                'username' => 'a98ec99f12d3e1',
+                'password' => '36e2b0736f2086',
                 'port' => 2525,
                 'encryption' => 'tls',
             ],
         ],
-//        'mailer' => [
-//            'class' => 'yii\swiftmailer\Mailer',
-//            'useFileTransport' => false,
-//            'transport' => [
-//                'class' => 'Swift_SmtpTransport',
-//                'host' => 'smtp.gmail.com',
-//                //'username' => 'smtp.ctpl@gmail.com',
-//                'username' => 'harshil.cmarix@gmail.com',
-//                //'password' => 'ctpl@dev',
-//                //'password' => 'awqowsukxhhsncep',
-//                'password' => 'harshil#8989#?',
-//
-//
-//                'port' => '587',
-//                'encryption' => 'tls',
-//                'streamOptions' => [
-//                    'ssl' => [
-//                        'allow_self_signed' => true,
-//                        'verify_peer' => false,
-//                        'verify_peer_name' => false,
-//                    ],
-//                ]
-//            ],
-//        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -94,6 +71,18 @@ $config = [
                 ],
             ],
         ],
+        'i18n' => [
+        'translations' => [
+            'app' => [
+                'class' => 'yii\i18n\PhpMessageSource',
+                'basePath' => '@app/messages',
+            ],
+            'kvgrid' => [
+                'class' => 'yii\i18n\PhpMessageSource',
+                'basePath' => '@app/messages',
+            ],
+        ],
+    ],
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -102,6 +91,14 @@ $config = [
                 'admin' => '/admin/site/index',
                 'api' => '/api/v1/site/index',
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/user'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/user-address'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/search-history'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/cart-item'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/order'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/favourite-product'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/tailor'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/cms-page'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product-rating'], 'pluralize' => false],
                 // Set rest API rules
 //                [
 //                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>',
@@ -190,7 +187,7 @@ $config = [
     'params' => $params,
 ];
 
-if (YII_ENV_DEV) {
+// if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
@@ -205,6 +202,6 @@ if (YII_ENV_DEV) {
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
-}
+// }
 
 return $config;
