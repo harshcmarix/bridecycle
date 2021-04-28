@@ -22,7 +22,8 @@ $config = [
                 'class' => 'app\modules\api\v1\Module',
             ]],
         ],
-         'gridview' => ['class' => 'kartik\grid\Module']
+        'gridview' => ['class' => 'kartik\grid\Module'],
+
     ],
     'components' => [
         'session' => [
@@ -50,6 +51,20 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+
+        'i18n' => [
+            'translations' => [
+                'app' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages',
+                ],
+                'kvgrid' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages',
+                ],
+            ],
+        ],
+
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => false,
@@ -71,18 +86,6 @@ $config = [
                 ],
             ],
         ],
-        'i18n' => [
-        'translations' => [
-            'app' => [
-                'class' => 'yii\i18n\PhpMessageSource',
-                'basePath' => '@app/messages',
-            ],
-            'kvgrid' => [
-                'class' => 'yii\i18n\PhpMessageSource',
-                'basePath' => '@app/messages',
-            ],
-        ],
-    ],
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -99,6 +102,10 @@ $config = [
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/tailor'], 'pluralize' => false],
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/cms-page'], 'pluralize' => false],
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product-rating'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/banner'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/brand'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product-category'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product'], 'pluralize' => false],
                 // Set rest API rules
 //                [
 //                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>',
@@ -187,7 +194,7 @@ $config = [
     'params' => $params,
 ];
 
-// if (YII_ENV_DEV) {
+if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
@@ -202,6 +209,6 @@ $config = [
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
-// }
+}
 
 return $config;
