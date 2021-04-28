@@ -121,7 +121,7 @@ class UserController extends Controller
 
                 }
 
-                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully created User!');
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'User created successfully.');
 
                 Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
                     ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
@@ -269,7 +269,7 @@ class UserController extends Controller
             $model->updated_at = date('Y-m-d H:i:s');
 
             if ($model->save()) {
-                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully updated User!');
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'User updated successfully.');
                 //return $this->redirect(['view', 'id' => $model->id]);
                 return $this->redirect(['index']);
             }
@@ -318,7 +318,7 @@ class UserController extends Controller
             }
         }
 
-        \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'You have successfully deleted User!');
+        \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'User deleted successfully.');
         return $this->redirect(['index']);
     }
 

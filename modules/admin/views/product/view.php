@@ -11,9 +11,11 @@ use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
 
-$this->title = $model->name;
+//$this->title = $model->name;
+$this->title = 'View Product';
 $this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+//$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'View Product';
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="products-view">
@@ -34,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            //'id',
             [
                 'attribute' => 'user_id',
                 'label' => 'User',
@@ -150,8 +152,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     return (!empty($model) && !empty($model->status) && $model->status instanceof \app\models\ProductStatus) ? ucfirst($model->status->status) : '';
                 },
             ],
-            'created_at:datetime',
-            'updated_at:datetime',
+//            'created_at:datetime',
+//            'updated_at:datetime',
         ],
     ]) ?>
     <p>

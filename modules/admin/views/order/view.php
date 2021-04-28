@@ -11,7 +11,8 @@ use app\models\ProductImage;
 /* @var $searchModel app\models\search\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = $model->id;
+//$this->title = $model->id;
+$this->title = 'View Order';
 $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -73,8 +74,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             'total_amount',
                             'status',
-                            'created_at',
-                            'updated_at',
+//                            'created_at',
+//                            'updated_at',
                         ],
                     ]) ?>
                 </div>

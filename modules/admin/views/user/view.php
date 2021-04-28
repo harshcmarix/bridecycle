@@ -8,9 +8,11 @@ use app\models\ShopDetail;
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\User */
 
-$this->title = $model->first_name . " " . $model->last_name;
+//$this->title = $model->first_name . " " . $model->last_name;
+$this->title = 'View User';
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+// $this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = 'View User';
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="users-view">
@@ -31,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            // 'id',
             'first_name',
             'last_name',
             'email:email',
@@ -88,6 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'format' => 'raw',
                 'attribute' => 'shop_logo',
+                'visible' => ($model->is_shop_owner == 1) ? true : false,
                 'value' => function ($data) {
                     $image_path = "";
                     if (!empty($data->shopDetail) && $data->shopDetail instanceof ShopDetail && !empty($data->shopDetail->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $data->shopDetail->shop_logo)) {
@@ -107,6 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'shop_name',
+                'visible' => ($model->is_shop_owner == 1) ? true : false,
                 'value' => function ($model) {
                     return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_name)) ? $model->shopDetail->shop_name : "";
                 }
@@ -114,22 +118,25 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'format' => 'email',
                 'attribute' => 'shop_email',
+                'visible' => ($model->is_shop_owner == 1) ? true : false,
                 'value' => function ($model) {
                     return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_email)) ? $model->shopDetail->shop_email : "";
                 }
             ],
             [
                 'attribute' => 'shop_phone_number',
+                'visible' => ($model->is_shop_owner == 1) ? true : false,
                 'value' => function ($model) {
                     return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_phone_number)) ? $model->shopDetail->shop_phone_number : "";
                 }
             ],
             [
                 'label' => 'Shop Address',
+                'visible' => ($model->is_shop_owner == 1) ? true : false,
                 'value' => (!empty($shopAddress) && $shopAddress instanceof \app\models\UserAddress && !empty($shopAddress->address)) ? $shopAddress->address : "",
             ],
-            'created_at',
-            'updated_at',
+//            'created_at',
+//            'updated_at',
         ],
     ]) ?>
     <p>
