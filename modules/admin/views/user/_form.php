@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\file\FileInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\User */
@@ -21,7 +22,7 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class="col col-md-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true,'autocomplete'=>"off"]) ?>
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'autocomplete' => "off"]) ?>
         </div>
         <div class="col col-md-6">
             <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput() ?>
@@ -51,7 +52,16 @@ use yii\widgets\ActiveForm;
         </div>
         <div class="row">
             <div class="col col-md-6">
-                <?= $form->field($model, 'shop_logo')->fileInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'shop_logo')->widget(FileInput::classname(), [
+                    'options' => ['accept' => 'image/*', 'id' => 'user-shop_logo'],
+                    'pluginOptions' => [
+                        'allowedFileExtensions' => ['jpg', 'png'],
+                        'showPreview' => true,
+//                        'showCaption' => true,
+//                        'showRemove' => true,
+                        'showUpload' => false
+                    ]
+                ]); ?>
 
                 <?php
                 if (!empty($model->shop_logo)) {
@@ -95,6 +105,7 @@ use yii\widgets\ActiveForm;
 
 <script type="text/javascript">
     $(document).ready(function () {
+
         $('#shop-details').hide();
 
         "<?php if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->is_shop_owner)) { ?>"
