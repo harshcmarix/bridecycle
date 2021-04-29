@@ -50,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
             [
+                'format' => 'html',
                 'attribute' => 'description',
                 'value' => function ($model) {
                     $description = '';
@@ -59,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                     return $description;
                 },
-                'format' => ['raw'],
+                // 'format' => ['raw'],
                 'filter'=>false,
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style']
