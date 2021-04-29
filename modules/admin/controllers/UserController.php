@@ -344,6 +344,6 @@ class UserController extends Controller
             return $model;
         }
 
-        throw  NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

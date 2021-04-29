@@ -10,6 +10,7 @@ use app\models\search\ProductSearch;
 use Yii;
 use app\models\Product;
 use yii\base\BaseObject;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\imagine\Image;
 use yii\log\EmailTarget;
@@ -31,10 +32,15 @@ class ProductController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'update', 'view', 'delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -93,12 +99,12 @@ class ProductController extends Controller
 
         $postData = Yii::$app->request->post('Product');
         $model->is_top_selling = Product::IS_TOP_SELLING_NO;
-        if(!empty($postData['is_top_selling'])){
+        if (!empty($postData['is_top_selling'])) {
             $model->is_top_selling = $postData['is_top_selling'];
         }
 
         $model->is_top_trending = Product::IS_TOP_TRENDING_NO;
-        if(!empty($postData['is_top_trending'])){
+        if (!empty($postData['is_top_trending'])) {
             $model->is_top_trending = $postData['is_top_trending'];
         }
 
@@ -183,12 +189,12 @@ class ProductController extends Controller
             }
 
             $model->is_top_selling = Product::IS_TOP_SELLING_NO;
-            if(!empty($postData['is_top_selling'])){
+            if (!empty($postData['is_top_selling'])) {
                 $model->is_top_selling = $postData['is_top_selling'];
             }
 
             $model->is_top_trending = Product::IS_TOP_TRENDING_NO;
-            if(!empty($postData['is_top_trending'])){
+            if (!empty($postData['is_top_trending'])) {
                 $model->is_top_trending = $postData['is_top_trending'];
             }
 
@@ -375,6 +381,13 @@ class ProductController extends Controller
         return $response;
     }
 
+    /**
+     * @param $id
+     * @param $product_id
+     * @return Response
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionDeleteProductImage($id, $product_id)
     {
         $model = ProductImage::findOne($id);
