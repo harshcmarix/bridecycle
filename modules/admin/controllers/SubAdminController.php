@@ -83,10 +83,17 @@ class SubAdminController extends Controller
         $model = new SubAdmin();
         $model->scenario = SubAdmin::SCENARIO_CREATE;
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $password = $model->password;
             $model->user_type = (string)User::USER_TYPE_SUB_ADMIN;
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
             if ($model->save()) {
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Sub admin created successfully.");
+                //email for sub-admin credentials
+                 Yii::$app->mailer->compose('admin/subAdminRegistration-html', ['model' => $model, 'pwd' => $password])
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($model->email)
+                    ->setSubject('Thank you for Registration!')
+                    ->send();
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating sub admin.");
             }
