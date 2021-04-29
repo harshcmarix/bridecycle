@@ -37,11 +37,24 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function ($model) {
                 $amount = '';
                  if($model instanceof Subscription){
-                    $amount = $model->amount;
+                    $amount = '$'.$model->amount;
                  }
                  return $amount;
             },          
         ],
+         [
+                'label' => 'Total Subscribed users',
+                'value' => function ($model) {
+                    $created_at = '';
+                    if ($model instanceof Subscription) {
+                        $created_at = $model->subscribedUsersCount;
+                    }
+                    return $created_at;
+                },
+                'filter' => false,
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style']
+            ],
         [
         'attribute' => 'status',
             'value' => function ($model) {

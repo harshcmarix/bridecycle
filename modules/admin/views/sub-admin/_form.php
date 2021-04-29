@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'confirm_password')->passwordInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'mobile')->textInput() ?>
+    <?= $form->field($model, 'mobile')->textInput(['type' => 'number']) ?>
 
     <div class="form-group">
         <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>

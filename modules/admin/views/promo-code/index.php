@@ -51,20 +51,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
-             [
-                'attribute' => 'created_at',
-                'value' => function ($model) {
-                    $created_at = '';
-                    if ($model instanceof PromoCode) {
-                        $created_at = $model->created_at;
-                    }
-                    return $created_at;
-                },
+            //  [
+            //     'attribute' => 'created_at',
+            //     'value' => function ($model) {
+            //         $created_at = '';
+            //         if ($model instanceof PromoCode) {
+            //             $created_at = $model->created_at;
+            //         }
+            //         return $created_at;
+            //     },
                
-                'filter'=>false,
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style']
-            ],
+            //     'filter'=>false,
+            //     'header' => '',
+            //     'headerOptions' => ['class' => 'kartik-sheet-style']
+            // ],
 
              [
                 'class' => 'kartik\grid\ActionColumn',
