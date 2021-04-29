@@ -59,7 +59,7 @@ class Tailor extends ActiveRecord
             [['name', 'shop_name', 'address'], 'required'],
             [['address'], 'string'],
             // [['mobile'], 'integer'],
-            [['mobile'],'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
+            [['mobile'],'string', 'max' => 15,'min'=>5],
             [['shop_image'], 'file', 'extensions' => 'png,jpg'],
             [['shop_image'],'required','on'=>self::SCENARIO_CREATE],
             [['shop_image'], 'required', 'when' => function ($model) {

@@ -8,12 +8,14 @@ use app\models\search\BrandSearch;
 use yii\web\{
     Controller,
     NotFoundHttpException,
-    UploadedFile
+    UploadedFile,
+    Response
 };
 use kartik\growl\Growl;
 use yii\imagine\Image;
 use yii\filters\AccessControl;
 use \yii\helpers\Json;
+
 
 /**
  * BrandController implements the CRUD actions for Brand model.
@@ -28,11 +30,11 @@ class BrandController extends Controller
         return [
            'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update','view','delete'],
+                'only' => ['index', 'create', 'update','view','delete','update-top-brand'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update','view','delete'],
+                        'actions' => ['index', 'create', 'update','view','delete','update-top-brand'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -267,5 +269,27 @@ class BrandController extends Controller
         if($model->save()){
            return Json::encode(['success'=>'image successfully deleted']);
         }
+    }
+      /**
+     * @return bool[]|false[]
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdateTopBrand()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = Yii::$app->request->post('id');
+        $is_top_brand = Yii::$app->request->post('is_top_brand');
+
+        $response = ['success' => false];
+        if (!empty($id)) {
+            $model = Brand::findOne($id);
+            if ($model) {
+                $model->is_top_brand = (!empty($is_top_brand) && $is_top_brand == 1) ? Brand::TOP_BRAND : Brand::NOT_TOP_BRAND;
+                $model->save(false);
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Brand updated successfully.');
+                $response = ['success' => true];
+            }
+        }
+        return $response;
     }
 }

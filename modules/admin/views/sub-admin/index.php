@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'Sub Admin',
+        'itemLabelSingle' => 'sub admin',
         'itemLabelPlural' => 'Sub Admins'
     ]);
     ?>

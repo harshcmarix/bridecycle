@@ -10,6 +10,7 @@ use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 use kartik\dialog\Dialog;
 use yii\bootstrap\Modal;
+use kartik\file\FileInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\ProductCategory */
@@ -29,7 +30,17 @@ echo Dialog::widget(
 
     <?= $form->field($model, 'name',['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
+     <!-- $form->field($model, 'image')->fileInput(['maxlength' => true])  -->
+     <?= $form->field($model, 'image')->widget(FileInput::classname(), [
+                    'options' => ['accept' => 'image/*', 'id' => 'productcategory-image'],
+                    'pluginOptions' => [
+                        'allowedFileExtensions' => ['jpg', 'png'],
+                        'showPreview' => true,
+//                        'showCaption' => true,
+//                        'showRemove' => true,
+                        'showUpload' => false
+                    ]
+                ]); ?>
 
     <!-- $form->field($model, 'parent_category_id')->dropDownList(ArrayHelper::map($parent_category,'id','name'),['prompt'=>'select parent category']) -->
 
@@ -73,7 +84,7 @@ echo Dialog::widget(
             <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'pjax-delete-link','delete-url'=>'../product-category/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img($image_path,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px','onclick' => $productcategorymodal]); ?>
+             <?= Html::img($image_path,  ['class'=>'file-preview-image your_class','height' => '100px', 'width' => '100px','onclick' => $productcategorymodal]); ?>
     </div>
     <?php } ?>
 

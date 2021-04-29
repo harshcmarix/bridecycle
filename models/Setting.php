@@ -42,8 +42,7 @@ class Setting extends ActiveRecord
     public function rules()
     {
         return [
-            [['option_key', 'option_value'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at','option_key','option_value'], 'safe'],
             [['option_key', 'option_value'], 'string', 'max' => 100],
         ];
     }

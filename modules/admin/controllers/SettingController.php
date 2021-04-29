@@ -45,19 +45,32 @@ class SettingController extends Controller
             'transaction_fees', 'km_range'
         ]);
         $model->addRule(['transaction_fees', 'km_range'], 'integer');
-
+        // for transection fees
         $model_fees = Setting::findOne(Yii::$app->params['transaction_fees']);
+        if(empty($model_fees)){
+                    $fees = new Setting();
+                    $fees->option_key = Yii::$app->params['transaction_fees']['option_key'];
+                    $fees->save();
+                }
         if($model_fees instanceof Setting)
         {
                 $model->transaction_fees = $model_fees->option_value;
         }
+        // for km range
         $model_km = Setting::findOne(Yii::$app->params['km_range']);
+        if(empty($model_km)){
+                $km = new Setting();
+                $km->option_key = Yii::$app->params['km_range']['option_key'];
+                $km->save();
+            }
+       
         if($model_km instanceof Setting)
         {
                 $model->km_range = $model_km->option_value;
         }
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            
+                
+                
                 $model_fees->option_value = !empty($model->transaction_fees) ? $model->transaction_fees : null;
                 $model_km->option_value = !empty($model->km_range) ? $model->km_range : null;
 

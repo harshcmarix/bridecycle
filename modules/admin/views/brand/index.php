@@ -15,6 +15,9 @@ use kartik\select2\Select2;
 /* @var $searchModel app\models\BrandSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+$this->registerCssFile("@web/css/toggle-switch.css");
+$this->registerJsFile("@web/js/toggle-switch.js");
+
 $this->title = 'Brand';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -81,11 +84,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
             [
+                'format' => ['raw'],
                 'attribute' => 'is_top_brand',
                 'value' => function ($model) {
                     $is_top_brand = '';
                     if ($model instanceof Brand) {
-                        $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
+                        // $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];                      
+                        $is_top_brand = Html::checkbox("", $model->is_top_brand, ['class' => 'is-top-brand', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
                     }
                     return $is_top_brand;
                 },
@@ -121,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
 
-        'pjax' => true, // pjax is set to always true for this demo
+        'pjax' => false, // pjax is set to always true for this demo
         // set your toolbar
         'toolbar' => [
             [
@@ -165,6 +170,54 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 </div>
 <script type="text/javascript">
+$(document).on('change','.is-top-brand',function(){
+     var id = $(this).attr('data-key');
+    if($(this).is(':checked')){
+        krajeeDialog.confirm('Are you sure you want to add this brand to top brand?', function (out) {
+                if (out) {
+                    var is_top_brand = '1';
+                    $.ajax({
+                        url: "<?php echo Url::to(['brand/update-top-brand']); ?>",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            '_csrf': '<?php echo Yii::$app->request->getCsrfToken()?>',
+                            'id': id,
+                            'is_top_brand': is_top_brand
+                        },
+                        success: function (response) {
+                            location.reload(true);
+                        }
+                    });
+                } else {
+                    location.reload(true);
+                }
+            });
+       
+    }else{
+         krajeeDialog.confirm('Are you sure you want to remove this brand from top brand?', function (out) {
+                if (out) {
+                    var is_top_brand = '0';
+                    $.ajax({
+                        url: "<?php echo Url::to(['brand/update-top-brand']); ?>",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            '_csrf': '<?php echo Yii::$app->request->getCsrfToken()?>',
+                            'id': id,
+                            'is_top_brand': is_top_brand
+                        },
+                        success: function (response) {
+                            location.reload(true);
+                        }
+                    });
+                } else {
+                    location.reload(true);
+                }
+            });
+       
+    }
+});
     function brandmodal(id) {
         $('#brandmodal_' + id).modal('show');
     }

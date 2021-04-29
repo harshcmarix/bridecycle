@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 use app\models\Tailor;
 use kartik\dialog\Dialog;
 use yii\bootstrap\Modal;
+use kartik\file\FileInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Tailor */
@@ -27,9 +28,19 @@ echo Dialog::widget(
 
     <?= $form->field($model, 'address')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'mobile',['enableAjaxValidation' => true])->textInput() ?>
+    <?= $form->field($model, 'mobile',['enableAjaxValidation' => true])->textInput(['type' => 'number']) ?>
 
-    <?= $form->field($model, 'shop_image')->fileInput(['maxlength' => true]) ?>
+     <!-- $form->field($model, 'shop_image')->fileInput(['maxlength' => true])  -->
+     <?= $form->field($model, 'shop_image')->widget(FileInput::classname(), [
+                    'options' => ['accept' => 'image/*', 'id' => 'tailor-shop_image'],
+                    'pluginOptions' => [
+                        'allowedFileExtensions' => ['jpg', 'png'],
+                        'showPreview' => true,
+//                        'showCaption' => true,
+//                        'showRemove' => true,
+                        'showUpload' => false
+                    ]
+                ]); ?>
     
    <!-- image validation code -->
     <?php 

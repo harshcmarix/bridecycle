@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 use app\models\Banner;
 use kartik\dialog\Dialog;
 use yii\bootstrap\Modal;
+use kartik\file\FileInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Banner */
@@ -24,7 +25,17 @@ echo Dialog::widget(
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'image')->fileInput(['maxlength' => true]) ?>
+     <!-- $form->field($model, 'image')->fileInput(['maxlength' => true])  -->
+      <?= $form->field($model, 'image')->widget(FileInput::classname(), [
+                    'options' => ['accept' => 'image/*', 'id' => 'banner-image'],
+                    'pluginOptions' => [
+                        'allowedFileExtensions' => ['jpg', 'png'],
+                        'showPreview' => true,
+//                        'showCaption' => true,
+//                        'showRemove' => true,
+                        'showUpload' => false
+                    ]
+                ]); ?>
 <!-- image validation -->
     <?php 
         $is_banner_image_empty = Banner::IMAGE_EMPTY;
@@ -56,7 +67,7 @@ echo Dialog::widget(
             <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'banner-delete-link','delete-url'=>'../banner/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img($image_path,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px', 'onclick' => $bannermodal]); ?>
+             <?= Html::img($image_path,  ['class'=>'file-preview-image your_class','height' => '100px', 'width' => '100px', 'onclick' => $bannermodal]); ?>
     </div>
 
     <?php } ?>
