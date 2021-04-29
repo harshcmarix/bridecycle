@@ -86,8 +86,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 'pluginOptions' => [
                     'allowedFileExtensions' => ['jpg', 'png'],
                     'showPreview' => true,
-                    'showCaption' => false,
-//                        'showRemove' => true,
+                    //'showCaption' => true,
+                    //'showRemove' => true,
                     'showUpload' => false,
                     'maxFileCount' => 5,
                 ]
@@ -149,7 +149,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
     <div class="row">
         <div class="col col-md-2">
-            <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number','min'=>0]) ?>
+            <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
         </div>
         <div class="col col-md-2">
             <?= $form->field($model, 'option_show_only')->widget(Select2::classname(), [
@@ -164,10 +164,10 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <?php
             if (!empty($model->is_top_selling) && $model->is_top_selling == \app\models\Product::IS_TOP_SELLING_YES) {
                 echo $form->field($model, 'is_top_selling')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'uncheck' => null, 'id' => 'product-is_top_selling', 'checked' => true, 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'uncheck' => null, 'id' => 'product-is_top_selling', 'checked' => true, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
             } else {
                 echo $form->field($model, 'is_top_selling')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'uncheck' => null, 'id' => 'product-is_top_selling', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'uncheck' => null, 'id' => 'product-is_top_selling', 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
             }
             ?>
         </div>
@@ -175,10 +175,10 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <?php
             if (!empty($model->is_top_trending) && $model->is_top_trending == \app\models\Product::IS_TOP_TRENDING_YES) {
                 echo $form->field($model, 'is_top_trending')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'uncheck' => null, 'id' => 'product-is_top_trending', 'checked' => true, 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'uncheck' => null, 'id' => 'product-is_top_trending', 'checked' => true, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
             } else {
                 echo $form->field($model, 'is_top_trending')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'uncheck' => null, 'id' => 'product-is_top_trending', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'uncheck' => null, 'id' => 'product-is_top_trending', 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
             }
             ?>
         </div>
