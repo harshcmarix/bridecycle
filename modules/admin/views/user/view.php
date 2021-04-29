@@ -99,12 +99,12 @@ $this->params['breadcrumbs'][] = 'View User';
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }
                     Modal::begin([
-                        'id' => 'contentmodalShopLogo_' . $data->id,
+                        'id' => 'contentmodalShopLogo_' . $data->shopDetail->id,
                         'header' => '<h3>Shop Logo</h3>',
                     ]);
                     echo Html::img($image_path, ['width' => '570']);
                     Modal::end();
-                    $contentmodelShopLogo = "contentmodalShopLogo('" . $data->id . "');";
+                    $contentmodelShopLogo = "contentmodalShopLogo('" . $data->shopDetail->id . "');";
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodelShopLogo, 'height' => '100px', 'width' => '100px']);
                 },
             ],
@@ -148,7 +148,7 @@ $this->params['breadcrumbs'][] = 'View User';
         $('#contentmodal_' + id).modal('show');
     }
 
-    function contentmodelShopLogo(id) {
+    function contentmodalShopLogo(id) {
         $('#contentmodalShopLogo_' + id).modal('show');
     }
 </script>

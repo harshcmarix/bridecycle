@@ -69,6 +69,7 @@ class User extends ActiveRecord implements IdentityInterface
     const USER_TYPE_NORMAL_USER = '3';
 
     public $confirm_password;
+    public $password;
 
     public $shop_address_street;
     public $shop_address_city;
@@ -110,7 +111,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             [['first_name', 'last_name', 'email', 'mobile'], 'required'],
 
-            [['first_name', 'last_name', 'email', 'mobile', 'password_hash', 'confirm_password'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
+            [['first_name', 'last_name', 'email', 'mobile', 'password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
             [['first_name', 'last_name', 'email', 'mobile'], 'required', 'on' => [self::SCENARIO_UPDATE_NORMAL_USER]],
 
 
@@ -128,8 +129,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['email'], 'unique'],
             [['shop_logo'], 'file'],
-            [['confirm_password'], 'safe'],
-            ['confirm_password', 'compare', 'compareAttribute' => 'password_hash', 'message' => "Passwords don't match",],
+            [['password','confirm_password'], 'safe'],
+            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match",],
             [['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required',
                 'when' => function ($model) {
                 },
@@ -161,6 +162,7 @@ class User extends ActiveRecord implements IdentityInterface
             'last_name' => 'Last Name',
             'email' => 'Email',
             'password_hash' => 'Password Hash',
+            'password' => 'Password',
             'temporary_password' => 'Temporary Password',
             'access_token' => 'Access Token',
             'access_token_expired_at' => 'Access Token Expired At',

@@ -81,10 +81,13 @@ class UserController extends Controller
             return \yii\widgets\ActiveForm::validate($model);
         }
 
+       // $model->password_hash = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
+
         if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
 
-            $password = $model->password_hash;
-            $model->password_hash = password_hash($model->password_hash, PASSWORD_DEFAULT);
+            //$password = $model->password_hash;
+            $password = $model->password;
+            $model->password_hash = password_hash($model->password, PASSWORD_DEFAULT);
 
             $model->user_type = User::USER_TYPE_NORMAL_USER;
 
@@ -115,7 +118,7 @@ class UserController extends Controller
                     if (isset($newShopLogoFile) && isset($model->is_shop_owner)) {
                         $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
                         $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
-                        $modelUserShopDetail->shop_logo = $shop_logo_picture;
+                        $modelUserShopDetail->shop_cover_picture = $shop_logo_picture;
                     }
                     $modelUserShopDetail->save(false);
 
@@ -157,7 +160,7 @@ class UserController extends Controller
         $oldProfileFile = $model->profile_picture;
         $oldShopLogoFile = (!empty($modelShopDetail->shop_logo)) ? $modelShopDetail->shop_logo : "";
         $oldpwd = $model->password_hash;
-        $model->password_hash = '';
+
 
         $model->shop_name = (!empty($modelShopDetail->shop_name)) ? $modelShopDetail->shop_name : "";
         $model->shop_email = (!empty($modelShopDetail->shop_email)) ? $modelShopDetail->shop_email : "";
@@ -184,7 +187,7 @@ class UserController extends Controller
         if ($model->load(Yii::$app->request->post())) { // && $model->save()
 
             // Update new password
-            $new_password = $model->password_hash;
+            $new_password = $model->password;
             if (empty($new_password)) {
                 $model->password_hash = $oldpwd;
             } else {

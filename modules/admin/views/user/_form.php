@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="users-form">
 
-    <?php $form = ActiveForm::begin(['enableAjaxValidation' => false]); ?>
+    <?php $form = ActiveForm::begin(['enableAjaxValidation' => false, 'options' => ['autocomplete' => 'off']]); ?>
     <div class="row">
         <div class="col col-md-6">
             <?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?>
@@ -21,18 +21,18 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class="col col-md-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true,'autocomplete'=>"off"]) ?>
         </div>
         <div class="col col-md-6">
-            <?= $form->field($model, 'mobile',['enableAjaxValidation' => true])->textInput() ?>
+            <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput() ?>
         </div>
     </div>
     <div class="row">
         <div class="col col-md-5">
-            <?= $form->field($model, 'password_hash')->passwordInput(['maxlength' => true, 'value' => ""]) ?>
+            <?php echo $form->field($model, 'password')->passwordInput(['maxlength' => true, 'value' => ""]) ?>
         </div>
         <div class="col col-md-5">
-            <?= $form->field($model, 'confirm_password')->passwordInput(['maxlength' => true, 'value' => ""]) ?>
+            <?php echo $form->field($model, 'confirm_password')->passwordInput(['maxlength' => true, 'value' => ""]) ?>
         </div>
         <div class="col col-md-2">
             <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
@@ -61,7 +61,7 @@ use yii\widgets\ActiveForm;
                 ?>
             </div>
             <div class="col col-md-6">
-                <?= $form->field($model, 'shop_phone_number',['enableAjaxValidation' => true])->textInput() ?>
+                <?= $form->field($model, 'shop_phone_number', ['enableAjaxValidation' => true])->textInput() ?>
             </div>
             <div class="row">
                 <div class="col col-md-4">

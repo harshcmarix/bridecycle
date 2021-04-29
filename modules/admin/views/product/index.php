@@ -16,7 +16,13 @@ use yii\bootstrap\Modal;
 
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
+
+
+$this->registerCssFile("@web/css/toggle-switch.css");
+$this->registerJsFile("@web/js/toggle-switch.js");
+
 ?>
+
 <div class="products-index">
 
     <?php
@@ -118,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'price',
             'value' => function ($model) {
-                return $model->price;
+                return (!empty($model->price)) ? '$' . number_format($model->price, 2) : "";
             },
             'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style']
@@ -127,7 +133,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'option_price',
             'value' => function ($model) {
-                return $model->option_price;
+                return (!empty($model->option_price)) ? '$' . number_format($model->option_price, 2) : "";
             },
             'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style'],
@@ -176,7 +182,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => ['raw'],
             'attribute' => 'is_top_selling',
             'value' => function ($model) {
-                return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id]);
+                return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id,'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
             },
             'filter' => $searchModel->arrIsTopSelling,
             'filterType' => GridView::FILTER_SELECT2,
@@ -193,7 +199,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => ['raw'],
             'attribute' => 'is_top_trending',
             'value' => function ($model) {
-                return Html::checkbox("", $model->is_top_trending, ['class' => 'topTrending', 'data-key' => $model->id]);
+                return Html::checkbox("", $model->is_top_trending, ['class' => 'topTrending', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No",]);
             },
             'filter' => $searchModel->arrIsTopTrending,
             'filterType' => GridView::FILTER_SELECT2,
@@ -260,7 +266,6 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
 </div>
-
 <script type="text/javascript">
     $(document).on('change', '#productsearch-category_id', function () {
         var categoryId = $(this).val();
@@ -277,7 +282,7 @@ $this->params['breadcrumbs'][] = $this->title;
         })
     });
 
-    $(document).on('click', '.topSelling', function () {
+    $(document).on('change', '.topSelling', function () {
         var id = $(this).attr('data-key');
 
         if ($(this).prop('checked') == true) {
@@ -294,7 +299,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'is_top_selling': is_top_selling
                         },
                         success: function (response) {
-                            // location.reload(true);
+                            location.reload(true);
                         }
                     });
                 } else {
@@ -315,7 +320,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'is_top_selling': is_top_selling
                         },
                         success: function (response) {
-                            // location.reload(true);
+                            location.reload(true);
                         }
                     });
                 } else {
@@ -325,7 +330,7 @@ $this->params['breadcrumbs'][] = $this->title;
         }
     });
 
-    $(document).on('click', '.topTrending', function () {
+    $(document).on('change', '.topTrending', function () {
         var id = $(this).attr('data-key');
 
         if ($(this).prop('checked') == true) {
@@ -342,7 +347,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'is_top_trending': is_top_trending
                         },
                         success: function (response) {
-                            //location.reload(true);
+                            location.reload(true);
                         }
                     });
                 } else {
@@ -363,7 +368,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'is_top_trending': is_top_trending
                         },
                         success: function (response) {
-                            //location.reload(true);
+                            location.reload(true);
                         }
                     });
                 } else {

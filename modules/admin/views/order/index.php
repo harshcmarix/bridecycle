@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'created_at',
             'value' => function ($model) {
-                return date('Y-m-d',strtotime($model->created_at));
+                return date('Y-m-d', strtotime($model->created_at));
             },
             'filter' => '',
             'header' => 'Order Date',
@@ -98,13 +98,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ['items' => $dataImages]
                             );
                         }
-
+                        $productPrice = (!empty($orderItem->product->price)) ? '$' . number_format($orderItem->product->price, 2) : '';
 
                         $html .= "<tr>";
                         $html .= "<td>" . $result . "</td>";
                         $html .= "<td>" . $orderItem->product->name . "</td>";
                         $html .= "<td>" . $orderItem->product->category->name . "</td>";
-                        $html .= "<td>" . $orderItem->product->price . "</td>";
+                        $html .= "<td>" . $productPrice . "</td>";
                         $html .= "<td>" . $orderItem->quantity . "</td>";
                         $html .= "</tr>";
                     }
@@ -122,7 +122,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'total_amount',
             'value' => function ($model) {
-                return $model->total_amount;
+                return (!empty($model->total_amount)) ? '$' . number_format($model->total_amount, 2) : "";
             },
             'filter' => '',
             'header' => 'Total Amount Paid',

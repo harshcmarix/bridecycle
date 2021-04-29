@@ -104,7 +104,7 @@ class Product extends \yii\db\ActiveRecord
 
     public $arrGender = [
         self::GENDER_FOR_FEMALE => 'Female',
-        self::GENDER_FOR_MALE => 'Male',
+        //self::GENDER_FOR_MALE => 'Male',
         // self::GENDER_FOR_ALL => 'All',
     ];
 
@@ -120,7 +120,7 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'number', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'is_top_selling', 'is_top_trending', 'status_id'], 'required'],
+            [['name', 'number', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'status_id'], 'required'], //'is_top_selling', 'is_top_trending',
             [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'status_id', 'user_id', 'address_id'], 'integer'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],

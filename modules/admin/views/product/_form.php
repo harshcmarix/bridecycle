@@ -10,6 +10,9 @@ use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
 /* @var $form yii\widgets\ActiveForm */
+
+$this->registerCssFile("@web/css/toggle-switch.css");
+$this->registerJsFile("@web/js/toggle-switch.js");
 ?>
 
 <div class="products-form">
@@ -147,22 +150,26 @@ use yii\bootstrap\Modal;
             ]); ?>
         </div>
         <div class="col col-md-2">
-            <?= $form->field($model, 'is_top_selling')->widget(Select2::classname(), [
-                'data' => $model->arrIsTopSelling,
-                'options' => ['placeholder' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]); ?>
+            <?php
+            if (!empty($model->is_top_selling) && $model->is_top_selling == \app\models\Product::IS_TOP_SELLING_YES) {
+                echo $form->field($model, 'is_top_selling')
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'uncheck' => null, 'id' => 'product-is_top_selling', 'checked' => true, 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
+            } else {
+                echo $form->field($model, 'is_top_selling')
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'uncheck' => null, 'id' => 'product-is_top_selling', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
+            }
+            ?>
         </div>
         <div class="col col-md-2">
-            <?= $form->field($model, 'is_top_trending')->widget(Select2::classname(), [
-                'data' => $model->arrIsTopTrending,
-                'options' => ['placeholder' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]); ?>
+            <?php
+            if (!empty($model->is_top_trending) && $model->is_top_trending == \app\models\Product::IS_TOP_TRENDING_YES) {
+                echo $form->field($model, 'is_top_trending')
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'uncheck' => null, 'id' => 'product-is_top_trending', 'checked' => true, 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
+            } else {
+                echo $form->field($model, 'is_top_trending')
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'uncheck' => null, 'id' => 'product-is_top_trending', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-on' => "Yes", 'data-off' => "No"]);
+            }
+            ?>
         </div>
         <div class="col col-md-2">
             <?= $form->field($model, 'gender')->widget(Select2::classname(), [
@@ -196,7 +203,6 @@ use yii\bootstrap\Modal;
             ]); ?>
         </div>
     </div>
-
 
 
     <div class="form-group">

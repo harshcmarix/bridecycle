@@ -91,6 +91,17 @@ class ProductController extends Controller
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
+        $postData = Yii::$app->request->post('Product');
+        $model->is_top_selling = Product::IS_TOP_SELLING_NO;
+        if(!empty($postData['is_top_selling'])){
+            $model->is_top_selling = $postData['is_top_selling'];
+        }
+
+        $model->is_top_trending = Product::IS_TOP_TRENDING_NO;
+        if(!empty($postData['is_top_trending'])){
+            $model->is_top_trending = $postData['is_top_trending'];
+        }
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $images = UploadedFile::getInstances($model, 'images');
             $model->user_id = Yii::$app->user->identity->id;
@@ -164,10 +175,23 @@ class ProductController extends Controller
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
+        $postData = Yii::$app->request->post('Product');
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if (empty($oldUserId)) {
                 $model->user_id = Yii::$app->user->identity->id;
             }
+
+            $model->is_top_selling = Product::IS_TOP_SELLING_NO;
+            if(!empty($postData['is_top_selling'])){
+                $model->is_top_selling = $postData['is_top_selling'];
+            }
+
+            $model->is_top_trending = Product::IS_TOP_TRENDING_NO;
+            if(!empty($postData['is_top_trending'])){
+                $model->is_top_trending = $postData['is_top_trending'];
+            }
+
             $images = UploadedFile::getInstances($model, 'images');
 
             if ($model->save()) {

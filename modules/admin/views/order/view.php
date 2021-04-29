@@ -73,7 +73,21 @@ $this->params['breadcrumbs'][] = $this->title;
                                 },
                             ],
                             'total_amount',
-                            'status',
+                            [
+                                'attribute' => 'status',
+                                'value' => function ($model) {
+                                    $status = 'Pending';
+                                    if ($model->status == \app\models\Order::STATUS_ORDER_INPROGRESS) {
+                                        $status = 'In progress';
+                                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_COMPLETED) {
+                                        $status = 'Completed';
+                                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCELLED) {
+                                        $status = 'Cancelled';
+                                    }
+                                    return $status;
+                                }
+
+                            ],
 //                            'created_at',
 //                            'updated_at',
                         ],
