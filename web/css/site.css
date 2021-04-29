@@ -223,3 +223,7 @@ table.order-products_tbl > tbody > tr > td {
     position: absolute;
     padding-left: 70px;
 }
+
+.your_class{
+    cursor: pointer;
+}

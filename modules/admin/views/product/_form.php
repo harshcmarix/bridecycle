@@ -6,6 +6,7 @@ use kartik\select2\Select2;
 use yii\helpers\Url;
 use app\models\ProductImage;
 use yii\bootstrap\Modal;
+use kartik\file\FileInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
@@ -80,7 +81,17 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
     <div class="row">
         <div class="col col-md-<?php echo (Yii::$app->controller->action->id == 'update') ? '4' : '8' ?>">
-            <?= $form->field($model, 'images')->fileInput(['name' => 'Product[images][]', 'multiple' => true, 'accept' => 'image/*']) ?>
+            <?= $form->field($model, 'images[]')->widget(FileInput::classname(), [
+                'options' => ['accept' => 'image/*', 'id' => 'product-images', 'multiple' => true],
+                'pluginOptions' => [
+                    'allowedFileExtensions' => ['jpg', 'png'],
+                    'showPreview' => true,
+                    'showCaption' => false,
+//                        'showRemove' => true,
+                    'showUpload' => false,
+                    'maxFileCount' => 5,
+                ]
+            ]); ?>
         </div>
         <?php if (Yii::$app->controller->action->id == 'update') { ?>
             <div class="col col-md-8 edit-product_images">
@@ -138,7 +149,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
     <div class="row">
         <div class="col col-md-2">
-            <?= $form->field($model, 'available_quantity')->textInput() ?>
+            <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number','min'=>0]) ?>
         </div>
         <div class="col col-md-2">
             <?= $form->field($model, 'option_show_only')->widget(Select2::classname(), [

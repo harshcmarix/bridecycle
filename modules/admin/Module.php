@@ -36,6 +36,7 @@ class Module extends BaseModule
             'class' => 'yii\web\User',
             'identityClass' => 'app\modules\admin\models\User',
             'enableAutoLogin' => true,
+            'loginUrl'=>array('admin/site/login'),
             'identityCookie' => ['name' => '_adminUser', 'httpOnly' => true],
         ]);
 

@@ -6,6 +6,7 @@ use app\models\search\OrderItemSearch;
 use Yii;
 use app\models\Order;
 use app\models\search\OrderSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,10 +22,15 @@ class OrderController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'view',],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view',],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];

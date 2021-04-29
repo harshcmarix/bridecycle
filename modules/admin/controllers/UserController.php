@@ -9,6 +9,7 @@ use kartik\growl\Growl;
 use Yii;
 use app\modules\admin\models\search\UserSearch;
 use yii\base\BaseObject;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -27,10 +28,15 @@ class UserController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'update','view','delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'create', 'update','view','delete'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
