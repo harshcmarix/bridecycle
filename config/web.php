@@ -44,6 +44,10 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'formatter' => [
+            'thousandSeparator' => ',',
+            'currencyCode' => 'USD',
+        ],
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => false,
