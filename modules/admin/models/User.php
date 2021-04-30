@@ -119,7 +119,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
 
             // [['mobile', 'shop_phone_number'], 'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
-            [['mobile', 'shop_phone_number'], 'string', 'max' => 15,'min' => 5],
+            [['mobile', 'shop_phone_number'], 'string', 'max' => 15, 'min' => 5],
 
             [['weight', 'height'], 'number'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
@@ -129,7 +129,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['email'], 'unique'],
             [['shop_logo'], 'file'],
-            [['password','confirm_password'], 'safe'],
+            [['password', 'confirm_password'], 'string', 'min' => 6],
+            [['password', 'confirm_password'], 'safe'],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match",],
             [['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required',
                 'when' => function ($model) {
