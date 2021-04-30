@@ -9,6 +9,7 @@ use yii\helpers\{
 use kartik\editable\Editable;
 use app\models\Subscription;
 
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\SubscriptionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -59,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($model) {
                     $amount = '';
                     if ($model instanceof Subscription) {
-                        $amount = '$'.$model->amount;
+                        $amount = Yii::$app->formatter->asCurrency($model->amount);
                     }
                     return $amount;
                 },

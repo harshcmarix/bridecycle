@@ -96,7 +96,7 @@ AdminAsset::register($this);
 </div>
 
 <footer class="footer">
-    <div class="container">
+    <div class="">
         <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
@@ -106,3 +106,8 @@ AdminAsset::register($this);
 </body>
 </html>
 <?php $this->endPage() ?>
+<script>
+$(document).ready(function(){
+$('#w3,#w1,#w4,#w5').children('div').removeClass('container');
+});
+</script>

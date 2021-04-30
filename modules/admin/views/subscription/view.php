@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function ($model) {
                 $amount = '';
                  if($model instanceof Subscription){
-                    $amount = '$'.$model->amount;
+                    $amount = Yii::$app->formatter->asCurrency($model->amount);
                  }
                  return $amount;
             },          
