@@ -108,6 +108,6 @@ AdminAsset::register($this);
 <?php $this->endPage() ?>
 <script>
 $(document).ready(function(){
-$('#w3,#w1,#w4,#w5').children('div').removeClass('container');
+$('.navbar-header').parent('div').removeClass('container');
 });
 </script>
