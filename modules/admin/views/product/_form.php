@@ -161,25 +161,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             ]); ?>
         </div>
         <div class="col col-md-2">
-            <?php
-            if (!empty($model->is_top_selling) && $model->is_top_selling == \app\models\Product::IS_TOP_SELLING_YES) {
-                echo $form->field($model, 'is_top_selling')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'uncheck' => null, 'id' => 'product-is_top_selling', 'checked' => true, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            } else {
-                echo $form->field($model, 'is_top_selling')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'uncheck' => null, 'id' => 'product-is_top_selling', 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            }
-            ?>
+            <?php echo $form->field($model, 'is_top_selling')
+                ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]); ?>
         </div>
         <div class="col col-md-2">
-            <?php
-            if (!empty($model->is_top_trending) && $model->is_top_trending == \app\models\Product::IS_TOP_TRENDING_YES) {
-                echo $form->field($model, 'is_top_trending')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'uncheck' => null, 'id' => 'product-is_top_trending', 'checked' => true, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            } else {
-                echo $form->field($model, 'is_top_trending')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'uncheck' => null, 'id' => 'product-is_top_trending', 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            }
+            <?php echo $form->field($model, 'is_top_trending')
+                ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
             ?>
         </div>
         <div class="col col-md-2">

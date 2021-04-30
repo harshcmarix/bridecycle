@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= DetailView::widget([
                         'model' => $model,
                         'attributes' => [
-                            'id',
+                            //  'id',
                             //'user_id',
                             [
                                 'attribute' => 'user_id',
@@ -72,7 +72,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return $model->userAddress->address . ", " . $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
                                 },
                             ],
-                            'total_amount',
+                            [
+                                'attribute' => 'total_amount',
+                                'value' => function ($model) {
+                                    return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
+                                },
+                            ],
                             [
                                 'attribute' => 'status',
                                 'value' => function ($model) {
@@ -165,7 +170,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             [
                                 'value' => function ($model) {
-                                    return $model->product->price;
+                                    return (!empty($model->product) && !empty($model->product->price)) ? Yii::$app->formatter->asCurrency($model->product->price) : "";
                                 },
                                 'header' => 'Product Price',
                                 'headerOptions' => ['class' => 'kartik-sheet-style']
@@ -183,8 +188,11 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
-    <p>
-        <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
-    </p>
-
+    <div class="row">
+        <div class="col col-md-12">
+            <p>
+                <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+            </p>
+        </div>
+    </div>
 </div>

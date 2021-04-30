@@ -60,9 +60,19 @@ $this->params['breadcrumbs'][] = 'View Product';
                     return (!empty($model->subCategory) && $model->subCategory instanceof ProductCategory && !empty($model->subCategory->name)) ? $model->subCategory->name : "";
                 },
             ],
-            'price',
+            [
+                'attribute' => 'price',
+                'value' => function ($model) {
+                    return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
+                },
+            ],
             'option_size',
-            'option_price',
+            [
+                'attribute' => 'option_price',
+                'value' => function ($model) {
+                    return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
+                },
+            ],
             'option_conditions',
             [
                 'attribute' => 'option_show_only',
@@ -102,7 +112,6 @@ $this->params['breadcrumbs'][] = 'View Product';
                     return $data;
                 },
             ],
-
             'available_quantity',
             [
                 'attribute' => 'is_top_selling',

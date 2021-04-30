@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ['items' => $dataImages]
                             );
                         }
-                        $productPrice = (!empty($orderItem->product->price)) ? '$' . number_format($orderItem->product->price, 2) : '';
+                        $productPrice = (!empty($orderItem->product->price)) ? Yii::$app->formatter->asCurrency($orderItem->product->price) : '';
 
                         $html .= "<tr>";
                         $html .= "<td>" . $result . "</td>";
@@ -122,7 +122,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'total_amount',
             'value' => function ($model) {
-                return (!empty($model->total_amount)) ? '$' . number_format($model->total_amount, 2) : "";
+                return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
             },
             'filter' => '',
             'header' => 'Total Amount Paid',

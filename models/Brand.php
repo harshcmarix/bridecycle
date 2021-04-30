@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models;
+
 use yii\behaviors\TimestampBehavior;
 use \yii\db\ActiveRecord;
 use Yii;
@@ -15,7 +16,7 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Products[] $products
+ * @property Product[] $products
  */
 class Brand extends ActiveRecord
 {
@@ -23,6 +24,7 @@ class Brand extends ActiveRecord
      * used for create
      */
     const SCENARIO_CREATE = 'create';
+    const SCENARIO_CREATE_API = 'create_api';
 
     /**
      * used for image validation
@@ -32,7 +34,7 @@ class Brand extends ActiveRecord
     public $is_brand_image_empty;
 
     /**
-     * use to identify top brand or not 
+     * use to identify top brand or not
      */
     const TOP_BRAND = '1';
     const NOT_TOP_BRAND = '0';
@@ -51,6 +53,7 @@ class Brand extends ActiveRecord
     {
         return 'brands';
     }
+
     /**
      * @return array[]
      */
@@ -63,6 +66,7 @@ class Brand extends ActiveRecord
             ],
         ];
     }
+
     /**
      * {@inheritdoc}
      */
@@ -74,12 +78,14 @@ class Brand extends ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['name'], 'unique'],
-            [['image'], 'string', 'max' => 250],
+            // [['image'], 'string', 'max' => 250],
             [['image'], 'file', 'extensions' => 'png, jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['image'], 'required', 'on' => self::SCENARIO_CREATE_API],
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
-            },'whenClient' => "function (attribute, value) {
+                return $model->scenario == self::SCENARIO_CREATE;
+            }, 'whenClient' => "function (attribute, value) {
                     if ($('#brand-is_brand_image_empty').val() == 1) {            
                                     return $('#brand-image').val() == '';                                    
                                     }

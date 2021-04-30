@@ -5,6 +5,7 @@ namespace app\modules\api\v1\controllers;
 use Yii;
 use app\models\Brand;
 use app\modules\api\v1\models\search\BrandSearch;
+use yii\imagine\Image;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\auth\{
@@ -15,6 +16,7 @@ use yii\filters\auth\{
 };
 use yii\filters\Cors;
 use yii\rest\ActiveController;
+use yii\web\UploadedFile;
 
 /**
  * BrandController implements the CRUD actions for Brand model.
@@ -40,6 +42,7 @@ class BrandController extends ActiveController
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'create' => ['POST', 'OPTIONS'],
+            'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
         ];
     }
@@ -52,7 +55,7 @@ class BrandController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index',],
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -85,7 +88,9 @@ class BrandController extends ActiveController
         $actions = parent::actions();
         unset($actions['index']);
         unset($actions['create']);
+        unset($actions['update']);
         unset($actions['delete']);
+        unset($actions['view']);
         return $actions;
     }
 
@@ -125,12 +130,50 @@ class BrandController extends ActiveController
      */
     public function actionCreate()
     {
+
         $model = new Brand();
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->save();
-        }
+        $postData = \Yii::$app->request->post();
+        $brandData['Brand'] = $postData;
 
+        $brand_image = UploadedFile::getInstanceByName('image');
+        $model->image = $brand_image;
+        $model->scenario = Brand::SCENARIO_CREATE_API;
+        if ($model->load($brandData) && $model->validate()) {
+
+            if (!empty($brand_image)) {
+                $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+                $thumbImagePath = '';
+
+                // Create profile upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create profile thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
+                $ext = $brand_image->extension;
+                $fileName = pathinfo($brand_image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $brand_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
+            }
+
+            if($model->save()){
+                $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+            }
+        }
         return $model;
     }
 
@@ -141,18 +184,56 @@ class BrandController extends ActiveController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-//    public function actionUpdate($id)
-//    {
-//        $model = $this->findModel($id);
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('update', [
-//            'model' => $model,
-//        ]);
-//    }
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        $postData = \Yii::$app->request->post();
+        $brandData['Brand'] = $postData;
+
+        $oldFile = $model->image;
+        $image = UploadedFile::getInstanceByName('image');
+        $model->image = $image;
+
+        if ($model->load($brandData) && $model->validate()) {
+
+            if (!empty($image)) {
+                $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+                $thumbImagePath = '';
+
+                // Create profile upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create profile thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
+                if(!empty($oldFile) && file_exists($uploadDirPath . "/" . $oldFile)){
+                    unlink($uploadDirPath . "/" . $oldFile);
+                }
+
+                if(!empty($oldFile) && file_exists($uploadThumbDirPath . "/" . $oldFile)){
+                    unlink($uploadThumbDirPath . "/" . $oldFile);
+                }
+
+                $ext = $image->extension;
+                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                $image->saveAs($uploadDirPath . '/' . $fileName);
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                $model->image = $fileName;
+            }
+            $model->save(false);
+        }
+
+        return $model;
+    }
 
     /**
      * Deletes an existing Brand model.
@@ -165,7 +246,7 @@ class BrandController extends ActiveController
     {
         $this->findModel($id)->delete();
 
-       // return $this->redirect(['index']);
+        // return $this->redirect(['index']);
     }
 
     /**

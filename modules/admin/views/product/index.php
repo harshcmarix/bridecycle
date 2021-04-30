@@ -124,7 +124,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         [
             'attribute' => 'price',
             'value' => function ($model) {
-                return (!empty($model->price)) ? '$' . number_format($model->price, 2) : "";
+                return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
             },
             'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style']
@@ -133,7 +133,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         [
             'attribute' => 'option_price',
             'value' => function ($model) {
-                return (!empty($model->option_price)) ? '$' . number_format($model->option_price, 2) : "";
+                return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
             },
             'header' => '',
             'headerOptions' => ['class' => 'kartik-sheet-style'],
@@ -182,7 +182,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'format' => ['raw'],
             'attribute' => 'is_top_selling',
             'value' => function ($model) {
-                return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id,'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
+                return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
             },
             'filter' => $searchModel->arrIsTopSelling,
             'filterType' => GridView::FILTER_SELECT2,
@@ -225,7 +225,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 //        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
 //        'headerRowOptions' => ['class' => 'kartik-sheet-style'],
 //        'filterRowOptions' => ['class' => 'kartik-sheet-style'],
-        'pjax' => true, // pjax is set to always true for this demo
+        'pjax' => false, // pjax is set to always true for this demo
         'toolbar' => [
             [
                 'content' =>
