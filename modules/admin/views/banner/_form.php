@@ -85,7 +85,7 @@ var image_empty = <?php echo Banner::IMAGE_EMPTY?>;
         $('.banner-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
-            var result = krajeeDialog.confirm('Are you sure You want to delete this image ?', function(result){                                     
+            var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function(result){                                     
             if(result) {
                 $.ajax({
                     url: deleteUrl,

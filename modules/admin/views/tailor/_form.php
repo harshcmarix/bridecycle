@@ -73,7 +73,7 @@ echo Dialog::widget(
             <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'shop_image-delete-link','delete-url'=>'../tailor/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img($image_path,  ['class'=>'file-preview-image','height' => '100px', 'width' => '100px','onclick' => $tailorimagemodal]); ?>
+             <?= Html::img($image_path,  ['class'=>'file-preview-image your_image','height' => '100px', 'width' => '100px','onclick' => $tailorimagemodal]); ?>
     </div>
     <?php } ?>
 
@@ -91,7 +91,7 @@ var image_empty = <?php echo Tailor::IMAGE_EMPTY?>;
  $('.shop_image-delete-link').on('click', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
-            var result = krajeeDialog.confirm('Are you sure You want to delete this image ?', function(result){                                
+            var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function(result){                                
             if(result) {
                 $.ajax({
                     url: deleteUrl,
