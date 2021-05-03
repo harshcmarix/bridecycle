@@ -74,7 +74,7 @@ class FavouriteProduct extends ActiveRecord
     public function extraFields()
     {
         return [
-            'user'=>'user',
+            'user0'=>'user0',
             'product'=>'product'
         ];
     }
@@ -97,5 +97,20 @@ class FavouriteProduct extends ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+    // api use only
+    /**
+     * Gets query for [[User]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser0()
+    {
+        //return $this->hasOne(User::className(), ['id' => 'user_id']);
+        $data = User::find()->where(['id' => $this->user_id])->one();
+        if (!empty($data->profile_picture)) {
+            $data->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+        }
+        return $data;
     }
 }

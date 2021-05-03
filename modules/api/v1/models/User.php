@@ -139,6 +139,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['shop_name', 'shop_email','shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
             [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
+            [['shop_email'], 'unique','targetClass' => ShopDetail::ClassName() ,'targetAttribute' => ['shop_email']]
         ];
     }
 

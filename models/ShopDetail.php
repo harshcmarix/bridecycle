@@ -46,10 +46,13 @@ class ShopDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website'], 'required'],
+            [['shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website'], 'required'],
             [['user_id'], 'integer'],
+            [['shop_email'], 'email'],
+            [['shop_email'], 'unique'],
             [['created_at', 'updated_at'], 'safe'],
-            [['shop_cover_picture', 'shop_name', 'shop_email', 'shop_logo', 'website'], 'string', 'max' => 255],
+            [['shop_logo','shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
+            [[ 'shop_name', 'shop_email', 'website'], 'string', 'max' => 255],
             [['shop_phone_number'], 'string', 'max' => 15],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];

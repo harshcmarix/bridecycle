@@ -5,7 +5,10 @@ namespace app\modules\api\v1\controllers;
 use Yii;
 use app\models\ProductRating;
 use app\modules\api\v1\models\search\ProductRatingSearch;
-use yii\web\NotFoundHttpException;
+use yii\web\{
+    NotFoundHttpException,
+    ForbiddenHttpException
+};
 use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
 use yii\filters\auth\{
@@ -163,6 +166,10 @@ class ProductRatingController extends ActiveController
         $postData = Yii::$app->request->post();
         $productRating['ProductRating'] = $postData;
         $productRating['ProductRating']['user_id'] = Yii::$app->user->identity->id;
+        $alreadyExist = ProductRating::find()->where(['product_id'=>$productRating['ProductRating']['product_id'],'user_id'=>$productRating['ProductRating']['user_id']])->all();
+        if(!empty($alreadyExist)){
+            throw new ForbiddenHttpException('You have already reviewed this product');
+        }
         if ($model->load($productRating) && $model->validate()) {
             $model->save();
         }

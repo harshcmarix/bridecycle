@@ -506,6 +506,13 @@ class UserController extends ActiveController
         }
         // $model = User::find()->where(['temporary_password' => $postData['tmp_password']])->one();
         $model = User::find()->where(['temporary_password' => $postData['tmp_password'], 'user_type' => User::USER_TYPE_NORMAL])->one();
+         $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+         $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
+         $profile_picture = '';
+        if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
+            $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+        }
+        $model->profile_picture = $profile_picture;
         if (!$model instanceof User) {
             throw new NotFoundHttpException('Temporary password does\'t exist.');
         }
