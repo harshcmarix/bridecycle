@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = 'Update Product';
         'category' => $category,
         'subcategory' => $subcategory,
         'brand' => $brand,
+        'color' => $color,
         'status' => $status
     ]) ?>
 

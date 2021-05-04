@@ -62,9 +62,9 @@ class ProductCategory extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['name'], 'unique'],
-            [['image'], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required','on'=>self::SCENARIO_CREATE],
+            //[['image'], 'string', 'max' => 255],
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_image_empty == '1';
             },

@@ -114,7 +114,6 @@ class User extends ActiveRecord implements IdentityInterface
             [['first_name', 'last_name', 'email', 'mobile', 'password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
             [['first_name', 'last_name', 'email', 'mobile'], 'required', 'on' => [self::SCENARIO_UPDATE_NORMAL_USER]],
 
-
             [['email', 'shop_email'], 'email'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
 

@@ -27,7 +27,7 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'user_id', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'status_id'], 'integer'],
+            [['id', 'user_id', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id','option_color', 'height', 'weight', 'width', 'status_id'], 'integer'],
             [['name', 'number', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at'], 'safe'],
             [['option_price'], 'number'],
         ];

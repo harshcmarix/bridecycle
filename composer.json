@@ -24,7 +24,8 @@
         "kartik-v/yii2-widget-growl": "dev-master",
         "kartik-v/yii2-dialog": "dev-master",
         "2amigos/yii2-ckeditor-widget" : "~2.1",
-        "kartik-v/yii2-widget-fileinput": "dev-master"
+        "kartik-v/yii2-widget-fileinput": "dev-master",
+        "kartik-v/yii2-widgets": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

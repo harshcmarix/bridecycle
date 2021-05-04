@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use app\models\ProductCategory;
 use app\models\Brand;
+use app\models\Color;
 use app\models\Product;
 use app\models\ProductImage;
 use yii\bootstrap\Modal;
@@ -129,6 +130,12 @@ $this->params['breadcrumbs'][] = 'View Product';
                 'attribute' => 'brand_id',
                 'value' => function ($model) {
                     return (!empty($model->brand) && $model->brand instanceof Brand && !empty($model->brand->name)) ? $model->brand->name : "-";
+                },
+            ],
+            [
+                'attribute' => 'option_color',
+                'value' => function ($model) {
+                    return (!empty($model->color) && $model->color instanceof Color && !empty($model->color->name)) ? $model->color->name : "-";
                 },
             ],
             [

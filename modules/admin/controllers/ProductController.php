@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\models\Brand;
+use app\models\Color;
 use app\models\ProductCategory;
 use app\models\ProductImage;
 use app\models\ProductStatus;
@@ -95,6 +96,7 @@ class ProductController extends Controller
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = [];
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
+        $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         $postData = Yii::$app->request->post('Product');
@@ -157,6 +159,7 @@ class ProductController extends Controller
             'category' => $category,
             'subcategory' => $subcategory,
             'brand' => $brand,
+            'color' => $color,
             'status' => $status
         ]);
     }
@@ -179,6 +182,7 @@ class ProductController extends Controller
             $subcategory = ArrayHelper::map(ProductCategory::find()->where(['IS NOT', 'parent_category_id', null])->all(), 'id', 'name');;
         }
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
+        $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         $postData = Yii::$app->request->post('Product');
@@ -267,6 +271,7 @@ class ProductController extends Controller
             'category' => $category,
             'subcategory' => $subcategory,
             'brand' => $brand,
+            'color' => $color,
             'status' => $status
         ]);
     }

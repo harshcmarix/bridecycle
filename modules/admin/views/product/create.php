@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'category' => $category,
         'subcategory' => $subcategory,
         'brand' => $brand,
+        'color' => $color,
         'status' => $status
     ]) ?>
 

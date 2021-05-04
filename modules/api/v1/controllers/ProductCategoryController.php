@@ -5,6 +5,8 @@ namespace app\modules\api\v1\controllers;
 use Yii;
 use app\models\ProductCategory;
 use app\modules\api\v1\models\search\ProductCategorySearch;
+use yii\base\BaseObject;
+use yii\imagine\Image;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\auth\{
@@ -15,6 +17,7 @@ use yii\filters\auth\{
 };
 use yii\filters\Cors;
 use yii\rest\ActiveController;
+use yii\web\UploadedFile;
 
 /**
  * ProductCategoryController implements the CRUD actions for ProductCategory model.
@@ -38,6 +41,10 @@ class ProductCategoryController extends ActiveController
     {
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
+            'create' => ['POST', 'OPTIONS'],
+            'update' => ['PUT', 'PATCH'],
+            'delete' => ['POST', 'DELETE'],
+            'update-image' => ['POST', 'OPTIONS'],
             'sub-category' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
         ];
@@ -51,7 +58,7 @@ class ProductCategoryController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'sub-category', 'view', 'create', 'update', 'delete'],
+            'only' => ['index', 'sub-category', 'update-image', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -148,18 +155,51 @@ class ProductCategoryController extends ActiveController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-//    public function actionCreate()
-//    {
-//        $model = new ProductCategory();
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('create', [
-//            'model' => $model,
-//        ]);
-//    }
+    public function actionCreate()
+    {
+        $model = new ProductCategory();
+        $postData = Yii::$app->request->post();
+        $productCategoryData['ProductCategory'] = $postData;
+        $model->scenario = ProductCategory::SCENARIO_CREATE;
+        $image = UploadedFile::getInstanceByName('image');
+        $model->image = $image;
+        if ($model->load($productCategoryData) && $model->validate()) {
+            if (!empty($image)) {
+
+                $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
+
+                // Create profile upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create profile thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
+                $ext = $image->extension;
+                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
+            }
+            $model->save();
+        }
+
+        if (!empty($model->image)) {
+            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        }
+
+        return $model;
+    }
 
     /**
      * Updates an existing ProductCategory model.
@@ -168,18 +208,136 @@ class ProductCategoryController extends ActiveController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-//    public function actionUpdate($id)
-//    {
-//        $model = $this->findModel($id);
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('update', [
-//            'model' => $model,
-//        ]);
-//    }
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+        $oldFile = $model->image;
+        $postData = Yii::$app->request->post();
+        $productCategoryData['ProductCategory'] = $postData;
+        $model->scenario = ProductCategory::SCENARIO_CREATE;
+        $image = UploadedFile::getInstanceByName('image');
+        if (!empty($image)) {
+            $model->image = $image;
+        } else {
+            $model->image = $oldFile;
+        }
+
+        if ($model->load($productCategoryData) && $model->validate()) {
+            if (!empty($image)) {
+                $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
+
+                // Create profile upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create profile thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
+                $ext = $image->extension;
+                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
+
+                if (!empty($oldFile)) {
+                    //unlink real image if update
+                    if (file_exists($uploadDirPath . '/' . $oldFile)) {
+                        unlink($uploadDirPath . '/' . $oldFile);
+                    }
+
+                    //unlink thumb image if update
+                    if (file_exists($uploadThumbDirPath . '/' . $oldFile)) {
+                        unlink($uploadThumbDirPath . '/' . $oldFile);
+                    }
+                }
+            }
+            $model->save();
+        }
+
+        if (!empty($model->image)) {
+            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        }
+
+        return $model;
+    }
+
+    /**
+     * @param $id
+     * @return ProductCategory
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdateImage($id)
+    {
+        $model = $this->findModel($id);
+        $oldFile = $model->image;
+        $postData = Yii::$app->request->post();
+        $productCategoryData['ProductCategory'] = $postData;
+        $model->scenario = ProductCategory::SCENARIO_CREATE;
+        $image = UploadedFile::getInstanceByName('image');
+        if (!empty($image)) {
+            $model->image = $image;
+        } else {
+            $model->image = '';
+        }
+
+        if ($model->load($productCategoryData) && $model->validate()) {
+            if (!empty($image)) {
+                $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
+
+                // Create profile upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create profile thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
+                $ext = $image->extension;
+                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
+
+                if (!empty($oldFile)) {
+                    //unlink real image if update
+                    if (file_exists($uploadDirPath . '/' . $oldFile)) {
+                        unlink($uploadDirPath . '/' . $oldFile);
+                    }
+
+                    //unlink thumb image if update
+                    if (file_exists($uploadThumbDirPath . '/' . $oldFile)) {
+                        unlink($uploadThumbDirPath . '/' . $oldFile);
+                    }
+                }
+            }
+            $model->save();
+        }
+
+        if (!empty($model->image)) {
+            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        }
+
+        return $model;
+    }
 
     /**
      * Deletes an existing ProductCategory model.
@@ -188,12 +346,28 @@ class ProductCategoryController extends ActiveController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-//    public function actionDelete($id)
-//    {
-//        $this->findModel($id)->delete();
-//
-//        return $this->redirect(['index']);
-//    }
+    public function actionDelete($id)
+    {
+
+        $model = $this->findModel($id);
+
+        if (!empty($model) && !empty($model->image)) {
+
+            $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
+            $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
+
+            //unlink real image if update
+            if (file_exists($uploadDirPath . '/' . $model->image)) {
+                unlink($uploadDirPath . '/' . $model->image);
+            }
+
+            //unlink thumb image if update
+            if (file_exists($uploadThumbDirPath . '/' . $model->image)) {
+                unlink($uploadThumbDirPath . '/' . $model->image);
+            }
+        }
+        $model->delete();
+    }
 
     /**
      * Finds the ProductCategory model based on its primary key value.

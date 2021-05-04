@@ -41,6 +41,7 @@ use app\modules\admin\models\User;
  * @property ProductRatings[] $productRatings
  * @property ProductImages[] $productImages
  * @property Brand $brand
+ * @property Color $color
  * @property Category $category
  * @property SubCategory $subCategory
  * @property UserAddress $address
@@ -184,6 +185,7 @@ class Product extends \yii\db\ActiveRecord
             'productImages0' => 'productImages0',
             'category0' => 'category0',
             'brand0' => 'brand0',
+            'color' => 'color',
             'user0' => 'user0',
             'subCategory0' => 'subCategory0',
             'status' => 'status',
@@ -239,6 +241,16 @@ class Product extends \yii\db\ActiveRecord
     public function getBrand()
     {
         return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+    }
+
+    /**
+     * Gets query for [[Brand]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getColor()
+    {
+        return $this->hasOne(Color::className(), ['id' => 'option_color']);
     }
 
     /**

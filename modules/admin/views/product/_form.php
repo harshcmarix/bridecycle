@@ -53,10 +53,19 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     </div>
 
     <div class="row">
-        <div class="col col-md-6">
+        <div class="col col-md-4">
             <?= $form->field($model, 'brand_id')->widget(Select2::classname(), [
                 'data' => $brand,
                 'options' => ['placeholder' => 'Select Brand'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+        </div>
+        <div class="col col-md-2">
+            <?= $form->field($model, 'option_color')->widget(Select2::classname(), [
+                'data' => $color,
+                'options' => ['placeholder' => 'Select Color'],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
