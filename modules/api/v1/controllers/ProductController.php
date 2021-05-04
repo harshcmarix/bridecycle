@@ -54,8 +54,6 @@ class ProductController extends ActiveController
             'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
-            'delete-product-image' => ['POST', 'DELETE'],
-            'update-product-images' => ['POST', 'OPTIONS'],
         ];
     }
 
@@ -67,7 +65,7 @@ class ProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'delete', 'update-product-images', 'delete-product-image'],
+            'only' => ['index', 'view', 'create', 'update', 'delete',],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -243,106 +241,6 @@ class ProductController extends ActiveController
             }
         }
         return $model;
-
-    }
-
-    /**
-     * Updates an existing Product model.
-     * If update is successful, the browser will be redirected to the 'success' page.
-     * @param $id
-     */
-    public function actionUpdateProductImages($id)
-    {
-        $model = Product::findOne($id);
-
-        $postData = Yii::$app->request->post();
-        $productData['Product'] = $postData;
-
-        $model->gender = Product::GENDER_FOR_FEMALE;
-        $images = UploadedFile::getInstancesByName('images');
-
-        $model->images = $images;
-        if ($model->load($productData) && $model->validate()) {
-
-            if ($model->save(false)) {
-
-                if (!empty($images)) {
-
-                    $modelsOldImg = $model->productImages;
-                    if (!empty($modelsOldImg)) {
-                        foreach ($modelsOldImg as $key => $modelOldImgRow) {
-                            if (!empty($modelOldImgRow) && $modelOldImgRow instanceof ProductImage) {
-
-                                if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name)) {
-                                    unlink(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name);
-                                }
-
-                                if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name)) {
-                                    unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name);
-                                }
-                                $modelOldImgRow->delete();
-                            }
-                        }
-                    }
-
-                    foreach ($images as $img) {
-                        $modelImage = new ProductImage();
-
-                        $uploadDirPath = Yii::getAlias('@productImageRelativePath');
-                        $uploadThumbDirPath = Yii::getAlias('@productImageThumbRelativePath');
-                        $thumbImagePath = '';
-
-                        // Create product upload directory if not exist
-                        if (!is_dir($uploadDirPath)) {
-                            mkdir($uploadDirPath, 0777);
-                        }
-
-                        // Create product thumb upload directory if not exist
-                        if (!is_dir($uploadThumbDirPath)) {
-                            mkdir($uploadThumbDirPath, 0777);
-                        }
-
-                        $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
-                        // Upload product picture
-                        $img->saveAs($uploadDirPath . '/' . $fileName);
-                        // Create thumb of product picture
-                        $actualImagePath = $uploadDirPath . '/' . $fileName;
-                        $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-
-                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                        // Insert product picture name into database
-
-                        $modelImage->product_id = $model->id;
-                        $modelImage->name = $fileName;
-                        $modelImage->save(false);
-                    }
-                }
-            }
-        }
-        return $model;
-    }
-
-    /**
-     * @param $id
-     * @throws NotFoundHttpException
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function actionDeleteProductImage($id)
-    {
-        $model = ProductImage::findOne($id);
-        if (empty($model) && !$model instanceof ProductImage) {
-            throw new NotFoundHttpException('Product image doesn\'t exist.');
-        }
-
-        if (!empty($model->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $model->name)) {
-            unlink(Yii::getAlias('@productImageRelativePath') . "/" . $model->name);
-        }
-
-        if (!empty($model->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $model->name)) {
-            unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $model->name);
-        }
-        $model->delete();
 
     }
 

@@ -4,9 +4,6 @@ namespace app\modules\api\v1\controllers;
 
 use Yii;
 use app\models\ProductImage;
-use app\models\ProductImageSearch;
-use yii\web\Controller;
-use yii\filters\VerbFilter;
 use yii\web\{
     NotFoundHttpException,
     UploadedFile
@@ -26,7 +23,7 @@ use yii\rest\ActiveController;
  */
 class ProductImageController extends ActiveController
 {
-      /**
+    /**
      * @var string
      */
     public $modelClass = 'app\models\Product';
@@ -43,10 +40,10 @@ class ProductImageController extends ActiveController
     protected function verbs()
     {
         return [
-           
+
             'update' => ['POST', 'OPTIONS'],
             'delete' => ['POST', 'DELETE'],
-           
+
         ];
     }
 
@@ -82,7 +79,8 @@ class ProductImageController extends ActiveController
 
         return $behaviors;
     }
-     /**
+
+    /**
      * @return array
      */
     public function actions()
@@ -95,6 +93,7 @@ class ProductImageController extends ActiveController
         unset($actions['view']);
         return $actions;
     }
+
     /**
      * Updates an existing ProductImage model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -106,68 +105,67 @@ class ProductImageController extends ActiveController
     {
         $model = new ProductImage();
         $postData = Yii::$app->request->post();
-        $productImage['ProductImage'] = $postData;       
+        $productImage['ProductImage'] = $postData;
         $images = UploadedFile::getInstancesByName('images');
         $model->name = $images;
         if ($model->load($productImage) && $model->validate()) {
-                if (!empty($images)) {
-                    $deleteImages  = ProductImage::find()->where(['product_id'=>$productImage['ProductImage']['product_id']]);
-                    $modelsOldImg = $deleteImages->all();
-                    if (!empty($modelsOldImg)) {
-                        foreach ($modelsOldImg as $key => $modelOldImgRow) {
-                            if (!empty($modelOldImgRow) && $modelOldImgRow instanceof ProductImage) {
+            if (!empty($images)) {
+                $deleteImages = ProductImage::find()->where(['product_id' => $productImage['ProductImage']['product_id']]);
+                $modelsOldImg = $deleteImages->all();
+                if (!empty($modelsOldImg)) {
+                    foreach ($modelsOldImg as $key => $modelOldImgRow) {
+                        if (!empty($modelOldImgRow) && $modelOldImgRow instanceof ProductImage) {
 
-                                if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name)) {
-                                    unlink(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name);
-                                }
-
-                                if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name)) {
-                                    unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name);
-                                }
-                               
+                            if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name)) {
+                                unlink(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name);
                             }
+
+                            if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name)) {
+                                unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name);
+                            }
+
                         }
-                       ProductImage::deleteAll(['product_id'=>$productImage['ProductImage']['product_id']]);
                     }
-                    $arrayImage = [];
-                    foreach ($images as $img) {
-                        $modelImage = new ProductImage();
-
-                        $uploadDirPath = Yii::getAlias('@productImageRelativePath');
-                        $uploadThumbDirPath = Yii::getAlias('@productImageThumbRelativePath');
-                        $thumbImagePath = '';
-
-                        // Create product upload directory if not exist
-                        if (!is_dir($uploadDirPath)) {
-                            mkdir($uploadDirPath, 0777);
-                        }
-
-                        // Create product thumb upload directory if not exist
-                        if (!is_dir($uploadThumbDirPath)) {
-                            mkdir($uploadThumbDirPath, 0777);
-                        }
-
-                        $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
-                        // Upload product picture
-                        $img->saveAs($uploadDirPath . '/' . $fileName);
-                        // Create thumb of product picture
-                        $actualImagePath = $uploadDirPath . '/' . $fileName;
-                        $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-
-                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                        // Insert product picture name into database
-
-                        $modelImage->product_id = $productImage['ProductImage']['product_id'];
-                        $modelImage->name = $fileName;
-                        $modelImage->save(false);
-                        $arrayImage[] =$modelImage; 
-                    }
+                    ProductImage::deleteAll(['product_id' => $productImage['ProductImage']['product_id']]);
                 }
+                $arrayImage = [];
+                foreach ($images as $img) {
+                    $modelImage = new ProductImage();
+                    $uploadDirPath = Yii::getAlias('@productImageRelativePath');
+                    $uploadThumbDirPath = Yii::getAlias('@productImageThumbRelativePath');
+                    $thumbImagePath = '';
+
+                    // Create product upload directory if not exist
+                    if (!is_dir($uploadDirPath)) {
+                        mkdir($uploadDirPath, 0777);
+                    }
+
+                    // Create product thumb upload directory if not exist
+                    if (!is_dir($uploadThumbDirPath)) {
+                        mkdir($uploadThumbDirPath, 0777);
+                    }
+
+                    $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
+                    // Upload product picture
+                    $img->saveAs($uploadDirPath . '/' . $fileName);
+                    // Create thumb of product picture
+                    $actualImagePath = $uploadDirPath . '/' . $fileName;
+                    $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                    Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                    // Insert product picture name into database
+
+                    $modelImage->product_id = $productImage['ProductImage']['product_id'];
+                    $modelImage->name = $fileName;
+                    $modelImage->save(false);
+                    $arrayImage[] = $modelImage;
+                }
+            }
         }
         $thumbImagePath = Yii::getAlias('@productImageThumbAbsolutePath');
-        foreach($arrayImage as $images){
-            if(!empty($images->name)){
-                $images->name = Yii::$app->request->getHostInfo() . $thumbImagePath.'/'.$images->name;
+        foreach ($arrayImage as $images) {
+            if (!empty($images->name)) {
+                $images->name = Yii::$app->request->getHostInfo() . $thumbImagePath . '/' . $images->name;
             }
         }
         return $arrayImage;
