@@ -103,7 +103,7 @@ class SubAdmin extends ActiveRecord
             [['first_name', 'last_name', 'email'], 'required'],
             [['email'], 'email'],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
-            [['mobile', 'weight', 'height'], 'number'],
+            [['weight', 'height'], 'number'],
             [['mobile'],'string', 'max' => 15,'min'=>5],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['password', 'confirm_password'], 'required', 'on' => self::SCENARIO_CREATE],
