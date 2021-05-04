@@ -48,7 +48,6 @@ class ProductImage extends \yii\db\ActiveRecord
             [['product_id'], 'required'],
             [['product_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name'], 'string', 'max' => 255],
             [['name'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
         ];

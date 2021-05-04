@@ -130,7 +130,7 @@ class ProductController extends ActiveController
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
+        $model = Product::findOne($id);
 
         return $model;
     }
@@ -152,9 +152,9 @@ class ProductController extends ActiveController
 
         $images = UploadedFile::getInstancesByName('images');
 
-        $model->images = $images;
+        $model->name = $images;
+        $productData['Product']['user_id'] = Yii::$app->user->identity->id;
         if ($model->load($productData) && $model->validate()) {
-            $model->user_id = Yii::$app->user->identity->id;
             if ($model->save()) {
 
                 if (!empty($images)) {
@@ -216,7 +216,7 @@ class ProductController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = Product::findOne($id);
         $postData = Yii::$app->request->post();
         $productData['Product'] = $postData;
 
@@ -253,7 +253,7 @@ class ProductController extends ActiveController
      */
     public function actionUpdateProductImages($id)
     {
-        $model = $this->findModel($id);
+        $model = Product::findOne($id);
 
         $postData = Yii::$app->request->post();
         $productData['Product'] = $postData;
@@ -355,7 +355,7 @@ class ProductController extends ActiveController
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
+        $model = Product::findOne($id);
 
         if (!empty($model) && !empty($model->productImages)) {
             foreach ($model->productImages as $key => $imageRow) {

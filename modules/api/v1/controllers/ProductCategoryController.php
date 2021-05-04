@@ -120,7 +120,7 @@ class ProductCategoryController extends ActiveController
      */
     public function actionSubCategory($category_id)
     {
-        $model = $this->findModel($category_id);
+        $model = ProductCategory::findOne($category_id);
         $moldelsSubcategory = [];
         if (!empty($model)) {
             $moldelsSubcategory = $model->children;
@@ -143,7 +143,7 @@ class ProductCategoryController extends ActiveController
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
+        $model = ProductCategory::findOne($id);
         if (!empty($model) && !empty($model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
         }
@@ -210,7 +210,7 @@ class ProductCategoryController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = ProductCategory::findOne($id);
 
         $postData = Yii::$app->request->post();
         $productCategoryData['ProductCategory'] = $postData;
@@ -234,7 +234,7 @@ class ProductCategoryController extends ActiveController
      */
     public function actionUpdateImage($id)
     {
-        $model = $this->findModel($id);
+        $model = ProductCategory::findOne($id);
         $oldFile = $model->image;
         $postData = Yii::$app->request->post();
         $productCategoryData['ProductCategory'] = $postData;
@@ -305,7 +305,7 @@ class ProductCategoryController extends ActiveController
     public function actionDelete($id)
     {
 
-        $model = $this->findModel($id);
+        $model = ProductCategory::findOne($id);
 
         if (!empty($model) && !empty($model->image)) {
 

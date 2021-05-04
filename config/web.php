@@ -111,6 +111,7 @@ $config = [
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product-category'], 'pluralize' => false],
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product'], 'pluralize' => false],
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/color'], 'pluralize' => false],
+                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product-image'], 'pluralize' => false],
                 // Set rest API rules
 //                [
 //                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>',
@@ -199,7 +200,7 @@ $config = [
     'params' => $params,
 ];
 
-if (YII_ENV_DEV) {
+// if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
@@ -214,6 +215,6 @@ if (YII_ENV_DEV) {
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
-}
+// }
 
 return $config;
