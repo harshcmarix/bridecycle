@@ -4,11 +4,11 @@ namespace app\modules\api\v1\controllers;
 
 use Yii;
 use app\models\ProductCategory;
-use app\modules\api\v1\models\search\ProductCategorySearch;
-use yii\base\BaseObject;
 use yii\imagine\Image;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\{
+    NotFoundHttpException,
+    UploadedFile
+};
 use yii\filters\auth\{
     HttpBasicAuth,
     CompositeAuth,
@@ -17,7 +17,7 @@ use yii\filters\auth\{
 };
 use yii\filters\Cors;
 use yii\rest\ActiveController;
-use yii\web\UploadedFile;
+
 
 /**
  * ProductCategoryController implements the CRUD actions for ProductCategory model.

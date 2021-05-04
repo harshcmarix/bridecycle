@@ -2,25 +2,29 @@
 
 namespace app\modules\api\v1\controllers;
 
-use app\models\Product;
-use app\models\ProductImage;
-use app\models\ProductStatus;
-use app\models\UserAddress;
 use Yii;
-use app\modules\api\v1\models\search\ProductSearch;
+use app\models\{
+    Product,
+    ProductImage,
+    ProductStatus,
+    UserAddress
+};
+
+use yii\web\{
+    NotFoundHttpException,
+    UploadedFile
+};
 use yii\filters\auth\{
     CompositeAuth,
     HttpBasicAuth,
     HttpBearerAuth,
     QueryParamAuth
 };
-use yii\base\BaseObject;
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
+
+
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -183,7 +187,6 @@ class ProductController extends ActiveController
 
                         $modelImage->product_id = $model->id;
                         $modelImage->name = $fileName;
-                        $modelImage->created_at = date('Y-m-d H:i:s');
                         $modelImage->save(false);
                     }
                 }
@@ -214,7 +217,6 @@ class ProductController extends ActiveController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        //$oldImg = $model->productImages;
         $postData = Yii::$app->request->post();
         $productData['Product'] = $postData;
 
@@ -312,7 +314,6 @@ class ProductController extends ActiveController
 
                         $modelImage->product_id = $model->id;
                         $modelImage->name = $fileName;
-                        $modelImage->created_at = date('Y-m-d H:i:s');
                         $modelImage->save(false);
                     }
                 }

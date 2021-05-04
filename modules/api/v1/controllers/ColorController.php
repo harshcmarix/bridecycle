@@ -4,10 +4,7 @@ namespace app\modules\api\v1\controllers;
 
 use Yii;
 use app\models\Color;
-use app\modules\api\v1\models\search\ColorSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\filters\auth\{
     HttpBasicAuth,
     CompositeAuth,
@@ -118,9 +115,8 @@ class ColorController extends ActiveController
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = $this->findModel($id);
+        return $model;
     }
 
     /**
