@@ -211,56 +211,12 @@ class ProductCategoryController extends ActiveController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $oldFile = $model->image;
+
         $postData = Yii::$app->request->post();
         $productCategoryData['ProductCategory'] = $postData;
         $model->scenario = ProductCategory::SCENARIO_CREATE;
-        $image = UploadedFile::getInstanceByName('image');
-        if (!empty($image)) {
-            $model->image = $image;
-        } else {
-            $model->image = $oldFile;
-        }
 
         if ($model->load($productCategoryData) && $model->validate()) {
-            if (!empty($image)) {
-                $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
-                $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
-
-                // Create profile upload directory if not exist
-                if (!is_dir($uploadDirPath)) {
-                    mkdir($uploadDirPath, 0777);
-                }
-
-                // Create profile thumb upload directory if not exist
-                if (!is_dir($uploadThumbDirPath)) {
-                    mkdir($uploadThumbDirPath, 0777);
-                }
-
-                $ext = $image->extension;
-                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
-                // Upload profile picture
-                $image->saveAs($uploadDirPath . '/' . $fileName);
-                // Create thumb of profile picture
-                $actualImagePath = $uploadDirPath . '/' . $fileName;
-                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                // Insert profile picture name into database
-                $model->image = $fileName;
-
-                if (!empty($oldFile)) {
-                    //unlink real image if update
-                    if (file_exists($uploadDirPath . '/' . $oldFile)) {
-                        unlink($uploadDirPath . '/' . $oldFile);
-                    }
-
-                    //unlink thumb image if update
-                    if (file_exists($uploadThumbDirPath . '/' . $oldFile)) {
-                        unlink($uploadThumbDirPath . '/' . $oldFile);
-                    }
-                }
-            }
             $model->save();
         }
 

@@ -193,50 +193,50 @@ class BrandController extends ActiveController
 
         $brandData['Brand'] = $postData;
         $model->scenario = Brand::SCENARIO_CREATE_API;
-        $oldFile = $model->image;
-        $image = UploadedFile::getInstanceByName('image');
-
-        if (!empty($image)) {
-            $model->image = $image;
-        } else {
-            $model->image = $oldFile;
-        }
+//        $oldFile = $model->image;
+//        $image = UploadedFile::getInstanceByName('image');
+//
+//        if (!empty($image)) {
+//            $model->image = $image;
+//        } else {
+//            $model->image = $oldFile;
+//        }
 
         if ($model->load($brandData) && $model->validate()) {
 
-            if (!empty($image) && is_file($image)) {
-                $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
-                $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
-                $thumbImagePath = '';
-
-                // Create profile upload directory if not exist
-                if (!is_dir($uploadDirPath)) {
-                    mkdir($uploadDirPath, 0777);
-                }
-
-                // Create profile thumb upload directory if not exist
-                if (!is_dir($uploadThumbDirPath)) {
-                    mkdir($uploadThumbDirPath, 0777);
-                }
-
-                $ext = $image->extension;
-                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
-                $image->saveAs($uploadDirPath . '/' . $fileName);
-                $actualImagePath = $uploadDirPath . '/' . $fileName;
-                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                $model->image = $fileName;
-
-                if (!empty($oldFile) && file_exists($uploadDirPath . "/" . $oldFile)) {
-                    unlink($uploadDirPath . "/" . $oldFile);
-                }
-
-                if (!empty($oldFile) && file_exists($uploadThumbDirPath . "/" . $oldFile)) {
-                    unlink($uploadThumbDirPath . "/" . $oldFile);
-                }
-
-            }
+//            if (!empty($image) && is_file($image)) {
+//                $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+//                $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+//                $thumbImagePath = '';
+//
+//                // Create profile upload directory if not exist
+//                if (!is_dir($uploadDirPath)) {
+//                    mkdir($uploadDirPath, 0777);
+//                }
+//
+//                // Create profile thumb upload directory if not exist
+//                if (!is_dir($uploadThumbDirPath)) {
+//                    mkdir($uploadThumbDirPath, 0777);
+//                }
+//
+//                $ext = $image->extension;
+//                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
+//                $fileName = $fileName . '_' . time() . '.' . $ext;
+//                $image->saveAs($uploadDirPath . '/' . $fileName);
+//                $actualImagePath = $uploadDirPath . '/' . $fileName;
+//                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+//                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+//                $model->image = $fileName;
+//
+//                if (!empty($oldFile) && file_exists($uploadDirPath . "/" . $oldFile)) {
+//                    unlink($uploadDirPath . "/" . $oldFile);
+//                }
+//
+//                if (!empty($oldFile) && file_exists($uploadThumbDirPath . "/" . $oldFile)) {
+//                    unlink($uploadThumbDirPath . "/" . $oldFile);
+//                }
+//
+//            }
             $model->save(false);
         }
 
@@ -268,6 +268,17 @@ class BrandController extends ActiveController
             if (!empty($image)) {
                 $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+
+                // Create product upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create product thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
 
                 $ext = $image->extension;
                 $fileName = pathinfo($image->name, PATHINFO_FILENAME);

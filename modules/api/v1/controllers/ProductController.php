@@ -63,7 +63,7 @@ class ProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'delete', 'update-product-images','delete-product-image'],
+            'only' => ['index', 'view', 'create', 'update', 'delete', 'update-product-images', 'delete-product-image'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -127,25 +127,7 @@ class ProductController extends ActiveController
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        if (!empty($model)) {
 
-            $productImg = [];
-            if (!empty($model->productImages)) {
-                foreach ($model->productImages as $keys => $productImageRow) {
-                    if (!empty($productImageRow) && $productImageRow instanceof ProductImage && !empty($productImageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $productImageRow->name)) {
-                        $productImg[] = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $productImageRow->name;
-                    }
-                }
-            }
-
-            $data['status'] = (!empty($model->status_id) && !empty($model->status) && !empty($model->status->status)) ? $model->status->status : "";
-            $data['user'] = (!empty($model->user_id) && !empty($model->user)) ? $model->user->first_name . " " . $model->user->last_name : "";
-            $data['brand'] = (!empty($model->brand_id) && !empty($model->brand) && !empty($model->brand->name)) ? $model->brand->name : "";
-            $data['image'] = $productImg;
-
-            $model = array_merge($model->toArray(), $data);
-
-        }
         return $model;
     }
 
@@ -232,70 +214,15 @@ class ProductController extends ActiveController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        //$oldImg = $model->productImages;
         $postData = Yii::$app->request->post();
         $productData['Product'] = $postData;
 
         $model->gender = Product::GENDER_FOR_FEMALE;
-        $images = UploadedFile::getInstancesByName('images');
 
-        $model->images = $images;
         if ($model->load($productData) && $model->validate()) {
 
             if ($model->save(false)) {
-
-                if (!empty($images)) {
-
-                    $modelsOldImg = $model->productImages;
-                    if (!empty($modelsOldImg)) {
-                        foreach ($modelsOldImg as $key => $modelOldImgRow) {
-                            if (!empty($modelOldImgRow) && $modelOldImgRow instanceof ProductImage) {
-
-                                if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name)) {
-                                    unlink(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name);
-                                }
-
-                                if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name)) {
-                                    unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name);
-                                }
-                                $modelOldImgRow->delete();
-                            }
-                        }
-                    }
-
-                    foreach ($images as $img) {
-                        $modelImage = new ProductImage();
-
-                        $uploadDirPath = Yii::getAlias('@productImageRelativePath');
-                        $uploadThumbDirPath = Yii::getAlias('@productImageThumbRelativePath');
-                        $thumbImagePath = '';
-
-                        // Create product upload directory if not exist
-                        if (!is_dir($uploadDirPath)) {
-                            mkdir($uploadDirPath, 0777);
-                        }
-
-                        // Create product thumb upload directory if not exist
-                        if (!is_dir($uploadThumbDirPath)) {
-                            mkdir($uploadThumbDirPath, 0777);
-                        }
-
-                        $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
-                        // Upload product picture
-                        $img->saveAs($uploadDirPath . '/' . $fileName);
-                        // Create thumb of product picture
-                        $actualImagePath = $uploadDirPath . '/' . $fileName;
-                        $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-
-                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                        // Insert product picture name into database
-
-                        $modelImage->product_id = $model->id;
-                        $modelImage->name = $fileName;
-                        $modelImage->created_at = date('Y-m-d H:i:s');
-                        $modelImage->save(false);
-                    }
-                }
 
                 $modelAddress = $model->address;
                 if (empty($modelAddress)) {
@@ -444,15 +371,7 @@ class ProductController extends ActiveController
             }
         }
 
-        if (!empty($model) && !empty($model->address)) {
-            $model->address->delete();
-        }
-
         $model->delete();
-
-        //$this->findModel($id)->delete();
-
-        //return $this->redirect(['index']);
     }
 
     /**

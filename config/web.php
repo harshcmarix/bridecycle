@@ -110,6 +110,7 @@ $config = [
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/brand'], 'pluralize' => false],
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product-category'], 'pluralize' => false],
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/product'], 'pluralize' => false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/v1/color'], 'pluralize' => false],
                 // Set rest API rules
 //                [
 //                    'pattern' => '<module:[\w-]+>/<version:[\w-]+>/<controller:[\w-]+>',
