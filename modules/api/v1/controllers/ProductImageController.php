@@ -107,7 +107,9 @@ class ProductImageController extends ActiveController
         $postData = Yii::$app->request->post();
         $productImage['ProductImage'] = $postData;
         $images = UploadedFile::getInstancesByName('images');
-        $model->name = $images;
+        $model->images = $images;
+        $model->scenario = 'update_api';
+        $arrayImage = [];
         if ($model->load($productImage) && $model->validate()) {
             if (!empty($images)) {
                 $deleteImages = ProductImage::find()->where(['product_id' => $productImage['ProductImage']['product_id']]);
@@ -128,7 +130,7 @@ class ProductImageController extends ActiveController
                     }
                     ProductImage::deleteAll(['product_id' => $productImage['ProductImage']['product_id']]);
                 }
-                $arrayImage = [];
+
                 foreach ($images as $img) {
                     $modelImage = new ProductImage();
                     $uploadDirPath = Yii::getAlias('@productImageRelativePath');
@@ -161,14 +163,20 @@ class ProductImageController extends ActiveController
                     $arrayImage[] = $modelImage;
                 }
             }
-        }
-        $thumbImagePath = Yii::getAlias('@productImageThumbAbsolutePath');
-        foreach ($arrayImage as $images) {
-            if (!empty($images->name)) {
-                $images->name = Yii::$app->request->getHostInfo() . $thumbImagePath . '/' . $images->name;
+
+            if (!empty($arrayImage)) {
+                $thumbImagePath = Yii::getAlias('@productImageThumbAbsolutePath');
+                foreach ($arrayImage as $images) {
+                    if (!empty($images->name)) {
+                        $images->name = Yii::$app->request->getHostInfo() . $thumbImagePath . '/' . $images->name;
+                    }
+                }
+                $model = $arrayImage;
             }
         }
-        return $arrayImage;
+        return $model;
+
+
     }
 
     /**

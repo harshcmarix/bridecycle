@@ -26,6 +26,7 @@ class ProductImage extends \yii\db\ActiveRecord
         return 'product_images';
     }
 
+    public $images;
     /**
      * @return array[]
      */
@@ -46,9 +47,10 @@ class ProductImage extends \yii\db\ActiveRecord
     {
         return [
             [['product_id'], 'required'],
+            [['product_id', 'images'], 'required', 'on' => 'update_api'],
             [['product_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
+            [['name','images'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
@@ -61,7 +63,8 @@ class ProductImage extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'product_id' => 'Product ID',
-            'name' => 'Name',
+            'name' => 'name',
+            'images' => 'images',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
