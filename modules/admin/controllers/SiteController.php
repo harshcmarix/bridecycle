@@ -2,6 +2,9 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Order;
+use app\models\Product;
+use app\modules\admin\models\User;
 use yii\filters\{
     VerbFilter,
     AccessControl
@@ -69,7 +72,27 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $modelTotalCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->count();
+
+
+        $todayFrom = date('Y-m-d 00:00:01');
+        $todayTo = date('Y-m-d 23:59:59');
+        $modelTotalCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
+
+        $modelTotalProduct = Product::find()->count();
+        $modelTotalOrder = Order::find()->count();
+        $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
+        $modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
+      
+        return $this->render('index', [
+            'totalCustomer' => $modelTotalCustomer,
+            'totalCustomerToday' => $modelTotalCustomerToday,
+            'totalProduct' => $modelTotalProduct,
+            'totalOrder' => $modelTotalOrder,
+            'totalOrderDeliveredAndCompleted' => $modelTotalOrderDelivered,
+            'totalOrderPending' => $modelTotalOrderPending,
+        ]);
+
     }
 
     /**
@@ -102,7 +125,7 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         // return $this->goHome();
-        return $this->redirect(['/admin']);
+        return $this->redirect(['/admin/site/login']);
     }
 
     /**
@@ -115,7 +138,7 @@ class SiteController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                 return $this->goHome();
             }
 
