@@ -44,8 +44,8 @@ $this->params['breadcrumbs'][] = 'View User';
                 'attribute' => 'profile_picture',
                 'value' => function ($data) {
                     $image_path = "";
-                    if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profileRelativePath') . '/' . $data->profile_picture)) {
-                        $image_path = Yii::getAlias('@profileAbsolutePath') . '/' . $data->profile_picture;
+                    if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
+                        $image_path = Yii::getAlias('@profilePictureAbsolutePath') . '/' . $data->profile_picture;
                     } else {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }

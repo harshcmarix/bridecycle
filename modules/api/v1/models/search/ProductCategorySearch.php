@@ -134,7 +134,7 @@ class ProductCategorySearch extends ProductCategory
         $productModelData = $activeDataProvider->getModels();
 
         foreach ($productModelData as $key => $value) {
-            if (!empty($value->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $value->image)) {
+            if (!empty($value->image)) {
                 $value->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $value->image;
             }
         }
