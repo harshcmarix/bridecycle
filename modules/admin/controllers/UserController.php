@@ -16,6 +16,8 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
+use yii\imagine\Image;
+use \yii\helpers\Json;
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -124,7 +126,8 @@ class UserController extends Controller
                     if (isset($newShopLogoFile) && isset($model->is_shop_owner)) {
                         $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
                         $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
-                        $modelUserShopDetail->shop_cover_picture = $shop_logo_picture;
+                         Image::thumbnail(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        $modelUserShopDetail->shop_logo = $shop_logo_picture;
                     }
                     $modelUserShopDetail->save(false);
 
@@ -210,6 +213,7 @@ class UserController extends Controller
                 $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
 
                 if (isset($newShopLogoFile) && isset($postData['is_shop_owner'])) {
+                   
                     $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
                     if (!empty($oldShopLogoFile) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile)) {
                         unlink(Yii::getAlias('@shopLogoRelativePath') . "/" . $oldShopLogoFile);
@@ -219,7 +223,8 @@ class UserController extends Controller
                     }
 
                     $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
-                    $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture);
+                    // $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture);
+                    Image::thumbnail(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
 
                     $modelShopDetail->shop_logo = $shop_logo_picture;
                 } else if (isset($postData['is_shop_owner']) && empty($newShopLogoFile)) {
@@ -345,5 +350,29 @@ class UserController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+     /**
+     * Deletes an existing image from perticular field.
+     * If deletion is successful, success message will get in update page result.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionShopLogoDelete($id){
+        $model = ShopDetail::findOne($id);
+        // p($id);
+         $uploadDirPath = Yii::getAlias('@shopLogoRelativePath');
+         $uploadThumbDirPath = Yii::getAlias('@shopLogoThumbRelativePath');
+         // unlink images with thumb
+         if(file_exists($uploadDirPath.'/'.$model->shop_logo) && !empty($model->shop_logo)){
+                unlink($uploadDirPath.'/'.$model->shop_logo);
+         }
+         if(file_exists($uploadThumbDirPath.'/'.$model->shop_logo) && !empty($model->shop_logo)){
+                unlink($uploadThumbDirPath.'/'.$model->shop_logo);
+         }
+         $model->shop_logo = '';
+        if($model->save(false)){
+           return Json::encode(['success'=>'image successfully deleted']);
+        }
     }
 }

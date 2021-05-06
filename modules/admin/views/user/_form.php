@@ -3,10 +3,15 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\file\FileInput;
+use yii\bootstrap\Modal;
+use kartik\dialog\Dialog;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\User */
 /* @var $form yii\widgets\ActiveForm */
+echo Dialog::widget(
+   ['overrideYiiConfirm' => true]
+);
 ?>
 
 <div class="users-form">
@@ -62,13 +67,48 @@ use kartik\file\FileInput;
                         'showUpload' => false
                     ]
                 ]); ?>
-
+               <!-- image code -->
                 <?php
-                if (!empty($model->shop_logo)) {
-                    $profile = Html::img(Yii::getAlias('@shopLogoAbsolutePath') . '/' . $model->shop_logo, ['alt' => 'shop logo', 'class' => 'your_class', 'height' => '100px', 'width' => '100px']);
-                    echo $profile;
+                // if (!empty($model->shop_logo)) {
+                //     $profile = Html::img(Yii::getAlias('@shopLogoAbsolutePath') . '/' . $model->shop_logo, ['alt' => 'shop logo', 'class' => 'your_class', 'height' => '100px', 'width' => '100px']);
+                //     echo $profile;
+                // }
+                ?>
+<!-- image validation code -->
+                <?php 
+                $is_shop_logo_empty = '1';
+                if(!empty($model->shop_logo)){
+                      $is_shop_logo_empty = '0';
                 }
                 ?>
+                <?= $form->field($model, 'is_shop_logo_empty')->hiddenInput(['value' => $is_shop_logo_empty])->label(false) ?>
+                <!-- image code -->
+                <?php 
+                if(!empty($model->shop_logo)){
+                    $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                    if(file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $model->shop_logo)){
+                        $image_path = Yii::getAlias('@shopLogoThumbAbsolutePath').'/'.$model->shop_logo;
+                    }
+                    Modal::begin([
+                                'id' => 'shoplogomodal_' . $model->id,
+                                'header' => '<h3>Shop Image</h3>',
+                                'size' => Modal::SIZE_DEFAULT
+                            ]);
+
+                            echo Html::img($image_path, ['width' => '570']);
+
+                            Modal::end();
+                            $shoplogomodal = "shoplogomodal('" . $model->id . "');";
+                    ?>
+                
+                <div class="form-group image-class">
+            <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'shop_logo-delete-link','delete-url'=>'../user/shop-logo-delete?id='.$model->shopDetail->id]) ?>
+            </div>
+                <div class="form-group image-class">
+                        <?= Html::img($image_path,  ['class'=>'file-preview-image your_class','height' => '100px', 'width' => '100px','onclick' => $shoplogomodal]); ?>
+                </div>
+                <?php } ?>
+                <!-- image code end -->
             </div>
             <div class="col col-md-6">
                 <?= $form->field($model, 'shop_phone_number', ['enableAjaxValidation' => true])->textInput() ?>
@@ -125,6 +165,28 @@ use kartik\file\FileInput;
                 $('#shop-details').hide();
             }
         });
-
+   
     });
+      //image popup
+       $('.shop_logo-delete-link').on('click', function(e) {
+            e.preventDefault();
+            var deleteUrl = $(this).attr('delete-url');
+            var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function(result){                                
+            if(result) {
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'post',
+                    error: function(xhr, status, error) {
+                        alert('There was an error with your request.' + xhr.responseText);
+                    }
+                }).done(function(data) {
+                   $('.image-class').hide();
+                    $('#user-is_shop_logo_empty').val('1');
+                });
+            }
+           }); 
+        });
+    function shoplogomodal(id) {
+        $('#shoplogomodal_' + id).modal('show');
+    }
 </script>

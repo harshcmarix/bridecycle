@@ -100,6 +100,7 @@ class ProductController extends Controller
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         $postData = Yii::$app->request->post('Product');
+        $model->scenario = Product::SCENARIO_CREATE;
         $model->is_top_selling = Product::IS_TOP_SELLING_NO;
         if (!empty($postData['is_top_selling'])) {
             $model->is_top_selling = $postData['is_top_selling'];
@@ -109,7 +110,7 @@ class ProductController extends Controller
         if (!empty($postData['is_top_trending'])) {
             $model->is_top_trending = $postData['is_top_trending'];
         }
-
+        
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $images = UploadedFile::getInstances($model, 'images');
             $model->user_id = Yii::$app->user->identity->id;

@@ -49,6 +49,16 @@ use app\modules\api\v1\models\User;
  */
 class Product extends \yii\db\ActiveRecord
 {
+     /**
+     * used for create
+     */
+    const SCENARIO_CREATE = 'create';
+    /**
+     * used to check image empty or not
+     */
+    const IMAGE_EMPTY = 1;
+    const IMAGE_NOT_EMPTY = 0;
+    public $is_product_images_empty;
     /**
      * {@inheritdoc}
      */
@@ -130,6 +140,7 @@ class Product extends \yii\db\ActiveRecord
             [['name', 'option_size'], 'string', 'max' => 50],
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
+            [['images'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             [['receipt', 'option_color'], 'string', 'max' => 255],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
@@ -138,6 +149,14 @@ class Product extends \yii\db\ActiveRecord
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductStatus::className(), 'targetAttribute' => ['status_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
+            [['images'], 'required', 'when' => function ($model) {
+                //return $model->is_image_empty == '1';
+            },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#product-is_product_images_empty').val() == 1) {            
+                                    return $('#product-images').val() == '';                                    
+                                    }
+                                }",],
         ];
     }
 

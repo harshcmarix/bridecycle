@@ -73,7 +73,7 @@ echo Dialog::widget(
             <?= Html::a('<i class="fa fa-times"> </i>',['javascript:(0)'],['class' => 'shop_image-delete-link','delete-url'=>'../tailor/image-delete?id='.$model->id]) ?>
     </div>
     <div class="form-group image-class">
-             <?= Html::img($image_path,  ['class'=>'file-preview-image your_image','height' => '100px', 'width' => '100px','onclick' => $tailorimagemodal]); ?>
+             <?= Html::img($image_path,  ['class'=>'file-preview-image your_class','height' => '100px', 'width' => '100px','onclick' => $tailorimagemodal]); ?>
     </div>
     <?php } ?>
 

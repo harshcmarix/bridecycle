@@ -7,6 +7,7 @@ use yii\helpers\Url;
 use app\models\ProductImage;
 use yii\bootstrap\Modal;
 use kartik\file\FileInput;
+use app\models\Product;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
@@ -87,7 +88,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
         </div>
     </div>
-
+    <!-- image validation -->
+   
     <div class="row">
         <div class="col col-md-<?php echo (Yii::$app->controller->action->id == 'update') ? '4' : '8' ?>">
             <?= $form->field($model, 'images[]')->widget(FileInput::classname(), [
@@ -103,6 +105,13 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             ]); ?>
         </div>
         <?php if (Yii::$app->controller->action->id == 'update') { ?>
+              <?php
+                    $is_product_images_empty = Product::IMAGE_EMPTY;
+                if(!empty($model->productImages)){
+                    $is_product_images_empty = Product::IMAGE_NOT_EMPTY;
+                }?>
+     
+    <?= $form->field($model, 'is_product_images_empty')->hiddenInput(['value' => $is_product_images_empty])->label(false) ?>
             <div class="col col-md-8 edit-product_images">
                 <?php if (!empty($model->productImages)) {
                     $data = "";
