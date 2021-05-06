@@ -108,8 +108,12 @@ class FavouriteProduct extends ActiveRecord
     {
         //return $this->hasOne(User::className(), ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->user_id])->one();
-        if (!empty($data->profile_picture)) {
-            $data->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+        if($data instanceof User){
+            $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $data->profile_picture)) {
+                $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+            }
+            $data->profile_picture = $profilepicture;
         }
         return $data;
     }

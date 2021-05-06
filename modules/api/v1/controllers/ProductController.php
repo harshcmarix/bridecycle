@@ -129,6 +129,9 @@ class ProductController extends ActiveController
     public function actionView($id)
     {
         $model = Product::findOne($id);
+        if(!$model instanceof Product){
+            throw new NotFoundHttpException('Product doesn\'t exist.');
+        }
 
         return $model;
     }
@@ -150,7 +153,7 @@ class ProductController extends ActiveController
 
         $images = UploadedFile::getInstancesByName('images');
 
-        $model->name = $images;
+        $model->images = $images;
         $productData['Product']['user_id'] = Yii::$app->user->identity->id;
         if ($model->load($productData) && $model->validate()) {
             if ($model->save()) {
@@ -215,6 +218,9 @@ class ProductController extends ActiveController
     public function actionUpdate($id)
     {
         $model = Product::findOne($id);
+        if(!$model instanceof Product){
+            throw new NotFoundHttpException('Product doesn\'t exist.');
+        }
         $postData = Yii::$app->request->post();
         $productData['Product'] = $postData;
 
@@ -254,7 +260,9 @@ class ProductController extends ActiveController
     public function actionDelete($id)
     {
         $model = Product::findOne($id);
-
+        if(!$model instanceof Product){
+            throw new NotFoundHttpException('Product doesn\'t exist.');
+        }
         if (!empty($model) && !empty($model->productImages)) {
             foreach ($model->productImages as $key => $imageRow) {
                 if ($imageRow instanceof ProductImage) {

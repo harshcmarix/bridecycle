@@ -176,7 +176,9 @@ class BrandController extends ActiveController
     public function actionUpdate($id)
     {
         $model = Brand::findOne($id);
-
+        if(!$model instanceof Brand){
+               throw new NotFoundHttpException('Brand doesn\'t exist.');
+         }
         $postData = \Yii::$app->request->post();
 
         $brandData['Brand'] = $postData;
@@ -200,7 +202,9 @@ class BrandController extends ActiveController
     public function actionUpdateBrandImage($id)
     {
         $model = Brand::findOne($id);
-
+        if(!$model instanceof Brand){
+               throw new NotFoundHttpException('Brand doesn\'t exist.');
+         }
         $postData = \Yii::$app->request->post();
 
         $brandData['Brand'] = $postData;
@@ -264,6 +268,9 @@ class BrandController extends ActiveController
     public function actionDelete($id)
     {
         $model = Brand::findOne($id);
+         if(!$model instanceof Brand){
+               throw new NotFoundHttpException('Brand doesn\'t exist.');
+         }
         $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
         $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
 

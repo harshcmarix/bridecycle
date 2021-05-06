@@ -84,7 +84,7 @@ class CartItem extends \yii\db\ActiveRecord
     public function extraFields()
     {
         return [
-            'user' => 'user',
+            'user0' => 'user0',
             'product'=>'product'
         ];
     }
@@ -96,12 +96,7 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        // return $this->hasOne(User::className(), ['id' => 'user_id']);
-        $userDetails = User::find()->where(['id'=> $this->user_id])->one();
-        if(!empty($userDetails) && !empty($userDetails->profile_picture)) {    
-                $userDetails->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $userDetails->profile_picture;
-        }
-        return $userDetails;
+         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -113,5 +108,24 @@ class CartItem extends \yii\db\ActiveRecord
     {
          return $this->hasOne(Product::className(), ['id' => 'product_id']);
        
+    }
+    //////////only for api/////////
+     /**
+     * Gets query for [[User]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser0()
+    {
+        // return $this->hasOne(User::className(), ['id' => 'user_id']);
+        $userDetails = User::find()->where(['id'=> $this->user_id])->one();
+        if($userDetails instanceof User){
+            $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if(!empty($userDetails->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $userDetails->profile_picture)) {    
+                $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $userDetails->profile_picture;
+            }
+            $userDetails->profile_picture = $profilepicture;
+        }
+        return $userDetails;
     }
 }

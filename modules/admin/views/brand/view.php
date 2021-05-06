@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'image',
                 'value' => function ($model) {
                     $image_path = "";
-                    if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageRelativePath') . '/' . $model->image)) {
+                    if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)) {
                         $image_path = Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
                     } else {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

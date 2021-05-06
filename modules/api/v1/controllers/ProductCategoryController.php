@@ -121,6 +121,9 @@ class ProductCategoryController extends ActiveController
     public function actionSubCategory($category_id)
     {
         $model = ProductCategory::findOne($category_id);
+        if(!$model instanceof ProductCategory){
+            throw new NotFoundHttpException('Product sub category doesn\'t exist.');
+        }
         $moldelsSubcategory = [];
         if (!empty($model)) {
             $moldelsSubcategory = $model->children;
@@ -144,6 +147,9 @@ class ProductCategoryController extends ActiveController
     public function actionView($id)
     {
         $model = ProductCategory::findOne($id);
+        if(!$model instanceof ProductCategory){
+            throw new NotFoundHttpException('Product category doesn\'t exist.');
+        }
         if (!empty($model) && !empty($model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
         }
@@ -211,6 +217,9 @@ class ProductCategoryController extends ActiveController
     public function actionUpdate($id)
     {
         $model = ProductCategory::findOne($id);
+        if(!$model instanceof ProductCategory){
+            throw new NotFoundHttpException('Product category doesn\'t exist.');
+        }
 
         $postData = Yii::$app->request->post();
         $productCategoryData['ProductCategory'] = $postData;
@@ -235,6 +244,9 @@ class ProductCategoryController extends ActiveController
     public function actionUpdateImage($id)
     {
         $model = ProductCategory::findOne($id);
+        if(!$model instanceof ProductCategory){
+            throw new NotFoundHttpException('Product category doesn\'t exist.');
+        }
         $oldFile = $model->image;
         $postData = Yii::$app->request->post();
         $productCategoryData['ProductCategory'] = $postData;
@@ -306,7 +318,9 @@ class ProductCategoryController extends ActiveController
     {
 
         $model = ProductCategory::findOne($id);
-
+        if(!$model instanceof ProductCategory){
+            throw new NotFoundHttpException('Product category doesn\'t exist.');
+        }
         if (!empty($model) && !empty($model->image)) {
 
             $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');

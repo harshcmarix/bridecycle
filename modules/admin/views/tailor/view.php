@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'shop_image',
                 'value' => function ($model) {
                     $image_path = "";
-                    if (!empty($model->shop_image) && file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $model->shop_image)) {
+                    if (!empty($model->shop_image) && file_exists(Yii::getAlias('@tailorShopImageThumbRelativePath') . '/' . $model->shop_image)) {
                         $image_path = Yii::getAlias('@tailorShopImageThumbAbsolutePath') . '/' . $model->shop_image;
                     } else {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

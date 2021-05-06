@@ -49,7 +49,7 @@ echo Dialog::widget(
     <?php 
     if(!empty($model->image)){
          $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-          if (!empty($model->image) && file_exists(Yii::getAlias('@bannerImageRelativePath') . '/' . $model->image)) {
+          if (!empty($model->image) && file_exists(Yii::getAlias('@bannerImageThumbRelativePath') . '/' . $model->image)) {
                         $image_path = Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $model->image;
             } 
             Modal::begin([

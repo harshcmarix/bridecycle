@@ -75,6 +75,16 @@ class ProductRating extends ActiveRecord
         ];
     }
 
+     /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'user0' => 'user0',
+        ];
+    }
+
     /**
      * Gets query for [[User]].
      *
@@ -93,5 +103,24 @@ class ProductRating extends ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+    /////////api use only/////////////
+    /**
+     * Gets query for [[User]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser0()
+    {
+        //return $this->hasOne(User::className(), ['id' => 'user_id']);
+        $user = User::find()->where(['id' => $this->user_id])->one();
+        if($user instanceof User){
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($user->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $user->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $user->profile_picture;
+            }
+            $user->profile_picture = $profilePicture;
+        }
+        return $user;
     }
 }

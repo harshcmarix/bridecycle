@@ -217,12 +217,16 @@ class User extends ActiveRecord implements IdentityInterface
        $data = ShopDetail::find()->where(['user_id' => $this->id])->all();
         if(!empty($data)){
             foreach($data as $key=>$value){
-                  if(!empty($value->shop_logo)){
-                       $value->shop_logo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
+                $shopLogo = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                $shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                  if(!empty($value->shop_logo)  && file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . '/' . $value->shop_logo)){
+                       $shopLogo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
                   }
-                  if(!empty($value->shop_cover_picture)){
-                       $value->shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $value->shop_cover_picture;
+                  $value->shop_logo = $shopLogo;
+                  if(!empty($value->shop_cover_picture) && file_exists(Yii::getAlias('@shopCoverPictureThumbRelativePath') . '/' . $value->shop_cover_picture)){
+                    $shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $value->shop_cover_picture;
                   }
+                  $value->shop_cover_picture = $shop_cover_picture;
 
             }
         }

@@ -128,9 +128,11 @@ class BannerSearch extends Banner
         $bannerModelData = $activeDataProvider->getModels();
 
         foreach($bannerModelData as $key=>$value){
-            if(!empty($bannerModelData[$key]['image'])){
-                $bannerModelData[$key]['image'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $value->image;
+            $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if(!empty($bannerModelData[$key]['image']) && file_exists(Yii::getAlias('@bannerImageThumbRelativePath') . '/' . $value->image)){
+                $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $value->image;
             }
+            $bannerModelData[$key]['image'] = $bannerImage;
         }
         $activeDataProvider->setModels($bannerModelData);
         return $activeDataProvider;

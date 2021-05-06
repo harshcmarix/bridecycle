@@ -113,6 +113,9 @@ class TailorController extends ActiveController
     public function actionView($id)
     {
         $model = Tailor::findOne($id);
+         if(!$model instanceof Tailor){
+               throw new NotFoundHttpException('Tailor doesn\'t exist.');
+         }
         $tailor_shop_image = '';
         if(!empty($model->shop_image) && file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $model->shop_image)){
             $tailor_shop_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorShopImageThumbAbsolutePath') . '/' . $model->shop_image;

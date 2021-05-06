@@ -333,12 +333,18 @@ class Product extends \yii\db\ActiveRecord
     public function getProductImages0()
     {
         // return $this->hasMany(ProductImage::className(), ['product_id' => 'id']);
-        $productImages = ProductImage::find()->where(['product_id' => $this->id])->all();
-        foreach ($productImages as $key => $value) {
-            if (!empty($value->name)) {
-                $value->name = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $value->name;
+    $productImages = ProductImage::find()->where(['product_id' => $this->id])->all();
+    if(!empty($productImages)){
+      foreach ($productImages as $key => $value) {
+        if($value instanceof ProductImage){
+            $product_images = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($value->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $value->name)) {
+                $product_images = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $value->name;
             }
+            $value->name = $product_images;
+          }
         }
+    }
         return $productImages;
     }
 
@@ -351,9 +357,13 @@ class Product extends \yii\db\ActiveRecord
     {
         // return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
         $productCategory = ProductCategory::find()->where(['id' => $this->category_id])->one();
-        if (!empty($productCategory->image)) {
-            $productCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productCategory->image;
-        }
+        if($productCategory instanceof ProductCategory){
+            $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($productCategory->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $productCategory->image)) {
+                $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productCategory->image;
+            }
+            $productCategory->image = $categoryImage;
+         }
 
         return $productCategory;
     }
@@ -367,8 +377,12 @@ class Product extends \yii\db\ActiveRecord
     {
         // return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
         $productSubCategory = ProductCategory::find()->where(['id' => $this->sub_category_id])->one();
-        if (!empty($productSubCategory->image)) {
-            $productSubCategory->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productSubCategory->image;
+        if($productSubCategory instanceof ProductCategory){
+            $subCategoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($productSubCategory->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $productSubCategory->image)) {
+                $subCategoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $productSubCategory->image;
+            }
+            $productSubCategory->image = $subCategoryImage;
         }
         return $productSubCategory;
     }
@@ -382,8 +396,12 @@ class Product extends \yii\db\ActiveRecord
     {
         // return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
         $brand = Brand::find()->where(['id' => $this->brand_id])->one();
-        if (!empty($brand->image)) {
-            $brand->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $brand->image;
+         if($brand instanceof Brand){
+            $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($brand->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $brand->image)) {
+                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $brand->image;
+            }
+            $brand->image = $brandImage;
         }
         return $brand;
     }
@@ -392,8 +410,12 @@ class Product extends \yii\db\ActiveRecord
     {
         //return $this->hasOne(User::className(), ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->user_id])->one();
-        if (!empty($data->profile_picture)) {
-            $data->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+        if($data instanceof User){
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $data->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+            }
+            $data->profile_picture = $profilePicture;
         }
         return $data;
     }

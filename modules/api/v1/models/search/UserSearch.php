@@ -132,9 +132,11 @@ class UserSearch extends User
         $userModelData = $activeDataProvider->getModels();
    
         foreach($userModelData as $key=>$value){
-            if(!empty($userModelData[$key]['profile_picture'])){
-                 $userModelData[$key]['profile_picture'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture; 
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if(!empty($userModelData[$key]['profile_picture']) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $value->profile_picture)){
+                 $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture; 
             }
+            $userModelData[$key]['profile_picture'] = $profilePicture;
         }
         $activeDataProvider->setModels($userModelData);
        

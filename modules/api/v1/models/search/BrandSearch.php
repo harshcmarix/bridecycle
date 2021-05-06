@@ -148,9 +148,11 @@ class BrandSearch extends Brand
         $brandModelData = $activeDataProvider->getModels();
 
         foreach ($brandModelData as $key => $value) {
-            if (!empty($brandModelData[$key]['image'])) {
-                $brandModelData[$key]['image'] = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $value->image;
+            $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($brandModelData[$key]['image']) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $value->image)) {
+                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $value->image;
             }
+            $brandModelData[$key]['image'] = $brandImage;
         }
         $activeDataProvider->setModels($brandModelData);
         return $activeDataProvider;
