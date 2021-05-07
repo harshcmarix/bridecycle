@@ -44,8 +44,8 @@ $this->params['breadcrumbs'][] = 'View User';
                 'attribute' => 'profile_picture',
                 'value' => function ($data) {
                     $image_path = "";
-                    if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
-                        $image_path = Yii::getAlias('@profilePictureAbsolutePath') . '/' . $data->profile_picture;
+                    if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $data->profile_picture)) {
+                        $image_path = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
                     } else {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }
@@ -93,8 +93,8 @@ $this->params['breadcrumbs'][] = 'View User';
                 'visible' => ($model->is_shop_owner == 1) ? true : false,
                 'value' => function ($data) {
                     $image_path = "";
-                    if (!empty($data->shopDetail) && $data->shopDetail instanceof ShopDetail && !empty($data->shopDetail->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $data->shopDetail->shop_logo)) {
-                        $image_path = Yii::getAlias('@shopLogoAbsolutePath') . '/' . $data->shopDetail->shop_logo;
+                    if (!empty($data->shopDetail) && $data->shopDetail instanceof ShopDetail && !empty($data->shopDetail->shop_logo) && file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . '/' . $data->shopDetail->shop_logo)) {
+                        $image_path = Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $data->shopDetail->shop_logo;
                     } else {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }

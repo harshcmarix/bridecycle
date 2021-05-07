@@ -229,7 +229,7 @@ class ProductCategoryController extends ActiveController
 
         $postData = Yii::$app->request->post();
         $productCategoryData['ProductCategory'] = $postData;
-        $model->scenario = ProductCategory::SCENARIO_CREATE;
+       // $model->scenario = ProductCategory::SCENARIO_CREATE;
 
         if ($model->load($productCategoryData) && $model->validate()) {
             $model->save();
