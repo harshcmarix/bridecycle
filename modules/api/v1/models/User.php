@@ -92,6 +92,7 @@ class User extends ActiveRecord implements IdentityInterface
     const SHOP_OWNER_NO = '0';
     const SCENARIO_USER_CREATE = 'create';
     const SCENARIO_USER_UPDATE = 'update';
+    const PROFILE_PICTURE_UPDATE = 'profile_picture_update';
 
     /**
      * @return string
@@ -135,6 +136,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['temporary_password'], 'string', 'max' => 8],
             [['shop_logo','profile_picture','shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
+            [['profile_picture'], 'required', 'on' => [self::PROFILE_PICTURE_UPDATE]],
             [['shop_name', 'shop_email','shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
             [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
             [['shop_email'], 'unique','targetClass' => ShopDetail::ClassName() ,'targetAttribute' => ['shop_email']]

@@ -347,7 +347,7 @@ class UserController extends ActiveController
     public function actionUpdateProfilePicture($id)
     {
         $model = User::findOne($id);
-       
+         $model->scenario = User::PROFILE_PICTURE_UPDATE;
         if (!$model instanceof User) {
             throw new NotFoundHttpException('User doesn\'t exist.');
         }

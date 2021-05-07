@@ -33,6 +33,7 @@ class ChangePassword extends User
     {
         return [
             [['old_password', 'password', 'confirm_password'], 'required'],
+            [['password', 'confirm_password'], 'string','min'=> 6],
             ['old_password', 'validateOldPassword'],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"]
         ];

@@ -39,6 +39,7 @@ class ResetPassword extends User
         return [
             [['tmp_password', 'password', 'confirm_password'], 'required'],
             ['tmp_password', 'validateTmpPassword'],
+            [['password', 'confirm_password'], 'string','min'=> 6],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"]
         ];
     }

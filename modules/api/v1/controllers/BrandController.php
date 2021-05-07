@@ -186,7 +186,6 @@ class BrandController extends ActiveController
         $postData = \Yii::$app->request->post();
 
         $brandData['Brand'] = $postData;
-        $model->scenario = Brand::SCENARIO_CREATE_API;
 
         if ($model->load($brandData) && $model->validate()) {
             if($model->save(false)){
@@ -220,7 +219,7 @@ class BrandController extends ActiveController
         $image = UploadedFile::getInstanceByName('image');
         $model->image = $image;
         if ($model->load($brandData) && $model->validate()) {
-
+   
             if (!empty($image)) {
                 $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
