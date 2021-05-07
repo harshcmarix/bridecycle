@@ -52,7 +52,7 @@ echo Dialog::widget(
                 <?= $form->field($model, 'shop_name')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="col col-md-6">
-                <?= $form->field($model, 'shop_email')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'shop_email',['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
             </div>
         </div>
         <div class="row">
@@ -86,7 +86,7 @@ echo Dialog::widget(
                 <?php 
                 if(!empty($model->shop_logo)){
                     $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                    if(file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $model->shop_logo)){
+                    if(file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . '/' . $model->shop_logo)){
                         $image_path = Yii::getAlias('@shopLogoThumbAbsolutePath').'/'.$model->shop_logo;
                     }
                     Modal::begin([
