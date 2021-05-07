@@ -266,13 +266,14 @@ class UserController extends ActiveController
                    
                 }
                 // shop owner detail end
-            }
-             // Get profile picture
-                $model->profile_picture = '';
-                
-                if (!empty($fileName) && file_exists($thumbImagePath)) {
-                    $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
+                 // Get profile picture
+                $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                if (!empty($model->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $model->profile_picture)) {
+                    $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
                 }
+                $model->profile_picture = $showProfilePicture;
+            }
+            
         }
 
         return $model;
@@ -299,11 +300,14 @@ class UserController extends ActiveController
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
            
             if ($model->save()) {
-                $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
-                $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
+                
+              $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+              $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
+              $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 if (file_exists($thumbImagePath) && !empty($model->profile_picture)) {
-                    $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                    $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
                 }
+                $model->profile_picture = $showProfilePicture; 
             }
         }
 
@@ -319,18 +323,18 @@ class UserController extends ActiveController
     public function actionView($id)
     {
         $model = User::findOne($id);
-        $profile_picture = '';
+      
         if (!$model instanceof User) {
             throw new NotFoundHttpException('User doesn\'t exist.');
         }
         
         $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
         $thumbImagePath = $uploadThumbDirPath.'/'.$model->profile_picture;
-        
+        $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
-            $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+            $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
         }
-        $model->profile_picture = $profile_picture;
+        $model->profile_picture = $showProfilePicture;
         return $model;
     }
     
@@ -390,10 +394,13 @@ class UserController extends ActiveController
             }
         }
         if ($model->save()) {
-            $model->profile_picture ='';
-            if (!empty($fileName) && file_exists($thumbImagePath)) {
-                $model->profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $fileName;
+            $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+            $thumbImagePath = $uploadThumbDirPath.'/'.$model->profile_picture;
+            $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
+                $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
             }
+            $model->profile_picture = $showProfilePicture;
         }
         return $model;
     }
@@ -508,7 +515,7 @@ class UserController extends ActiveController
         $model = User::find()->where(['temporary_password' => $postData['tmp_password'], 'user_type' => User::USER_TYPE_NORMAL])->one();
          $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
          $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
-         $profile_picture = '';
+         $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
             $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
         }

@@ -133,8 +133,6 @@ class User extends ActiveRecord implements IdentityInterface
             [[ 'password_hash', 'temporary_password', 'access_token', 'password_reset_token','website'], 'string', 'max' => 255],
             [['website'],'url', 'defaultScheme' => ''],
             [['temporary_password'], 'string', 'max' => 8],
-            // [['shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
-            // [['profile_picture','shop_cover_picture','shop_logo'], 'file', 'extensions' => 'png,jpg'],
             [['shop_logo','profile_picture','shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['shop_name', 'shop_email','shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],

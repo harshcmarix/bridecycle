@@ -160,7 +160,11 @@ class BrandController extends ActiveController
             }
 
             if ($model->save()) {
-                $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                if(!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)){
+                    $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+                }
+                $model->image = $brandImage;
             }
         }
         return $model;
@@ -185,11 +189,13 @@ class BrandController extends ActiveController
         $model->scenario = Brand::SCENARIO_CREATE_API;
 
         if ($model->load($brandData) && $model->validate()) {
-            $model->save(false);
-        }
-
-        if (!empty($model) && !empty($model->image)) {
-            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+            if($model->save(false)){
+                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                if(!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)){
+                    $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+                }
+                $model->image = $brandImage;
+            }
         }
         return $model;
     }
@@ -248,13 +254,14 @@ class BrandController extends ActiveController
                     unlink($uploadThumbDirPath . "/" . $oldFile);
                 }
             }
-            $model->save();
+            if($model->save()){
+                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                if(!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)){
+                    $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+                }
+                $model->image = $brandImage;
+            }
         }
-
-        if (!empty($model) && !empty($model->image)) {
-            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
-        }
-
         return $model;
     }
 
