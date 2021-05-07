@@ -125,7 +125,6 @@ class ProductImageController extends ActiveController
                             if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name)) {
                                 unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name);
                             }
-
                         }
                     }
                     ProductImage::deleteAll(['product_id' => $productImage['ProductImage']['product_id']]);
@@ -166,17 +165,18 @@ class ProductImageController extends ActiveController
 
             if (!empty($arrayImage)) {
                 $thumbImagePath = Yii::getAlias('@productImageThumbAbsolutePath');
+                $thumbImagePathRelative = Yii::getAlias('@productImageThumbRelativePath');
                 foreach ($arrayImage as $images) {
-                    if (!empty($images->name)) {
+                    if (!empty($images->name) && file_exists($thumbImagePathRelative . "/" . $images->name)) {
                         $images->name = Yii::$app->request->getHostInfo() . $thumbImagePath . '/' . $images->name;
+                    } else {
+                        $images->name = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }
                 }
                 $model = $arrayImage;
             }
         }
         return $model;
-
-
     }
 
     /**

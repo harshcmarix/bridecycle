@@ -121,7 +121,7 @@ class ProductCategoryController extends ActiveController
     public function actionSubCategory($category_id)
     {
         $model = ProductCategory::findOne($category_id);
-        if(!$model instanceof ProductCategory){
+        if (!$model instanceof ProductCategory) {
             throw new NotFoundHttpException('Product sub category doesn\'t exist.');
         }
         $moldelsSubcategory = [];
@@ -129,8 +129,10 @@ class ProductCategoryController extends ActiveController
             $moldelsSubcategory = $model->children;
             if (!empty($moldelsSubcategory)) {
                 foreach ($moldelsSubcategory as $key => $modelRow) {
-                    if (!empty($modelRow) && $modelRow instanceof ProductCategory && !empty($modelRow->image)) {
+                    if (!empty($modelRow) && $modelRow instanceof ProductCategory && !empty($modelRow->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $modelRow->image)) {
                         $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $modelRow->image;
+                    } else {
+                        $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }
                 }
             }
@@ -147,11 +149,13 @@ class ProductCategoryController extends ActiveController
     public function actionView($id)
     {
         $model = ProductCategory::findOne($id);
-        if(!$model instanceof ProductCategory){
+        if (!$model instanceof ProductCategory) {
             throw new NotFoundHttpException('Product category doesn\'t exist.');
         }
-        if (!empty($model) && !empty($model->image)) {
+        if (!empty($model) && !empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        } else {
+            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         }
         return $model;
     }
@@ -200,8 +204,10 @@ class ProductCategoryController extends ActiveController
             $model->save();
         }
 
-        if (!empty($model->image)) {
+        if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        }else{
+            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         }
 
         return $model;
@@ -217,7 +223,7 @@ class ProductCategoryController extends ActiveController
     public function actionUpdate($id)
     {
         $model = ProductCategory::findOne($id);
-        if(!$model instanceof ProductCategory){
+        if (!$model instanceof ProductCategory) {
             throw new NotFoundHttpException('Product category doesn\'t exist.');
         }
 
@@ -229,8 +235,10 @@ class ProductCategoryController extends ActiveController
             $model->save();
         }
 
-        if (!empty($model->image)) {
+        if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        }else{
+            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         }
 
         return $model;
@@ -244,7 +252,7 @@ class ProductCategoryController extends ActiveController
     public function actionUpdateImage($id)
     {
         $model = ProductCategory::findOne($id);
-        if(!$model instanceof ProductCategory){
+        if (!$model instanceof ProductCategory) {
             throw new NotFoundHttpException('Product category doesn\'t exist.');
         }
         $oldFile = $model->image;
@@ -300,8 +308,10 @@ class ProductCategoryController extends ActiveController
             $model->save();
         }
 
-        if (!empty($model->image)) {
+        if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        }else{
+            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         }
 
         return $model;
@@ -318,7 +328,7 @@ class ProductCategoryController extends ActiveController
     {
 
         $model = ProductCategory::findOne($id);
-        if(!$model instanceof ProductCategory){
+        if (!$model instanceof ProductCategory) {
             throw new NotFoundHttpException('Product category doesn\'t exist.');
         }
         if (!empty($model) && !empty($model->image)) {

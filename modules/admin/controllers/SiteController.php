@@ -2,9 +2,12 @@
 
 namespace app\modules\admin\controllers;
 
-use app\models\Order;
-use app\models\Product;
-use app\modules\admin\models\User;
+use app\models\{
+    Order,
+    Product
+};
+
+
 use yii\filters\{
     VerbFilter,
     AccessControl
@@ -12,7 +15,8 @@ use yii\filters\{
 use app\modules\admin\models\{
     LoginForm,
     ForgotPasswordForm,
-    ResetPasswordForm
+    ResetPasswordForm,
+    User
 };
 use yii\web\{
     Response,
@@ -74,7 +78,6 @@ class SiteController extends Controller
     {
         $modelTotalCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->count();
 
-
         $todayFrom = date('Y-m-d 00:00:01');
         $todayTo = date('Y-m-d 23:59:59');
         $modelTotalCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
@@ -83,7 +86,7 @@ class SiteController extends Controller
         $modelTotalOrder = Order::find()->count();
         $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
         $modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
-      
+
         return $this->render('index', [
             'totalCustomer' => $modelTotalCustomer,
             'totalCustomerToday' => $modelTotalCustomerToday,

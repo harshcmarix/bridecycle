@@ -20,8 +20,8 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Users $user
- * @property Products $product
+ * @property User $user
+ * @property Product $product
  */
 class CartItem extends \yii\db\ActiveRecord
 {
@@ -32,7 +32,8 @@ class CartItem extends \yii\db\ActiveRecord
     {
         return 'cart_items';
     }
-     /**
+
+    /**
      * @return array[]
      */
     public function behaviors()
@@ -78,14 +79,15 @@ class CartItem extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
-     /**
+
+    /**
      * @return array|false
      */
     public function extraFields()
     {
         return [
             'user0' => 'user0',
-            'product'=>'product'
+            'product' => 'product'
         ];
     }
 
@@ -96,7 +98,7 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-         return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -106,22 +108,22 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-         return $this->hasOne(Product::className(), ['id' => 'product_id']);
-       
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+
     }
+
     //////////only for api/////////
-     /**
+    /**
      * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getUser0()
     {
-        // return $this->hasOne(User::className(), ['id' => 'user_id']);
-        $userDetails = User::find()->where(['id'=> $this->user_id])->one();
-        if($userDetails instanceof User){
+        $userDetails = User::find()->where(['id' => $this->user_id])->one();
+        if ($userDetails instanceof User) {
             $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if(!empty($userDetails->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $userDetails->profile_picture)) {    
+            if (!empty($userDetails->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $userDetails->profile_picture)) {
                 $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $userDetails->profile_picture;
             }
             $userDetails->profile_picture = $profilepicture;
