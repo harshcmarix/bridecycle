@@ -86,7 +86,6 @@ class ColorController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
-        unset($actions['delete']);
         unset($actions['view']);
         return $actions;
     }
@@ -115,7 +114,10 @@ class ColorController extends ActiveController
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
+        $model = Color::findOne($id);
+        if (!$model instanceof Color) {
+            throw new NotFoundHttpException('Color doesn\'t exist.');
+        }
         return $model;
     }
 
@@ -147,8 +149,10 @@ class ColorController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
+        $model = Color::findOne($id);
+        if (!$model instanceof Color) {
+            throw new NotFoundHttpException('Color doesn\'t exist.');
+        }
         $postData = Yii::$app->request->post();
         $colorData['Color'] = $postData;
 
@@ -157,19 +161,6 @@ class ColorController extends ActiveController
         }
         return $model;
     }
-
-    /**
-     * Deletes an existing Color model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-    }
-
     /**
      * Finds the Color model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

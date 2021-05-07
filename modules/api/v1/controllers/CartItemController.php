@@ -149,7 +149,7 @@ class CartItemController extends ActiveController
     public function actionUpdate($id)
     {
         $model = CartItem::findOne($id);
-         if (!$model instanceof CartItem) {
+        if (!$model instanceof CartItem) {
             throw new NotFoundHttpException('Cart item doesn\'t exist.');
         }
         $postData = Yii::$app->request->post();
