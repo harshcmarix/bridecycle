@@ -3,12 +3,14 @@
 namespace app\modules\api\v1\models\search;
 
 use app\models\ProductImage;
+use app\models\SearchHistory;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
 use app\models\Product;
+use yii\helpers\ArrayHelper;
 
 /**
  * ProductSearch represents the model behind the search form of `app\models\Product`.
@@ -22,12 +24,30 @@ class ProductSearch extends Product
     protected $hiddenFields = [];
 
     /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'productImages0' => 'productImages0',
+            'category0' => 'category0',
+            'brand0' => 'brand0',
+            'color' => 'color',
+            'user0' => 'user0',
+            'subCategory0' => 'subCategory0',
+            'status' => 'status',
+            'address' => 'address',
+            'favouriteProduct' => 'favouriteProduct',
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'user_id', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id','option_color', 'height', 'weight', 'width', 'status_id'], 'integer'],
+            [['id', 'user_id', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'option_color', 'height', 'weight', 'width', 'status_id'], 'integer'],
             [['name', 'number', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at'], 'safe'],
             [['option_price'], 'number'],
         ];
@@ -105,9 +125,11 @@ class ProductSearch extends Product
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
 
-//        if(!empty($requestParams) && !empty($requestParams['user_id']) && !empty($requestParams['is_favourite']) && $requestParams['is_favourite'] == '1'){
-//            $query->leftJoin('');
-//        }
+        if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1) {
+            $query->joinWith('category AS category');
+            $query->joinWith('subCategory AS subCategory');
+            $query->joinWith('brand AS brand');
+        }
 
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
@@ -231,6 +253,42 @@ class ProductSearch extends Product
             $query->andWhere(['products.gender' => Product::GENDER_FOR_FEMALE]);
         }
 
+        if (!empty($requestParams['id'])) {
+            $query->andWhere(['!=', 'products.id', $requestParams['id']]);
+        }
+
+        /** Start for search screen */
+
+        if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1 && !empty($requestParams['search_keyword'])) {
+            $query->andFilterWhere([
+                'or',
+                ['like', 'products.name', $requestParams['search_keyword']],
+                ['like', 'category.name', $requestParams['search_keyword']],
+                ['like', 'subCategory.name', $requestParams['search_keyword']],
+                ['like', 'brand.name', $requestParams['search_keyword']],
+            ]);
+        }
+
+        if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1 && empty($requestParams['search_keyword'])) {
+            $data = SearchHistory::find()->where(['user_id' => Yii::$app->user->identity->id])->all();
+            if (!empty($data)) {
+                foreach ($data as $dataRow) {
+                    if (!empty($dataRow) && $dataRow instanceof SearchHistory) {
+                        $query->orFilterWhere([
+                            'or',
+                            ['like', 'products.name', $dataRow->search_text],
+                            ['like', 'category.name', $dataRow->search_text],
+                            ['like', 'subCategory.name', $dataRow->search_text],
+                            ['like', 'brand.name', $dataRow->search_text],
+                        ]);
+                    }
+
+                }
+            }
+        }
+
+        /** End for search screen */
+
         if (!empty($requestParams['sort_by'])) {
             if (strtolower($requestParams['sort_by']) == 'nf') {
                 $query->orderBy(['products.created_at' => SORT_DESC]);
@@ -242,7 +300,6 @@ class ProductSearch extends Product
                 $query->orderBy(['products.price' => SORT_ASC, 'products.option_price' => SORT_ASC]);
             }
         }
-
 
 
         /* ########## Prepare Query With custom Filter End ######### */

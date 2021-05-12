@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '100px', 'width' => '100px']);
             },
             'header' => '',
-            'headerOptions' => ['class' => 'kartik-sheet-style']
+            'headerOptions' => ['class' => 'kartik-sheet-style'],
         ],
         [
             'attribute' => 'mobile',
