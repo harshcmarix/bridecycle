@@ -42,6 +42,7 @@ use Yii;
  * @property string|null $shop_phone_number
  * @property string|null $shop_logo
  * @property string|null $website
+ * @property string|null $verification_code
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -69,7 +70,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @var string
      */
     public $confirm_password;
-   
+
     /**
      * variables for shop detail tables validation
      */
@@ -79,8 +80,8 @@ class User extends ActiveRecord implements IdentityInterface
     public $shop_phone_number;
     public $shop_logo;
     public $website;
-    
-   /**
+
+    /**
      * Identify user type
      */
     const USER_TYPE_ADMIN = 1;
@@ -128,18 +129,19 @@ class User extends ActiveRecord implements IdentityInterface
             [['mobile', 'shop_phone_number'], 'integer'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
-            [['email','shop_email'], 'email'],
+            [['email', 'shop_email'], 'email'],
             [['email'], 'unique'],
             [['email'], 'string', 'max' => 60],
-            [[ 'password_hash', 'temporary_password', 'access_token', 'password_reset_token','website'], 'string', 'max' => 255],
-            [['website'],'url', 'defaultScheme' => ''],
+            [['verification_code'], 'string', 'max' => 6],
+            [['password_hash', 'temporary_password', 'access_token', 'password_reset_token', 'website'], 'string', 'max' => 255],
+            [['website'], 'url', 'defaultScheme' => ''],
             [['temporary_password'], 'string', 'max' => 8],
-            [['shop_logo','profile_picture','shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
+            [['shop_logo', 'profile_picture', 'shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['profile_picture'], 'required', 'on' => [self::PROFILE_PICTURE_UPDATE]],
-            [['shop_name', 'shop_email','shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
+            [['shop_name', 'shop_email', 'shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
             [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
-            [['shop_email'], 'unique','targetClass' => ShopDetail::ClassName() ,'targetAttribute' => ['shop_email']]
+            [['shop_email'], 'unique', 'targetClass' => ShopDetail::ClassName(), 'targetAttribute' => ['shop_email']]
         ];
     }
 
@@ -154,7 +156,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $fields;
     }
 
-   /**
+    /**
      * {@inheritdoc}
      */
     public function attributeLabels()
@@ -181,6 +183,7 @@ class User extends ActiveRecord implements IdentityInterface
             'personal_information' => 'Personal Information',
             'user_type' => 'User Type',
             'is_shop_owner' => 'Is Shop Owner',
+            'verification_code' => 'Verification Code',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -194,7 +197,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'userAddresses' => 'userAddresses',
-            'shopDetails'=>'shopDetails'
+            'shopDetails' => 'shopDetails'
         ];
     }
 
@@ -205,6 +208,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(FavouriteProducts::className(), ['user_id' => 'id']);
     }
+
     /**
      * Gets query for [[ShopDetails]].
      *
@@ -213,24 +217,24 @@ class User extends ActiveRecord implements IdentityInterface
     public function getShopDetails()
     {
         // $data = $this->hasMany(ShopDetail::className(), ['user_id' => 'id']);
-         
-       $data = ShopDetail::find()->where(['user_id' => $this->id])->all();
-        if(!empty($data)){
-            foreach($data as $key=>$value){
+
+        $data = ShopDetail::find()->where(['user_id' => $this->id])->all();
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
                 $shopLogo = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 $shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                  if(!empty($value->shop_logo)  && file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . '/' . $value->shop_logo)){
-                       $shopLogo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
-                  }
-                  $value->shop_logo = $shopLogo;
-                  if(!empty($value->shop_cover_picture) && file_exists(Yii::getAlias('@shopCoverPictureThumbRelativePath') . '/' . $value->shop_cover_picture)){
+                if (!empty($value->shop_logo) && file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . '/' . $value->shop_logo)) {
+                    $shopLogo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
+                }
+                $value->shop_logo = $shopLogo;
+                if (!empty($value->shop_cover_picture) && file_exists(Yii::getAlias('@shopCoverPictureThumbRelativePath') . '/' . $value->shop_cover_picture)) {
                     $shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $value->shop_cover_picture;
-                  }
-                  $value->shop_cover_picture = $shop_cover_picture;
+                }
+                $value->shop_cover_picture = $shop_cover_picture;
 
             }
         }
-       
+
         return $data;
     }
 
@@ -284,6 +288,20 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(UserSubscriptions::className(), ['user_id' => 'id']);
     }
 
+
+    /**
+     * Uses for API
+     */
+    public function getVerificationCode()
+    {
+        Start:
+        $code = substr(str_shuffle('0123456789'), 0, 6);
+        $model = self::find()->where(['verification_code' => $code, 'user_type' => self::USER_TYPE_NORMAL, 'is_shop_owner' => self::SHOP_OWNER_YES])->one();
+        if (!empty($model)) {
+            goto Start;
+        }
+        return $code;
+    }
     /************************************************************************/
     /************************* Identity functions **************************/
     /***********************************************************************/
