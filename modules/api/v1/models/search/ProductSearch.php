@@ -257,6 +257,10 @@ class ProductSearch extends Product
             $query->andWhere(['!=', 'products.id', $requestParams['id']]);
         }
 
+        if (!empty($requestParams['is_bridecycle_favourite']) && $requestParams['is_bridecycle_favourite'] == Product::IS_ADMIN_FAVOURITE_YES) {
+            $query->andWhere(['products.is_admin_favourite' => Product::IS_ADMIN_FAVOURITE_YES]);
+        }
+
         /** Start for search screen */
 
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1 && !empty($requestParams['search_keyword'])) {

@@ -89,11 +89,20 @@ class User extends ActiveRecord implements IdentityInterface
     const USER_TYPE_NORMAL = 3;
 
     const SCENARIO_SHOP_OWNER = 'shop_owner';
+    const SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER = "add_size_info";
     const SHOP_OWNER_YES = '1';
     const SHOP_OWNER_NO = '0';
     const SCENARIO_USER_CREATE = 'create';
     const SCENARIO_USER_UPDATE = 'update';
     const PROFILE_PICTURE_UPDATE = 'profile_picture_update';
+    
+    const SCENARIO_API_NOTIFICATION_SETTING = 'notification_setting';
+
+    const IS_NOTIFICATION_ON = '1'; // is on
+    const IS_NOTIFICATION_OFF = '0'; // is off
+
+    const IS_EMAIL_NOTIFICATION_ON = '1'; // is on
+    const IS_EMAIL_NOTIFICATION_OFF = '0'; // is off
 
     /**
      * @return string
@@ -124,6 +133,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
             [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
+            [['top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size', 'height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
             [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
@@ -141,6 +151,9 @@ class User extends ActiveRecord implements IdentityInterface
             [['profile_picture'], 'required', 'on' => [self::PROFILE_PICTURE_UPDATE]],
             [['shop_name', 'shop_email', 'shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
             [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
+            [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on'], 'safe'],
+            [['is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'safe'],
+            [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on', 'is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
             [['shop_email'], 'unique', 'targetClass' => ShopDetail::ClassName(), 'targetAttribute' => ['shop_email']]
         ];
     }
@@ -296,7 +309,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         Start:
         $code = substr(str_shuffle('0123456789'), 0, 6);
-        $model = self::find()->where(['verification_code' => $code, 'user_type' => self::USER_TYPE_NORMAL, 'is_shop_owner' => self::SHOP_OWNER_YES])->one();
+        //$model = self::find()->where(['verification_code' => $code, 'user_type' => self::USER_TYPE_NORMAL, 'is_shop_owner' => self::SHOP_OWNER_YES])->one();
+        $model = self::find()->where(['verification_code' => $code, 'user_type' => self::USER_TYPE_NORMAL])->one();
         if (!empty($model)) {
             goto Start;
         }

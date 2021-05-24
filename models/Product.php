@@ -26,6 +26,7 @@ use app\modules\api\v1\models\User;
  * @property int|null $available_quantity
  * @property string $is_top_selling 1 => top selling product
  * @property string $is_top_trending 1 => top trending product
+ * @property string $is_admin_favourite 1 => admin favourite product
  * @property int $brand_id
  * @property string|null $gender 1 => female
  * @property string $is_cleaned 1 => cleaned product
@@ -97,6 +98,9 @@ class Product extends \yii\db\ActiveRecord
     const IS_CLEANED_YES = '1';
     const IS_CLEANED_NO = '0';
 
+    const IS_ADMIN_FAVOURITE_YES = '1';
+    const IS_ADMIN_FAVOURITE_NO = '0';
+
     const GENDER_FOR_FEMALE = '1';
     const GENDER_FOR_MALE = '0';
     const GENDER_FOR_ALL = '3';
@@ -142,6 +146,7 @@ class Product extends \yii\db\ActiveRecord
             [['name', 'option_size'], 'string', 'max' => 50],
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
+            [['is_admin_favourite'], 'safe'],
             [['images'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             [['receipt', 'option_color'], 'string', 'max' => 255],

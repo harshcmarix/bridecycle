@@ -20,7 +20,7 @@ use app\modules\api\v1\models\{
     User,
     ResetPassword,
     ForgotPassword,
-    ChangePassword,
+    ChangePassword
 };
 use app\models\{
     UserAddress,
@@ -67,6 +67,7 @@ class UserController extends ActiveController
             'update-profile-picture' => ['POST', 'OPTIONS'],
             'delete-user-address' => ['POST', 'OPTIONS'],
             'verify-profile-verification-code' => ['POST', 'OPTIONS'],
+            'enter-size-information' => ['POST', 'OPTIONS'],
         ];
     }
 
@@ -78,7 +79,7 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'update', 'logout', 'change-password', 'update-profile-picture', 'delete-user-address'],
+            'only' => ['index', 'view', 'update', 'logout', 'change-password', 'update-profile-picture', 'delete-user-address', 'enter-size-information'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -186,9 +187,9 @@ class UserController extends ActiveController
             $model->user_type = (string)User::USER_TYPE_NORMAL;
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
 
-            if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
-                $model->verification_code = $model->getVerificationCode();
-            }
+            //if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
+            $model->verification_code = $model->getVerificationCode();
+            //}
 
             if ($model->save()) {
 
@@ -267,14 +268,14 @@ class UserController extends ActiveController
                         }
                         $shopDetailModel->save(false);
                     }
-
-                    Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $model])
-                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                        ->setTo($model->email)
-                        ->setSubject('Profile verification code!')
-                        ->send();
-
                 }
+
+                Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $model])
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($model->email)
+                    ->setSubject('Profile verification code!')
+                    ->send();
+
                 // shop owner detail end
                 // Get profile picture
                 $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -415,6 +416,12 @@ class UserController extends ActiveController
         return $model;
     }
 
+    /**
+     * @param $id
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionDeleteUserAddress($id)
     {
         $model = UserAddress::findOne($id);
@@ -589,11 +596,12 @@ class UserController extends ActiveController
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "verification_code"');
         }
 
-        $model = User::find()->where(['verification_code' => $postData['verification_code'], 'user_type' => User::USER_TYPE_NORMAL, 'is_shop_owner' => User::SHOP_OWNER_YES])->one();
+        //$model = User::find()->where(['verification_code' => $postData['verification_code'], 'user_type' => User::USER_TYPE_NORMAL, 'is_shop_owner' => User::SHOP_OWNER_YES])->one();
+        $model = User::find()->where(['verification_code' => $postData['verification_code'], 'user_type' => User::USER_TYPE_NORMAL])->one();
         if (!$model instanceof User) {
             throw new NotFoundHttpException('Verification code doesn\'t exist.');
         }
-        
+
         if (!empty($model) && $model instanceof User) {
             $model->verification_code = "";
             $model->save(false);
@@ -605,9 +613,73 @@ class UserController extends ActiveController
         if (!empty($model) && $model instanceof User && !empty($model->profile_picture) && file_exists($thumbImagePath)) {
             $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
         }
+
         $model->profile_picture = $profile_picture;
 
+        return $model;
+    }
 
+    /**
+     * @return User
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
+    public function actionEnterSizeInformation()
+    {
+        $postData = \Yii::$app->request->post();
+
+        if (empty($postData) || empty($postData['user_id'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "user_id"');
+        }
+
+        $model = User::find()->where(['id' => $postData['user_id'], 'user_type' => User::USER_TYPE_NORMAL, 'is_shop_owner' => User::SHOP_OWNER_NO])->one();
+        if (!$model instanceof User) {
+            throw new NotFoundHttpException('User doesn\'t exist.');
+        }
+        $model->scenario = User::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER;
+        $dataPost['User'] = $postData;
+
+
+        if ($model->load($dataPost) && $model->validate()) {
+            if ($model->save()) {
+                $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+                $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
+                $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                if (!empty($model) && $model instanceof User && !empty($model->profile_picture) && file_exists($thumbImagePath)) {
+                    $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                }
+                $model->profile_picture = $profile_picture;
+            }
+        }
+        return $model;
+    }
+
+    public function actionChangeNotificationSetting()
+    {
+        $postData = \Yii::$app->request->post();
+
+        if (empty($postData) || empty($postData['user_id'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "user_id"');
+        }
+
+        $model = User::find()->where(['id' => $postData['user_id'], 'user_type' => User::USER_TYPE_NORMAL])->one();
+        if (!$model instanceof User) {
+            throw new NotFoundHttpException('User doesn\'t exist.');
+        }
+        $dataPost['User'] = $postData;
+        $model->scenario = User::SCENARIO_API_NOTIFICATION_SETTING;
+
+        if ($model->load($dataPost) && $model->validate()) {
+            if ($model->save()) {
+                $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+                $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
+                $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                if (!empty($model) && $model instanceof User && !empty($model->profile_picture) && file_exists($thumbImagePath)) {
+                    $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                }
+                $model->profile_picture = $profile_picture;
+            }
+        }
         return $model;
     }
 }

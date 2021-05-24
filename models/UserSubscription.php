@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\behaviors\TimestampBehavior;
 use Yii;
+use app\modules\api\v1\models\User;
 
 /**
  * This is the model class for table "user_subscriptions".
@@ -14,8 +15,8 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Subscriptions $subscription
- * @property Users $user
+ * @property Subscription $subscription
+ * @property User $user
  */
 class UserSubscription extends \yii\db\ActiveRecord
 {
@@ -26,6 +27,7 @@ class UserSubscription extends \yii\db\ActiveRecord
     {
         return 'user_subscriptions';
     }
+
     /**
      * @return array[]
      */
@@ -39,15 +41,18 @@ class UserSubscription extends \yii\db\ActiveRecord
         ];
     }
 
+    public $cvv;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['user_id', 'subscription_id'], 'required'],
+            [['user_id', 'subscription_id', 'card_number', 'expiry_month_year', 'cvv'], 'required'],
             [['user_id', 'subscription_id'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['card_number', 'cvv'], 'integer'],
+            [['expiry_month_year', 'created_at', 'updated_at'], 'safe'],
             [['subscription_id'], 'exist', 'skipOnError' => true, 'targetClass' => Subscription::className(), 'targetAttribute' => ['subscription_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -84,6 +89,6 @@ class UserSubscription extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 }
