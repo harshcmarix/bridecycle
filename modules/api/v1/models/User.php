@@ -43,6 +43,8 @@ use Yii;
  * @property string|null $shop_logo
  * @property string|null $website
  * @property string|null $verification_code
+ * @property string|null $facebook_id
+ * @property string|null $apple_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -95,7 +97,7 @@ class User extends ActiveRecord implements IdentityInterface
     const SCENARIO_USER_CREATE = 'create';
     const SCENARIO_USER_UPDATE = 'update';
     const PROFILE_PICTURE_UPDATE = 'profile_picture_update';
-    
+
     const SCENARIO_API_NOTIFICATION_SETTING = 'notification_setting';
 
     const IS_NOTIFICATION_ON = '1'; // is on
@@ -103,6 +105,9 @@ class User extends ActiveRecord implements IdentityInterface
 
     const IS_EMAIL_NOTIFICATION_ON = '1'; // is on
     const IS_EMAIL_NOTIFICATION_OFF = '0'; // is off
+
+    const IS_LOGIN_FROM_FACEBOOK = "facebook";
+    const IS_LOGIN_FROM_APPLE = "apple";
 
     /**
      * @return string
@@ -135,7 +140,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
             [['top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size', 'height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
-            [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
+            [['facebook_id', 'apple_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],

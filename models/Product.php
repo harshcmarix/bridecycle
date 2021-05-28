@@ -39,10 +39,10 @@ use app\modules\api\v1\models\User;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property FavouriteProducts[] $favouriteProducts
- * @property OrderItems[] $orderItems
- * @property ProductRatings[] $productRatings
- * @property ProductImages[] $productImages
+ * @property FavouriteProduct[] $favouriteProducts
+ * @property OrderItem[] $orderItems
+ * @property ProductRating[] $productRatings
+ * @property ProductImage[] $productImages
  * @property Brand $brand
  * @property Color $color
  * @property Category $category
@@ -83,7 +83,6 @@ class Product extends \yii\db\ActiveRecord
         ];
     }
 
-
     public $images;
 
     const IS_TOP_SELLING_YES = '1';
@@ -104,6 +103,9 @@ class Product extends \yii\db\ActiveRecord
     const GENDER_FOR_FEMALE = '1';
     const GENDER_FOR_MALE = '0';
     const GENDER_FOR_ALL = '3';
+
+    const PRODUCT_TYPE_NEW = 'n';
+    const PRODUCT_TYPE_USED = 'u';
 
     public $arrIsTopSelling = [
         self::IS_TOP_SELLING_YES => 'Yes',
@@ -131,6 +133,10 @@ class Product extends \yii\db\ActiveRecord
         self::IS_CLEANED_NO => 'No',
     ];
 
+    public $arrProductType = [
+        self::PRODUCT_TYPE_NEW => 'New',
+        self::PRODUCT_TYPE_USED => 'Used',
+    ];
 
     /**
      * {@inheritdoc}
@@ -218,6 +224,8 @@ class Product extends \yii\db\ActiveRecord
             'status' => 'status',
             'address' => 'address',
             'favouriteProduct' => 'favouriteProduct',
+            'seller' => 'seller',
+            'rating' => 'rating',
         ];
     }
 
@@ -414,6 +422,9 @@ class Product extends \yii\db\ActiveRecord
         return $brand;
     }
 
+    /**
+     * @return User|array|mixed|\yii\db\ActiveRecord|null
+     */
     public function getUser0()
     {
         //return $this->hasOne(User::className(), ['id' => 'user_id']);
@@ -438,4 +449,40 @@ class Product extends \yii\db\ActiveRecord
         $data = FavouriteProduct::find()->where(['product_id' => $this->id, 'user_id' => Yii::$app->user->identity->id])->one();
         return $data;
     }
+
+    /**
+     * @return User|array|mixed|\yii\db\ActiveRecord|null
+     */
+    public function getSeller()
+    {
+        $data = User::find()->where(['id' => $this->user_id])->one();
+
+        if ($data instanceof User) {
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $data->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+            }
+            $data->profile_picture = $profilePicture;
+        }
+        $shopDetail['shopDetail'] = (!empty($data->shopDetails)) ? $data->shopDetails : null;
+        $data = array_merge($data->toArray(), $shopDetail);
+        return $data;
+    }
+
+    /**
+     * @return object
+     */
+    public function getRating()
+    {
+        $modelRate['total_rated_count'] = number_format(ProductRating::find()->where(['product_id' => $this->id])->count(), 1);
+        $modelRate['over_all_rate'] = ProductRating::find()->where(['product_id' => $this->id])->average('rating');
+        $modelRate['one_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->count();
+        $modelRate['two_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::TWO_STAR_RATE])->count();
+        $modelRate['three_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::THREE_STAR_RATE])->count();
+        $modelRate['four_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FOUR_STAR_RATE])->count();
+        $modelRate['five_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FIVE_STAR_RATE])->count();
+
+        return (object)$modelRate;
+    }
+
 }

@@ -18,13 +18,16 @@ class Login extends Model
     public $token_type;
     private $_user = false;
 
+    const SCENARIO_LOGIN_FROM_APP = 'login_from_app';
+
+
     /**
      * @return array the validation rules.
      */
     public function rules()
     {
         return [
-            [['email', 'password'], 'required'],
+            [['email', 'password'], 'required', 'on' => self::SCENARIO_LOGIN_FROM_APP],
             [['access_token_expired_at', 'token_type'], 'safe'],
             [['access_token'], 'string', 'max' => 255],
             // password is validated by validatePassword()
@@ -69,7 +72,7 @@ class Login extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
+        if (!empty(Yii::$app->request->post('is_login_from'))) {
             if ($this->getUser()) {
                 $accessToken = $this->_user->generateAccessToken();
                 $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
@@ -82,6 +85,21 @@ class Login extends Model
                 $this->token_type = Yii::$app->params['token_type'];
                 return true;
             }
+
+        } else if ($this->validate()) {
+            if ($this->getUser()) {
+                $accessToken = $this->_user->generateAccessToken();
+                $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+                $this->_user->access_token_expired_at = $accessTokenExpiredAt;
+                $this->_user->save();
+                Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
+
+                $this->access_token = $accessToken;
+                $this->access_token_expired_at = $accessTokenExpiredAt;
+                $this->token_type = Yii::$app->params['token_type'];
+                return true;
+            }
+            //} else if (!empty(Yii::$app->request->post('is_login_from')) && (!empty(Yii::$app->request->post('facebook_id')) || !empty(Yii::$app->request->post('apple_id')))) {
         }
         return false;
     }

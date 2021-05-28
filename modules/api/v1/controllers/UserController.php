@@ -148,10 +148,26 @@ class UserController extends ActiveController
         if (!empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES) {
             $model->scenario = User::SCENARIO_SHOP_OWNER;
         }
+
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             return \yii\widgets\ActiveForm::validate($model);
         }
+
+        if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_FACEBOOK) {
+            if (empty($postData) || empty($postData['facebook_id'])) {
+                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "facebook_id"');
+            }
+            $model->facebook_id = $postData['facebook_id'];
+        }
+
+        if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_APPLE) {
+            if (empty($postData) || empty($postData['apple_id'])) {
+                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "apple_id"');
+            }
+            $model->apple_id = $postData['apple_id'];
+        }
+
         $model->profile_picture = UploadedFile::getInstanceByName('profile_picture');
         $model->shop_logo = UploadedFile::getInstanceByName('shop_logo');
         $model->shop_cover_picture = UploadedFile::getInstanceByName('shop_cover_picture');
@@ -187,12 +203,9 @@ class UserController extends ActiveController
             $model->user_type = (string)User::USER_TYPE_NORMAL;
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
 
-            //if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
             $model->verification_code = $model->getVerificationCode();
-            //}
 
             if ($model->save()) {
-
                 // Insert shop details
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
                     $userAddressModel = new UserAddress();
@@ -442,7 +455,39 @@ class UserController extends ActiveController
     public function actionLogin()
     {
         $model = new Login();
+
         $data['Login'] = Yii::$app->request->post();
+
+        $postData = Yii::$app->request->post();
+        if (!empty($postData) && !empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_FACEBOOK) {
+            if (empty($postData) || empty($postData['facebook_id'])) {
+                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "facebook_id"');
+            }
+            $modelPostData = User::find()->where(['facebook_id' => $postData['facebook_id']])->one();
+            if (!empty($modelPostData) && $modelPostData instanceof User) {
+                $data['Login']['email'] = $modelPostData->email;
+                $model->email = $modelPostData->email;
+            } else {
+                throw new NotFoundHttpException('User doesn\'t exist.');
+            }
+        }
+
+        if (!empty($postData) && !empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_APPLE) {
+            if (empty($postData) || empty($postData['apple_id'])) {
+                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "apple_id"');
+            }
+            $modelPostData = User::find()->where(['apple_id' => $postData['apple_id']])->one();
+            if (!empty($modelPostData) && $modelPostData instanceof User) {
+                $data['Login']['email'] = $modelPostData->email;
+                $model->email = $modelPostData->email;
+            } else {
+                throw new NotFoundHttpException('User doesn\'t exist.');
+            }
+        }
+
+        if (empty($postData['is_login_from'])) {
+            $model->scenario = Login::SCENARIO_LOGIN_FROM_APP;
+        }
 
         if ($model->load($data) && $model->validate()) {
             if (!$model->login()) {

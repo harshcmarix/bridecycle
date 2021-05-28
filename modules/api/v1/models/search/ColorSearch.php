@@ -5,8 +5,10 @@ namespace app\modules\api\v1\models\search;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\Model;
-use yii\data\ActiveDataFilter;
-use yii\data\ActiveDataProvider;
+use yii\data\{
+    ActiveDataFilter,
+    ActiveDataProvider
+};
 use app\models\Color;
 
 /**
@@ -114,7 +116,7 @@ class ColorSearch extends Color
 
         $query->groupBy('color.id');
 
-        $activeDataProvider =  Yii::createObject([
+        $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
             'pagination' => [

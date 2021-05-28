@@ -274,7 +274,7 @@ class ProductSearch extends Product
         }
 
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1 && empty($requestParams['search_keyword'])) {
-            $data = SearchHistory::find()->where(['user_id' => Yii::$app->user->identity->id])->all();
+            $data = SearchHistory::find()->where(['user_id' => Yii::$app->user->identity->id])->orderBy(['id' => SORT_DESC])->all();
             if (!empty($data)) {
                 foreach ($data as $dataRow) {
                     if (!empty($dataRow) && $dataRow instanceof SearchHistory) {

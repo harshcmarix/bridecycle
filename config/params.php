@@ -29,4 +29,39 @@ return [
 
     // Recent time for general uses in system
     'recent_time' => '1 week',
+
+    /**
+     * Use for payment gateway (paypal)
+     */
+//    'paypal_Client_ID'=>'',
+//    'paypal_Client_Secret'=>'',
+//    'paypal_mode'=>'',
+    'paypal_payment_currency' => 'USD',
+
+    /**
+     * Paypal (CTPL) sendbox account credential.
+     *
+     * Username: paypaltest.ctpl@gmail.com
+     * Password: ctpl@dev
+     *
+     * Username: buyertest.gwm@gmail.com
+     * Password: ctpl@dev
+     *
+     * Username: merchant.gwm@gmail.com
+     * Password: ctpl@dev
+     *
+     * Username : harshil.cmarix-facilitator@gmail.com
+     * Password: ctpl@dev
+     *
+     * @Note : CTPL Testing Account
+     */
+    'paypal_client_id' => 'AVh7TWRjOcq7DkACNDj_8SFKlVkL520yJH-Km5NwnvmTvsucgbTM4bAqKizRD1TxvJ_ZJiNzmqxma09F',
+    'paypal_client_secret' => 'EH0j7EnQLstPr2On0pj5lgcND8dygD9xz_NGELdvUq4GWylKOuUxNJwVqd95yw5KmCWcOIfjxVfBIRds',
+    'paypal_mode' => 'sandbox',
+
+    /**
+     * Mobile APi current latest version
+     */
+    'mobile_api_latest_version' => 'v1'
+
 ];

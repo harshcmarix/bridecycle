@@ -102,7 +102,7 @@ class SearchHistorySearch extends SearchHistory
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id','search_text','user_id'];
+            $select = ['search_histories.*'];
         }
 
         $query->select($select);
@@ -112,8 +112,21 @@ class SearchHistorySearch extends SearchHistory
         /* ########## Prepare Query With Default Filter End ######### */
 
         $query->groupBy('search_histories.id');
-        
-        return Yii::createObject([
+
+
+//        return Yii::createObject([
+//            'class' => ActiveDataProvider::class,
+//            'query' => $query,
+//            'pagination' => [
+//                'params' => $requestParams,
+//                'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : Yii::$app->params['default_page_size'], //set page size here
+//            ],
+//            'sort' => [
+//                'params' => $requestParams,
+//            ],
+//        ]);
+
+        $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
             'pagination' => [
@@ -124,5 +137,9 @@ class SearchHistorySearch extends SearchHistory
                 'params' => $requestParams,
             ],
         ]);
+        $searchHistoryModelData = $activeDataProvider->getModels();
+
+        $activeDataProvider->setModels($searchHistoryModelData);
+        return $activeDataProvider;
     }
 }

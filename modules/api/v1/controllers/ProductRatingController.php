@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v1\controllers;
 
+use app\models\Product;
 use Yii;
 use app\models\ProductRating;
 use app\modules\api\v1\models\search\ProductRatingSearch;
@@ -34,7 +35,7 @@ class ProductRatingController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v1\models\search\ProductRatingSearch';
 
-       /**
+    /**
      * @return array
      */
     protected function verbs()
@@ -42,12 +43,13 @@ class ProductRatingController extends ActiveController
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
-            'create' =>['POST','OPTIONS'],
+            'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
         ];
     }
-     /**
+
+    /**
      * @return array
      */
     public function behaviors()
@@ -55,7 +57,7 @@ class ProductRatingController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view','create','update','delete'],
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -79,10 +81,11 @@ class ProductRatingController extends ActiveController
 
         return $behaviors;
     }
-     /**
+
+    /**
      * @return array
      */
-     public function actions()
+    public function actions()
     {
         $actions = parent::actions();
         unset($actions['index']);
@@ -116,29 +119,38 @@ class ProductRatingController extends ActiveController
      */
     public function actionView($id)
     {
-        $model = ProductRating::find()->where(['product_id'=>$id])->all();
+        $model = ProductRating::find()->where(['product_id' => $id])->all();
+
+        $modelProduct = Product::findOne($id);
+        if (!$modelProduct instanceof Product) {
+            throw new NotFoundHttpException('Product doesn\'t exist.');
+        }
+
+        if (empty($model)) {
+            throw new NotFoundHttpException('Product rating doesn\'t exist.');
+        }
+
         $totalRatings = count($model);
-         
+
         $ratings = [];
-        $i=$j=$k=$l=$m=$sumRatings=$rating = 0;
-        foreach($model as $dataRatings)
-        {  
-           if($dataRatings->rating == 5){
-               $i++; 
-           }
-           if($dataRatings->rating == 4){
-               $j++; 
-           }
-           if($dataRatings->rating == 3){
-               $k++; 
-           }
-           if($dataRatings->rating == 2){
-               $l++; 
-           }
-           if($dataRatings->rating == 1){
-               $m++; 
-           }
-           $sumRatings +=$dataRatings->rating;
+        $i = $j = $k = $l = $m = $sumRatings = $rating = 0;
+        foreach ($model as $dataRatings) {
+            if ($dataRatings->rating == 5) {
+                $i++;
+            }
+            if ($dataRatings->rating == 4) {
+                $j++;
+            }
+            if ($dataRatings->rating == 3) {
+                $k++;
+            }
+            if ($dataRatings->rating == 2) {
+                $l++;
+            }
+            if ($dataRatings->rating == 1) {
+                $m++;
+            }
+            $sumRatings += $dataRatings->rating;
         }
 
         $ratings['5'] = $i;
@@ -146,11 +158,11 @@ class ProductRatingController extends ActiveController
         $ratings['3'] = $k;
         $ratings['2'] = $l;
         $ratings['1'] = $m;
-        
-        if($totalRatings != 0){
-            $rating = $sumRatings/$totalRatings;
+
+        if ($totalRatings != 0) {
+            $rating = $sumRatings / $totalRatings;
         }
-        $ratings['averageRatings'] = number_format((float)$rating,1, '.', '');
+        $ratings['averageRatings'] = number_format((float)$rating, 1, '.', '');
         // $ratings['averageRatings'] = (int)$rating;
         return $ratings;
     }
@@ -166,16 +178,16 @@ class ProductRatingController extends ActiveController
         $postData = Yii::$app->request->post();
         $productRating['ProductRating'] = $postData;
         $productRating['ProductRating']['user_id'] = Yii::$app->user->identity->id;
-        $alreadyExist = ProductRating::find()->where(['product_id'=>$productRating['ProductRating']['product_id'],'user_id'=>$productRating['ProductRating']['user_id']])->all();
-        if(!empty($alreadyExist)){
+        $alreadyExist = ProductRating::find()->where(['product_id' => $productRating['ProductRating']['product_id'], 'user_id' => $productRating['ProductRating']['user_id']])->all();
+        if (!empty($alreadyExist)) {
             throw new ForbiddenHttpException('You have already reviewed this product');
         }
         if ($model->load($productRating) && $model->validate()) {
             $model->save();
         }
 
-       return $model;
+        return $model;
     }
 
-   
+
 }
