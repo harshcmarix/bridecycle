@@ -474,7 +474,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getRating()
     {
-        $modelRate['total_rated_count'] = number_format(ProductRating::find()->where(['product_id' => $this->id])->count(), 1);
+        $modelRate['total_rated_count'] = number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
         $modelRate['over_all_rate'] = ProductRating::find()->where(['product_id' => $this->id])->average('rating');
         $modelRate['one_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->count();
         $modelRate['two_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::TWO_STAR_RATE])->count();

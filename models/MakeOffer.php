@@ -6,15 +6,14 @@ use app\modules\api\v1\models\User;
 use Yii;
 
 /**
- * This is the model class for table "trials".
+ * This is the model class for table "make_offer".
  *
  * @property int $id
  * @property int $product_id
  * @property int $sender_id
  * @property int $receiver_id
- * @property int $status '0'=>'pending','1'=>'accept','2'=>'reject'
- * @property string $date
- * @property string $time
+ * @property float $offer_amount
+ * @property int $status '1'=>'pending','2'=>'accept','3'=>'reject'
  * @property string $created_at
  * @property string|null $updated_at
  *
@@ -22,21 +21,19 @@ use Yii;
  * @property User $sender
  * @property User $receiver
  */
-class Trial extends \yii\db\ActiveRecord
+class MakeOffer extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'trials';
+        return 'make_offer';
     }
 
     const STATUS_PENDING = '1';
     const STATUS_ACCEPT = '2';
     const STATUS_REJECT = '3';
-
-    const SCENARIO_ACCEPT_REJECT = 'accept_reject_request';
 
     /**
      * {@inheritdoc}
@@ -44,11 +41,10 @@ class Trial extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            //[['product_id', 'sender_id', 'receiver_id', 'status', 'date', 'time'], 'required'],
-            [['product_id', 'date', 'time'], 'required'],
-            [['status'], 'required','on'=>self::SCENARIO_ACCEPT_REJECT],
+            [['product_id', 'sender_id', 'receiver_id', 'status', 'offer_amount'], 'required'],
             [['product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
-            [['date', 'time', 'created_at', 'updated_at'], 'safe'],
+            [['offer_amount'], 'number'],
+            [['created_at', 'updated_at'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['sender_id' => 'id']],
             [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['receiver_id' => 'id']],
@@ -65,9 +61,8 @@ class Trial extends \yii\db\ActiveRecord
             'product_id' => 'Product ID',
             'sender_id' => 'Sender ID',
             'receiver_id' => 'Receiver ID',
+            'offer_amount' => 'Offer Amount',
             'status' => 'Status',
-            'date' => 'Date',
-            'time' => 'Time',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

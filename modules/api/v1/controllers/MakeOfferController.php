@@ -4,7 +4,8 @@ namespace app\modules\api\v1\controllers;
 
 use app\models\Product;
 use Yii;
-use app\models\Trial;
+use app\models\MakeOffer;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\auth\{
     HttpBasicAuth,
@@ -15,20 +16,21 @@ use yii\filters\auth\{
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 
+
 /**
- * TrialController implements the CRUD actions for Trial model.
+ * MakeOfferController implements the CRUD actions for MakeOffer model.
  */
-class TrialController extends ActiveController
+class MakeOfferController extends ActiveController
 {
     /**
      * @var string
      */
-    public $modelClass = 'app\models\Trial';
+    public $modelClass = 'app\models\MakeOffer';
 
     /**
      * @var string
      */
-    public $searchModelClass = 'app\modules\api\v1\models\search\TrialSearch';
+    public $searchModelClass = 'app\modules\api\v1\models\search\MakeOfferSearch';
 
 
     /**
@@ -41,7 +43,7 @@ class TrialController extends ActiveController
             'view' => ['GET', 'HEAD', 'OPTIONS'],
             'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
-            //'delete' => ['POST', 'DELETE'],
+            'delete' => ['POST', 'DELETE'],
         ];
     }
 
@@ -53,7 +55,7 @@ class TrialController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update'], //, 'delete'
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -87,7 +89,6 @@ class TrialController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
-        //unset($actions['delete']);
         unset($actions['view']);
         return $actions;
     }
@@ -98,7 +99,6 @@ class TrialController extends ActiveController
      */
     public function actionIndex()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
@@ -109,7 +109,7 @@ class TrialController extends ActiveController
     }
 
     /**
-     * Displays a single Trial model.
+     * Displays a single MakeOffer model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -122,22 +122,24 @@ class TrialController extends ActiveController
     }
 
     /**
-     * Creates a new Trial model.
+     * Creates a new MakeOffer model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Trial();
+        $model = new MakeOffer();
 
         $post = Yii::$app->request->post();
-        $postData['Trial'] = Yii::$app->request->post();
+        $postData['MakeOffer'] = Yii::$app->request->post();
+        if (empty($post) || empty($post['product_id'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "product_id"');
+        }
+        $modelProduct = Product::findOne($postData['MakeOffer']['product_id']);
 
-        $modelProduct = Product::findOne($postData['Trial']['product_id']);
-
-        $postData['Trial']['sender_id'] = Yii::$app->user->identity->id;
-        $postData['Trial']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
-
+        $postData['MakeOffer']['sender_id'] = Yii::$app->user->identity->id;
+        $postData['MakeOffer']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
+        $postData['MakeOffer']['status'] = MakeOffer::STATUS_PENDING;
         if ($model->load($postData) && $model->validate()) {
             $model->save();
         }
@@ -146,7 +148,7 @@ class TrialController extends ActiveController
     }
 
     /**
-     * Updates an existing Trial model.
+     * Updates an existing MakeOffer model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -154,47 +156,41 @@ class TrialController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = Trial::findOne($id);
+        $model = $this->findModel($id);
 
-        $model->scenario = Trial::SCENARIO_ACCEPT_REJECT;
-
-        if (!$model instanceof Trial) {
-            throw new NotFoundHttpException('Trial doesn\'t exist.');
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        $postData = Yii::$app->request->post();
-        $trialPostData['Trial'] = $postData;
-        if ($model->load($trialPostData) && $model->validate()) {
-            $model->save(false);
-        }
-        $model = Trial::findOne($id);
-        return $model;
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 
     /**
-     * Deletes an existing Trial model.
+     * Deletes an existing MakeOffer model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-//    public function actionDelete($id)
-//    {
-//        $this->findModel($id)->delete();
-//
-//        return $this->redirect(['index']);
-//    }
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
 
     /**
-     * Finds the Trial model based on its primary key value.
+     * Finds the MakeOffer model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Trial the loaded model
+     * @return MakeOffer the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Trial::findOne($id)) !== null) {
+        if (($model = MakeOffer::findOne($id)) !== null) {
             return $model;
         }
 

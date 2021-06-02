@@ -52,7 +52,8 @@ class CartItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'product_id', 'quantity', 'price'], 'required'],
+            //[['user_id', 'product_id', 'quantity', 'price'], 'required'],
+            [['user_id', 'product_id', 'quantity'], 'required'],
             [['user_id', 'product_id', 'quantity', 'size'], 'integer'],
             [['price'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
@@ -113,6 +114,7 @@ class CartItem extends \yii\db\ActiveRecord
     }
 
     //////////only for api/////////
+
     /**
      * Gets query for [[User]].
      *

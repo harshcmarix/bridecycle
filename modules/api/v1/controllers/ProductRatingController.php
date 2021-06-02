@@ -10,6 +10,7 @@ use yii\web\{
     NotFoundHttpException,
     ForbiddenHttpException
 };
+use yii\base\BaseObject;
 use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
 use yii\filters\auth\{
@@ -119,7 +120,7 @@ class ProductRatingController extends ActiveController
      */
     public function actionView($id)
     {
-        $model = ProductRating::find()->where(['product_id' => $id])->all();
+        $model = ProductRating::find()->where(['product_id' => $id])->andWhere(['IN', 'status', [ProductRating::STATUS_PENDING, ProductRating::STATUS_APPROVE]])->all();
 
         $modelProduct = Product::findOne($id);
         if (!$modelProduct instanceof Product) {
@@ -178,6 +179,7 @@ class ProductRatingController extends ActiveController
         $postData = Yii::$app->request->post();
         $productRating['ProductRating'] = $postData;
         $productRating['ProductRating']['user_id'] = Yii::$app->user->identity->id;
+        $productRating['ProductRating']['status'] = ProductRating::STATUS_PENDING;
         $alreadyExist = ProductRating::find()->where(['product_id' => $productRating['ProductRating']['product_id'], 'user_id' => $productRating['ProductRating']['user_id']])->all();
         if (!empty($alreadyExist)) {
             throw new ForbiddenHttpException('You have already reviewed this product');

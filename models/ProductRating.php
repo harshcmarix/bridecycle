@@ -18,8 +18,8 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Users $user
- * @property Products $product
+ * @property User $user
+ * @property Product $product
  */
 class ProductRating extends ActiveRecord
 {
@@ -36,6 +36,10 @@ class ProductRating extends ActiveRecord
     const THREE_STAR_RATE = '3';
     const TWO_STAR_RATE = '2';
     const ONE_STAR_RATE = '1';
+
+    const STATUS_PENDING = '1';
+    const STATUS_APPROVE = '2';
+    const STATUS_DECLINE = '3';
 
     /**
      * @return array[]

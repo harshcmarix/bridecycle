@@ -12,6 +12,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int $order_id
  * @property int $product_id
  * @property int $quantity
+ * @property string|null $color
+ * @property int|null $size
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -48,7 +50,9 @@ class OrderItem extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'product_id', 'quantity'], 'required'],
-            [['order_id', 'product_id', 'quantity'], 'integer'],
+            [['order_id', 'product_id', 'quantity', 'size'], 'integer'],
+            //[['price'], 'number'],
+            [['color'], 'string', 'max' => 100],
             [['created_at', 'updated_at'], 'safe'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
@@ -69,7 +73,8 @@ class OrderItem extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
-   /**
+
+    /**
      * @return array|false
      */
     public function extraFields()
