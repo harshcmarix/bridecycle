@@ -2,6 +2,8 @@
 
 namespace app\components;
 
+use PayPal\Api\CreditCard;
+
 use yii\base\Component;
 use Yii;
 use yii\helpers\Url;
@@ -174,5 +176,33 @@ class PaypalPayment extends Component
         } else {
             echo "{}";
         }
+    }
+
+    public function MakePayments()
+    { // or whatever yours is called
+
+        $card = new CreditCard();
+        $card->setType('visa')
+            ->setNumber('4111111111111111')
+            ->setExpireMonth('06')
+            ->setExpireYear('2018')
+            ->setCvv2('782')
+            ->setFirstName('Richie')
+            ->setLastName('Richardson');
+
+        try {
+            $card->create(Yii::$app->cm->getContext());
+            // ...and for debugging purposes
+            echo '<pre>';
+            var_dump('Success scenario');
+            //echo $card;
+            return $card;
+        } catch (PayPalConnectionException $e) {
+            echo '<pre>';
+            var_dump('Failure scenario');
+            //echo $e;
+            return $e;
+        }
+
     }
 }

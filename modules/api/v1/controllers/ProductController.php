@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v1\controllers;
 
+use app\models\ProductReceipt;
 use Yii;
 use app\models\{
     Product,
@@ -23,7 +24,6 @@ use yii\filters\auth\{
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
-
 
 
 /**
@@ -129,7 +129,7 @@ class ProductController extends ActiveController
     public function actionView($id)
     {
         $model = Product::findOne($id);
-        if(!$model instanceof Product){
+        if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }
 
@@ -152,12 +152,15 @@ class ProductController extends ActiveController
         $model->status_id = ProductStatus::STATUS_PENDING_APPROVAL;
 
         $images = UploadedFile::getInstancesByName('images');
+        $ReceiptImages = UploadedFile::getInstancesByName('receipt');
 
         $model->images = $images;
+        $model->receipt = $ReceiptImages;
         $productData['Product']['user_id'] = Yii::$app->user->identity->id;
         if ($model->load($productData) && $model->validate()) {
             if ($model->save()) {
 
+                /* Product Image */
                 if (!empty($images)) {
                     foreach ($images as $img) {
                         $modelImage = new ProductImage();
@@ -192,6 +195,43 @@ class ProductController extends ActiveController
                     }
                 }
 
+                /* Receipt Image */
+                if (!empty($ReceiptImages)) {
+                    foreach ($ReceiptImages as $imgRow) {
+                        $modelImageReceipt = new ProductReceipt();
+
+                        $uploadDirPathReceipt = Yii::getAlias('@productReceiptImageRelativePath');
+                        $uploadThumbDirPathReceipt = Yii::getAlias('@productReceiptImageThumbRelativePath');
+
+                        // Create product upload directory if not exist
+                        if (!is_dir($uploadDirPathReceipt)) {
+                            mkdir($uploadDirPathReceipt, 0777);
+                        }
+
+                        // Create product thumb upload directory if not exist
+                        if (!is_dir($uploadThumbDirPathReceipt)) {
+                            mkdir($uploadThumbDirPathReceipt, 0777);
+                        }
+
+                        $fileNameReceipt = time() . rand(99999, 88888) . '.' . $imgRow->extension;
+                        // Upload product picture
+                        $imgRow->saveAs($uploadDirPathReceipt . '/' . $fileNameReceipt);
+                        // Create thumb of product picture
+                        $actualImagePathReceipt = $uploadDirPathReceipt . '/' . $fileNameReceipt;
+                        $thumbImagePathReceipt = $uploadThumbDirPathReceipt . '/' . $fileNameReceipt;
+
+                        chmod($actualImagePathReceipt,0777);
+
+                        Image::thumbnail($actualImagePathReceipt, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        chmod($thumbImagePathReceipt,0777);
+
+                        // Insert product picture name into database
+                        $modelImageReceipt->product_id = $model->id;
+                        $modelImageReceipt->file = $fileNameReceipt;
+                        $modelImageReceipt->save(false);
+                    }
+                }
+
                 $modelAddress = new UserAddress();
                 $addressData['UserAddress'] = $postData;
                 $modelAddress->user_id = Yii::$app->user->identity->id;
@@ -218,7 +258,7 @@ class ProductController extends ActiveController
     public function actionUpdate($id)
     {
         $model = Product::findOne($id);
-        if(!$model instanceof Product){
+        if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }
         $postData = Yii::$app->request->post();
@@ -260,7 +300,7 @@ class ProductController extends ActiveController
     public function actionDelete($id)
     {
         $model = Product::findOne($id);
-        if(!$model instanceof Product){
+        if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }
         if (!empty($model) && !empty($model->productImages)) {

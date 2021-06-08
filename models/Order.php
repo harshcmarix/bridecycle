@@ -86,15 +86,17 @@ class Order extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
-   /**
+
+    /**
      * @return array|false
      */
     public function extraFields()
     {
         return [
             'orderItems' => 'orderItems',
-            'userAddress'=>'userAddress',
-            'user'=>'user'
+            'userAddress' => 'userAddress',
+            'user' => 'user',
+            'orderItems0' => 'orderItems0',
         ];
     }
 
@@ -126,5 +128,31 @@ class Order extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+/////////////////////////////////// For API Use //////////////////////////////////////////
+
+    /**
+     * Gets query for [[OrderItems]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderItems0()
+    {
+
+        $modelOrderItems = OrderItem::find()->where(['order_id' => $this->id])->all();
+        if (!empty($modelOrderItems)) {
+            foreach ($modelOrderItems as $key => $modelOrderItemRow) {
+                if (!empty($modelOrderItemRow) && $modelOrderItemRow instanceof OrderItem) {
+
+                    if (!empty($modelOrderItemRow->invoice) && file_exists(Yii::getAlias('@orderInvoiceRelativePath') . "/" . $modelOrderItemRow->invoice)) {
+                        $modelOrderItemRow->invoice = Yii::$app->request->getHostInfo() . Yii::getAlias('@orderInvoiceAbsolutePath') . "/" . $modelOrderItemRow->invoice;
+                    } else {
+                        $modelOrderItemRow->invoice = "";
+                    }
+                }
+            }
+        }
+        return $modelOrderItems;
     }
 }

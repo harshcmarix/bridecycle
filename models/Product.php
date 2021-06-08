@@ -33,7 +33,6 @@ use app\modules\api\v1\models\User;
  * @property int|null $height
  * @property int|null $weight
  * @property int|null $width
- * @property string|null $receipt
  * @property int $status_id
  * @property int $address_id
  * @property string|null $created_at
@@ -48,6 +47,7 @@ use app\modules\api\v1\models\User;
  * @property Category $category
  * @property SubCategory $subCategory
  * @property UserAddress $address
+ * @property ProductReceipt $productReceipt
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -61,6 +61,8 @@ class Product extends \yii\db\ActiveRecord
     const IMAGE_EMPTY = 1;
     const IMAGE_NOT_EMPTY = 0;
     public $is_product_images_empty;
+
+    public $receipt;
 
     /**
      * {@inheritdoc}
@@ -154,8 +156,8 @@ class Product extends \yii\db\ActiveRecord
             [['option_show_only'], 'string', 'max' => 20],
             [['is_admin_favourite'], 'safe'],
             [['images'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['images'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
-            [['receipt', 'option_color'], 'string', 'max' => 255],
+            [['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
+            [['option_color'], 'string', 'max' => 255],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
@@ -163,11 +165,20 @@ class Product extends \yii\db\ActiveRecord
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
             [['images'], 'required', 'when' => function ($model) {
-                //return $model->is_image_empty == '1';
             },
                 'whenClient' => "function (attribute, value) {
                     if ($('#product-is_product_images_empty').val() == 1) {            
                                     return $('#product-images').val() == '';                                    
+                                    }
+                                }",],
+
+
+            [['receipt'], 'required', 'when' => function ($model) {
+                return $model->is_cleaned == '1';
+            },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#product-is_cleaned').val() == 1) {            
+                                    return $('#product-receipt').val() == '';                                    
                                     }
                                 }",],
         ];
@@ -201,7 +212,6 @@ class Product extends \yii\db\ActiveRecord
             'height' => 'Height',
             'weight' => 'Weight',
             'width' => 'Width',
-            'receipt' => 'Receipt',
             'status_id' => 'Status',
             'address_id' => 'Address',
             'created_at' => 'Created At',
@@ -226,6 +236,7 @@ class Product extends \yii\db\ActiveRecord
             'favouriteProduct' => 'favouriteProduct',
             'seller' => 'seller',
             'rating' => 'rating',
+            'productReceipt0' => 'productReceipt0',
         ];
     }
 
@@ -260,7 +271,7 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[ProductRatings]].
+     * Gets query for [[ProductImages]].
      *
      * @return \yii\db\ActiveQuery
      */
@@ -337,6 +348,16 @@ class Product extends \yii\db\ActiveRecord
     public function getSubCategory()
     {
         return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+    }
+
+    /**
+     * Gets query for [[ProductReceipts]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductReceipt()
+    {
+        return $this->hasMany(ProductReceipt::className(), ['product_id' => 'id']);
     }
 
     ///////////////////////For api use only /////////////////////////////////////////////
@@ -483,6 +504,30 @@ class Product extends \yii\db\ActiveRecord
         $modelRate['five_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FIVE_STAR_RATE])->count();
 
         return (object)$modelRate;
+    }
+
+    /**
+     * Gets query for [[ProductReceipts]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductReceipt0()
+    {
+        //return $this->hasMany(ProductReceipt::className(), ['product_id' => 'id']);
+
+        $productReceipts = ProductReceipt::find()->where(['product_id' => $this->id])->all();
+        if (!empty($productReceipts)) {
+            foreach ($productReceipts as $key => $value) {
+                if ($value instanceof ProductReceipt) {
+                    $product_Receipt_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                    if (!empty($value->file) && file_exists(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $value->file)) {
+                        $product_Receipt_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productReceiptImageThumbAbsolutePath') . '/' . $value->file;
+                    }
+                    $value->file = $product_Receipt_image;
+                }
+            }
+        }
+        return $productReceipts;
     }
 
 }

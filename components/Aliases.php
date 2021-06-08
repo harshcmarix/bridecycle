@@ -35,7 +35,7 @@ class Aliases extends Component
         // Used for shop logo thumbnail 
         Yii::setAlias('@shopLogoThumbAbsolutePath', Yii::getAlias('@shopLogoAbsolutePath') . '/thumbs');
         Yii::setAlias('@shopLogoThumbRelativePath', Yii::getAlias('@shopLogoRelativePath') . '/thumbs');
-         // Used for shop cover picture
+        // Used for shop cover picture
         Yii::setAlias('@shopCoverPictureAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/shop_cover_picture');
         Yii::setAlias('@shopCoverPictureRelativePath', Yii::getAlias('@uploadsRelativePath') . '/shop_cover_picture');
         // Used for shop cover picture thumbnail 
@@ -55,6 +55,13 @@ class Aliases extends Component
         Yii::setAlias('@productImageThumbAbsolutePath', Yii::getAlias('@productImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@productImageThumbRelativePath', Yii::getAlias('@productImageRelativePath') . '/thumbs');
 
+        // Used for product receipt image
+        Yii::setAlias('@productReceiptImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/receipts');
+        Yii::setAlias('@productReceiptImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/receipts');
+        // Used for product receipt image thumbnail
+        Yii::setAlias('@productReceiptImageThumbAbsolutePath', Yii::getAlias('@productReceiptImageAbsolutePath') . '/thumbs');
+        Yii::setAlias('@productReceiptImageThumbRelativePath', Yii::getAlias('@productReceiptImageRelativePath') . '/thumbs');
+
         // Used for brand image
         Yii::setAlias('@brandImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/brand_images');
         Yii::setAlias('@brandImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/brand_images');
@@ -67,11 +74,15 @@ class Aliases extends Component
         // Used for banner image thumbnail
         Yii::setAlias('@bannerImageThumbAbsolutePath', Yii::getAlias('@bannerImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@bannerImageThumbRelativePath', Yii::getAlias('@bannerImageRelativePath') . '/thumbs');
-         // Used for tailor shop image
+        // Used for tailor shop image
         Yii::setAlias('@tailorShopImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/tailor_images');
         Yii::setAlias('@tailorShopImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/tailor_images');
         // Used for tailor image thumbnail
         Yii::setAlias('@tailorShopImageThumbAbsolutePath', Yii::getAlias('@tailorShopImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@tailorShopImageThumbRelativePath', Yii::getAlias('@tailorShopImageRelativePath') . '/thumbs');
+
+        // Used for order invoice
+        Yii::setAlias('@orderInvoiceAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/invoices');
+        Yii::setAlias('@orderInvoiceRelativePath', Yii::getAlias('@uploadsRelativePath') . '/invoices');
     }
 }

@@ -4,7 +4,19 @@ namespace app\modules\api\v1\controllers;
 
 use app\models\Order;
 use app\models\OrderItem;
+use app\models\OrderPayment;
 use app\modules\api\v1\models\UserAddress;
+use kartik\mpdf\Pdf;
+use PayPal\Api\Address;
+use PayPal\Api\Amount;
+use PayPal\Api\CreditCard;
+use PayPal\Api\Details;
+use PayPal\Api\FundingInstrument;
+use PayPal\Api\Payer;
+use PayPal\Api\Payment;
+use PayPal\Api\RedirectUrls;
+use PayPal\Common\PayPalModel;
+use PayPal\Exception\PayPalConnectionException;
 use Yii;
 use app\models\{
     CartItem,
@@ -12,6 +24,8 @@ use app\models\{
 };
 use app\modules\api\v1\models\search\CartItemSearch;
 use yii\base\BaseObject;
+use PayPal\Api\Transaction;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\rest\ActiveController;
@@ -241,46 +255,305 @@ class CartItemController extends ActiveController
         $postAddress['UserAddress']['type'] = UserAddress::SHIPPING;
         $postAddress['UserAddress']['address'] = "not set";
 
+        $modelOrderPayment = new OrderPayment();
+        $postOrderPayment['OrderPayment'] = $post;
         if ($modelAddress->load($postAddress) && $modelAddress->validate()) {
-            $modelAddressFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::SHIPPING, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
 
-            if (!empty($modelAddressFind) && $modelAddressFind instanceof UserAddress) {
-                $modelOrder->user_address_id = $modelAddressFind->id;
+            if ($modelOrderPayment->load($postOrderPayment) && $modelOrderPayment->validate()) {
+
+                $modelAddressFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::SHIPPING, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
+
+                if (!empty($modelAddressFind) && $modelAddressFind instanceof UserAddress) {
+                    $modelOrder->user_address_id = $modelAddressFind->id;
+                } else {
+                    $modelAddress->address = $modelAddress->street . ", " . $modelAddress->city . ", " . $modelAddress->zip_code . ", " . $modelAddress->state . ", " . $modelAddress->country;
+                    $modelAddress->save(false);
+                    $modelOrder->user_address_id = $modelAddress->id;
+                }
             } else {
-                $modelAddress->address = $modelAddress->street . ", " . $modelAddress->city . ", " . $modelAddress->zip_code . ", " . $modelAddress->state . ", " . $modelAddress->country;
-                $modelAddress->save();
-                $modelOrder->user_address_id = $modelAddress->id;
+                return $modelOrderPayment;
             }
         } else {
             return $modelAddress;
+        }
+
+        $modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::BILLING])->one();
+        if (empty($modelAddressBillingFind)) {
+            $modelAddressBillingFind = $modelAddress;
+            $modelAddressBillingFind->type = UserAddress::BILLING;
+            $modelAddressBillingFind->save();
         }
 
         $productIds = explode(",", $post['product_id']);
         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->all();
         $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->sum('price');
         //p(Yii::$app->formatter->asCurrency($cartTotal));
-
         $modelOrder->total_amount = (!empty($cartTotal)) ? $cartTotal : 0.00;
 
+
         if (!empty($modelCartItems)) {
-            $modelOrder->save();
+            $modelOrder->save(false);
             foreach ($modelCartItems as $key => $modelCartItemRow) {
                 if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
                     $modelOrderItem = new OrderItem();
+                    $modelOrderItem->order_id = $modelOrder->id;
                     $modelOrderItem->product_id = $modelCartItemRow->product_id;
                     $modelOrderItem->quantity = $modelCartItemRow->quantity;
                     $modelOrderItem->color = $modelCartItemRow->color;
                     $modelOrderItem->size = $modelCartItemRow->size;
-                    if ($modelOrderItem->save()) {
+                    if ($modelOrderItem->save(false)) {
                         // Delete from cart
                         $modelCartItemRow->delete();
+
+
                     }
                 }
+            }
+
+
+            $cardType = OrderPayment::CARD_TYPE_VISA;
+            if (!empty($modelOrderPayment->card_number)) {
+                if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_VISA_NUMBER) {
+                    $cardType = OrderPayment::CARD_TYPE_VISA;
+                } else if (in_array($modelOrderPayment->card_number[0], [OrderPayment::CARD_TYPE_MASTER_NUMBER_ONE, OrderPayment::CARD_TYPE_MASTER_NUMBER_TWO])) {
+                    $cardType = OrderPayment::CARD_TYPE_MASTER;
+                } else if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_AMEX_NUMBER) {
+                    $cardType = OrderPayment::CARD_TYPE_AMEX;
+                } else if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_DISCOVER_NUMBER) {
+                    $cardType = OrderPayment::CARD_TYPE_DISCOVER;
+                }
+            }
+
+            $expMontYear = explode("/", $modelOrderPayment->expiry_month_year);
+            $cardHoderName = explode(" ", $modelOrderPayment->card_holder_name);
+
+            $paymentRequestData = [
+                'total' => $cartTotal,
+                'user_id' => $user_id,
+                'order_id' => $modelOrder->id,
+                'card_type' => $cardType,
+                'card_exp_month' => $expMontYear[0],
+                'card_exp_year' => $expMontYear[1],
+                'card_first_name' => $cardHoderName[0],
+                'card_last_name' => $cardHoderName[1],
+                'sub_total' => $cartTotal,
+                'user' => Yii::$app->user->identity,
+                'user_address' => $modelAddress,
+                'user_address_billing' => $modelAddressBillingFind,
+            ];
+
+            $modelOrderPayment->order_id = $modelOrder->id;
+            $modelOrderPayment->card_type = $cardType;
+            $modelOrderPayment->save(false);
+
+            $response = $this->makePayment(array_merge($post, $paymentRequestData));
+
+            if (!empty($response)) {
+
+                if (!empty($response->getState()) && $response->getState() == 'created') {
+
+                    if (!empty($modelOrder->orderItems)) {
+                        foreach ($modelOrder->orderItems as $keys => $orderItemRow) {
+                            if (!empty($orderItemRow) && $orderItemRow instanceof OrderItem) {
+                                $remainQty = ($orderItemRow->product->available_quantity - $orderItemRow->quantity);
+                                $orderItemRow->product->available_quantity = (!empty($remainQty) && $remainQty > 0) ? $remainQty : 0;
+                                $orderItemRow->product->save(false);
+
+                                $generateInvoice = $this->generateInvoice($orderItemRow->id);
+                                p($generateInvoice);
+                            }
+                        }
+                    }
+                    $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
+                    $modelOrder->save(false);
+                }
+                $modelOrderPayment->payment_response = (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') ? $response : "";
+                $modelOrderPayment->payment_status = (!empty($response->getState())) ? $response->getState() : 'failed';
+                $modelOrderPayment->payment_id = (!empty($response->getId())) ? $response->getId() : "";
+                $modelOrderPayment->save(false);
+                return $modelOrderPayment;
             }
         } else {
             throw new NotFoundHttpException('Cart items doesn\'t exist.');
         }
         return $modelOrder;
     }
+
+    /**
+     * @param $request
+     * @return \Exception|Payment|PayPalConnectionException
+     */
+    public function makePayment($request)
+    {
+        $apiContext = new \PayPal\Rest\ApiContext(
+            new \PayPal\Auth\OAuthTokenCredential(
+                Yii::$app->params['paypal_client_id'], // ClientID
+                Yii::$app->params['paypal_client_secret'] // ClientSecret
+            )
+        );
+
+
+        // or whatever yours is called
+
+        $cardType = $request['card_type'];
+        $cardNumber = $request['card_number'];
+        $cardExpMonth = $request['card_exp_month'];
+        $cardExpYear = $request['card_exp_year'];
+        $cardCvv = $request['cvv'];
+        $cardFirstname = $request['card_first_name'];
+        $cardLastname = $request['card_last_name'];
+        $user = $request['user'];
+        $subTotal = !empty($request['sub_total']) ? $request['sub_total'] : 0.0;
+        $tax = !empty($request['tax']) ? $request['tax'] : 0.0;
+        $shippingCharge = !empty($request['shipping_charge']) ? $request['shipping_charge'] : 0.0;
+        $total = (($subTotal + $tax + $shippingCharge) > 0) ? ($subTotal + $tax + $shippingCharge) : 1.00;
+
+        $billAddress = $request['user_address_billing'];
+        $addressLine = !empty($billAddress) && !empty($billAddress->street) ? $billAddress->street : '52 N Main St';
+        $addressCity = !empty($billAddress) && !empty($billAddress->city) ? $billAddress->city : 'Johnstown';
+        $addressPostCode = !empty($billAddress) && !empty($billAddress->zip_code) ? $billAddress->zip_code : '43210';
+        $addressState = !empty($billAddress) && !empty($billAddress->state) ? $billAddress->state : 'OH';
+        $addressCountry = !empty($billAddress) && !empty($billAddress->country) ? $billAddress->country : 'US';
+        $addressPhone = !empty($user) && !empty($user->mobile) ? $user->mobile : '408-334-8890';
+
+        // set billing address
+        $addr = new Address();
+        $addr->setLine1($addressLine);
+        $addr->setCity($addressCity);
+        $addr->setCountryCode($addressCountry);
+        $addr->setPostalCode($addressPostCode);
+        $addr->setState($addressState);
+        $addr->setPhone($addressPhone);
+
+        $shippingAddress = $request['user_address'];
+
+        $addressShippingLine = !empty($shippingAddress) && !empty($shippingAddress->street) ? $shippingAddress->street : '52 N Main St';
+        $addressShippingCity = !empty($shippingAddress) && !empty($shippingAddress->city) ? $shippingAddress->city : 'Johnstown';
+        $addressShippingCountry = !empty($shippingAddress) && !empty($shippingAddress->country) ? $shippingAddress->country : 'US';
+        $addressShippingPostCode = !empty($shippingAddress) && !empty($shippingAddress->zip_code) ? $shippingAddress->zip_code : '43210';
+        $addressShippingState = !empty($shippingAddress) && !empty($shippingAddress->state) ? $shippingAddress->state : 'OH';
+        $addressShippingPhone = !empty($user) && !empty($user->mobile) ? $user->mobile : '408-334-8890';
+
+        // set shipping address
+        $addrShip = new Address();
+        $addrShip->setLine1($addressShippingLine);
+        $addrShip->setCity($addressShippingCity);
+        $addrShip->setCountryCode($addressShippingCountry);
+        $addrShip->setPostalCode($addressShippingPostCode);
+        $addrShip->setState($addressShippingState);
+        $addrShip->setPhone($addressShippingPhone);
+
+        // set credit card information
+        $card = new CreditCard();
+        $card->setNumber($cardNumber);
+        $card->setType($cardType);
+        $card->setExpireMonth($cardExpMonth);
+        $card->setExpireYear($cardExpYear);
+        $card->setCvv2($cardCvv);
+        $card->setFirstName($cardFirstname);
+        $card->setLastName($cardLastname);
+        $card->setBillingAddress($addr);
+        //$card->setShippingAddress($addrShip);
+
+        $fi = new FundingInstrument();
+        $fi->setCreditCard($card);
+
+        $payer = new Payer();
+        $payer->setPaymentMethod("paypal");
+
+//        $payer = new Payer();
+//        $payer->setPaymentMethod('credit_card');
+//        $payer->setFundingInstruments(array($fi));
+
+        // Specify the payment amount.
+        $amountDetails = new Details();
+        $amountDetails->setSubtotal($subTotal);
+        $amountDetails->setTax($tax);
+        $amountDetails->setShipping($shippingCharge);
+
+        $amount = new Amount();
+        $amount->setCurrency(Yii::$app->params['paypal_payment_currency']);
+        $amount->setTotal($total);
+        $amount->setDetails($amountDetails);
+
+
+        // ###Transaction
+        // A transaction defines the contract of a
+        // payment - what is the payment for and who
+        // is fulfilling it. Transaction is created with
+        // a `Payee` and `Amount` types
+        $transaction = new Transaction();
+        $transaction->setAmount($amount);
+        $transaction->setDescription('This is the order payment transaction.');
+        $transaction->setPaymentOptions(array('allowed_payment_method' => 'INSTANT_FUNDING_SOURCE'));
+
+        $returnUrl = Url::to(['/cart-item/paypal-payment-response', 'is_success' => true, 'owner_id' => $request['user_id'], 'order_id' => $request['order_id']], true);
+        $cancelUrl = Url::to(['/cart-item/paypal-payment-response', 'is_success' => false, 'owner_id' => $request['user_id'], 'order_id' => $request['order_id']], true);
+        $redirectUrls = new RedirectUrls();
+        $redirectUrls->setReturnUrl($returnUrl);
+        $redirectUrls->setCancelUrl($cancelUrl);
+
+        $payment = new Payment();
+        $payment->setRedirectUrls($redirectUrls);
+        $payment->setIntent("sale");
+        $payment->setPayer($payer);
+        $payment->setTransactions(array($transaction));
+
+        try {
+            $response = $payment->create($apiContext);
+            $payment = Payment::get($response->getId(), $apiContext);
+            return $payment;
+        } catch (PayPalConnectionException $pce) {
+//            // Don't spit out errors or use "exit" like this in production code
+//            return json_decode($pce->getData());
+
+            //echo $pce->getCode();
+            //echo $pce->getData();
+            //die($pce);
+            return $pce;
+        }
+
+
+    }
+
+    /**
+     * @param null $is_success
+     * @param null $owner_id
+     * @param null $order_id
+     */
+    public function actionPaypalPaymentResponse($is_success = null, $owner_id = null, $order_id = null)
+    {
+        return $is_success;
+    }
+
+    /**
+     * @param $order_item_id
+     * @return string
+     */
+    public function generateInvoice($order_item_id)
+    {
+        $this->layout = "";
+        $modelOrderItem = OrderItem::findOne($order_item_id);
+        $modelProduct = '';
+        $modelseller = '';
+        $modelsellerDetail = '';
+        $modelOrder = $modelOrderItem->order;
+        if (!empty($modelOrderItem) && $modelOrderItem instanceof OrderItem) {
+            $modelProduct = $modelOrderItem->product;
+            $modelseller = $modelOrderItem->product->user;
+            $modelsellerDetail = (!empty($modelOrderItem->product->user) && !empty($modelOrderItem->product->user->ShopDetails)) ? $modelOrderItem->product->user->ShopDetails : "";
+        }
+        $content = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail]);
+
+
+        $fileName = 'order-' . time() . "-" . $modelOrder->id . ".pdf";
+        Yii::$app->html2pdf->convert($content)->saveAs(Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName);
+
+        $modelOrderItem->invoice = $fileName;
+        $modelOrderItem->save(false);
+
+        return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;
+    }
+
 
 }

@@ -12,6 +12,11 @@ use app\modules\api\v1\models\User;
  * @property int $id
  * @property int $user_id
  * @property int $subscription_id
+ * @property string|null $card_holder_name
+ * @property string|null $card_type
+ * @property string|null $payment_response
+ * @property string|null $payment_status
+ * @property string|null $transaction_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -43,16 +48,30 @@ class UserSubscription extends \yii\db\ActiveRecord
 
     public $cvv;
 
+    const  CARD_TYPE_VISA_NUMBER = '4';
+    const  CARD_TYPE_MASTER_NUMBER_ONE = '5';
+    const  CARD_TYPE_MASTER_NUMBER_TWO = '2';
+    const  CARD_TYPE_AMEX_NUMBER = '3';
+    const  CARD_TYPE_DISCOVER_NUMBER = '6';
+    //const  CARD_TYPE_MAESTRO_NUMBER = 'maestro';
+
+    const  CARD_TYPE_VISA = 'visa';
+    const  CARD_TYPE_MASTER = 'mastercard';
+    const  CARD_TYPE_AMEX = 'amex';
+    const  CARD_TYPE_DISCOVER = 'discover';
+    //const  CARD_TYPE_MAESTRO = 'maestro';
+
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['user_id', 'subscription_id', 'card_number', 'expiry_month_year', 'cvv'], 'required'],
+            [['user_id', 'subscription_id', 'card_holder_name', 'card_number', 'expiry_month_year', 'cvv'], 'required'],
             [['user_id', 'subscription_id'], 'integer'],
             [['card_number', 'cvv'], 'integer'],
-            [['expiry_month_year', 'created_at', 'updated_at'], 'safe'],
+            [['card_holder_name', 'payment_response', 'payment_status', 'transaction_id', 'card_type', 'expiry_month_year', 'created_at', 'updated_at'], 'safe'],
             [['subscription_id'], 'exist', 'skipOnError' => true, 'targetClass' => Subscription::className(), 'targetAttribute' => ['subscription_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];

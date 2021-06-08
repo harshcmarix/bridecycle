@@ -198,11 +198,11 @@ class UserSubscriptionController extends ActiveController
                 ];
 
                 $response = $this->makeSubscriptionPayment(array_merge($postData, $paymentRequestData));
-
+                p($response);
                 if (!empty($response)) {
-                    $model->payment_response = (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') ? $response : "";
-                    $model->payment_status = (!empty($response->getState())) ? $response->getState() : 'failed';
-                    $model->transaction_id = (!empty($response->getId())) ? $response->getId() : "";
+                    $model->payment_response = $response;
+                    $model->payment_status = !empty($response->getState()) ? $response->getState() : 'failed';
+                    $model->transaction_id = !empty($response->getId()) ? $response->getId() : "";
                     $model->save(false);
                 }
             }
@@ -317,64 +317,126 @@ class UserSubscriptionController extends ActiveController
         $card->setFirstName($cardFirstname);
         $card->setLastName($cardLastname);
         $card->setBillingAddress($addr);
+        $card->setExternalCustomerId(str_replace(" ", "_", strtolower(Yii::$app->name . "-" . Yii::$app->user->identity->id . "-" . Yii::$app->user->identity->first_name)));
+        $req = $card->create($apiContext);
 
-        $fi = new FundingInstrument();
-        $fi->setCreditCard($card);
+        if (!empty($req) && $req->getState() == 'ok') {
+            $payerRequestParams = (array)[
+                (object)["credit_card_token" => (object)[
+                    "credit_card_id" => $req->getId(),
+                    "external_customer_id" => $req->getExternalCustomerId(),
+                ],
+                ],
+            ];
 
-        $payer = new Payer();
-        $payer->setPaymentMethod("paypal");
+
+            $payer = new Payer();
+            $payer->setPaymentMethod("credit_card");
+            $payer->setFundingInstruments($payerRequestParams);
+
+            // Specify the payment amount.
+            $amountDetails = new Details();
+            $amountDetails->setSubtotal($subTotal);
+            $amountDetails->setTax($tax);
+            $amountDetails->setShipping($shippingCharge);
+
+            $amount = new Amount();
+            $amount->setCurrency(Yii::$app->params['paypal_payment_currency']);
+            $amount->setTotal($total);
+            //$amount->setDetails($amountDetails);
+
+            // ###Transaction
+            // A transaction defines the contract of a
+            // payment - what is the payment for and who
+            // is fulfilling it. Transaction is created with
+            // a `Payee` and `Amount` types
+            $transaction = new Transaction();
+            $transaction->setAmount($amount);
+            $transaction->setDescription('This is the subscription purchase payment transaction.');
+
+            $payment = new Payment();
+            //$payment->setRedirectUrls($redirectUrls);
+            $payment->setIntent("sale");
+            $payment->setPayer($payer);
+            $payment->setTransactions(array($transaction));
+
+            try {
+                $response = $payment->create($apiContext);
+                p($response);
+                $payment = Payment::get($response->getId(), $apiContext);
+                return $payment;
+            } catch (PayPalConnectionException $pce) {
+//            // Don't spit out errors or use "exit" like this in production code
+//            return json_decode($pce->getData());
+
+                echo $pce->getCode();
+                echo $pce->getData();
+                die($pce);
+                return $pce;
+            }
+
+        } else {
+            return false;
+        }
+//        $fi = new FundingInstrument();
+//        $fi->setCreditCard($card);
+
+//        $payerRequestParams = ['credit_card_id' => $req->getId(), 'external_customer_id' => $req->getExternalCustomerId()];
+//        $payer = new Payer();
+//        $payer->setPaymentMethod("credit_card");
+//        $payer->setFundingInstruments(['credit_card_token' => $payerRequestParams]);
 
 //        $payer = new Payer();
 //        $payer->setPaymentMethod('credit_card');
 //        $payer->setFundingInstruments(array($fi));
 
-        // Specify the payment amount.
-        $amountDetails = new Details();
-        $amountDetails->setSubtotal($subTotal);
-        $amountDetails->setTax($tax);
-        $amountDetails->setShipping($shippingCharge);
+//        // Specify the payment amount.
+//        $amountDetails = new Details();
+//        $amountDetails->setSubtotal($subTotal);
+//        $amountDetails->setTax($tax);
+//        $amountDetails->setShipping($shippingCharge);
+//
+//        $amount = new Amount();
+//        $amount->setCurrency(Yii::$app->params['paypal_payment_currency']);
+//        $amount->setTotal($total);
+//        $amount->setDetails($amountDetails);
+//
+//
+//        // ###Transaction
+//        // A transaction defines the contract of a
+//        // payment - what is the payment for and who
+//        // is fulfilling it. Transaction is created with
+//        // a `Payee` and `Amount` types
+//        $transaction = new Transaction();
+//        $transaction->setAmount($amount);
+//        $transaction->setDescription('This is the subscription purchase payment transaction.');
+//        $transaction->setPaymentOptions(array('allowed_payment_method' => 'INSTANT_FUNDING_SOURCE'));
 
-        $amount = new Amount();
-        $amount->setCurrency(Yii::$app->params['paypal_payment_currency']);
-        $amount->setTotal($total);
-        $amount->setDetails($amountDetails);
+//        $returnUrl = Url::to(['/user-subscription/paypal-payment-response', 'is_success' => true, 'subscription_package_id' => $request['subscription_package_id'], 'owner_id' => $request['user_id'], 'user_subscription_id' => $request['user_subscription_id']], true);
+//        $cancelUrl = Url::to(['/user-subscription/paypal-payment-response', 'is_success' => false, 'subscription_package_id' => $request['subscription_package_id'], 'owner_id' => $request['user_id'], 'user_subscription_id' => $request['user_subscription_id']], true);
+//        $redirectUrls = new RedirectUrls();
+//        $redirectUrls->setReturnUrl($returnUrl);
+//        $redirectUrls->setCancelUrl($cancelUrl);
 
-
-        // ###Transaction
-        // A transaction defines the contract of a
-        // payment - what is the payment for and who
-        // is fulfilling it. Transaction is created with
-        // a `Payee` and `Amount` types
-        $transaction = new Transaction();
-        $transaction->setAmount($amount);
-        $transaction->setDescription('This is the subscription purchase payment transaction.');
-        $transaction->setPaymentOptions(array('allowed_payment_method' => 'INSTANT_FUNDING_SOURCE'));
-
-        $returnUrl = Url::to(['/user-subscription/paypal-payment-response', 'is_success' => true, 'subscription_package_id' => $request['subscription_package_id'], 'owner_id' => $request['user_id'], 'user_subscription_id' => $request['user_subscription_id']], true);
-        $cancelUrl = Url::to(['/user-subscription/paypal-payment-response', 'is_success' => false, 'subscription_package_id' => $request['subscription_package_id'], 'owner_id' => $request['user_id'], 'user_subscription_id' => $request['user_subscription_id']], true);
-        $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl($returnUrl);
-        $redirectUrls->setCancelUrl($cancelUrl);
-
-        $payment = new Payment();
-        $payment->setRedirectUrls($redirectUrls);
-        $payment->setIntent("sale");
-        $payment->setPayer($payer);
-        $payment->setTransactions(array($transaction));
-
-        try {
-            $response = $payment->create($apiContext);
-            $payment = Payment::get($response->getId(), $apiContext);
-            return $payment;
-        } catch (PayPalConnectionException $pce) {
-//            // Don't spit out errors or use "exit" like this in production code
-//            return json_decode($pce->getData());
-
-            //echo $pce->getCode();
-            //echo $pce->getData();
-            //die($pce);
-            return $pce;
-        }
+//        $payment = new Payment();
+//        //$payment->setRedirectUrls($redirectUrls);
+//        //$payment->setIntent("sale");
+//        $payment->setPayer($payer);
+//        $payment->setTransactions(array($transaction));
+//
+//        try {
+//            $response = $payment->create($apiContext);
+//            $payment = Payment::get($response->getId(), $apiContext);
+//            return $payment;
+//        } catch (PayPalConnectionException $pce) {
+////            // Don't spit out errors or use "exit" like this in production code
+////            return json_decode($pce->getData());
+//
+//            //echo $pce->getCode();
+//            //echo $pce->getData();
+//            //die($pce);
+//            return $pce;
+//        }
 
 
     }

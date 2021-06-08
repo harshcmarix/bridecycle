@@ -45,6 +45,8 @@ use Yii;
  * @property string|null $verification_code
  * @property string|null $facebook_id
  * @property string|null $apple_id
+ * @property string|null $latitude
+ * @property string|null $longitude
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -145,6 +147,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email', 'shop_email'], 'email'],
+            [['latitude', 'longitude'], 'safe'],
             [['email'], 'unique'],
             [['email'], 'string', 'max' => 60],
             [['verification_code'], 'string', 'max' => 6],

@@ -55,8 +55,8 @@ return [
      *
      * @Note : CTPL Testing Account
      */
-    'paypal_client_id' => 'AVh7TWRjOcq7DkACNDj_8SFKlVkL520yJH-Km5NwnvmTvsucgbTM4bAqKizRD1TxvJ_ZJiNzmqxma09F',
-    'paypal_client_secret' => 'EH0j7EnQLstPr2On0pj5lgcND8dygD9xz_NGELdvUq4GWylKOuUxNJwVqd95yw5KmCWcOIfjxVfBIRds',
+    'paypal_client_id' => 'AcjJ_Ugx14mHKvPuPuCK7Uii8I8SL1yzcW585G9zp6UjCXvVMga7CmBOSMH5HVO8fx4YXtY8LCPULZNm',
+    'paypal_client_secret' => 'ELW5y0ZLN58ZkPSDIhDlC6-A6cIZWysgUxtlFq4e5mAAknDeSwtFFOfG4-IRgqE9Pb1w_6wtFFZXeRG4',
     'paypal_mode' => 'sandbox',
 
     /**

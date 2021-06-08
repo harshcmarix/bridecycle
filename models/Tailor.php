@@ -14,7 +14,10 @@ use Yii;
  * @property string $shop_name
  * @property string $shop_image
  * @property string $address
+ * @property string $zip_code
  * @property int|null $mobile
+ * @property string|null $latitude
+ * @property string|null $longitude
  * @property string|null $created_at
  * @property string|null $updated_at
  */
@@ -30,6 +33,7 @@ class Tailor extends ActiveRecord
     const IMAGE_EMPTY = 1;
     const IMAGE_NOT_EMPTY = 0;
     public $is_shop_image_empty;
+
     /**
      * {@inheritdoc}
      */
@@ -50,21 +54,24 @@ class Tailor extends ActiveRecord
             ],
         ];
     }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'shop_name', 'address'], 'required'],
+            [['name', 'shop_name', 'address', 'zip_code', 'latitude', 'longitude'], 'required'],
             [['address'], 'string'],
+            [['latitude', 'longitude'], 'safe'],
             // [['mobile'], 'integer'],
-            [['mobile'],'string', 'max' => 15,'min'=>5],
+            [['zip_code'], 'integer'],
+            [['mobile'], 'string', 'max' => 15, 'min' => 5],
             [['shop_image'], 'file', 'extensions' => 'png,jpg'],
-            [['shop_image'],'required','on'=>self::SCENARIO_CREATE],
+            [['shop_image'], 'required', 'on' => self::SCENARIO_CREATE],
             [['shop_image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
-            },'whenClient' => "function (attribute, value) {
+            }, 'whenClient' => "function (attribute, value) {
                     if ($('#tailor-is_shop_image_empty').val() == 1) {            
                                     return $('#tailor-shop_image').val() == '';                                    
                                     }
