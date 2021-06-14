@@ -18,6 +18,7 @@ class BannerSearch extends Banner
      * @var $hiddenFields Array of hidden fields which not needed in APIs
      */
     protected $hiddenFields = [];
+
     /**
      * {@inheritdoc}
      */
@@ -102,7 +103,7 @@ class BannerSearch extends Banner
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id','image','created_at','updated_at'];
+            $select = ['banners.*'];
         }
 
         $query->select($select);
@@ -113,7 +114,7 @@ class BannerSearch extends Banner
 
         $query->groupBy('banners.id');
 
-        $activeDataProvider =  Yii::createObject([
+        $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
             'pagination' => [
@@ -127,9 +128,9 @@ class BannerSearch extends Banner
 
         $bannerModelData = $activeDataProvider->getModels();
 
-        foreach($bannerModelData as $key=>$value){
+        foreach ($bannerModelData as $key => $value) {
             $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if(!empty($bannerModelData[$key]['image']) && file_exists(Yii::getAlias('@bannerImageThumbRelativePath') . '/' . $value->image)){
+            if (!empty($bannerModelData[$key]['image']) && file_exists(Yii::getAlias('@bannerImageThumbRelativePath') . '/' . $value->image)) {
                 $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $value->image;
             }
             $bannerModelData[$key]['image'] = $bannerImage;

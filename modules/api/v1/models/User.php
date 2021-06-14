@@ -2,6 +2,10 @@
 
 namespace app\modules\api\v1\models;
 
+use app\models\Order;
+use app\models\ProductRating;
+use app\models\UserDevice;
+use app\models\UserSubscription;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -47,6 +51,27 @@ use Yii;
  * @property string|null $apple_id
  * @property string|null $latitude
  * @property string|null $longitude
+ *
+ * @property string|null $is_new_message_notification_on
+ * @property string|null $is_offer_update_notification_on
+ * @property string|null $is_offer_on_favourite_notification_on
+ * @property string|null $is_saved_searches_notification_on
+ * @property string|null $is_order_placed_notification_on
+ * @property string|null $is_payment_done_notification_on
+ * @property string|null $is_order_delivered_notification_on
+ * @property string|null $is_click_and_try_notification_on
+ *
+ * @property string|null $is_new_message_email_notification_on
+ * @property string|null $is_offer_update_email_notification_on
+ * @property string|null $is_offer_on_favourite_email_notification_on
+ * @property string|null $is_saved_searches_email_notification_on
+ * @property string|null $is_order_placed_email_notification_on
+ * @property string|null $is_payment_done_email_notification_on
+ * @property string|null $is_order_delivered_email_notification_on
+ * @property string|null $is_click_and_try_email_notification_on
+ *
+ * @property string|null $is_verify_user
+ *
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -57,6 +82,8 @@ use Yii;
  * @property UserAddresses[] $userAddresses
  * @property UserSocialIdentities[] $userSocialIdentities
  * @property UserSubscriptions[] $userSubscriptions
+ * @property UserDevices[] $userDevices
+ * @property UserDevice $userDevice
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -108,6 +135,9 @@ class User extends ActiveRecord implements IdentityInterface
     const IS_EMAIL_NOTIFICATION_ON = '1'; // is on
     const IS_EMAIL_NOTIFICATION_OFF = '0'; // is off
 
+    const IS_VERIFY_USER_NO = '0';
+    const IS_VERIFY_USER_YES = '1';
+
     const IS_LOGIN_FROM_FACEBOOK = "facebook";
     const IS_LOGIN_FROM_APPLE = "apple";
 
@@ -147,7 +177,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email', 'shop_email'], 'email'],
-            [['latitude', 'longitude'], 'safe'],
+            [['is_verify_user', 'latitude', 'longitude'], 'safe'],
             [['email'], 'unique'],
             [['email'], 'string', 'max' => 60],
             [['verification_code'], 'string', 'max' => 6],
@@ -266,7 +296,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getOrders()
     {
-        return $this->hasMany(Orders::className(), ['user_id' => 'id']);
+        return $this->hasMany(Order::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -276,7 +306,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getProductRatings()
     {
-        return $this->hasMany(ProductRatings::className(), ['user_id' => 'id']);
+        return $this->hasMany(ProductRating::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -306,9 +336,27 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserSubscriptions()
     {
-        return $this->hasMany(UserSubscriptions::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSubscription::className(), ['user_id' => 'id']);
     }
 
+    /**
+     * Gets query for [[UserDevides]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserDevices()
+    {
+        return $this->hasMany(UserDevice::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserDevice()
+    {
+        $device = UserDevice::find()->where(['user_id' => $this->id])->orderBy(['id' => SORT_DESC])->one();
+        return $device;
+    }
 
     /**
      * Uses for API

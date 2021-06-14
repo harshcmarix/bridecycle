@@ -50,7 +50,7 @@ class BannerController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index',],
+            'only' => ['view'],//index
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,

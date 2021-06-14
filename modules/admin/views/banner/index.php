@@ -38,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
+            'name',
             [
                 'format' => ['raw'],
                 'enableSorting' => false,

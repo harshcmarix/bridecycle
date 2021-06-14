@@ -10,6 +10,7 @@ use Yii;
  * This is the model class for table "subscriptions".
  *
  * @property int $id
+ * @property int $month
  * @property string $name
  * @property float $amount
  * @property string $status 0 => inactive, 1 => active
@@ -58,8 +59,8 @@ class Subscription extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'amount','status'], 'required'],
-            [['amount'], 'number'],
+            [['month','name', 'amount','status'], 'required'],
+            [['month','amount'], 'number'],
             [['status'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],

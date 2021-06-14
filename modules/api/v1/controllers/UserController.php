@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v1\controllers;
 
+use app\models\UserDevice;
 use yii\filters\auth\{
     HttpBasicAuth,
     CompositeAuth,
@@ -59,7 +60,7 @@ class UserController extends ActiveController
             'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'login' => ['POST', 'OPTIONS'],
-            'logout' => ['GET'],
+            'logout' => ['GET', 'HEAD', 'OPTIONS'],
             'forgot-password' => ['POST', 'OPTIONS'],
             'verify-reset-password' => ['POST', 'OPTIONS'],
             'reset-password' => ['POST', 'OPTIONS'],
@@ -67,6 +68,7 @@ class UserController extends ActiveController
             'update-profile-picture' => ['POST', 'OPTIONS'],
             'delete-user-address' => ['POST', 'OPTIONS'],
             'verify-profile-verification-code' => ['POST', 'OPTIONS'],
+            'resend-verification-code' => ['POST', 'OPTIONS'],
             'enter-size-information' => ['POST', 'OPTIONS'],
         ];
     }
@@ -79,7 +81,8 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'update', 'logout', 'change-password', 'update-profile-picture', 'delete-user-address', 'enter-size-information'],
+            //'only' => ['index', 'view', 'update', 'logout', 'change-password', 'update-profile-picture', 'delete-user-address', 'enter-size-information'],
+            'only' => ['index', 'view', 'update', 'change-password', 'update-profile-picture', 'delete-user-address', 'enter-size-information'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -459,6 +462,14 @@ class UserController extends ActiveController
         $data['Login'] = Yii::$app->request->post();
 
         $postData = Yii::$app->request->post();
+
+        if (empty($postData) || empty($postData['notification_token'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "notification_token"');
+        }
+        if (empty($postData) || empty($postData['device_platform'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "device_platform"');
+        }
+
         if (!empty($postData) && !empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_FACEBOOK) {
             if (empty($postData) || empty($postData['facebook_id'])) {
                 throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "facebook_id"');
@@ -489,13 +500,44 @@ class UserController extends ActiveController
             $model->scenario = Login::SCENARIO_LOGIN_FROM_APP;
         }
 
+        $modelUser = "";
         if ($model->load($data) && $model->validate()) {
             if (!$model->login()) {
                 throw new ForbiddenHttpException('Unable to process your request. Please contact administrator');
             }
+
+            //update notification token
+            if (!empty($postData['notification_token']) && !empty($postData['device_platform']) && !empty(Yii::$app->user->identity->id)) {
+                $loginDevice = UserDevice::find()->where(['notification_token' => $postData['notification_token'], 'device_platform' => $postData['device_platform'], 'user_id' => Yii::$app->user->identity->id])->one();
+                if (empty($loginDevice)) {
+                    $loginDevice = new UserDevice();
+                    $loginDevice->user_id = Yii::$app->user->identity->id;
+                    $loginDevice->notification_token = $postData['notification_token'];
+                    $loginDevice->device_platform = $postData['device_platform'];
+                    $loginDevice->save(false);
+                }
+            }
+
+
+            if (!empty($model->user) && $model->user->is_verify_user == 0) {
+
+                $modelUser = User::findOne($model->user->id);
+                $modelUser->verification_code = $modelUser->getVerificationCode();
+                $modelUser->save(false);
+
+                Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($modelUser->email)
+                    ->setSubject('Profile verification code!')
+                    ->send();
+            }
+            $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user]);
+            return $dataResponse;
+        } else {
+            return $model;
         }
 
-        return $model;
+
     }
 
     /**
@@ -504,6 +546,12 @@ class UserController extends ActiveController
      */
     public function actionLogout()
     {
+        $postData = Yii::$app->request->get();
+
+        if (empty($postData) || empty($postData['notification_token'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "notification_token"');
+        }
+
         $headers = \Yii::$app->getRequest()->getHeaders();
         $authorizationData = $headers->get('Authorization');
         if (!empty($authorizationData)) {
@@ -519,8 +567,13 @@ class UserController extends ActiveController
                 $userModel->access_token_expired_at = null;
                 $userModel->save();
 
-                \Yii::$app->user->logout();
 
+                $loginDevice = UserDevice::find()->where(["user_id" => Yii::$app->user->identity->id, "notification_token" => $postData['notification_token']])->one();
+                if (!empty($loginDevice)) {
+                    $loginDevice->delete();
+                }
+
+                \Yii::$app->user->logout();
                 return [
                     'message' => 'Logged Out Successfully.'
                 ];
@@ -575,13 +628,16 @@ class UserController extends ActiveController
         }
         // $model = User::find()->where(['temporary_password' => $postData['tmp_password']])->one();
         $model = User::find()->where(['temporary_password' => $postData['tmp_password'], 'user_type' => User::USER_TYPE_NORMAL])->one();
-        $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
-        $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
-        $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-        if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
-            $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+        if (!empty($model)) {
+            $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+            $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
+            $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
+                $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+            }
+            $model->profile_picture = $profile_picture;
         }
-        $model->profile_picture = $profile_picture;
+
         if (!$model instanceof User) {
             throw new NotFoundHttpException('Temporary password does\'t exist.');
         }
@@ -649,6 +705,7 @@ class UserController extends ActiveController
 
         if (!empty($model) && $model instanceof User) {
             $model->verification_code = "";
+            $model->is_verify_user = User::IS_VERIFY_USER_YES;
             $model->save(false);
         }
 
@@ -662,6 +719,29 @@ class UserController extends ActiveController
         $model->profile_picture = $profile_picture;
 
         return $model;
+    }
+
+    public function actionResendVerificationCode()
+    {
+
+        $post = \Yii::$app->request->post();
+        if (empty($post) || empty($post['email'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "email"');
+        }
+
+        $modelUser = User::findByEmail($post['email']);
+        if (empty($modelUser) && !$modelUser instanceof User) {
+            throw new NotFoundHttpException('Email doesn\'t exist.');
+        }
+
+        $modelUser->verification_code = $modelUser->getVerificationCode();
+        $modelUser->save(false);
+
+        Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
+            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+            ->setTo($modelUser->email)
+            ->setSubject('Profile verification code!')
+            ->send();
     }
 
     /**
@@ -699,6 +779,11 @@ class UserController extends ActiveController
         return $model;
     }
 
+    /**
+     * @return User|\yii\db\ActiveRecord
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
     public function actionChangeNotificationSetting()
     {
         $postData = \Yii::$app->request->post();

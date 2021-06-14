@@ -176,6 +176,7 @@ class ProductController extends Controller
     {
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
+        $model->receipt = $model->productReceipt;
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $model->category_id])->all(), 'id', 'name');;
@@ -205,7 +206,7 @@ class ProductController extends Controller
 
             $images = UploadedFile::getInstances($model, 'images');
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 if (!empty($images)) {
 
                     $oldImages = $model->productImages;

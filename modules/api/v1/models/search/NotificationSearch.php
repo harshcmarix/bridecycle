@@ -2,8 +2,13 @@
 
 namespace app\modules\api\v1\models\search;
 
+use Yii;
+use yii\base\BaseObject;
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
+use yii\data\{
+    ActiveDataFilter,
+    ActiveDataProvider
+};
 use app\models\Notification;
 
 /**
@@ -11,6 +16,11 @@ use app\models\Notification;
  */
 class NotificationSearch extends Notification
 {
+    /**
+     * @var $hiddenFields Array of hidden fields which not needed in APIs
+     */
+    protected $hiddenFields = [];
+
     /**
      * {@inheritdoc}
      */
@@ -38,37 +48,101 @@ class NotificationSearch extends Notification
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($requestParams)
     {
-        $query = Notification::find();
 
-        // add conditions that should always apply here
+        /* ########## Prepare Request Filter Start ######### */
+        if (!empty($requestParams['filter'])) {
+            foreach ($requestParams['filter'] as $key => $val) {
+                if ($key === 'dropdown') {
+                    if (is_array($val) && !empty($val)) {
+                        foreach ($val as $k => $v) {
+                            if (!empty($v['like'])) {
+                                $requestParams['filter'][$key][$k]['like'] = trim(urldecode($v['like']));
+                            } else {
+                                if (isset($v) && !is_array($v) && $v != '') {
+                                    $requestParams['filter'][$key][$k] = trim(urldecode($v));
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (!empty($val['like'])) {
+                        $requestParams['filter'][$key]['like'] = trim(urldecode($val['like']));
+                    } else {
+                        if (isset($val) && !is_array($val) && $val != '') {
+                            $requestParams['filter'][$key] = trim(urldecode($val));
+                        }
+                    }
+                }
+            }
+        }
+        /* ########## Prepare Request Filter End ######### */
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
-        $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
+        /* ########## Active Data Filter Start ######### */
+        $activeDataFilter = new ActiveDataFilter();
+        $activeDataFilter->setSearchModel($this);
+        $filter = null;
+        if (isset($requestParams['filter']['dropdown'])) {
+            unset($requestParams['filter']['dropdown']);
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'owner_id' => $this->owner_id,
-            'notification_receiver_id' => $this->notification_receiver_id,
-            'ref_id' => $this->ref_id,
-            'created_at' => $this->created_at,
+        if ($activeDataFilter !== null) {
+            if ($activeDataFilter->load($requestParams)) {
+                $filter = $activeDataFilter->build();
+
+                if ($filter === false) {
+                    return $activeDataFilter;
+                }
+            }
+        }
+        /* ########## Active Data Filter End ######### */
+
+        /* ########## Prepare Query With Default Filter Start ######### */
+
+        // Notification is read update
+        $queryUpdate = self::find()->where(['notification_receiver_id' => Yii::$app->user->identity->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->all();
+        if (!empty($queryUpdate)) {
+            foreach ($queryUpdate as $key => $queryUpdateRow) {
+                if (!empty($queryUpdateRow) && $queryUpdateRow instanceof Notification) {
+                    $queryUpdateRow->is_read = '1';
+                    $queryUpdateRow->save(false);
+                }
+            }
+        }
+
+        $query = self::find()->where(['notification_receiver_id' => Yii::$app->user->identity->id]);
+        $fields = $this->hiddenFields;
+        if (!empty($requestParams['fields'])) {
+            $fieldsData = $requestParams['fields'];
+            $select = array_diff(explode(',', $fieldsData), $fields);
+        } else {
+            $select = ['notification.*',];
+        }
+
+        $query->select($select);
+        if (!empty($filter)) {
+            $query->andWhere($filter);
+        }
+        /* ########## Prepare Query With Default Filter End ######### */
+
+        $query->orderBy(['id' => SORT_DESC]);
+        $query->groupBy('notification.id');
+
+        $activeDataProvider = Yii::createObject([
+            'class' => ActiveDataProvider::class,
+            'query' => $query,
+            'pagination' => [
+                'params' => $requestParams,
+                'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : Yii::$app->params['default_page_size'], //set page size here
+            ],
+            'sort' => [
+                'params' => $requestParams,
+            ],
         ]);
 
-        $query->andFilterWhere(['like', 'notification_text', $this->notification_text])
-            ->andFilterWhere(['like', 'action', $this->action])
-            ->andFilterWhere(['like', 'ref_type', $this->ref_type]);
-
-        return $dataProvider;
+        $notificationsModelData = $activeDataProvider->getModels();
+        $activeDataProvider->setModels($notificationsModelData);
+        return $activeDataProvider;
     }
 }

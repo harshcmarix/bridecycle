@@ -2,7 +2,9 @@
 
 namespace app\modules\api\v1\controllers;
 
+use app\models\Notification;
 use app\models\Product;
+use app\modules\api\v1\models\User;
 use Yii;
 use app\models\ProductRating;
 use app\modules\api\v1\models\search\ProductRatingSearch;
@@ -186,6 +188,54 @@ class ProductRatingController extends ActiveController
         }
         if ($model->load($productRating) && $model->validate()) {
             $model->save();
+
+
+            // Send Push notification start
+            $getUsers[] = $model->product->user;
+
+            if (!empty($getUsers)) {
+                foreach ($getUsers as $keys => $userROW) {
+                    if ($userROW instanceof User) {
+                        if ($userROW->is_new_message_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                            $userDevice = $userROW->userDevice;
+
+                            // Insert into notification.
+                            $notificationText = $model->user->first_name . " " . $model->user->last_name . " has added rate or review for your product";
+                            $modelNotification = new Notification();
+                            $modelNotification->owner_id = $model->user_id;
+                            $modelNotification->notification_receiver_id = $userROW->id;
+                            $modelNotification->ref_id = $model->id;
+                            $modelNotification->notification_text = $notificationText;
+                            $modelNotification->action = "Add";
+                            $modelNotification->ref_type = "product_ratings"; // For Product rate review
+                            //$modelNotification->created_at = time();
+                            $modelNotification->save(false);
+
+                            $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                            if ($userDevice->device_platform == 'android') {
+                                $notificationToken = array($userDevice->notification_token);
+                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText);
+                            } else {
+                                $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                $note->setBadge($badge);
+                                $note->setSound('default');
+                                $message = Yii::$app->fcm->createMessage();
+                                $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                $message->setNotification($note)
+                                    ->setData([
+                                        'id' => $modelNotification->ref_id,
+                                        'type' => $modelNotification->ref_type,
+                                        'message' => $notificationText,
+                                    ]);
+                                $response = Yii::$app->fcm->send($message);
+                            }
+                        }
+                    }
+                }
+            }
+            // Send Push notification end
+
+
         }
 
         return $model;

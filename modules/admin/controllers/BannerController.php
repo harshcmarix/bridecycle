@@ -23,16 +23,16 @@ class BannerController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
+    public function behaviors()
     {
         return [
-           'access' => [
+            'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update','view','delete','image-delete'],
+                'only' => ['index', 'create', 'update', 'view', 'delete', 'image-delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update','view','delete','image-delete'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'image-delete'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -79,8 +79,8 @@ class BannerController extends Controller
         $model->scenario = Banner::SCENARIO_CREATE;
         $banner_image = UploadedFile::getInstance($model, 'image');
         if ($model->load(Yii::$app->request->post())) {
-            
-            if(!empty($banner_image)){
+
+            if (!empty($banner_image)) {
                 $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
                 $thumbImagePath = '';
@@ -95,18 +95,19 @@ class BannerController extends Controller
                     mkdir($uploadThumbDirPath, 0777);
                 }
 
-                    $ext = $banner_image->extension;
-                    $fileName = pathinfo($banner_image->name, PATHINFO_FILENAME);
-                    $fileName = $fileName . '_' . time() . '.' . $ext;
-                    // Upload profile picture
-                    $banner_image->saveAs($uploadDirPath . '/' . $fileName);
-                    // Create thumb of profile picture
-                    $actualImagePath = $uploadDirPath . '/' . $fileName;
-                    $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                    // p($actualImagePath);
-                    Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                    // Insert profile picture name into database
-                    $model->image = $fileName;
+                $ext = $banner_image->extension;
+                $fileName = pathinfo($banner_image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $banner_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
+                $model->name = $banner_image->name;
             }
 
             if ($model->save()) {
@@ -114,7 +115,7 @@ class BannerController extends Controller
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Banner.");
             }
-             return $this->redirect(['index']);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -132,16 +133,16 @@ class BannerController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-            $old_image = $model->image;
+        $old_image = $model->image;
 
-            $new_image = UploadedFile::getInstance($model, 'image');
+        $new_image = UploadedFile::getInstance($model, 'image');
 
         if ($model->load(Yii::$app->request->post())) {
-           
+
             if (!empty($new_image)) {
-                    $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-                    $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
-                    $thumbImagePath = '';
+                $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+                $thumbImagePath = '';
 
                 // Create product image upload directory if not exist
                 if (!is_dir($uploadDirPath)) {
@@ -160,23 +161,23 @@ class BannerController extends Controller
                     unlink($uploadThumbDirPath . '/' . $old_image);
                 }
 
-                    $ext = $new_image->extension;
-                    $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-                    $fileName = $fileName . '_' . time() . '.' . $ext;
-                    // Upload profile picture
-                    $new_image->saveAs($uploadDirPath . '/' . $fileName);
-                    // Create thumb of profile picture
-                    $actualImagePath = $uploadDirPath . '/' . $fileName;
-                    $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                    // p($actualImagePath);
-                    Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                    // Insert profile picture name into database
-                    $model->image = $fileName;
+                $ext = $new_image->extension;
+                $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $new_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
 
             } else {
                 $model->image = $old_image;
             }
-            
+
             if ($model->save()) {
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Banner updated successfully.");
             } else {
@@ -199,17 +200,17 @@ class BannerController extends Controller
      */
     public function actionDelete($id)
     {
-         $model = $this->findModel($id);
-         $image = $model->image;
-         $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
-         // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$image) && !empty($image)){
-                unlink($uploadDirPath.'/'.$image);
-         }
-         if(file_exists($uploadThumbDirPath.'/'.$image) && !empty($image)){
-                unlink($uploadThumbDirPath.'/'.$image);
-         }
+        $model = $this->findModel($id);
+        $image = $model->image;
+        $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $image) && !empty($image)) {
+            unlink($uploadDirPath . '/' . $image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $image) && !empty($image)) {
+            unlink($uploadThumbDirPath . '/' . $image);
+        }
         if ($model->delete()) {
             Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Banner deleted successfully.");
         } else {
@@ -234,21 +235,22 @@ class BannerController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
     public function actionImageDelete($id)
     {
-         $model = $this->findModel($id);
-         $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
-         // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$model->image) && !empty($model->image)){
-                unlink($uploadDirPath.'/'.$model->image);
-         }
-         if(file_exists($uploadThumbDirPath.'/'.$model->image) && !empty($model->image)){
-                unlink($uploadThumbDirPath.'/'.$model->image);
-         }
-         $model->image = null;
-        if($model->save()){
-           return Json::encode(['success'=>'image successfully deleted']);
+        $model = $this->findModel($id);
+        $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $model->image) && !empty($model->image)) {
+            unlink($uploadDirPath . '/' . $model->image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $model->image) && !empty($model->image)) {
+            unlink($uploadThumbDirPath . '/' . $model->image);
+        }
+        $model->image = null;
+        if ($model->save()) {
+            return Json::encode(['success' => 'image successfully deleted']);
         }
 
     }

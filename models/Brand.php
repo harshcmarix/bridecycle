@@ -108,6 +108,17 @@ class Brand extends ActiveRecord
         ];
     }
 
+
+    /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'products' => 'products',
+        ];
+    }
+
     /**
      * Gets query for [[Products]].
      *

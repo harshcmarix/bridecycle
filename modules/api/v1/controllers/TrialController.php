@@ -2,9 +2,12 @@
 
 namespace app\modules\api\v1\controllers;
 
+use app\models\Notification;
 use app\models\Product;
+use app\modules\api\v1\models\User;
 use Yii;
 use app\models\Trial;
+use yii\base\BaseObject;
 use yii\web\NotFoundHttpException;
 use yii\filters\auth\{
     HttpBasicAuth,
@@ -139,7 +142,62 @@ class TrialController extends ActiveController
         $postData['Trial']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
 
         if ($model->load($postData) && $model->validate()) {
-            $model->save();
+            if ($model->save()) {
+
+                // Send Push notification and email notification start
+                $getUsers[] = $model->receiver;
+                if (!empty($getUsers)) {
+                    foreach ($getUsers as $userROW) {
+                        if ($userROW instanceof User) {
+                            if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                                $userDevice = $userROW->userDevice;
+
+                                // Insert into notification.
+                                $notificationText = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                                $modelNotification = new Notification();
+                                $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                $modelNotification->notification_receiver_id = $userROW->id;
+                                $modelNotification->ref_id = $model->id;
+                                $modelNotification->notification_text = $notificationText;
+                                $modelNotification->action = "Add";
+                                $modelNotification->ref_type = "trial_book";
+                                $modelNotification->save(false);
+
+                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                if ($userDevice->device_platform == 'android') {
+                                    $notificationToken = array($userDevice->notification_token);
+                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText);
+                                } else {
+                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                    $note->setBadge($badge);
+                                    $note->setSound('default');
+                                    $message = Yii::$app->fcm->createMessage();
+                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                    $message->setNotification($note)
+                                        ->setData([
+                                            'id' => $modelNotification->ref_id,
+                                            'type' => $modelNotification->ref_type,
+                                            'message' => $notificationText,
+                                        ]);
+                                    $response = Yii::$app->fcm->send($message);
+                                }
+                            }
+
+                            if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                                Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => $userROW, 'receiver' => $model->receiver, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                    ->setTo($userROW->email)
+                                    ->setSubject('Request for trial of your product')
+                                    ->send();
+
+                            }
+                        }
+                    }
+                }
+                // Send Push notification and email notification start
+
+            }
         }
 
         return $model;
@@ -164,8 +222,81 @@ class TrialController extends ActiveController
 
         $postData = Yii::$app->request->post();
         $trialPostData['Trial'] = $postData;
+
+        $modelProduct = Product::findOne($model->product_id);
+
         if ($model->load($trialPostData) && $model->validate()) {
-            $model->save(false);
+            if ($model->save(false)) {
+
+                if ($model->status == Trial::STATUS_ACCEPT) {
+                    $action = "accept_trial";
+                    $notificationText = $modelProduct->name . "'s" . " seller has accepted your request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                } elseif ($model->status == Trial::STATUS_REJECT) {
+                    $notificationText = $modelProduct->name . "'s" . " seller has rejected your request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                    $action = "reject_trial";
+                } else {
+                    $notificationText = $action = "";
+                }
+                // Send Push notification and email notification start
+                $getUsers[] = $model->sender;
+
+                if (!empty($getUsers) && !empty($notificationText)) {
+                    foreach ($getUsers as $userROW) {
+                        if ($userROW instanceof User) {
+                            if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                                $userDevice = $userROW->userDevice;
+
+                                // Insert into notification.
+                                $modelNotification = new Notification();
+                                $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                $modelNotification->notification_receiver_id = $userROW->id;
+                                $modelNotification->ref_id = $model->id;
+                                $modelNotification->notification_text = $notificationText;
+                                $modelNotification->action = $action;
+                                $modelNotification->ref_type = "trial_book";
+                                $modelNotification->save(false);
+
+                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                if ($userDevice->device_platform == 'android') {
+                                    $notificationToken = array($userDevice->notification_token);
+                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText);
+                                } else {
+                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                    $note->setBadge($badge);
+                                    $note->setSound('default');
+                                    $message = Yii::$app->fcm->createMessage();
+                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                    $message->setNotification($note)
+                                        ->setData([
+                                            'id' => $modelNotification->ref_id,
+                                            'type' => $modelNotification->ref_type,
+                                            'message' => $notificationText,
+                                        ]);
+                                    $response = Yii::$app->fcm->send($message);
+                                }
+                            }
+
+                            if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                $message = $notificationText;
+
+                                if (($model->status == Trial::STATUS_ACCEPT)) {
+                                    $isAccept = 'accepted by seller';
+                                } else {
+                                    $isAccept = 'rejected by seller';
+                                }
+
+                                Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => $userROW, 'receiver' => $model->sender, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                    ->setTo($userROW->email)
+                                    ->setSubject('Request for trial has ' . $isAccept)
+                                    ->send();
+
+                            }
+                        }
+                    }
+                }
+                // Send Push notification and email notification start
+            }
         }
         $model = Trial::findOne($id);
         return $model;

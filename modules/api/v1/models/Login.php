@@ -82,7 +82,8 @@ class Login extends Model
 
                 $this->access_token = $accessToken;
                 $this->access_token_expired_at = $accessTokenExpiredAt;
-                $this->token_type = Yii::$app->params['token_type'];
+                $this->token_type = ucfirst(Yii::$app->params['token_type']);
+                $this->id = $this->getUser()->id;
                 return true;
             }
 
@@ -96,7 +97,8 @@ class Login extends Model
 
                 $this->access_token = $accessToken;
                 $this->access_token_expired_at = $accessTokenExpiredAt;
-                $this->token_type = Yii::$app->params['token_type'];
+                $this->token_type = ucfirst(Yii::$app->params['token_type']);
+
                 return true;
             }
             //} else if (!empty(Yii::$app->request->post('is_login_from')) && (!empty(Yii::$app->request->post('facebook_id')) || !empty(Yii::$app->request->post('apple_id')))) {

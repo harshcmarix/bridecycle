@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\api\models\User;
+use app\modules\api\v1\models\User;
 
 $fullName = '';
 if ($user instanceof User && !empty($user->first_name)) {
@@ -17,4 +17,5 @@ Hello <?= $fullName ?>,<br>
     If you didn't make the request, just ignore this email.</p>
 <p>Your temporary password is <strong><?= $user->temporary_password ?></strong>.</p>
 
-Thanks
+Thanks,
+<?php echo "<strong> Yii::$app->name </strong>" ?>

@@ -4,7 +4,8 @@ return [
     'admin_email' => 'admin@example.com',
     'from_email' => 'noreply@example.com',
     'token_type' => 'bearer',
-    'token_expire_time' => 86400,
+    //'token_expire_time' => 86400,// 1 day
+    'token_expire_time' => 3.154e+7,// 365 day
     'token_segment' => 1,
     'default_page_size' => 10,
     // Used in reset password expire token

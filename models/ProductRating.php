@@ -93,6 +93,7 @@ class ProductRating extends ActiveRecord
     {
         return [
             'user0' => 'user0',
+            'product' => 'product',
         ];
     }
 

@@ -23,6 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            'name',
             [
                 'format' => ['raw'],
                 'enableSorting' => false,
@@ -47,12 +48,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     $bannermodal = "bannermodal('" . $model->id . "');";
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $bannermodal, 'height' => '100px', 'width' => '100px']);
                 },
-              
+
             ],
         ],
     ]) ?>
-     <p>
-       <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+    <p>
+        <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
     </p>
 
 </div>

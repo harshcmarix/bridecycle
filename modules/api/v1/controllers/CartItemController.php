@@ -2,32 +2,44 @@
 
 namespace app\modules\api\v1\controllers;
 
-use app\models\Order;
-use app\models\OrderItem;
-use app\models\OrderPayment;
-use app\modules\api\v1\models\UserAddress;
+
+use app\modules\api\v1\models\{
+    User,
+    UserAddress
+};
+
 use kartik\mpdf\Pdf;
-use PayPal\Api\Address;
-use PayPal\Api\Amount;
-use PayPal\Api\CreditCard;
-use PayPal\Api\Details;
-use PayPal\Api\FundingInstrument;
-use PayPal\Api\Payer;
-use PayPal\Api\Payment;
-use PayPal\Api\RedirectUrls;
+use PayPal\Api\{
+    Address,
+    Amount,
+    CreditCard,
+    Details,
+    FundingInstrument,
+    Payer,
+    Payment,
+    RedirectUrls
+};
 use PayPal\Common\PayPalModel;
 use PayPal\Exception\PayPalConnectionException;
 use Yii;
 use app\models\{
     CartItem,
-    Product
+    Product,
+    Notification,
+    Order,
+    OrderItem,
+    OrderPayment,
+    ProductStatus
 };
 use app\modules\api\v1\models\search\CartItemSearch;
 use yii\base\BaseObject;
 use PayPal\Api\Transaction;
 use yii\helpers\Url;
-use yii\web\BadRequestHttpException;
-use yii\web\NotFoundHttpException;
+use yii\web\{
+    BadRequestHttpException,
+    NotFoundHttpException
+};
+
 use yii\rest\ActiveController;
 use yii\filters\auth\{
     HttpBasicAuth,
@@ -357,15 +369,65 @@ class CartItemController extends ActiveController
                             if (!empty($orderItemRow) && $orderItemRow instanceof OrderItem) {
                                 $remainQty = ($orderItemRow->product->available_quantity - $orderItemRow->quantity);
                                 $orderItemRow->product->available_quantity = (!empty($remainQty) && $remainQty > 0) ? $remainQty : 0;
+                                if ($remainQty <= 0) {
+                                    $orderItemRow->product->status_id = ProductStatus::STATUS_SOLD;
+                                } else {
+                                    $orderItemRow->product->status_id = ProductStatus::STATUS_IN_STOCK;
+                                }
                                 $orderItemRow->product->save(false);
 
                                 $generateInvoice = $this->generateInvoice($orderItemRow->id);
-                                p($generateInvoice);
+
+                                // Send Push notification start
+                                $getUsers[] = $orderItemRow->product->user;
+                                if (!empty($getUsers)) {
+                                    foreach ($getUsers as $userROW) {
+                                        if ($userROW instanceof User) {
+                                            if ($userROW->is_order_placed_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                                                $userDevice = $userROW->userDevice;
+
+                                                // Insert into notification.
+                                                $notificationText = $userROW->first_name . " " . $userROW->last_name . " Place a new order";
+                                                $modelNotification = new Notification();
+                                                $modelNotification->owner_id = $user_id;
+                                                $modelNotification->notification_receiver_id = $userROW->id;
+                                                $modelNotification->ref_id = $modelOrder->id;
+                                                $modelNotification->notification_text = $notificationText;
+                                                $modelNotification->action = "Add";
+                                                $modelNotification->ref_type = "Order";
+                                                //$modelNotification->created_at = time();
+                                                $modelNotification->save(false);
+
+                                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                                if ($userDevice->device_platform == 'android') {
+                                                    $notificationToken = array($userDevice->notification_token);
+                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText);
+                                                } else {
+                                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                    $note->setBadge($badge);
+                                                    $note->setSound('default');
+                                                    $message = Yii::$app->fcm->createMessage();
+                                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                    $message->setNotification($note)
+                                                        ->setData([
+                                                            'id' => $modelNotification->ref_id,
+                                                            'type' => $modelNotification->ref_type,
+                                                            'message' => $notificationText,
+                                                        ]);
+                                                    $response = Yii::$app->fcm->send($message);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                // Send Push notification end
                             }
                         }
                     }
                     $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
                     $modelOrder->save(false);
+
+
                 }
                 $modelOrderPayment->payment_response = (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') ? $response : "";
                 $modelOrderPayment->payment_status = (!empty($response->getState())) ? $response->getState() : 'failed';

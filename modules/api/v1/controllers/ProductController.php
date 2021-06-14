@@ -65,7 +65,7 @@ class ProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'delete',],
+            'only' => ['view', 'create', 'update', 'delete',],//'index'
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -220,10 +220,10 @@ class ProductController extends ActiveController
                         $actualImagePathReceipt = $uploadDirPathReceipt . '/' . $fileNameReceipt;
                         $thumbImagePathReceipt = $uploadThumbDirPathReceipt . '/' . $fileNameReceipt;
 
-                        chmod($actualImagePathReceipt,0777);
+                        chmod($actualImagePathReceipt, 0777);
 
                         Image::thumbnail($actualImagePathReceipt, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                        chmod($thumbImagePathReceipt,0777);
+                        chmod($thumbImagePathReceipt, 0777);
 
                         // Insert product picture name into database
                         $modelImageReceipt->product_id = $model->id;

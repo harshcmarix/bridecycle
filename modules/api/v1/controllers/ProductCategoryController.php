@@ -58,7 +58,7 @@ class ProductCategoryController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'sub-category', 'update-image', 'view', 'create', 'update', 'delete'],
+            'only' => ['update-image', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -206,7 +206,7 @@ class ProductCategoryController extends ActiveController
 
         if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
-        }else{
+        } else {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         }
 
@@ -229,7 +229,7 @@ class ProductCategoryController extends ActiveController
 
         $postData = Yii::$app->request->post();
         $productCategoryData['ProductCategory'] = $postData;
-       // $model->scenario = ProductCategory::SCENARIO_CREATE;
+        // $model->scenario = ProductCategory::SCENARIO_CREATE;
 
         if ($model->load($productCategoryData) && $model->validate()) {
             $model->save();
@@ -237,7 +237,7 @@ class ProductCategoryController extends ActiveController
 
         if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
-        }else{
+        } else {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         }
 
@@ -310,7 +310,7 @@ class ProductCategoryController extends ActiveController
 
         if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
-        }else{
+        } else {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         }
 

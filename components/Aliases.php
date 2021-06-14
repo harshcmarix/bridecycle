@@ -68,15 +68,19 @@ class Aliases extends Component
         // Used for brand image thumbnail
         Yii::setAlias('@brandImageThumbAbsolutePath', Yii::getAlias('@brandImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@brandImageThumbRelativePath', Yii::getAlias('@brandImageRelativePath') . '/thumbs');
+
         // Used for banner image
         Yii::setAlias('@bannerImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/banner_images');
         Yii::setAlias('@bannerImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/banner_images');
+
         // Used for banner image thumbnail
         Yii::setAlias('@bannerImageThumbAbsolutePath', Yii::getAlias('@bannerImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@bannerImageThumbRelativePath', Yii::getAlias('@bannerImageRelativePath') . '/thumbs');
+
         // Used for tailor shop image
         Yii::setAlias('@tailorShopImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/tailor_images');
         Yii::setAlias('@tailorShopImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/tailor_images');
+
         // Used for tailor image thumbnail
         Yii::setAlias('@tailorShopImageThumbAbsolutePath', Yii::getAlias('@tailorShopImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@tailorShopImageThumbRelativePath', Yii::getAlias('@tailorShopImageRelativePath') . '/thumbs');
@@ -84,5 +88,12 @@ class Aliases extends Component
         // Used for order invoice
         Yii::setAlias('@orderInvoiceAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/invoices');
         Yii::setAlias('@orderInvoiceRelativePath', Yii::getAlias('@uploadsRelativePath') . '/invoices');
+
+        // Used for chat media/image
+        Yii::setAlias('@chatMediaAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/chat_media');
+        Yii::setAlias('@chatMediaRelativePath', Yii::getAlias('@uploadsRelativePath') . '/chat_media');
+        // Used for chat media/image thumbnail
+        Yii::setAlias('@chatMediaThumbAbsolutePath', Yii::getAlias('@chatMediaAbsolutePath') . '/thumbs');
+        Yii::setAlias('@chatMediaThumbRelativePath', Yii::getAlias('@chatMediaRelativePath') . '/thumbs');
     }
 }

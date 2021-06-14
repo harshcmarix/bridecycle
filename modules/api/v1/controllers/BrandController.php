@@ -58,7 +58,7 @@ class BrandController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'delete', 'update-brand-image'],
+            'only' => ['view', 'create', 'update', 'delete', 'update-brand-image'],//index
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,

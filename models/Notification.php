@@ -3,7 +3,7 @@
 namespace app\models;
 
 use Yii;
-use yii\behaviors\TimestampBehavior;
+use app\modules\api\v1\models\User;
 
 /**
  * This is the model class for table "notification".
@@ -15,6 +15,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $notification_text
  * @property string $action
  * @property string $ref_type
+ * @property string $is_read
  * @property string|null $created_at
  *
  * @property User $owner
@@ -30,18 +31,8 @@ class Notification extends \yii\db\ActiveRecord
         return 'notification';
     }
 
-    /**
-     * @return array[]
-     */
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => TimestampBehavior::class,
-                'value' => date('Y-m-d h:i:s'),
-            ],
-        ];
-    }
+    const NOTIFICATION_IS_READ_NO = '0';
+    const NOTIFICATION_IS_READ_YES = '1';
 
     /**
      * {@inheritdoc}
@@ -51,7 +42,7 @@ class Notification extends \yii\db\ActiveRecord
         return [
             [['owner_id', 'notification_receiver_id', 'ref_id'], 'integer'],
             [['ref_id', 'notification_text', 'action', 'ref_type'], 'required'],
-            [['created_at'], 'safe'],
+            [['is_read', 'created_at'], 'safe'],
             [['notification_text', 'action', 'ref_type'], 'string', 'max' => 255],
             [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['owner_id' => 'id']],
             [['notification_receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['notification_receiver_id' => 'id']],
@@ -106,7 +97,53 @@ class Notification extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'notification_receiver_id']);
     }
 
-    ///////////////////////////// Use for APIs //////////////////////////
+    //////////////////////////////// For API use only //////////////////////////////////////
+
+    /**
+     * @param $id
+     * @param $type
+     * @param $notificationToken
+     * @param $messageString
+     * @return bool|string
+     */
+    public function sendPushNotificationAndroid($id, $type, $notificationToken, $messageString)
+    {
+        $url = 'https://fcm.googleapis.com/fcm/send';
+        $fields = array(
+            'registration_ids' => $notificationToken,
+            'data' => array(
+                'id' => $id,
+                'title' => Yii::$app->name,
+                'type' => $type, //emergency, post
+                'message' => $messageString
+            ),
+        );
+
+        $headers = array(
+            'Authorization:key=' . Yii::$app->fcm->apiKey,
+            'Content-Type: application/json'
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        //curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
+        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+        $result = curl_exec($ch);
+        if ($result === false)
+            //die('Curl failed ' . curl_error());
+            die('Curl failed.');
+
+        curl_close($ch);
+        //p($result);
+        return $result;
+    }
 
 
     /**
@@ -116,7 +153,16 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getOwner0()
     {
-        return $this->hasOne(User::className(), ['id' => 'owner_id']);
+
+        $data = User::find()->where(['id' => $this->owner_id])->one();
+        if ($data instanceof User) {
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $data->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+            }
+            $data->profile_picture = $profilePicture;
+        }
+        return $data;
     }
 
     /**
@@ -126,6 +172,15 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getNotificationReceiver0()
     {
-        return $this->hasOne(User::className(), ['id' => 'notification_receiver_id']);
+
+        $data = User::find()->where(['id' => $this->notification_receiver_id])->one();
+        if ($data instanceof User) {
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $data->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $data->profile_picture;
+            }
+            $data->profile_picture = $profilePicture;
+        }
+        return $data;
     }
 }

@@ -14,6 +14,7 @@ use Yii;
  * @property int $receiver_id
  * @property int $status '0'=>'pending','1'=>'accept','2'=>'reject'
  * @property string $date
+ * @property string $name
  * @property string $time
  * @property string $created_at
  * @property string|null $updated_at
@@ -45,8 +46,8 @@ class Trial extends \yii\db\ActiveRecord
     {
         return [
             //[['product_id', 'sender_id', 'receiver_id', 'status', 'date', 'time'], 'required'],
-            [['product_id', 'date', 'time'], 'required'],
-            [['status'], 'required','on'=>self::SCENARIO_ACCEPT_REJECT],
+            [['product_id', 'name', 'date', 'time'], 'required'],
+            [['status'], 'required', 'on' => self::SCENARIO_ACCEPT_REJECT],
             [['product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
             [['date', 'time', 'created_at', 'updated_at'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],

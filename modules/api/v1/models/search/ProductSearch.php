@@ -3,6 +3,7 @@
 namespace app\modules\api\v1\models\search;
 
 use app\models\ProductImage;
+use app\models\ProductStatus;
 use app\models\SearchHistory;
 use Yii;
 use yii\base\BaseObject;
@@ -289,6 +290,12 @@ class ProductSearch extends Product
 
                 }
             }
+        }
+
+        // For sale product listing screen
+        if (!empty($requestParams['user_id']) && !empty($requestParams['is_from_sell_screen']) && $requestParams['is_from_sell_screen'] == 1) {
+            $query->andWhere(['user_id' => $requestParams['user_id']]);
+            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED]]);
         }
 
         /** End for search screen */
