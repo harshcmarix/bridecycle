@@ -11,7 +11,13 @@ use app\modules\admin\models\DailyReportType;
     <section class="sidebar">
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="<?= Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture ?>"
+                <?php
+                $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
+                    $profilePic = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
+                }
+                ?>
+                <img src="<?= $profilePic ?>"
                      alt="User Image"
                      class="img-circle" alt="User Image"/>
             </div>
@@ -23,44 +29,20 @@ use app\modules\admin\models\DailyReportType;
         <?php
         //$modelsModule = Module::find()->where(['is_show' => 1])->orderBy(['in_order' => SORT_ASC])->all();
         $menuList[] = ['label' => 'Dashboard', 'icon' => 'home', 'url' => ['site/index'], 'visible' => true];
-        if (!empty($modelsModule)) {
-            foreach ($modelsModule as $modelsModuleRow) {
-                if ($modelsModuleRow instanceof Module) {
-                    if (!in_array($modelsModuleRow->id, [15, 19, 20, 21, 27, 28, 29, 30]) && (Yii::$app->userAccess->checkUserWisePermission(Yii::$app->user->identity->role_id, Yii::$app->user->identity->id, $modelsModuleRow->id, "View") || Yii::$app->userAccess->checkUserWisePermission(Yii::$app->user->identity->role_id, Yii::$app->user->identity->id, $modelsModuleRow->id, "Create"))) {
+        $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => true];
+        $menuList[] = ['label' => 'User', 'icon' => 'users', 'url' => ['user/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Category', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Brand', 'icon' => 'list', 'url' => ['brand/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Product', 'icon' => 'product-hunt', 'url' => ['product/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Order', 'icon' => 'reorder', 'url' => ['order/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['subscription/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Content', 'icon' => 'align-center', 'url' => ['cms-page/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Tailor', 'icon' => 'cut', 'url' => ['tailor/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Color', 'icon' => 'paint-brush', 'url' => ['color/index'], 'visible' => true];
 
-                        $isVisible = true;
-                        $moduleName = "";
-                        if (!empty($modelsModuleRow->name) && (!in_array($modelsModuleRow->name, ["E-contract Document Permission", "E-contract Folder Permission"]))) {
-                            $moduleName = $modelsModuleRow->name;
-                        } else {
-                            $moduleName = "Permission";
-                        }
-                        $menuList[] = [
-                            'label' => $modelsModuleRow->display_name, 'title' => $modelsModuleRow->display_name, 'icon' => $modelsModuleRow->icon, 'items' => [
-                                ['label' => 'List', 'icon' => 'fas fa-angle-right', 'url' => Url::to([$modelsModuleRow->list_url]), 'visible' => Yii::$app->userAccess->checkUserWisePermission(Yii::$app->user->identity->role_id, Yii::$app->user->identity->id, $modelsModuleRow->id, "View")],
-                                ['label' => "Add " . $moduleName, 'icon' => 'fas fa-angle-right', 'url' => Url::to([$modelsModuleRow->add_url]), 'visible' => Yii::$app->userAccess->checkUserWisePermission(Yii::$app->user->identity->role_id, Yii::$app->user->identity->id, $modelsModuleRow->id, "Create") && $isVisible],
-                            ],
-                        ];
-                    } else if (in_array($modelsModuleRow->id, [15, 19, 20, 21, 27, 28, 29, 30]) && (Yii::$app->userAccess->checkUserWisePermission(Yii::$app->user->identity->role_id, Yii::$app->user->identity->id, $modelsModuleRow->id, "View") || Yii::$app->userAccess->checkUserWisePermission(Yii::$app->user->identity->role_id, Yii::$app->user->identity->id, $modelsModuleRow->id, "Create"))) {
-                        //$isVisible = (in_array($modelsModuleRow->id, [27, 28, 29])) ? false : true;
-                        //$isVisible = (in_array($modelsModuleRow->id, [28, 29])) ? false : true;
-                        $isVisible = true;
-                        $moduleName = "";
-                        if (!empty($modelsModuleRow->name) && (!in_array($modelsModuleRow->name, ["E-contract Document Permission", "E-contract Folder Permission"]))) {
-                            $moduleName = $modelsModuleRow->name;
-                        } else {
-                            $moduleName = "Permission";
-                        }
-                        $menuList[] = [
-                            'label' => $modelsModuleRow->display_name, 'title' => $modelsModuleRow->display_name, 'icon' => $modelsModuleRow->icon, 'items' => [
-                                ['label' => 'List', 'icon' => 'fas fa-angle-right', 'url' => Url::to([$modelsModuleRow->list_url]), 'visible' => (Yii::$app->userAccess->checkUserWisePermission(Yii::$app->user->identity->role_id, Yii::$app->user->identity->id, $modelsModuleRow->id, "View"))],
-                                ['label' => "Add " . $moduleName, 'icon' => 'fas fa-angle-right', 'url' => Url::to([$modelsModuleRow->add_url]), 'visible' => (Yii::$app->userAccess->checkUserWisePermission(Yii::$app->user->identity->role_id, Yii::$app->user->identity->id, $modelsModuleRow->id, "Create") && $isVisible)],
-                            ],
-                        ];
-                    }
-                }
-            }
-        }
 
         ?>
         <!-- Sidebar menu start -->

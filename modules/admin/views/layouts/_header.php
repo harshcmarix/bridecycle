@@ -19,22 +19,34 @@ use yii\helpers\Url;
 
             <ul class="nav navbar-nav">
                 <?php if (Yii::$app->user->identity->isAdmin() || Yii::$app->user->identity->isSuperAdmin()) { ?>
-                    <li class="dropdown live-users-menu">
-                        <a href="<?php echo Url::to(['admin-user/online-users']); ?>" class="dropdown-toggle"
-                           title="Online Users">
-                            <i class="fa fa-users" id="live-users-count" style="color:greenyellow"></i>
-                        </a>
-                    </li>
+                    <!--                    <li class="dropdown live-users-menu">-->
+                    <!--                        <a href="--><?php //echo Url::to(['admin-user/online-users']); ?><!--" class="dropdown-toggle"-->
+                    <!--                           title="Online Users">-->
+                    <!--                            <i class="fa fa-users" id="live-users-count" style="color:greenyellow"></i>-->
+                    <!--                        </a>-->
+                    <!--                    </li>-->
                 <?php } ?>
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="<?= Yii::$app->request->baseUrl . '/theme/admin/images/user.png' ?>"
+                        <?php
+                        $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
+                            $profilePic = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
+                        }
+                        ?>
+                        <img src="<?= $profilePic ?>"
                              class="user-image" alt="User Image"/>
                     </a>
                     <ul class="dropdown-menu">
                         <li class="user-header">
-                            <img src="<?= Yii::$app->request->baseUrl . '/theme/admin/images/user.png' ?>"
+                            <?php
+                            $profilePicInner = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                            if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
+                                $profilePicInner = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
+                            }
+                            ?>
+                            <img src="<?= $profilePicInner ?>"
                                  class="img-circle" alt="User Image"/>
 
                             <p>

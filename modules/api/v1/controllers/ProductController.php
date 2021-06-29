@@ -192,6 +192,9 @@ class ProductController extends ActiveController
         $model->receipt = $ReceiptImages;
         $productData['Product']['user_id'] = Yii::$app->user->identity->id;
         if ($model->load($productData) && $model->validate()) {
+
+            $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
+
             if (!empty($model->option_size)) {
                 $model->option_size = strtolower($model->option_size);
             }
@@ -377,6 +380,8 @@ class ProductController extends ActiveController
         $model->gender = Product::GENDER_FOR_FEMALE;
 
         if ($model->load($productData) && $model->validate()) {
+
+            $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
 
             if (!empty($model->option_size)) {
                 $model->option_size = strtolower($model->option_size);

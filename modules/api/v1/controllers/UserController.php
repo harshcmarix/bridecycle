@@ -147,9 +147,12 @@ class UserController extends ActiveController
         $postData = \Yii::$app->request->post();
         $userData['User'] = $postData;
 
-        $model->scenario = User::SCENARIO_USER_CREATE;
-        if (!empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES) {
+        if (empty($postData['is_login_from']) && !empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES) {
             $model->scenario = User::SCENARIO_SHOP_OWNER;
+        } elseif (!empty($postData['is_login_from'])) {
+            $model->scenario = User::SCENARIO_USER_CREATE_FROM_SOCIAL;
+        } else {
+            $model->scenario = User::SCENARIO_USER_CREATE;
         }
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
@@ -505,7 +508,7 @@ class UserController extends ActiveController
                 $data['Login']['email'] = $modelPostData->email;
                 //$data['Login']['password'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
-               // $model->password = $modelPostData->password_hash;
+                // $model->password = $modelPostData->password_hash;
             } else {
                 throw new NotFoundHttpException('User doesn\'t exist.');
             }
