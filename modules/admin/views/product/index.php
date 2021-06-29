@@ -23,7 +23,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
 ?>
 
-<div class="products-index">
+<div class="career-index box box-primary">
+    <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
     <?php
     $gridColumns = [
@@ -293,8 +294,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         'condensed' => true,
         'responsive' => true,
         'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
-            'heading' => 'Product',
+            'type' => GridView::TYPE_DEFAULT,
+            //'heading' => 'Product',
         ],
         'emptyTextOptions' => [
             'class' => 'empty text-center'
@@ -305,6 +306,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         'itemLabelPlural' => 'Products',
     ]);
     ?>
+    </div>
 </div>
 <script type="text/javascript">
     $(document).on('change', '#productsearch-category_id', function () {

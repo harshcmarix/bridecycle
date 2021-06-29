@@ -15,9 +15,8 @@ use yii\bootstrap\Modal;
 $this->title = 'Banners';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="banner-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="career-index box box-primary">
+    <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
  <?php
     echo GridView::widget([
@@ -117,8 +116,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'condensed' => true,
         'responsive' => false,
         'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
-            'heading' => 'Banners',
+            'type' => GridView::TYPE_DEFAULT,
+            //'heading' => 'Banners',
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
@@ -129,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     ?>
 
-
+    </div>
 </div>
 <script type="text/javascript">
     function bannermodal(id) {

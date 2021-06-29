@@ -13,7 +13,8 @@ use app\models\ProductImage;
 $this->title = 'Orders';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="order-index">
+<div class="career-index box box-primary">
+    <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
     <?php
     $gridColumns = [
@@ -67,12 +68,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => 'raw',
             'value' => function ($model) {
                 $html = "";
-                $html .= "<table class='order-products_tbl'>";
-                $html .= "<th>Product Image</th>";
-                $html .= "<th>Product Name</th>";
-                $html .= "<th>Product Category</th>";
-                $html .= "<th>Product Price</th>";
-                $html .= "<th>Total Quantity</th>";
+                $html .= "<table class='order-products_tbl table-responsive ' style='border: solid 1px; text-align: center'>";
+                $html .= "<th style='border: solid 1px;'>Product Image</th>";
+                $html .= "<th style='border: solid 1px;'>Product Name</th>";
+                $html .= "<th style='border: solid 1px;'>Product Category</th>";
+                $html .= "<th style='border: solid 1px;'>Product Price</th>";
+                $html .= "<th style='border: solid 1px;'>Total Quantity</th>";
                 if (!empty($model->orderItems)) {
                     foreach ($model->orderItems as $key => $orderItem) {
 
@@ -100,12 +101,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         $productPrice = (!empty($orderItem->product->price)) ? Yii::$app->formatter->asCurrency($orderItem->product->price) : '';
 
-                        $html .= "<tr>";
-                        $html .= "<td>" . $result . "</td>";
-                        $html .= "<td>" . $orderItem->product->name . "</td>";
-                        $html .= "<td>" . $orderItem->product->category->name . "</td>";
-                        $html .= "<td>" . $productPrice . "</td>";
-                        $html .= "<td>" . $orderItem->quantity . "</td>";
+                        $html .= "<tr style='border: solid 1px;'>";
+                        $html .= "<td style='border: solid 1px;'>" . $result . "</td>";
+                        $html .= "<td style='border: solid 1px;'>" . $orderItem->product->name . "</td>";
+                        $html .= "<td style='border: solid 1px;'>" . $orderItem->product->category->name . "</td>";
+                        $html .= "<td style='border: solid 1px;'>" . $productPrice . "</td>";
+                        $html .= "<td style='border: solid 1px;'>" . $orderItem->quantity . "</td>";
                         $html .= "</tr>";
                     }
                 } else {
@@ -188,8 +189,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'condensed' => true,
         'responsive' => false,
         'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
-            'heading' => 'Order',
+            'type' => GridView::TYPE_DEFAULT,
+            //'heading' => 'Order',
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
@@ -198,5 +199,5 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
 
-
+    </div>
 </div>

@@ -13,9 +13,8 @@ use yii\helpers\Url;
 $this->title = 'Tailors';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="tailor-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="career-index box box-primary">
+    <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -137,8 +136,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'condensed' => true,
         'responsive' => false,
         'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
-            'heading' => 'Tailors',
+            'type' => GridView::TYPE_DEFAULT,
+            //'heading' => 'Tailors',
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
@@ -146,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'itemLabelPlural' => 'Tailors'
     ]); ?>
 
-
+    </div>
 </div>
 <script type="text/javascript">
     function tailorimagemodal(id) {

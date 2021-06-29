@@ -17,8 +17,9 @@ use app\models\Subscription;
 $this->title = 'Subscription';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="subscription-index">
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="career-index box box-primary">
+    <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
+
     <?php
 
     $gridColumns = [
@@ -156,8 +157,8 @@ $this->params['breadcrumbs'][] = $this->title;
         // 'hover' => $hover,
         // 'showPageSummary' => $pageSummary,
         'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
-            'heading' => 'Subscriptions',
+            'type' => GridView::TYPE_DEFAULT,
+            //'heading' => 'Subscriptions',
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
@@ -167,5 +168,5 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
 
-
+    </div>
 </div>

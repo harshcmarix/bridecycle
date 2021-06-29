@@ -18,8 +18,9 @@ $this->title = 'Product Category';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="users-index table-responsive">
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="career-index box box-primary">
+    <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
+
 
     <?php
     echo GridView::widget([
@@ -150,17 +151,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'condensed' => true,
         'responsive' => false,
         'panel' => [
-            'type' => GridView::TYPE_PRIMARY,
-            'heading' => 'Product Categories',
+            'type' => GridView::TYPE_DEFAULT,
+            //'heading' => 'Product Categories',
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
         'itemLabelSingle' => 'product category',
         'itemLabelPlural' => 'Product Categories'
     ]);
-
-
     ?>
+    </div>
 </div>
 <script type="text/javascript">
     function productcategorymodal(id) {
