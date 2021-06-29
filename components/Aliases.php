@@ -85,6 +85,16 @@ class Aliases extends Component
         Yii::setAlias('@tailorShopImageThumbAbsolutePath', Yii::getAlias('@tailorShopImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@tailorShopImageThumbRelativePath', Yii::getAlias('@tailorShopImageRelativePath') . '/thumbs');
 
+
+        // Used for tailor voucher image
+        Yii::setAlias('@tailorVoucherImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/tailor_voucher');
+        Yii::setAlias('@tailorVoucherImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/tailor_voucher');
+        // Used for tailor voucher image thumbnail
+        Yii::setAlias('@tailorVoucherImageThumbAbsolutePath', Yii::getAlias('@tailorVoucherImageAbsolutePath') . '/thumbs');
+        Yii::setAlias('@tailorVoucherImageThumbRelativePath', Yii::getAlias('@tailorVoucherImageRelativePath') . '/thumbs');
+
+
+
         // Used for order invoice
         Yii::setAlias('@orderInvoiceAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/invoices');
         Yii::setAlias('@orderInvoiceRelativePath', Yii::getAlias('@uploadsRelativePath') . '/invoices');
@@ -95,5 +105,12 @@ class Aliases extends Component
         // Used for chat media/image thumbnail
         Yii::setAlias('@chatMediaThumbAbsolutePath', Yii::getAlias('@chatMediaAbsolutePath') . '/thumbs');
         Yii::setAlias('@chatMediaThumbRelativePath', Yii::getAlias('@chatMediaRelativePath') . '/thumbs');
+
+        // Used for DressType image
+        Yii::setAlias('@dressTypeImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/dress_type');
+        Yii::setAlias('@dressTypeImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/dress_type');
+        // Used for DressType image thumbnail
+        Yii::setAlias('@dressTypeImageThumbAbsolutePath', Yii::getAlias('@dressTypeImageAbsolutePath') . '/thumbs');
+        Yii::setAlias('@dressTypeImageThumbRelativePath', Yii::getAlias('@dressTypeImageRelativePath') . '/thumbs');
     }
 }

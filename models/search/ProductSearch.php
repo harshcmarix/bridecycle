@@ -18,8 +18,8 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'number', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width'], 'integer'],
-            [['name', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'number', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'is_admin_favourite'], 'integer'],
+            [['type', 'name', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at'], 'safe'],
             [['option_price'], 'number'],
         ];
     }
@@ -72,6 +72,8 @@ class ProductSearch extends Product
             'height' => $this->height,
             'weight' => $this->weight,
             'width' => $this->width,
+            'is_admin_favourite' => $this->is_admin_favourite,
+            'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
@@ -84,8 +86,8 @@ class ProductSearch extends Product
             ->andFilterWhere(['like', 'is_top_selling', $this->is_top_selling])
             ->andFilterWhere(['like', 'is_top_trending', $this->is_top_trending])
             ->andFilterWhere(['like', 'gender', $this->gender])
-            ->andFilterWhere(['like', 'is_cleaned', $this->is_cleaned])
-            ->andFilterWhere(['like', 'receipt', $this->receipt]);
+            ->andFilterWhere(['like', 'is_cleaned', $this->is_cleaned]);
+            //->andFilterWhere(['like', 'receipt', $this->receipt]);
 
         return $dataProvider;
     }

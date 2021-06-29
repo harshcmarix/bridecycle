@@ -16,10 +16,11 @@ use Yii;
  */
 class CartItemSearch extends CartItem
 {
-     /**
+    /**
      * @var $hiddenFields Array of hidden fields which not needed in APIs
      */
     protected $hiddenFields = [];
+
     /**
      * {@inheritdoc}
      */
@@ -48,9 +49,9 @@ class CartItemSearch extends CartItem
      *
      * @return ActiveDataProvider
      */
-     public function search($requestParams)
+    public function search($requestParams)
     {
-      
+
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
             foreach ($requestParams['filter'] as $key => $val) {
@@ -105,7 +106,7 @@ class CartItemSearch extends CartItem
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id','product_id','user_id','color','size','price','quantity'];
+            $select = ['id', 'product_id', 'user_id', 'color', 'size', 'price', 'quantity'];
         }
 
         $query->select($select);
@@ -114,9 +115,13 @@ class CartItemSearch extends CartItem
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->groupBy('cart_items.id');
-        
-        return Yii::createObject([
+        if (!empty($requestParams['is_checkout_screen_product']) && $requestParams['is_checkout_screen_product'] == CartItem::IS_CHECKOUT_YES) {
+            $query->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES]);
+        }
+
+        $query->groupBy(['cart_items.product_id']);
+
+        $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
             'pagination' => [
@@ -127,5 +132,9 @@ class CartItemSearch extends CartItem
                 'params' => $requestParams,
             ],
         ]);
+
+        $cartItemModelData = $activeDataProvider->getModels();
+        $activeDataProvider->setModels($cartItemModelData);
+        return $activeDataProvider;
     }
 }

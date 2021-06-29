@@ -1,5 +1,7 @@
 <?php
 
+use app\models\Color;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
@@ -64,11 +66,17 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             ]); ?>
         </div>
         <div class="col col-md-2">
+            <?php if (Yii::$app->controller->action->id == 'update') {
+                $colorIds = explode(",", $model->option_color);
+                //$color = ArrayHelper::map(Color::find()->where(['in', 'id', $colorIds])->all(), 'id', 'name');
+                $model->option_color = $colorIds;
+            } ?>
             <?= $form->field($model, 'option_color')->widget(Select2::classname(), [
                 'data' => $color,
                 'options' => ['placeholder' => 'Select Color'],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => true,
+                    'multiple' => true
                 ],
             ]); ?>
         </div>
@@ -89,7 +97,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         </div>
     </div>
     <!-- image validation -->
-   
+
     <div class="row">
         <div class="col col-md-<?php echo (Yii::$app->controller->action->id == 'update') ? '4' : '8' ?>">
             <?= $form->field($model, 'images[]')->widget(FileInput::classname(), [
@@ -105,13 +113,13 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             ]); ?>
         </div>
         <?php if (Yii::$app->controller->action->id == 'update') { ?>
-              <?php
-                    $is_product_images_empty = Product::IMAGE_EMPTY;
-                if(!empty($model->productImages)){
-                    $is_product_images_empty = Product::IMAGE_NOT_EMPTY;
-                }?>
-     
-    <?= $form->field($model, 'is_product_images_empty')->hiddenInput(['value' => $is_product_images_empty])->label(false) ?>
+            <?php
+            $is_product_images_empty = Product::IMAGE_EMPTY;
+            if (!empty($model->productImages)) {
+                $is_product_images_empty = Product::IMAGE_NOT_EMPTY;
+            } ?>
+
+            <?= $form->field($model, 'is_product_images_empty')->hiddenInput(['value' => $is_product_images_empty])->label(false) ?>
             <div class="col col-md-8 edit-product_images">
                 <?php if (!empty($model->productImages)) {
                     $data = "";
@@ -212,11 +220,31 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         <div class="col col-md-2">
             <?= $form->field($model, 'status_id')->widget(Select2::classname(), [
                 'data' => $status,
-                'options' => ['placeholder' => 'Select'],
+                //'options' => ['placeholder' => 'Select'],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
             ]); ?>
+        </div>
+
+        <div class="col col-md-2">
+            <?= $form->field($model, 'is_admin_favourite')->widget(Select2::classname(), [
+                'data' => ['0' => 'No', '1' => 'Yes'],
+                //'options' => ['placeholder' => 'Select'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+        </div>
+
+        <div class="col col-md-2">
+            <?= $form->field($model, 'type')->widget(Select2::classname(), [
+                'data' => ['n' => 'New', 'u' => 'Used'],
+                //'options' => ['placeholder' => 'Select'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ])->label('Product Type'); ?>
         </div>
     </div>
 

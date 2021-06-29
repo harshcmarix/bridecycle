@@ -85,6 +85,7 @@ class ResetPassword extends User
     {
         // return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password])->one();
         return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password, 'user_type' => User::USER_TYPE_NORMAL])->one();
+        //return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password])->one();
     }
 
     /**

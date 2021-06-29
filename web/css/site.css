@@ -96,9 +96,9 @@ a.desc:after {
     border: none;
 }
 
-@media (max-width: 767px) {
+@media(max-width:767px) {
     .nav li > form > button.logout {
-        display: block;
+        display:block;
         text-align: left;
         width: 100%;
         padding: 10px 15px;
@@ -112,118 +112,4 @@ a.desc:after {
 
 .nav > li > form > button.logout:focus {
     outline: none;
-}
-
-img.your_class_product_img {
-    padding: 5px;
-    cursor: pointer;
-}
-
-img.update_product_img {
-    padding-top: 15px;
-    padding-right: 15px;
-    padding-left: 0px;
-    padding-bottom: 7px;
-}
-
-.edit-product_images i.fa.fa-times {
-    position: absolute;
-    padding-left: 75px;
-    color: #c55;
-    cursor: pointer;
-}
-
-.carousel-indicators li {
-    position: absolute;
-    padding-left: -14px;
-    padding-right: -1px;
-    /* display: inline-block; */
-    width: 10px;
-    height: 10px;
-    margin: 1px;
-    text-indent: -999px;
-    cursor: pointer;
-    background-color: #000 \9;
-    background-color: rgba(0, 0, 0, 0);
-    /* border: 1px solid #fff; */
-    border-radius: 10px;
-}
-
-.carousel-indicators .active {
-    width: 12px;
-    height: 12px;
-    margin: 0;
-    /*   background-color: #fff;*/
-}
-
-.carousel-indicators {
-    display: none;
-}
-
-.carousel {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-
-a.left.carousel-control {
-    margin-top: 40%;
-
-}
-
-a.right.carousel-control {
-    margin-top: 40%;
-
-}
-
-table.order-products_tbl > tbody > tr > th {
-    border: solid 2px #ddd;
-    padding: 5px;
-}
-
-table.order-products_tbl > tbody > tr > td {
-    text-align: justify;
-    border: solid 2px #ddd;
-    padding: 5px;
-}
-
-.box {
-    position: relative;
-    border-radius: 3px;
-    background: #ffffff;
-    border: 3px solid #d2d6de;
-    margin-bottom: 2px;
-    width: 100%;
-    box-shadow: 0 1px 1px rgb(0 0 0 / 10%);
-}
-
-.box-header {
-    color: #444;
-    display: block;
-    padding: 10px;
-    position: relative;
-}
-
-.box-header > .fa, .box-header > .glyphicon, .box-header > .ion, .box-header .box-title {
-    display: inline-block;
-    font-size: 18px;
-    margin: 0;
-    line-height: 1;
-}
-
-.h3, h3 {
-    font-size: 24px;
-}
-
-/*.box-border {*/
-/*    border-bottom: 1px solid #f4f4f4;*/
-/*}*/
-
-.Product-edit_view-peoduct_picture i.fa.fa-eye {
-    position: absolute;
-    padding-left: 70px;
-}
-
-.your_class{
-    cursor: pointer;
 }

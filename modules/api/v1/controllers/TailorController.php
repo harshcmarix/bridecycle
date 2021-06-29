@@ -15,6 +15,7 @@ use yii\filters\auth\{
 };
 use yii\rest\ActiveController;
 use yii\filters\Cors;
+
 /**
  * TailorController implements the CRUD actions for Tailor model.
  */
@@ -30,7 +31,7 @@ class TailorController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v1\models\search\TailorSearch';
 
-       /**
+    /**
      * @return array
      */
     protected function verbs()
@@ -38,12 +39,13 @@ class TailorController extends ActiveController
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
-            'create' =>['POST','OPTIONS'],
+            'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
         ];
     }
-     /**
+
+    /**
      * @return array
      */
     public function behaviors()
@@ -51,7 +53,7 @@ class TailorController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view','create','update','delete'],
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -75,10 +77,11 @@ class TailorController extends ActiveController
 
         return $behaviors;
     }
+
     /**
      * @return array
      */
-     public function actions()
+    public function actions()
     {
         $actions = parent::actions();
         unset($actions['index']);
@@ -113,14 +116,22 @@ class TailorController extends ActiveController
     public function actionView($id)
     {
         $model = Tailor::findOne($id);
-         if(!$model instanceof Tailor){
-               throw new NotFoundHttpException('Tailor doesn\'t exist.');
-         }
-        $tailor_shop_image = '';
-        if(!empty($model->shop_image) && file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $model->shop_image)){
+        if (!$model instanceof Tailor) {
+            throw new NotFoundHttpException('Tailor doesn\'t exist.');
+        }
+
+        $tailor_shop_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+        if (!empty($model->shop_image) && file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $model->shop_image)) {
             $tailor_shop_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorShopImageThumbAbsolutePath') . '/' . $model->shop_image;
         }
         $model->shop_image = $tailor_shop_image;
+
+        $tailor_voucher_image = '';
+        if (!empty($model->voucher) && file_exists(Yii::getAlias('@tailorVoucherImageRelativePath') . '/' . $model->voucher)) {
+            $tailor_voucher_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorVoucherImageThumbAbsolutePath') . '/' . $model->voucher;
+        }
+
+        $model->voucher = $tailor_voucher_image;
         return $model;
     }
 

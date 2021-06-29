@@ -64,11 +64,14 @@ class ProductController extends Controller
             return $data['name'];
         });
 
+        $productType = [Product::PRODUCT_TYPE_NEW => 'New', Product::PRODUCT_TYPE_USED => 'Used'];
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'categories' => $categories,
             'subCategories' => $subCategories,
+            'productType' => $productType
         ]);
     }
 
@@ -100,6 +103,8 @@ class ProductController extends Controller
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         $postData = Yii::$app->request->post('Product');
+
+        $model->option_color = (!empty($postData['option_color'])) ? implode(",", $postData['option_color']) : "";
         $model->scenario = Product::SCENARIO_CREATE;
         $model->is_top_selling = Product::IS_TOP_SELLING_NO;
         if (!empty($postData['is_top_selling'])) {
@@ -110,7 +115,12 @@ class ProductController extends Controller
         if (!empty($postData['is_top_trending'])) {
             $model->is_top_trending = $postData['is_top_trending'];
         }
-        
+
+        $model->is_admin_favourite = Product::IS_ADMIN_FAVOURITE_NO;
+        if (!empty($postData['is_admin_favourite'])) {
+            $model->is_admin_favourite = $postData['is_admin_favourite'];
+        }
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $images = UploadedFile::getInstances($model, 'images');
             $model->user_id = Yii::$app->user->identity->id;
@@ -189,7 +199,11 @@ class ProductController extends Controller
 
         $postData = Yii::$app->request->post('Product');
 
+//        if (!empty($postData['option_color'])) {
+//            $postData['option_color'] = implode(",", $postData['option_color']);
+//        }
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->option_color = implode(",", $postData['option_color']);
             if (empty($oldUserId)) {
                 $model->user_id = Yii::$app->user->identity->id;
             }

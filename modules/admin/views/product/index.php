@@ -213,6 +213,46 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'headerOptions' => ['class' => 'kartik-sheet-style']
         ],
         [
+            'attribute' => 'type',
+            'value' => function ($model) {
+                $producttype = "";
+                if (!empty($model->type) && $model->type == \app\models\Product::PRODUCT_TYPE_NEW) {
+                    $producttype = "New";
+                } else if (!empty($model->type) && $model->type == \app\models\Product::PRODUCT_TYPE_USED) {
+                    $producttype = "Used";
+                }
+                return $producttype;
+            },
+            'filter' => $productType,
+            'filterType' => GridView::FILTER_SELECT2,
+            'filterWidgetOptions' => [
+                'options' => ['prompt' => 'Select'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                ],
+            ],
+            'header' => 'Product Type',
+            'headerOptions' => ['class' => 'kartik-sheet-style']
+        ],
+
+        [
+            'attribute' => 'is_admin_favourite',
+            'header' => 'Admin Favourite',
+            'value' => function ($model) {
+
+                return (!empty($model->is_admin_favourite) && $model->is_admin_favourite == \app\models\Product::IS_ADMIN_FAVOURITE_YES) ? 'Yes' : "No";
+            },
+            'filter' => ['1' => 'Yes', '0' => 'No'],
+            'filterType' => GridView::FILTER_SELECT2,
+            'filterWidgetOptions' => [
+                'options' => ['prompt' => 'Select'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                ],
+            ],
+        ],
+
+        [
             'class' => 'kartik\grid\ActionColumn',
         ],
     ];

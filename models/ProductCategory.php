@@ -12,6 +12,7 @@ use Yii;
  * @property string $name
  * @property string|null $image
  * @property int|null $parent_category_id
+ * @property string|null $status
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -59,7 +60,7 @@ class ProductCategory extends \yii\db\ActiveRecord
         return [
             [['name'], 'required'],
             [['parent_category_id'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['status','created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['name'], 'unique'],
             [['image'], 'file', 'extensions' => 'png,jpg'],

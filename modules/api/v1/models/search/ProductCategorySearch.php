@@ -26,7 +26,7 @@ class ProductCategorySearch extends ProductCategory
     {
         return [
             [['id', 'parent_category_id'], 'integer'],
-            [['name', 'image', 'created_at', 'updated_at'], 'safe'],
+            [['status', 'name', 'image', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -100,7 +100,7 @@ class ProductCategorySearch extends ProductCategory
         /* ########## Active Data Filter End ######### */
 
         /* ########## Prepare Query With Default Filter Start ######### */
-        $query = self::find();
+        $query = self::find()->where(['status' => 1]);
 
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
@@ -134,11 +134,11 @@ class ProductCategorySearch extends ProductCategory
         $productModelData = $activeDataProvider->getModels();
 
         foreach ($productModelData as $key => $value) {
-             $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($value->image)  && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $value->image)) {
+            $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($value->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $value->image)) {
                 $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $value->image;
             }
-            $value->image = $categoryImage; 
+            $value->image = $categoryImage;
         }
 
         $activeDataProvider->setModels($productModelData);

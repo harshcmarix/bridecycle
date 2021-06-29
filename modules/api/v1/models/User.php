@@ -2,8 +2,10 @@
 
 namespace app\modules\api\v1\models;
 
+use app\models\BlockUser;
 use app\models\Order;
 use app\models\ProductRating;
+use app\models\SellerRating;
 use app\models\UserDevice;
 use app\models\UserSubscription;
 use yii\behaviors\TimestampBehavior;
@@ -31,7 +33,7 @@ use Yii;
  * @property string|null $password_reset_token
  * @property string|null $mobile
  * @property float|null $weight
- * @property float|null $height
+ * @property string|null $height
  * @property float|null $top_size
  * @property float|null $pant_size
  * @property float|null $bust_size
@@ -71,6 +73,7 @@ use Yii;
  * @property string|null $is_click_and_try_email_notification_on
  *
  * @property string|null $is_verify_user
+ * @property string|null $is_newsletter_subscription
  *
  * @property string|null $created_at
  * @property string|null $updated_at
@@ -174,6 +177,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
             [['facebook_id', 'apple_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
+            //[['mobile', 'shop_phone_number'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email', 'shop_email'], 'email'],
@@ -189,6 +193,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['profile_picture'], 'required', 'on' => [self::PROFILE_PICTURE_UPDATE]],
             [['shop_name', 'shop_email', 'shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
             [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
+            // [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'string'],
+            [['is_newsletter_subscription'], 'safe'],
             [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on'], 'safe'],
             [['is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'safe'],
             [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on', 'is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
@@ -248,7 +254,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'userAddresses' => 'userAddresses',
-            'shopDetails' => 'shopDetails'
+            'shopDetails' => 'shopDetails',
+            'rating' => 'rating'
         ];
     }
 
@@ -372,6 +379,30 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return $code;
     }
+
+    /**
+     * @return object
+     */
+    public function getRating()
+    {
+        //$modelRate['total_rated_count'] = (int)number_format(SellerRating::find()->where(['seller_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
+        $modelRate['total_rated_count'] = (int)number_format(SellerRating::find()->where(['seller_id' => $this->id])->count(), 1);
+        $modelRate['over_all_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id])->average('rate');
+        $modelRate['one_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::ONE_STAR_RATE])->count();
+        $modelRate['two_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::TWO_STAR_RATE])->count();
+        $modelRate['three_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::THREE_STAR_RATE])->count();
+        $modelRate['four_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::FOUR_STAR_RATE])->count();
+        $modelRate['five_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::FIVE_STAR_RATE])->count();
+
+        return (object)$modelRate;
+    }
+
+    public function getBlockUsersId()
+    {
+        $models = BlockUser::find()->select('user_id')->where(['user_id' => $this->id])->indexBy('id')->all();
+        p($models);
+    }
+
     /************************************************************************/
     /************************* Identity functions **************************/
     /***********************************************************************/

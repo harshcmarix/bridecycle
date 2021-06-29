@@ -2,7 +2,11 @@
 
 namespace app\modules\api\v1\controllers;
 
+use app\models\BlockUser;
+use app\models\Notification;
 use app\models\ProductReceipt;
+use app\models\SearchHistory;
+use app\modules\api\v1\models\User;
 use Yii;
 use app\models\{
     Product,
@@ -25,13 +29,11 @@ use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
 
-
 /**
  * ProductController implements the CRUD actions for Product model.
  */
 class ProductController extends ActiveController
 {
-
     /**
      * @var string
      */
@@ -42,7 +44,6 @@ class ProductController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v1\models\search\ProductSearch';
 
-
     /**
      * @return array
      */
@@ -50,10 +51,13 @@ class ProductController extends ActiveController
     {
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
+            'index-list' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
             'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
+            'delete-product-receipt' => ['POST', 'DELETE'],
             'delete' => ['POST', 'DELETE'],
+            'add-product-receipt' => ['POST', 'OPTIONS'],
         ];
     }
 
@@ -65,7 +69,7 @@ class ProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['view', 'create', 'update', 'delete',],//'index'
+            'only' => ['index-list', 'view', 'view-product', 'create', 'update', 'delete', 'add-product-receipt', 'delete-product-receipt'],//'index'
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -97,9 +101,11 @@ class ProductController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
+        //unset($actions['index-list']);
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['delete']);
+        unset($actions['delete-product-receipt']);
         unset($actions['view']);
         return $actions;
     }
@@ -110,7 +116,21 @@ class ProductController extends ActiveController
      */
     public function actionIndex()
     {
+        $model = new $this->searchModelClass;
+        $requestParams = Yii::$app->getRequest()->getBodyParams();
 
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }
+        return $model->search($requestParams);
+    }
+
+    /**
+     * Lists all Product models.
+     * @return mixed
+     */
+    public function actionIndexList()
+    {
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
@@ -132,7 +152,21 @@ class ProductController extends ActiveController
         if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }
+        return $model;
+    }
 
+    /**
+     * Displays a single Product model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionViewProduct($id)
+    {
+        $model = Product::findOne($id);
+        if (!$model instanceof Product) {
+            throw new NotFoundHttpException('Product doesn\'t exist.');
+        }
         return $model;
     }
 
@@ -158,6 +192,9 @@ class ProductController extends ActiveController
         $model->receipt = $ReceiptImages;
         $productData['Product']['user_id'] = Yii::$app->user->identity->id;
         if ($model->load($productData) && $model->validate()) {
+            if (!empty($model->option_size)) {
+                $model->option_size = strtolower($model->option_size);
+            }
             if ($model->save()) {
 
                 /* Product Image */
@@ -238,13 +275,86 @@ class ProductController extends ActiveController
                 $modelAddress->type = UserAddress::TYPE_SHOP;
                 if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                     $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
-                    if ($modelAddress->save()) {
+                    $modelAddress->type = UserAddress::TYPE_SHOP;
+                    if ($modelAddress->save(false)) {
                         $model->address_id = $modelAddress->id;
                         $model->save(false);
                     }
                 }
+
+                // Send Push Notification start
+
+                $brandName = (!empty($model->brand) && !empty($model->brand->name)) ? $model->brand->name : "";
+                $categoryName = (!empty($model->category) && !empty($model->category->name)) ? $model->category->name : "";
+
+                $query = SearchHistory::find();
+                $query->where('user_id!=' . Yii::$app->user->identity->id);
+                if (!empty($model->name)) {
+                    $query->andFilterWhere([
+                        'or',
+                        ['like', 'search_text', $model->name],
+                        ['like', 'search_text', $brandName],
+                        ['like', 'search_text', $categoryName],
+                    ]);
+                }
+                $modelsSearch = $query->all();
+
+                if (!empty($modelsSearch)) {
+                    foreach ($modelsSearch as $key => $modelSearchRow) {
+                        if (!empty($modelSearchRow) && $modelSearchRow instanceof SearchHistory) {
+
+                            $getUsers[] = $modelSearchRow->user;
+
+                            if (!empty($getUsers)) {
+                                foreach ($getUsers as $keys => $userROW) {
+                                    if ($userROW instanceof User) {
+                                        if ($userROW->is_saved_searches_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                                            $userDevice = $userROW->userDevice;
+
+                                            // Insert into notification.
+                                            $notificationText = "Product is uploaded as per your saved search";
+                                            $modelNotification = new Notification();
+                                            $modelNotification->owner_id = $model->user_id;
+                                            $modelNotification->notification_receiver_id = $userROW->id;
+                                            $modelNotification->ref_id = $model->id;
+                                            $modelNotification->notification_text = $notificationText;
+                                            $modelNotification->action = "Add";
+                                            $modelNotification->ref_type = "products"; // For seller rate review
+                                            //$modelNotification->created_at = time();
+                                            $modelNotification->save(false);
+
+                                            $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                            if ($userDevice->device_platform == 'android') {
+                                                $notificationToken = array($userDevice->notification_token);
+                                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText);
+                                            } else {
+                                                $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                $note->setBadge($badge);
+                                                $note->setSound('default');
+                                                $message = Yii::$app->fcm->createMessage();
+                                                $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                $message->setNotification($note)
+                                                    ->setData([
+                                                        'id' => $modelNotification->ref_id,
+                                                        'type' => $modelNotification->ref_type,
+                                                        'message' => $notificationText,
+                                                    ]);
+                                                $response = Yii::$app->fcm->send($message);
+                                            }
+
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Send Push Notification end
             }
         }
+
         return $model;
     }
 
@@ -268,6 +378,10 @@ class ProductController extends ActiveController
 
         if ($model->load($productData) && $model->validate()) {
 
+            if (!empty($model->option_size)) {
+                $model->option_size = strtolower($model->option_size);
+            }
+
             if ($model->save(false)) {
 
                 $modelAddress = $model->address;
@@ -279,7 +393,7 @@ class ProductController extends ActiveController
                 $modelAddress->type = UserAddress::TYPE_SHOP;
                 if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                     $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
-                    if ($modelAddress->save()) {
+                    if ($modelAddress->save(false)) {
                         $model->address_id = $modelAddress->id;
                         $model->save(false);
                     }
@@ -336,4 +450,110 @@ class ProductController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    /**
+     * @return ProductReceipt|array
+     */
+    public function actionAddProductReceipt()
+    {
+        $model = new ProductReceipt();
+        $postData = Yii::$app->request->post();
+        $productImage['ProductReceipt'] = $postData;
+        $images = UploadedFile::getInstancesByName('file');
+        $model->file = $images;
+        $arrayImage = [];
+        if ($model->load($productImage) && $model->validate()) {
+            if (!empty($images)) {
+//                $deleteImages = ProductReceipt::find()->where(['product_id' => $productImage['ProductReceipt']['product_id']]);
+//                $modelsOldImg = $deleteImages->all();
+//                if (!empty($modelsOldImg)) {
+//                    foreach ($modelsOldImg as $key => $modelOldImgRow) {
+//                        if (!empty($modelOldImgRow) && $modelOldImgRow instanceof ProductReceipt) {
+//
+//                            if (!empty($modelOldImgRow->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $modelOldImgRow->file)) {
+//                                unlink(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $modelOldImgRow->file);
+//                            }
+//
+//                            if (!empty($modelOldImgRow->file) && file_exists(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $modelOldImgRow->file)) {
+//                                unlink(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $modelOldImgRow->file);
+//                            }
+//                        }
+//                    }
+//                    ProductReceipt::deleteAll(['product_id' => $productImage['ProductReceipt']['product_id']]);
+//                }
+
+                foreach ($images as $img) {
+                    $modelImage = new ProductReceipt();
+                    $uploadDirPath = Yii::getAlias('@productReceiptImageRelativePath');
+                    $uploadThumbDirPath = Yii::getAlias('@productReceiptImageThumbRelativePath');
+                    $thumbImagePath = '';
+
+                    // Create product upload directory if not exist
+                    if (!is_dir($uploadDirPath)) {
+                        mkdir($uploadDirPath, 777);
+                    }
+
+                    // Create product thumb upload directory if not exist
+                    if (!is_dir($uploadThumbDirPath)) {
+                        mkdir($uploadThumbDirPath, 777);
+                    }
+
+                    $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
+                    // Upload product picture
+                    $img->saveAs($uploadDirPath . '/' . $fileName);
+                    // Create thumb of product picture
+                    $actualImagePath = $uploadDirPath . '/' . $fileName;
+                    $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                    Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                    // Insert product picture name into database
+
+                    $modelImage->product_id = $productImage['ProductReceipt']['product_id'];
+                    $modelImage->file = $fileName;
+                    $modelImage->save(false);
+                    $arrayImage[] = $modelImage;
+                }
+            }
+
+            if (!empty($arrayImage)) {
+                $thumbImagePath = Yii::getAlias('@productReceiptImageThumbAbsolutePath');
+                $thumbImagePathRelative = Yii::getAlias('@productReceiptImageThumbRelativePath');
+                foreach ($arrayImage as $images) {
+                    if (!empty($images->file) && file_exists($thumbImagePathRelative . "/" . $images->file)) {
+                        $images->file = Yii::$app->request->getHostInfo() . $thumbImagePath . '/' . $images->file;
+                    } else {
+                        $images->file = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                    }
+                }
+                $model = $arrayImage;
+            }
+        }
+        return $model;
+    }
+
+    /**
+     * @param $id
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDeleteProductReceipt($id)
+    {
+        $model = ProductReceipt::findOne($id);
+
+        if (empty($model) && !$model instanceof ProductReceipt) {
+            throw new NotFoundHttpException('Product receipt doesn\'t exist.');
+        }
+
+        if (!empty($model->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $model->file)) {
+            unlink(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $model->file);
+        }
+
+        if (!empty($model->file) && file_exists(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $model->file)) {
+            unlink(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $model->file);
+        }
+
+        $model->delete();
+    }
+
 }

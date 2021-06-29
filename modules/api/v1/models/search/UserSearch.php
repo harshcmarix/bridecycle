@@ -30,9 +30,9 @@ class UserSearch extends User
         //     [['weight', 'height'], 'number'],
         // ];
 
-           return [
+        return [
             [['id'], 'integer'],
-            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'mobile', 'personal_information', 'user_type', 'is_shop_owner', 'shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website', 'shop_address', 'created_at', 'updated_at'], 'safe'],
+            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'mobile', 'personal_information', 'user_type', 'is_shop_owner', 'shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website', 'shop_address', 'is_newsletter_subscription', 'created_at', 'updated_at'], 'safe'],
             [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
         ];
     }
@@ -101,7 +101,7 @@ class UserSearch extends User
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
-        
+
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
@@ -119,8 +119,8 @@ class UserSearch extends User
         /* ########## Prepare Query With Default Filter End ######### */
 
         $query->groupBy('users.id');
-        
-        $activeDataProvider =  Yii::createObject([
+
+        $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
             'pagination' => [
@@ -132,16 +132,24 @@ class UserSearch extends User
             ],
         ]);
         $userModelData = $activeDataProvider->getModels();
-   
-        foreach($userModelData as $key=>$value){
+
+        foreach ($userModelData as $key => $value) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if(!empty($userModelData[$key]['profile_picture']) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $value->profile_picture)){
-                 $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture; 
+            if (!empty($userModelData[$key]['profile_picture']) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $value->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture;
             }
             $userModelData[$key]['profile_picture'] = $profilePicture;
+
+            $userModelData[$key]['height'] = (string)$value->height;
+            $userModelData[$key]['top_size'] = (string)$value->top_size;
+            $userModelData[$key]['pant_size'] = (string)$value->pant_size;
+            $userModelData[$key]['bust_size'] = (string)$value->bust_size;
+            $userModelData[$key]['waist_size'] = (string)$value->waist_size;
+            $userModelData[$key]['hip_size'] = (string)$value->hip_size;
+
         }
         $activeDataProvider->setModels($userModelData);
-       
+
         return $activeDataProvider;
     }
 }

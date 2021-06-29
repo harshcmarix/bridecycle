@@ -27,14 +27,19 @@ use app\modules\api\v1\models\User;
  * @property string $is_top_selling 1 => top selling product
  * @property string $is_top_trending 1 => top trending product
  * @property string $is_admin_favourite 1 => admin favourite product
+ * @property int $dress_type_id
  * @property int $brand_id
  * @property string|null $gender 1 => female
+ * @property string|null $type n => new , u => used
  * @property string $is_cleaned 1 => cleaned product
+ * @property string $is_receipt 1 => cleaned product
  * @property int|null $height
  * @property int|null $weight
  * @property int|null $width
  * @property int $status_id
  * @property int $address_id
+ * @property string|null $option_color
+ * @property string|null $shipping_country_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -146,18 +151,20 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'number', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'status_id'], 'required'], //'is_top_selling', 'is_top_trending',
-            [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'status_id', 'user_id', 'address_id'], 'integer'],
+            [['name', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'status_id', 'option_color'], 'required'], //'is_top_selling', 'is_top_trending', 'number'
+            [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'status_id', 'user_id', 'address_id', 'dress_type_id'], 'integer'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
             [['number', 'other_info', 'created_at', 'updated_at'], 'safe'],
             [['name', 'option_size'], 'string', 'max' => 50],
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
-            [['is_admin_favourite'], 'safe'],
+            [['is_receipt', 'is_admin_favourite'], 'safe'],
             [['images'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
-            [['option_color'], 'string', 'max' => 255],
+            //[['option_color'], 'string', 'max' => 255],
+            [['option_color'], 'safe'],
+            [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::className(), 'targetAttribute' => ['dress_type_id' => 'id']],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
@@ -201,7 +208,7 @@ class Product extends \yii\db\ActiveRecord
             'option_price' => 'Option Price',
             'option_conditions' => 'Option Conditions',
             'option_show_only' => 'Option Show Only',
-            'option_color' => 'Option Color',
+            // 'option_color' => 'Option Color',
             'description' => 'Description',
             'available_quantity' => 'Available Quantity',
             'is_top_selling' => 'Is Top Selling',
@@ -214,6 +221,7 @@ class Product extends \yii\db\ActiveRecord
             'width' => 'Width',
             'status_id' => 'Status',
             'address_id' => 'Address',
+            'option_color' => 'Color',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -225,6 +233,7 @@ class Product extends \yii\db\ActiveRecord
     public function extraFields()
     {
         return [
+            'dresstype0' => 'dresstype0',
             'productImages0' => 'productImages0',
             'category0' => 'category0',
             'brand0' => 'brand0',
@@ -237,6 +246,7 @@ class Product extends \yii\db\ActiveRecord
             'seller' => 'seller',
             'rating' => 'rating',
             'productReceipt0' => 'productReceipt0',
+            'shippingCountry0' => 'shippingCountry0',
         ];
     }
 
@@ -295,7 +305,17 @@ class Product extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getColor()
+    public function getDressType()
+    {
+        return $this->hasOne(DressType::className(), ['id' => 'dress_type_id']);
+    }
+
+    /**
+     * Gets query for [[Brand]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getColor0()
     {
         return $this->hasOne(Color::className(), ['id' => 'option_color']);
     }
@@ -444,6 +464,39 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Colors]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getColor()
+    {
+        $colors = explode(",", $this->option_color);
+        $color = Color::find()->where(['in', 'id', $colors])->all();
+        return $color;
+    }
+
+    /**
+     * Gets query for [[DressType]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDresstype0()
+    {
+        $dressType = DressType::find()->where(['id' => $this->dress_type_id])->one();
+
+        if (!empty($dressType) && $dressType instanceof DressType) {
+            $dressTypeImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($dressType->image) && file_exists(Yii::getAlias('@dressTypeImageThumbRelativePath') . '/' . $dressType->image)) {
+                $dressTypeImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@dressTypeImageThumbAbsolutePath') . '/' . $dressType->image;
+            }
+            $dressType->image = $dressTypeImage;
+        } else {
+            $dressType = null;
+        }
+        return $dressType;
+    }
+
+    /**
      * @return User|array|mixed|\yii\db\ActiveRecord|null
      */
     public function getUser0()
@@ -467,7 +520,10 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getFavouriteProduct()
     {
-        $data = FavouriteProduct::find()->where(['product_id' => $this->id, 'user_id' => Yii::$app->user->identity->id])->one();
+        $data = null;
+        if (!empty(Yii::$app->user->identity) && Yii::$app->user->identity->id) {
+            $data = FavouriteProduct::find()->where(['product_id' => $this->id, 'user_id' => Yii::$app->user->identity->id])->one();
+        }
         return $data;
     }
 
@@ -495,13 +551,13 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getRating()
     {
-        $modelRate['total_rated_count'] = number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
-        $modelRate['over_all_rate'] = ProductRating::find()->where(['product_id' => $this->id])->average('rating');
-        $modelRate['one_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->count();
-        $modelRate['two_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::TWO_STAR_RATE])->count();
-        $modelRate['three_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::THREE_STAR_RATE])->count();
-        $modelRate['four_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FOUR_STAR_RATE])->count();
-        $modelRate['five_star_rate'] = ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FIVE_STAR_RATE])->count();
+        $modelRate['total_rated_count'] = (int)number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
+        $modelRate['over_all_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id])->average('rating');
+        $modelRate['one_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->count();
+        $modelRate['two_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::TWO_STAR_RATE])->count();
+        $modelRate['three_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::THREE_STAR_RATE])->count();
+        $modelRate['four_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FOUR_STAR_RATE])->count();
+        $modelRate['five_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FIVE_STAR_RATE])->count();
 
         return (object)$modelRate;
     }
@@ -530,4 +586,15 @@ class Product extends \yii\db\ActiveRecord
         return $productReceipts;
     }
 
+    /**
+     * Gets query for [[ShippingAddress]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShippingCountry0()
+    {
+        $countries = explode(",", $this->shipping_country_id);
+        $country = Country::find()->where(['in', 'id', $countries])->all();
+        return $country;
+    }
 }

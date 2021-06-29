@@ -39,13 +39,15 @@ class ForgotPasswordForm extends Model
      * @return bool
      * @throws \yii\base\Exception
      */
-    public function sendEmail()
+    public function sendEmail($email_id)
     {
+        $this->email = $email_id;
+
         /* @var $user User */
-        $user = User::findOne([
+        $user = User::find()->where([
             'user_type' => User::USER_TYPE_ADMIN,
             'email' => $this->email,
-        ]);
+        ])->one();
 
         if (!$user) {
             return false;
@@ -58,15 +60,12 @@ class ForgotPasswordForm extends Model
             }
         }
 
-        return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'admin/passwordResetToken-html', 'text' => 'admin/passwordResetToken-text'],
-                ['user' => $user]
-            )
+        $sendMail = Yii::$app->mailer->compose('admin/passwordResetToken-html',['user' => $user])
             ->setFrom([Yii::$app->params['support_email'] => Yii::$app->name . ' robot'])
             ->setTo($this->email)
             ->setSubject('Password Reset For ' . Yii::$app->name)
             ->send();
+
+        return $sendMail;
     }
 }

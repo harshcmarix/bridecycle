@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "product_receipt".
@@ -13,7 +14,7 @@ use Yii;
  * @property string $created_at
  * @property string $updated_at
  *
- * @property Products $product
+ * @property Product $product
  */
 class ProductReceipt extends \yii\db\ActiveRecord
 {
@@ -24,18 +25,29 @@ class ProductReceipt extends \yii\db\ActiveRecord
     {
         return 'product_receipt';
     }
-
+    /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['product_id', 'file', 'updated_at'], 'required'],
+            [['product_id', 'file'], 'required'],
             [['product_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['file'], 'string', 'max' => 255],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['file'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png'],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -60,6 +72,6 @@ class ProductReceipt extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Products::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 }

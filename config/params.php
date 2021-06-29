@@ -5,7 +5,8 @@ return [
     'from_email' => 'noreply@example.com',
     'token_type' => 'bearer',
     //'token_expire_time' => 86400,// 1 day
-    'token_expire_time' => 3.154e+7,// 365 day
+    'token_expire_time' => (86400 * 365),// 365 day
+    //'token_expire_time' => 3.154e+7,// 365 day
     'token_segment' => 1,
     'default_page_size' => 10,
     // Used in reset password expire token
@@ -63,6 +64,14 @@ return [
     /**
      * Mobile APi current latest version
      */
-    'mobile_api_latest_version' => 'v1'
+    'mobile_api_latest_version' => 'v1',
+
+
+    // Live // client
+    //'google_map_api_key'=>'AIzaSyBuITv7RS9RWyEoZkJ1df6-zrw6ZT_C36Q',
+    'google_map_api_key' => 'AIzaSyAO1tfGWm30RyXQbiaVGvKxo0M5h9-4bP8',
+    //'google_map_api_key'=>'AIzaSyB0WhTsW00dL_NTfkIbUgxXc25zUATbhAY',
+    // Local // my
+    //'google_map_api_key'=>'AIzaSyDTBLZMRefUIIM9f0StWgeQ1lVglay22wk',
 
 ];

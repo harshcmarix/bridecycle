@@ -314,7 +314,8 @@ class UserController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = User::find()->where(['id' => $id, 'is_shop_owner' => User::SHOP_OWNER_NO])->one();
+        //$model = User::find()->where(['id' => $id, 'is_shop_owner' => User::SHOP_OWNER_NO])->one();
+        $model = User::find()->where(['id' => $id])->one();
         if (!$model instanceof User) {
             throw new NotFoundHttpException('User doesn\'t exist.');
         }
@@ -362,6 +363,14 @@ class UserController extends ActiveController
             $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
         }
         $model->profile_picture = $showProfilePicture;
+
+        $model->height = (string)$model->height;
+        $model->top_size = (string)$model->top_size;
+        $model->pant_size = (string)$model->pant_size;
+        $model->bust_size = (string)$model->bust_size;
+        $model->waist_size = (string)$model->waist_size;
+        $model->hip_size = (string)$model->hip_size;
+
         return $model;
     }
 
@@ -420,6 +429,7 @@ class UserController extends ActiveController
                 $model->profile_picture = $fileName;
             }
         }
+
         if ($model->save()) {
             $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
             $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
@@ -477,7 +487,9 @@ class UserController extends ActiveController
             $modelPostData = User::find()->where(['facebook_id' => $postData['facebook_id']])->one();
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;
+                //$data['Login']['password'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
+                //$model->password = $modelPostData->password_hash;
             } else {
                 throw new NotFoundHttpException('User doesn\'t exist.');
             }
@@ -488,9 +500,12 @@ class UserController extends ActiveController
                 throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "apple_id"');
             }
             $modelPostData = User::find()->where(['apple_id' => $postData['apple_id']])->one();
+            //p($modelPostData);
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;
+                //$data['Login']['password'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
+               // $model->password = $modelPostData->password_hash;
             } else {
                 throw new NotFoundHttpException('User doesn\'t exist.');
             }
@@ -518,7 +533,6 @@ class UserController extends ActiveController
                 }
             }
 
-
             if (!empty($model->user) && $model->user->is_verify_user == 0) {
 
                 $modelUser = User::findOne($model->user->id);
@@ -536,8 +550,6 @@ class UserController extends ActiveController
         } else {
             return $model;
         }
-
-
     }
 
     /**
@@ -567,18 +579,15 @@ class UserController extends ActiveController
                 $userModel->access_token_expired_at = null;
                 $userModel->save();
 
-
-                $loginDevice = UserDevice::find()->where(["user_id" => Yii::$app->user->identity->id, "notification_token" => $postData['notification_token']])->one();
+                $loginDevice = UserDevice::find()->where(["user_id" => $userModel->id, "notification_token" => $postData['notification_token']])->one();
                 if (!empty($loginDevice)) {
                     $loginDevice->delete();
                 }
-
                 \Yii::$app->user->logout();
                 return [
                     'message' => 'Logged Out Successfully.'
                 ];
             }
-
             return [
                 'message' => 'You are already logged Out.'
             ];
@@ -599,9 +608,10 @@ class UserController extends ActiveController
         if ($model->load($data) && $model->validate()) {
             $tmpPassword = \Yii::$app->security->generateRandomString(8);
             $userModel = $model->getUser();
+            $userModel->password_hash = $model->getUser()->password_hash;
             $userModel->temporary_password = $tmpPassword;
             if ($userModel->save()) {
-                $mail = \Yii::$app->mailer->compose('api/forgot_password', ['model' => $model, 'user' => $userModel])
+                $mail = \Yii::$app->mailer->compose('api/forgot_password', ['model' => $model, 'user' => $userModel, 'appname' => Yii::$app->name])
                     ->setFrom([\Yii::$app->params['from_email'] => \Yii::$app->name])
                     ->setTo($model->email)
                     ->setSubject('Forgot your password')
@@ -658,7 +668,7 @@ class UserController extends ActiveController
             $userModel = $model->getUser();
             $userModel->setPassword($model->password);
             $userModel->temporary_password = null;
-            if (!$userModel->save()) {
+            if (!$userModel->save(false)) {
                 throw new ForbiddenHttpException('Unable to process your request. Please contact administrator.');
             }
         }
@@ -721,6 +731,10 @@ class UserController extends ActiveController
         return $model;
     }
 
+    /**
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
     public function actionResendVerificationCode()
     {
 

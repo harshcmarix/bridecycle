@@ -163,9 +163,28 @@ $this->params['breadcrumbs'][] = 'View Product';
             'width',
             'receipt',
             [
+                'attribute' => 'type',
+                'label' => 'Product Type',
+                'value' => function ($model) {
+                    $producttype = "";
+                    if (!empty($model->type) && $model->type == Product::PRODUCT_TYPE_NEW) {
+                        $producttype = "New";
+                    } else if (!empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
+                        $producttype = "Used";
+                    }
+                    return $producttype;
+                },
+            ],
+            [
                 'attribute' => 'status_id',
                 'value' => function ($model) {
                     return (!empty($model) && !empty($model->status) && $model->status instanceof \app\models\ProductStatus) ? ucfirst($model->status->status) : '';
+                },
+            ],
+            [
+                'attribute' => 'is_admin_favourite',
+                'value' => function ($model) {
+                    return (!empty($model) && !empty($model->is_admin_favourite) && $model->is_admin_favourite == Product::IS_ADMIN_FAVOURITE_YES) ? 'Yes' : 'No';
                 },
             ],
 //            'created_at:datetime',

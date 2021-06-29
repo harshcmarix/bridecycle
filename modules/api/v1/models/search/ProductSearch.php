@@ -5,6 +5,7 @@ namespace app\modules\api\v1\models\search;
 use app\models\ProductImage;
 use app\models\ProductStatus;
 use app\models\SearchHistory;
+use app\modules\api\v1\models\User;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\Model;
@@ -49,7 +50,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'user_id', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'option_color', 'height', 'weight', 'width', 'status_id'], 'integer'],
-            [['name', 'number', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'number', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'is_receipt', 'receipt', 'created_at', 'updated_at'], 'safe'],
             [['option_price'], 'number'],
         ];
     }
@@ -147,8 +148,15 @@ class ProductSearch extends Product
 
         /* ########## Prepare Query With Default Filter End ######### */
 
-
         /* ########## Prepare Query With custom Filter Start ######### */
+
+//        if (!empty(Yii::$app->user->identity) && !empty(Yii::$app->user->identity->id)) {
+//            $modelUser = Yii::$app->user->identity;
+//            if (!empty($modelUser) && $modelUser instanceof User) {
+//                $blockUserIds = $modelUser->BlockUsersId();
+//                p($blockUserIds);
+//            }
+//        }
 
         if (!empty($requestParams['is_top_selling']) && $requestParams['is_top_selling'] == '1') {
             $query->andWhere(['is_top_selling' => Product::IS_TOP_SELLING_YES]);
@@ -183,6 +191,14 @@ class ProductSearch extends Product
             ]);
         }
 
+        if (!empty($requestParams['dress_type_id'])) {
+            $dressTypeIDs = explode(",", $requestParams['dress_type_id']);
+            $query->andFilterWhere([
+                'and',
+                ['in', 'products.dress_type_id', $dressTypeIDs],
+            ]);
+        }
+
         if (!empty($requestParams['category_id'])) {
             $categoryIDs = explode(",", $requestParams['category_id']);
             $query->andFilterWhere([
@@ -195,7 +211,7 @@ class ProductSearch extends Product
             $colors = explode(",", $requestParams['color']);
             if (!empty($colors)) {
                 foreach ($colors as $keyColor => $colorRow) {
-                    $query->andFilterWhere([
+                    $query->orFilterWhere([
                         'or',
                         ['like', 'products.option_color', $colorRow],
                     ]);
@@ -207,20 +223,20 @@ class ProductSearch extends Product
             $sizes = explode(",", $requestParams['size']);
             if (!empty($sizes)) {
                 foreach ($sizes as $keySize => $sizeRow) {
-                    $query->andFilterWhere([
+                    $query->orFilterWhere([
                         'or',
-                        ['like', 'products.option_size', $sizeRow],
+                        ['like', 'products.option_size', strtolower($sizeRow) . "%", false],
                     ]);
                 }
             }
         }
 
         if (!empty($requestParams['price'])) {
-            $prices = explode("-", $requestParams['size']);
+            $prices = explode("-", $requestParams['price']);
             if (!empty($prices)) {
                 $query->andFilterWhere([
                     'or',
-                    ['between', 'products.option_price', $prices[0], $prices[1]],
+                    // ['between', 'products.option_price', $prices[0], $prices[1]],
                     ['between', 'products.price', $prices[0], $prices[1]],
                 ]);
             }
@@ -230,7 +246,7 @@ class ProductSearch extends Product
             $conditions = explode(",", $requestParams['conditions']);
             if (!empty($conditions)) {
                 foreach ($conditions as $keyCondition => $conditionRow) {
-                    $query->andFilterWhere([
+                    $query->orFilterWhere([
                         'or',
                         ['like', 'products.option_conditions', $conditionRow],
                     ]);
@@ -242,7 +258,7 @@ class ProductSearch extends Product
             $showonlies = explode(",", $requestParams['show_only']);
             if (!empty($showonlies)) {
                 foreach ($showonlies as $keyShowonly => $showonlyRow) {
-                    $query->andFilterWhere([
+                    $query->orFilterWhere([
                         'or',
                         ['like', 'products.option_show_only', $showonlyRow],
                     ]);
@@ -265,7 +281,7 @@ class ProductSearch extends Product
         /** Start for search screen */
 
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1 && !empty($requestParams['search_keyword'])) {
-            $query->andFilterWhere([
+            $query->orFilterWhere([
                 'or',
                 ['like', 'products.name', $requestParams['search_keyword']],
                 ['like', 'category.name', $requestParams['search_keyword']],
@@ -312,7 +328,6 @@ class ProductSearch extends Product
             }
         }
 
-
         /* ########## Prepare Query With custom Filter End ######### */
 
         $query->groupBy('products.id');
@@ -328,6 +343,7 @@ class ProductSearch extends Product
                 'params' => $requestParams,
             ],
         ]);
+
         $productModelData = $activeDataProvider->getModels();
 
         $productData = [];
@@ -339,9 +355,10 @@ class ProductSearch extends Product
 
                         $productImg[] = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $productImageRow->name;
                     }
+
                 }
             }
-
+            //$productModelData[$key]['dressType0'] = $value->dressType;
 //            $data['status'] = (!empty($productModelData[$key]['status_id']) && !empty($value->status) && !empty($value->status->status)) ? $value->status->status : "";
 //            $data['user'] = (!empty($productModelData[$key]['user_id']) && !empty($value->user)) ? $value->user->first_name . " " . $value->user->last_name : "";
 //            $data['brand'] = (!empty($productModelData[$key]['brand_id']) && !empty($value->brand) && !empty($value->brand->name)) ? $value->brand->name : "";

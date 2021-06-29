@@ -71,7 +71,8 @@ class ForgotPassword extends User
     private function findUser()
     {
         // return $this->_user = User::findByEmail($this->email);
-        return $this->_user = User::findOne(['email' => $this->email, 'user_type' => User::USER_TYPE_NORMAL]);
+        //return $this->_user = User::findOne(['email' => $this->email, 'user_type' => User::USER_TYPE_NORMAL]);
+        return $this->_user = User::find()->where(['email' => $this->email, 'user_type' => User::USER_TYPE_NORMAL])->one();
     }
 
     /**

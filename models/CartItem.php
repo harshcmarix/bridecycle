@@ -17,6 +17,7 @@ use Yii;
  * @property float $price
  * @property string|null $color
  * @property int|null $size
+ * @property int|null $is_checkout
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -46,6 +47,9 @@ class CartItem extends \yii\db\ActiveRecord
         ];
     }
 
+    const IS_CHECKOUT_YES = 1;
+    const IS_CHECKOUT_NO = 0;
+
     /**
      * {@inheritdoc}
      */
@@ -54,12 +58,13 @@ class CartItem extends \yii\db\ActiveRecord
         return [
             //[['user_id', 'product_id', 'quantity', 'price'], 'required'],
             [['user_id', 'product_id', 'quantity'], 'required'],
-            [['user_id', 'product_id', 'quantity', 'size'], 'integer'],
+            [['user_id', 'product_id', 'quantity'], 'integer'],
             [['price'], 'number'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['size', 'is_checkout', 'created_at', 'updated_at'], 'safe'],
             [['color'], 'string', 'max' => 100],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['color'], 'exist', 'skipOnError' => true, 'targetClass' => Color::className(), 'targetAttribute' => ['color' => 'id']],
         ];
     }
 
@@ -88,7 +93,8 @@ class CartItem extends \yii\db\ActiveRecord
     {
         return [
             'user0' => 'user0',
-            'product' => 'product'
+            'color0' => 'color0',
+            'product' => 'product',
         ];
     }
 
@@ -113,6 +119,17 @@ class CartItem extends \yii\db\ActiveRecord
 
     }
 
+    /**
+     * Gets query for [[Color]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getColor()
+    {
+        return $this->hasOne(Color::className(), ['id' => 'color']);
+
+    }
+
     //////////only for api/////////
 
     /**
@@ -131,5 +148,18 @@ class CartItem extends \yii\db\ActiveRecord
             $userDetails->profile_picture = $profilepicture;
         }
         return $userDetails;
+    }
+
+
+    /**
+     * Gets query for [[Color]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getColor0()
+    {
+        $color = Color::findOne($this->color);
+        return $color;
+
     }
 }

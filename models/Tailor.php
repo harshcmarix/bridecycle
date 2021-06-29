@@ -13,6 +13,7 @@ use Yii;
  * @property string $name
  * @property string $shop_name
  * @property string $shop_image
+ * @property string $voucher
  * @property string $address
  * @property string $zip_code
  * @property int|null $mobile
@@ -67,7 +68,7 @@ class Tailor extends ActiveRecord
             // [['mobile'], 'integer'],
             [['zip_code'], 'integer'],
             [['mobile'], 'string', 'max' => 15, 'min' => 5],
-            [['shop_image'], 'file', 'extensions' => 'png,jpg'],
+            [['shop_image', 'voucher'], 'file', 'extensions' => 'png,jpg'],
             [['shop_image'], 'required', 'on' => self::SCENARIO_CREATE],
             [['shop_image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
@@ -77,7 +78,7 @@ class Tailor extends ActiveRecord
                                     }
             }",],
             [['created_at', 'updated_at'], 'safe'],
-            [['name', 'shop_image'], 'string', 'max' => 255],
+            [['name', 'shop_image', 'voucher'], 'string', 'max' => 255],
             [['shop_name'], 'string', 'max' => 50],
         ];
     }

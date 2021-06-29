@@ -77,6 +77,8 @@ class CartItemController extends ActiveController
             'delete' => ['POST', 'DELETE'],
             'check-quantity-for-checkout' => ['POST', 'OPTIONS'],
             'checkout' => ['POST', 'OPTIONS'],
+            'add-product-to-checkout' => ['POST', 'OPTIONS'],
+
         ];
     }
 
@@ -88,7 +90,7 @@ class CartItemController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'delete', 'check-quantity-for-checkout', 'checkout'],
+            'only' => ['index', 'view', 'create', 'update', 'delete', 'check-quantity-for-checkout', 'checkout', 'add-product-to-checkout'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -166,12 +168,19 @@ class CartItemController extends ActiveController
         $postData = Yii::$app->request->post();
         $cartIteam['CartItem'] = $postData;
         $cartIteam['CartItem']['user_id'] = Yii::$app->user->identity->id;
+
+
         if ($model->load($cartIteam) && $model->validate()) {
+
+            $cartIteamAlreadyAdded = CartItem::find()->where(['product_id' => $model->product_id, 'user_id' => $model->user_id, 'is_checkout' => CartItem::IS_CHECKOUT_NO])->one();
+            if (!empty($cartIteamAlreadyAdded) && $cartIteamAlreadyAdded instanceof CartItem) {
+                throw new BadRequestHttpException('You have already this product added to the cart"');
+            }
+
             $productData = Product::find()->where(['id' => $model->product_id])->one();
             $model->price = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
             $model->save();
         }
-
         return $model;
     }
 
@@ -297,14 +306,18 @@ class CartItemController extends ActiveController
         }
 
         $productIds = explode(",", $post['product_id']);
-        $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->all();
-        $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->sum('price');
+        $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
+        $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
         //p(Yii::$app->formatter->asCurrency($cartTotal));
-        $modelOrder->total_amount = (!empty($cartTotal)) ? $cartTotal : 0.00;
 
+        if (empty($cartTotal)) {
+            //$cartTotal = OrderItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->sum('price');
+            $cartTotal = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('price');
+        }
+        $modelOrder->total_amount = (!empty($cartTotal)) ? $cartTotal : 0.00;
+        $modelOrder->save(false);
 
         if (!empty($modelCartItems)) {
-            $modelOrder->save(false);
             foreach ($modelCartItems as $key => $modelCartItemRow) {
                 if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
                     $modelOrderItem = new OrderItem();
@@ -313,15 +326,13 @@ class CartItemController extends ActiveController
                     $modelOrderItem->quantity = $modelCartItemRow->quantity;
                     $modelOrderItem->color = $modelCartItemRow->color;
                     $modelOrderItem->size = $modelCartItemRow->size;
+                    $modelOrderItem->price = $modelCartItemRow->price;
                     if ($modelOrderItem->save(false)) {
                         // Delete from cart
                         $modelCartItemRow->delete();
-
-
                     }
                 }
             }
-
 
             $cardType = OrderPayment::CARD_TYPE_VISA;
             if (!empty($modelOrderPayment->card_number)) {
@@ -376,7 +387,11 @@ class CartItemController extends ActiveController
                                 }
                                 $orderItemRow->product->save(false);
 
-                                $generateInvoice = $this->generateInvoice($orderItemRow->id);
+
+                                // Need setting for generate pdf on server
+
+                                //$generateInvoice = $this->generateInvoice($orderItemRow->id);
+
 
                                 // Send Push notification start
                                 $getUsers[] = $orderItemRow->product->user;
@@ -426,8 +441,6 @@ class CartItemController extends ActiveController
                     }
                     $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
                     $modelOrder->save(false);
-
-
                 }
                 $modelOrderPayment->payment_response = (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') ? $response : "";
                 $modelOrderPayment->payment_status = (!empty($response->getState())) ? $response->getState() : 'failed';
@@ -453,7 +466,6 @@ class CartItemController extends ActiveController
                 Yii::$app->params['paypal_client_secret'] // ClientSecret
             )
         );
-
 
         // or whatever yours is called
 
@@ -538,7 +550,6 @@ class CartItemController extends ActiveController
         $amount->setTotal($total);
         $amount->setDetails($amountDetails);
 
-
         // ###Transaction
         // A transaction defines the contract of a
         // payment - what is the payment for and who
@@ -574,8 +585,6 @@ class CartItemController extends ActiveController
             //die($pce);
             return $pce;
         }
-
-
     }
 
     /**
@@ -607,7 +616,6 @@ class CartItemController extends ActiveController
         }
         $content = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail]);
 
-
         $fileName = 'order-' . time() . "-" . $modelOrder->id . ".pdf";
         Yii::$app->html2pdf->convert($content)->saveAs(Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName);
 
@@ -617,5 +625,28 @@ class CartItemController extends ActiveController
         return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;
     }
 
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws BadRequestHttpException
+     */
+    public function actionAddProductToCheckout()
+    {
+        $post = Yii::$app->request->post();
+        if (empty($post) || empty($post['product_id'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "product_id"');
+        }
 
+        $productIds = explode(",", $post['product_id']);
+        $user_id = Yii::$app->user->identity->id;
+        $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_NO])->all();
+        if (!empty($modelCartItems)) {
+            foreach ($modelCartItems as $key => $modelCartItemRow) {
+                if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
+                    $modelCartItemRow->is_checkout = CartItem::IS_CHECKOUT_YES;
+                    $modelCartItemRow->save(false);
+                }
+            }
+        }
+        return $modelCartItems;
+    }
 }

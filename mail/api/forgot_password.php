@@ -18,4 +18,4 @@ Hello <?= $fullName ?>,<br>
 <p>Your temporary password is <strong><?= $user->temporary_password ?></strong>.</p>
 
 Thanks,
-<?php echo "<strong> Yii::$app->name </strong>" ?>
+<?php echo "<strong> $appname </strong>" ?>

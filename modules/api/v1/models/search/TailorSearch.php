@@ -160,6 +160,25 @@ class TailorSearch extends Tailor
 
         $tailorModels = $activeDataProvider->getModels();
 
+        foreach ($tailorModels as $key => $value) {
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+
+            //$voucherPicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            $voucherPicture = null;
+
+            if (!empty($tailorModels[$key]['shop_image']) && file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $value->shop_image)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorShopImageThumbAbsolutePath') . '/' . $value->shop_image;
+            }
+
+            if (!empty($tailorModels[$key]['voucher']) && file_exists(Yii::getAlias('@tailorVoucherImageRelativePath') . '/' . $value->voucher)) {
+                $voucherPicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorVoucherImageThumbAbsolutePath') . '/' . $value->voucher;
+            }
+
+
+            $tailorModels[$key]['shop_image'] = $profilePicture;
+            $tailorModels[$key]['voucher'] = $voucherPicture;
+        }
+
         $activeDataProvider->setModels($tailorModels);
 
         return $activeDataProvider;

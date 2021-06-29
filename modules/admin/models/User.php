@@ -127,13 +127,13 @@ class User extends ActiveRecord implements IdentityInterface
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
-            [['shop_email'], 'unique','targetClass' => ShopDetail::ClassName() ,'targetAttribute' => ['shop_email'],'filter' => ['!=', 'user_id', Yii::$app->request->get('id')], 'message' => 'Shop email already exist.' ],
-            [['email'], 'unique','message' => 'Email already exist.'],
+            [['shop_email'], 'unique', 'targetClass' => ShopDetail::ClassName(), 'targetAttribute' => ['shop_email'], 'filter' => ['!=', 'user_id', Yii::$app->request->get('id')], 'message' => 'Shop email already exist.'],
+            [['email'], 'unique', 'message' => 'Email already exist.'],
             [['shop_logo'], 'file'],
             [['password', 'confirm_password'], 'string', 'min' => 6],
             [['password', 'confirm_password'], 'safe'],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match",],
-             [['shop_logo'], 'required', 'when' => function ($model) {
+            [['shop_logo'], 'required', 'when' => function ($model) {
                 //return $model->is_image_empty == '1';
             },
                 'whenClient' => "function (attribute, value) {
@@ -248,6 +248,19 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUserSubscriptions()
     {
         return $this->hasMany(UserSubscriptions::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Check logged in user are admin or not.
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        $role = $this->user_type;
+        if ($role == self::USER_TYPE_ADMIN) {
+            return true;
+        }
+        return false;
     }
 
     /************************************************************************************/

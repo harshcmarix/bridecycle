@@ -72,6 +72,7 @@ class Login extends Model
      */
     public function login()
     {
+
         if (!empty(Yii::$app->request->post('is_login_from'))) {
             if ($this->getUser()) {
                 $accessToken = $this->_user->generateAccessToken();
@@ -83,7 +84,7 @@ class Login extends Model
                 $this->access_token = $accessToken;
                 $this->access_token_expired_at = $accessTokenExpiredAt;
                 $this->token_type = ucfirst(Yii::$app->params['token_type']);
-                $this->id = $this->getUser()->id;
+
                 return true;
             }
 

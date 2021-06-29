@@ -15,5 +15,6 @@ use yii\helpers\Html;
 
     <br /><br />
     <p>Thanks,</p>
-    <p><?= Html::encode(Yii::$app->name) ?></p>
+    <!--    <p>--><?php //echo Html::encode(Yii::$app->name) ?><!--</p>-->
+    <p><?= Html::encode("Bride Cycle") ?></p>
 </div>
