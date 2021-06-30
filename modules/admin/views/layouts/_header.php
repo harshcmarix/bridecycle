@@ -18,14 +18,15 @@ use yii\helpers\Url;
         <div class="navbar-custom-menu">
 
             <ul class="nav navbar-nav">
-                <?php if (Yii::$app->user->identity->isAdmin() || Yii::$app->user->identity->isSuperAdmin()) { ?>
-                    <!--                    <li class="dropdown live-users-menu">-->
-                    <!--                        <a href="--><?php //echo Url::to(['admin-user/online-users']); ?><!--" class="dropdown-toggle"-->
-                    <!--                           title="Online Users">-->
-                    <!--                            <i class="fa fa-users" id="live-users-count" style="color:greenyellow"></i>-->
-                    <!--                        </a>-->
-                    <!--                    </li>-->
-                <?php } ?>
+                <?php //if (Yii::$app->user->identity->isAdmin() || Yii::$app->user->identity->isSuperAdmin()) { ?>
+                <!--                    <li class="dropdown live-users-menu">-->
+                <!--                        <a href="-->
+                <?php //echo Url::to(['admin-user/online-users']); ?><!--" class="dropdown-toggle"-->
+                <!--                           title="Online Users">-->
+                <!--                            <i class="fa fa-users" id="live-users-count" style="color:greenyellow"></i>-->
+                <!--                        </a>-->
+                <!--                    </li>-->
+                <?php //} ?>
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -49,12 +50,17 @@ use yii\helpers\Url;
                             <img src="<?= $profilePicInner ?>"
                                  class="img-circle" alt="User Image"/>
 
-                            <p>
-                                <b>
-                                    <?= Yii::$app->user->identity->first_name ?>
-                                    <?= Yii::$app->user->identity->last_name ?>
-                                </b>
-                            </p>
+                            <?php if (!Yii::$app->user->isGuest) { ?>
+                                <p>
+                                    <b>
+
+                                        <?= Yii::$app->user->identity->first_name ?>
+                                        <?= Yii::$app->user->identity->last_name ?>
+
+                                    </b>
+                                </p>
+                            <?php } ?>
+
                             <p>
                                 <?php
                                 $role = "";

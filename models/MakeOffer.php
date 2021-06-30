@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use app\modules\api\v1\models\User;
 
 /**
  * This is the model class for table "make_offer".
@@ -12,13 +14,13 @@ use Yii;
  * @property int $sender_id
  * @property int $receiver_id
  * @property float $offer_amount
- * @property int $status '1'=>'pending','2'=>'accept','3'=>'reject'	
+ * @property int $status '1'=>'pending','2'=>'accept','3'=>'reject'
  * @property string $created_at
  * @property string|null $updated_at
  *
- * @property Products $product
- * @property Users $sender
- * @property Users $receiver
+ * @property Product $product
+ * @property User $sender
+ * @property User $receiver
  */
 class MakeOffer extends \yii\db\ActiveRecord
 {
@@ -31,6 +33,23 @@ class MakeOffer extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array[]
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => date('Y-m-d h:i:s'),
+            ],
+        ];
+    }
+
+    const STATUS_PENDING = 1;
+    const STATUS_ACCEPT = 2;
+    const STATUS_REJECT = 3;
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
@@ -40,9 +59,9 @@ class MakeOffer extends \yii\db\ActiveRecord
             [['product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
             [['offer_amount'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['sender_id' => 'id']],
-            [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['receiver_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['sender_id' => 'id']],
+            [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['receiver_id' => 'id']],
         ];
     }
 
@@ -64,13 +83,23 @@ class MakeOffer extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'product0' => 'product0',
+        ];
+    }
+
+    /**
      * Gets query for [[Product]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getProduct()
     {
-        return $this->hasOne(Products::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 
     /**
@@ -80,7 +109,7 @@ class MakeOffer extends \yii\db\ActiveRecord
      */
     public function getSender()
     {
-        return $this->hasOne(Users::className(), ['id' => 'sender_id']);
+        return $this->hasOne(User::className(), ['id' => 'sender_id']);
     }
 
     /**
@@ -90,6 +119,19 @@ class MakeOffer extends \yii\db\ActiveRecord
      */
     public function getReceiver()
     {
-        return $this->hasOne(Users::className(), ['id' => 'receiver_id']);
+        return $this->hasOne(User::className(), ['id' => 'receiver_id']);
+    }
+
+
+    //////    API USES //////////////////////////////////////////////////////////
+
+    /**
+     * Gets query for [[Product]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProduct0()
+    {
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 }

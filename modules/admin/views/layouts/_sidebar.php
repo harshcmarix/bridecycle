@@ -21,27 +21,33 @@ use app\modules\admin\models\DailyReportType;
                      alt="User Image"
                      class="img-circle" alt="User Image"/>
             </div>
-            <div class="pull-left info">
-                <p><?= Yii::$app->user->identity->first_name ?> <?= Yii::$app->user->identity->last_name ?></p>
-                <a href="#"><i class="fa fa-circle text-success"></i>Online</a>
-            </div>
+            <?php if (!Yii::$app->user->isGuest) { ?>
+                <div class="pull-left info">
+                    <p><?= Yii::$app->user->identity->first_name ?> <?= Yii::$app->user->identity->last_name ?></p>
+                    <a href="#"><i class="fa fa-circle text-success"></i>Online</a>
+                </div>
+            <?php } ?>
         </div>
         <?php
+        $visible = false;
+        if (!Yii::$app->user->isGuest) {
+            $visible = true;
+        }
         //$modelsModule = Module::find()->where(['is_show' => 1])->orderBy(['in_order' => SORT_ASC])->all();
-        $menuList[] = ['label' => 'Dashboard', 'icon' => 'home', 'url' => ['site/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => true];
-        $menuList[] = ['label' => 'User', 'icon' => 'users', 'url' => ['user/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Category', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Brand', 'icon' => 'list', 'url' => ['brand/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Product', 'icon' => 'product-hunt', 'url' => ['product/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Order', 'icon' => 'reorder', 'url' => ['order/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['subscription/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Content', 'icon' => 'align-center', 'url' => ['cms-page/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Tailor', 'icon' => 'cut', 'url' => ['tailor/index'], 'visible' => true];
-        $menuList[] = ['label' => 'Color', 'icon' => 'paint-brush', 'url' => ['color/index'], 'visible' => true];
+        $menuList[] = ['label' => 'Dashboard', 'icon' => 'home', 'url' => ['site/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'User', 'icon' => 'users', 'url' => ['user/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Category', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Brand', 'icon' => 'list', 'url' => ['brand/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Product', 'icon' => 'product-hunt', 'url' => ['product/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Order', 'icon' => 'reorder', 'url' => ['order/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['subscription/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Content', 'icon' => 'align-center', 'url' => ['cms-page/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Tailor', 'icon' => 'cut', 'url' => ['tailor/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Color', 'icon' => 'paint-brush', 'url' => ['color/index'], 'visible' => $visible];
 
 
         ?>

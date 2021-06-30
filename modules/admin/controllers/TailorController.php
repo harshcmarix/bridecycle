@@ -20,19 +20,19 @@ use \yii\helpers\Json;
  */
 class TailorController extends Controller
 {
-     /**
+    /**
      * {@inheritdoc}
      */
-     public function behaviors()
+    public function behaviors()
     {
         return [
-           'access' => [
+            'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update','view','delete','image-delete'],
+                'only' => ['index', 'create', 'update', 'view', 'delete', 'image-delete', 'image-delete-voucher'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update','view','delete','image-delete'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'image-delete', 'image-delete-voucher'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -78,15 +78,16 @@ class TailorController extends Controller
         $model = new Tailor();
         $model->scenario = Tailor::SCENARIO_CREATE;
         $shop_image = UploadedFile::getInstance($model, 'shop_image');
+        $shop_image_voucher = UploadedFile::getInstance($model, 'voucher');
 
-         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return \yii\widgets\ActiveForm::validate($model);
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
         }
 
         if ($model->load(Yii::$app->request->post())) {
-            
-            if(!empty($shop_image)){
+
+            if (!empty($shop_image)) {
                 $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
                 $thumbImagePath = '';
@@ -101,18 +102,47 @@ class TailorController extends Controller
                     mkdir($uploadThumbDirPath, 0777);
                 }
 
-                    $ext = $shop_image->extension;
-                    $fileName = pathinfo($shop_image->name, PATHINFO_FILENAME);
-                    $fileName = $fileName . '_' . time() . '.' . $ext;
-                    // Upload profile picture
-                    $shop_image->saveAs($uploadDirPath . '/' . $fileName);
-                    // Create thumb of profile picture
-                    $actualImagePath = $uploadDirPath . '/' . $fileName;
-                    $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                    // p($actualImagePath);
-                    Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                    // Insert profile picture name into database
-                    $model->shop_image = $fileName;
+                $ext = $shop_image->extension;
+                $fileName = pathinfo($shop_image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $shop_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->shop_image = $fileName;
+            }
+
+            if (!empty($shop_image_voucher)) {
+                $uploadDirPath = Yii::getAlias('@tailorVoucherImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@tailorVoucherImageThumbRelativePath');
+                $thumbImagePath = '';
+
+                // Create profile upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create profile thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
+                $ext = $shop_image_voucher->extension;
+                $fileName = pathinfo($shop_image_voucher->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $shop_image_voucher->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->voucher = $fileName;
             }
 
             if ($model->save()) {
@@ -120,7 +150,7 @@ class TailorController extends Controller
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Tailor.");
             }
-             return $this->redirect(['index']);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -137,22 +167,25 @@ class TailorController extends Controller
      */
     public function actionUpdate($id)
     {
-         $model = $this->findModel($id);
+        $model = $this->findModel($id);
 
-         $old_image = $model->shop_image;
-         $new_image = UploadedFile::getInstance($model, 'shop_image');
+        $old_image = $model->shop_image;
+        $new_image = UploadedFile::getInstance($model, 'shop_image');
+
+        $old_image_voucher = $model->voucher;
+        $new_image_voucher = UploadedFile::getInstance($model, 'voucher');
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
-                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                return \yii\widgets\ActiveForm::validate($model);
-            }
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
 
         if ($model->load(Yii::$app->request->post())) {
-       
+
             if (!empty($new_image)) {
-                    $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
-                    $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
-                    $thumbImagePath = '';
+                $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
+                $thumbImagePath = '';
 
                 // Create product image upload directory if not exist
                 if (!is_dir($uploadDirPath)) {
@@ -171,23 +204,62 @@ class TailorController extends Controller
                     unlink($uploadThumbDirPath . '/' . $old_image);
                 }
 
-                    $ext = $new_image->extension;
-                    $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-                    $fileName = $fileName . '_' . time() . '.' . $ext;
-                    // Upload tailor shop image
-                    $new_image->saveAs($uploadDirPath . '/' . $fileName);
-                    // Create thumb of tailor shop image
-                    $actualImagePath = $uploadDirPath . '/' . $fileName;
-                    $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                    // p($actualImagePath);
-                    Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                    // Insert tailor shop image name into database
-                    $model->shop_image = $fileName;
+                $ext = $new_image->extension;
+                $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload tailor shop image
+                $new_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of tailor shop image
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert tailor shop image name into database
+                $model->shop_image = $fileName;
 
             } else {
                 $model->shop_image = $old_image;
             }
-           
+
+            if (!empty($new_image_voucher)) {
+                $uploadDirPath = Yii::getAlias('@tailorVoucherImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@tailorVoucherImageThumbRelativePath');
+                $thumbImagePath = '';
+
+                // Create product image upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+                //unlink real image if update
+                if (file_exists($uploadDirPath . '/' . $old_image_voucher) && !empty($old_image_voucher)) {
+                    unlink($uploadDirPath . '/' . $old_image_voucher);
+                }
+                // Create product image thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+                //unlink thumb image if update
+                if (file_exists($uploadThumbDirPath . '/' . $old_image_voucher) && !empty($old_image_voucher)) {
+                    unlink($uploadThumbDirPath . '/' . $old_image_voucher);
+                }
+
+                $ext = $new_image_voucher->extension;
+                $fileName = pathinfo($new_image_voucher->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload tailor shop image
+                $new_image_voucher->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of tailor shop image
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert tailor shop image name into database
+                $model->voucher = $fileName;
+
+            } else {
+                $model->voucher = $old_image_voucher;
+            }
+
             if ($model->save()) {
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Tailor updated successfully.");
             } else {
@@ -210,16 +282,16 @@ class TailorController extends Controller
      */
     public function actionDelete($id)
     {
-       $model = $this->findModel($id);
-         $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
-         // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$model->shop_image) && !empty($model->shop_image)){
-                unlink($uploadDirPath.'/'.$model->shop_image);
-         }
-         if(file_exists($uploadThumbDirPath.'/'.$model->shop_image) && !empty($model->shop_image)){
-                unlink($uploadThumbDirPath.'/'.$model->shop_image);
-         }
+        $model = $this->findModel($id);
+        $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $model->shop_image) && !empty($model->shop_image)) {
+            unlink($uploadDirPath . '/' . $model->shop_image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $model->shop_image) && !empty($model->shop_image)) {
+            unlink($uploadThumbDirPath . '/' . $model->shop_image);
+        }
         if ($model->delete()) {
             Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Tailor deleted successfully.");
         } else {
@@ -244,28 +316,54 @@ class TailorController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-     /**
+
+    /**
      * Deletes an existing image from perticular field.
      * If deletion is successful, success message will get in update page result.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionImageDelete($id){
+    public function actionImageDelete($id)
+    {
         $model = $this->findModel($id);
-        
-         $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
-         // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$model->shop_image) && !empty($model->shop_image)){
-                unlink($uploadDirPath.'/'.$model->shop_image);
-         }
-         if(file_exists($uploadThumbDirPath.'/'.$model->shop_image) && !empty($model->shop_image)){
-                unlink($uploadThumbDirPath.'/'.$model->shop_image);
-         }
-         $model->shop_image = null;
-        if($model->save()){
-           return Json::encode(['success'=>'image successfully deleted']);
+
+        $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $model->shop_image) && !empty($model->shop_image)) {
+            unlink($uploadDirPath . '/' . $model->shop_image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $model->shop_image) && !empty($model->shop_image)) {
+            unlink($uploadThumbDirPath . '/' . $model->shop_image);
+        }
+        $model->shop_image = null;
+        if ($model->save()) {
+            return Json::encode(['success' => 'image successfully deleted']);
+        }
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionImageDeleteVoucher($id)
+    {
+        $model = $this->findModel($id);
+
+        $uploadDirPath = Yii::getAlias('@tailorVoucherImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@tailorVoucherImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $model->voucher) && !empty($model->voucher)) {
+            unlink($uploadDirPath . '/' . $model->voucher);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $model->voucher) && !empty($model->voucher)) {
+            unlink($uploadThumbDirPath . '/' . $model->voucher);
+        }
+        $model->voucher = null;
+        if ($model->save()) {
+            return Json::encode(['success' => 'image successfully deleted']);
         }
     }
 }

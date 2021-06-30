@@ -194,6 +194,7 @@ class ProductController extends ActiveController
         if ($model->load($productData) && $model->validate()) {
 
             $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
+            $model->shipping_country_id = (!empty($productData['Product']['shipping_country_id'])) ? $productData['Product']['shipping_country_id'] : "";
 
             if (!empty($model->option_size)) {
                 $model->option_size = strtolower($model->option_size);
@@ -383,8 +384,14 @@ class ProductController extends ActiveController
 
             $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
 
+
             if (!empty($model->option_size)) {
                 $model->option_size = strtolower($model->option_size);
+            }
+
+
+            if (!empty($productData['Product']['shipping_country_id'])) {
+                $model->shipping_country_id = $productData['Product']['shipping_country_id'];
             }
 
             if ($model->save(false)) {
