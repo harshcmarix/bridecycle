@@ -15,6 +15,7 @@ use Yii;
  * @property int $product_id
  * @property float $rating
  * @property string $review
+ * @property string $status
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -41,6 +42,12 @@ class ProductRating extends ActiveRecord
     const STATUS_APPROVE = '2';
     const STATUS_DECLINE = '3';
 
+    const ARR_PRODUCT_RATING_STATUS = [
+        self::STATUS_PENDING => 'Pending Approval',
+        self::STATUS_APPROVE => ' Approved',
+        self::STATUS_DECLINE => ' Decline'
+    ];
+
     /**
      * @return array[]
      */
@@ -64,7 +71,7 @@ class ProductRating extends ActiveRecord
             [['user_id', 'product_id'], 'integer'],
             [['rating'], 'number'],
             [['review'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['status', 'created_at', 'updated_at'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
         ];

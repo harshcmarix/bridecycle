@@ -19,7 +19,7 @@ use app\modules\admin\models\DailyReportType;
                 ?>
                 <img src="<?= $profilePic ?>"
                      alt="User Image"
-                     class="img-circle" alt="User Image"/>
+                     class="img-circle"/>
             </div>
             <?php if (!Yii::$app->user->isGuest) { ?>
                 <div class="pull-left info">
@@ -35,11 +35,13 @@ use app\modules\admin\models\DailyReportType;
         }
         //$modelsModule = Module::find()->where(['is_show' => 1])->orderBy(['in_order' => SORT_ASC])->all();
         $menuList[] = ['label' => 'Dashboard', 'icon' => 'home', 'url' => ['site/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Ads', 'icon' => 'picture-o', 'url' => ['ads/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'User', 'icon' => 'users', 'url' => ['user/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Category', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Brand', 'icon' => 'list', 'url' => ['brand/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Product', 'icon' => 'product-hunt', 'url' => ['product/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Product Rating', 'icon' => 'star', 'url' => ['product-rating/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Order', 'icon' => 'reorder', 'url' => ['order/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['subscription/index'], 'visible' => $visible];
