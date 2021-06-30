@@ -25,11 +25,11 @@ class ColorController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'view',],
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view',],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -46,9 +46,13 @@ class ColorController extends Controller
         $searchModel = new ColorSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $modelColor = new Color();
+        $arrStatus = $modelColor->arrStatus;
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'arrStatus' => $arrStatus,
         ]);
     }
 

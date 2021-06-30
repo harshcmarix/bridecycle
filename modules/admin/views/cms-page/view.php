@@ -15,41 +15,48 @@ $this->params['breadcrumbs'][] = ['label' => 'Cms Pages', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="cms-page-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="box box-default">
+    <div class="box-header"></div>
+    <div class="box-body">
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [         
-            [
-                'attribute' => 'title',
-                'value' => function ($model) {
-                    $title = '';
-                    if ($model instanceof CmsPage) {
-                        $title = $model->title;
-                    }
-                    return $title;
-                },
-            ],
-            // 'slug',
-             [
-                'attribute' => 'description',
-                'value' => function ($model) {
-                    $description = '';
-                    if ($model instanceof CmsPage) {
-                        $description = $model->description;
-                    }
-                    return $description;
-                },
-                'format' => ['raw'],
-                'filter'=>false,
-            ],
-        ],
-    ]) ?>
+        <div class="cms-page-view">
 
-    <p>
-        <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
-    </p>
 
+            <?= DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    [
+                        'attribute' => 'title',
+                        'value' => function ($model) {
+                            $title = '';
+                            if ($model instanceof CmsPage) {
+                                $title = $model->title;
+                            }
+                            return $title;
+                        },
+                    ],
+                    // 'slug',
+                    [
+                        'attribute' => 'description',
+                        'value' => function ($model) {
+                            $description = '';
+                            if ($model instanceof CmsPage) {
+                                $description = $model->description;
+                            }
+                            return $description;
+                        },
+                        'format' => ['raw'],
+                        'filter' => false,
+                    ],
+                ],
+            ]) ?>
+
+            <p>
+                <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+            </p>
+
+        </div>
+
+    </div>
 </div>

@@ -102,6 +102,30 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
+            [
+                'attribute' => 'status',
+                'value' => function ($model) {
+                    $status = "";
+                    if ($model->status == ProductCategory::STATUS_PENDING_APPROVAL) {
+                        $status = "Pending Approval";
+                    } elseif ($model->status == ProductCategory::STATUS_APPROVE) {
+                        $status = "Approved";
+                    } elseif ($model->status == ProductCategory::STATUS_DECLINE) {
+                        $status = "Decline";
+                    }
+                    return $status;
+                },
+                'filter' => ProductCategory::ARR_CATEGORY_STATUS,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => 'Status',
+                'headerOptions' => ['class' => 'kartik-sheet-style']
+            ],
             // [
             //     'attribute' => 'created_at',
             //     'value' => function ($model) {

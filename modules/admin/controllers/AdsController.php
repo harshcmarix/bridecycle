@@ -2,23 +2,23 @@
 
 namespace app\modules\admin\controllers;
 
-use Yii;
-use app\models\Banner;
-use app\models\search\BannerSearch;
-use yii\web\{
-    Controller,
-    NotFoundHttpException,
-    UploadedFile
-};
-use yii\filters\AccessControl;
-use yii\imagine\Image;
 use kartik\growl\Growl;
-use \yii\helpers\Json;
+use Yii;
+use app\models\Ads;
+use app\models\search\AdsSearch;
+use yii\base\BaseObject;
+use yii\filters\AccessControl;
+use yii\helpers\Json;
+use yii\imagine\Image;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
- * BannerController implements the CRUD actions for Banner model.
+ * AdsController implements the CRUD actions for Ads model.
  */
-class BannerController extends Controller
+class AdsController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -28,11 +28,11 @@ class BannerController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'view', 'delete', 'image-delete'],
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'image-delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -41,12 +41,12 @@ class BannerController extends Controller
     }
 
     /**
-     * Lists all Banner models.
+     * Lists all Ads models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new BannerSearch();
+        $searchModel = new AdsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -56,7 +56,7 @@ class BannerController extends Controller
     }
 
     /**
-     * Displays a single Banner model.
+     * Displays a single Ads model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -69,20 +69,25 @@ class BannerController extends Controller
     }
 
     /**
-     * Creates a new Banner model.
+     * Creates a new Ads model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Banner();
-        $model->scenario = Banner::SCENARIO_CREATE;
-        $banner_image = UploadedFile::getInstance($model, 'image');
+        $model = new Ads();
+        $model->scenario = Ads::SCENARIO_CREATE;
+        $ad_image = UploadedFile::getInstance($model, 'image');
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
         if ($model->load(Yii::$app->request->post())) {
 
-            if (!empty($banner_image)) {
-                $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-                $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+            if (!empty($ad_image)) {
+                $uploadDirPath = Yii::getAlias('@adsImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@adsImageThumbRelativePath');
                 $thumbImagePath = '';
 
                 // Create profile upload directory if not exist
@@ -95,11 +100,11 @@ class BannerController extends Controller
                     mkdir($uploadThumbDirPath, 0777);
                 }
 
-                $ext = $banner_image->extension;
-                $fileName = pathinfo($banner_image->name, PATHINFO_FILENAME);
+                $ext = $ad_image->extension;
+                $fileName = pathinfo($ad_image->name, PATHINFO_FILENAME);
                 $fileName = $fileName . '_' . time() . '.' . $ext;
                 // Upload profile picture
-                $banner_image->saveAs($uploadDirPath . '/' . $fileName);
+                $ad_image->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
                 $actualImagePath = $uploadDirPath . '/' . $fileName;
                 $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
@@ -107,13 +112,12 @@ class BannerController extends Controller
                 Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 // Insert profile picture name into database
                 $model->image = $fileName;
-                $model->name = $banner_image->name;
             }
 
             if ($model->save()) {
-                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Banner created successfully.");
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Ads created successfully.");
             } else {
-                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Banner.");
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Ads.");
             }
             return $this->redirect(['index']);
         }
@@ -124,7 +128,7 @@ class BannerController extends Controller
     }
 
     /**
-     * Updates an existing Banner model.
+     * Updates an existing Ads model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -134,14 +138,19 @@ class BannerController extends Controller
     {
         $model = $this->findModel($id);
         $old_image = $model->image;
-        $model->scenario = Banner::SCENARIO_UPDATE;
+
         $new_image = UploadedFile::getInstance($model, 'image');
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
 
         if ($model->load(Yii::$app->request->post())) {
 
             if (!empty($new_image)) {
-                $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-                $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+                $uploadDirPath = Yii::getAlias('@adsImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@adsImageThumbRelativePath');
                 $thumbImagePath = '';
 
                 // Create product image upload directory if not exist
@@ -179,9 +188,9 @@ class BannerController extends Controller
             }
 
             if ($model->save()) {
-                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Banner updated successfully.");
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Ads updated successfully.");
             } else {
-                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Banner.");
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Ads.");
             }
             return $this->redirect(['index']);
         }
@@ -192,7 +201,7 @@ class BannerController extends Controller
     }
 
     /**
-     * Deletes an existing Banner model.
+     * Deletes an existing Ads model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -202,8 +211,8 @@ class BannerController extends Controller
     {
         $model = $this->findModel($id);
         $image = $model->image;
-        $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-        $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+        $uploadDirPath = Yii::getAlias('@adsImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@adsImageThumbRelativePath');
         // unlink images with thumb
         if (file_exists($uploadDirPath . '/' . $image) && !empty($image)) {
             unlink($uploadDirPath . '/' . $image);
@@ -212,35 +221,41 @@ class BannerController extends Controller
             unlink($uploadThumbDirPath . '/' . $image);
         }
         if ($model->delete()) {
-            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Banner deleted successfully.");
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Ads deleted successfully.");
         } else {
-            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Banner.");
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Ads.");
         }
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Banner model based on its primary key value.
+     * Finds the Ads model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Banner the loaded model
+     * @return Ads the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Banner::findOne($id)) !== null) {
+        if (($model = Ads::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionImageDelete($id)
     {
         $model = $this->findModel($id);
-        $uploadDirPath = Yii::getAlias('@bannerImageRelativePath');
-        $uploadThumbDirPath = Yii::getAlias('@bannerImageThumbRelativePath');
+
+        $uploadDirPath = Yii::getAlias('@adsImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@adsImageThumbRelativePath');
         // unlink images with thumb
         if (file_exists($uploadDirPath . '/' . $model->image) && !empty($model->image)) {
             unlink($uploadDirPath . '/' . $model->image);
@@ -252,6 +267,5 @@ class BannerController extends Controller
         if ($model->save()) {
             return Json::encode(['success' => 'image successfully deleted']);
         }
-
     }
 }

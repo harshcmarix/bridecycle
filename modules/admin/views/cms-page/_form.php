@@ -12,28 +12,35 @@ use dosamigos\ckeditor\CKEditor;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="cms-page-form">
+<div class="box box-default">
+    <div class="box-header"></div>
+    <div class="box-body">
 
-    <?php $form = ActiveForm::begin(); ?>
+        <div class="cms-page-form">
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+            <?php $form = ActiveForm::begin(); ?>
 
-     <!-- $form->field($model, 'slug')->textInput(['maxlength' => true])  -->
+            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'description')->widget(CKEditor::className(), [
-        'options' => ['rows' => 6],
-        'preset' => 'basic',
-        // 'preset' => 'classic',
-        'clientOptions' => [
-        'filebrowserUploadUrl' => yii\helpers\Url::to(['cms-page/ckeditor-image-upload']),
-        ]
-    ]) ?> 
+            <!-- $form->field($model, 'slug')->textInput(['maxlength' => true])  -->
 
-    <div class="form-group">
-        <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            <?= $form->field($model, 'description')->widget(CKEditor::className(), [
+                'options' => ['rows' => 6],
+                'preset' => 'basic',
+                // 'preset' => 'classic',
+                'clientOptions' => [
+                    'filebrowserUploadUrl' => yii\helpers\Url::to(['cms-page/ckeditor-image-upload']),
+                ]
+            ]) ?>
+
+            <div class="form-group">
+                <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            </div>
+
+            <?php ActiveForm::end(); ?>
+
+        </div>
+
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

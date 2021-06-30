@@ -16,46 +16,48 @@ $this->params['breadcrumbs'][] = ['label' => 'Banners', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="banner-view">
+<div class="box box-default">
+    <div class="box-header"></div>
+    <div class="box-body">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+        <?= DetailView::widget([
+            'model' => $model,
+            'attributes' => [
+                'name',
+                [
+                    'format' => ['raw'],
+                    'enableSorting' => false,
+                    'filter' => false,
+                    'attribute' => 'image',
+                    'value' => function ($model) {
+                        $image_path = "";
+                        if (!empty($model->image) && file_exists(Yii::getAlias('@bannerImageThumbRelativePath') . '/' . $model->image)) {
+                            $image_path = Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $model->image;
+                        } else {
+                            $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        }
+                        Modal::begin([
+                            'id' => 'bannermodal_' . $model->id,
+                            'header' => '<h3>Banner Image</h3>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'name',
-            [
-                'format' => ['raw'],
-                'enableSorting' => false,
-                'filter' => false,
-                'attribute' => 'image',
-                'value' => function ($model) {
-                    $image_path = "";
-                    if (!empty($model->image) && file_exists(Yii::getAlias('@bannerImageThumbRelativePath') . '/' . $model->image)) {
-                        $image_path = Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $model->image;
-                    } else {
-                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                    }
-                    Modal::begin([
-                        'id' => 'bannermodal_' . $model->id,
-                        'header' => '<h3>Banner Image</h3>',
-                        'size' => Modal::SIZE_DEFAULT
-                    ]);
+                        echo Html::img($image_path, ['width' => '570']);
 
-                    echo Html::img($image_path, ['width' => '570']);
+                        Modal::end();
+                        $bannermodal = "bannermodal('" . $model->id . "');";
+                        return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $bannermodal, 'height' => '100px', 'width' => '100px']);
+                    },
 
-                    Modal::end();
-                    $bannermodal = "bannermodal('" . $model->id . "');";
-                    return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $bannermodal, 'height' => '100px', 'width' => '100px']);
-                },
-
+                ],
             ],
-        ],
-    ]) ?>
-    <p>
-        <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
-    </p>
-
+        ]) ?>
+    </div>
+    <div class="box-footer">
+        <p>
+            <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+        </p>
+    </div>
 </div>
 <script type="text/javascript">
     function bannermodal(id) {

@@ -16,96 +16,120 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
-    <?php
-    $colorPluginOptions =  [
-        'showPalette' => true,
-        'showPaletteOnly' => true,
-        'showSelectionPalette' => true,
-        'showAlpha' => false,
-        'allowEmpty' => false,
-        'preferredFormat' => 'name',
-        'palette' => [
-            [
-                "white", "black", "grey", "silver", "gold", "brown",
-            ],
-            [
-                "red", "orange", "yellow", "indigo", "maroon", "pink"
-            ],
-            [
-                "blue", "green", "violet", "cyan", "magenta", "purple",
-            ],
-            [
-                "nevy blue",
-            ],
-        ]
-    ];
+        <?php
+        $colorPluginOptions = [
+            'showPalette' => true,
+            'showPaletteOnly' => true,
+            'showSelectionPalette' => true,
+            'showAlpha' => false,
+            'allowEmpty' => false,
+            'preferredFormat' => 'name',
+            'palette' => [
+                [
+                    "white", "black", "grey", "silver", "gold", "brown",
+                ],
+                [
+                    "red", "orange", "yellow", "indigo", "maroon", "pink"
+                ],
+                [
+                    "blue", "green", "violet", "cyan", "magenta", "purple",
+                ],
+                [
+                    "nevy blue",
+                ],
+            ]
+        ];
 
-    echo GridView::widget([
-        'id' => 'color-grid',
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            [
-                'attribute' => 'id',
-                'header' => 'Color Id',
-                'headerOptions' => ['class' => 'kartik-sheet-style']
+        echo GridView::widget([
+            'id' => 'color-grid',
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => [
+                [
+                    'attribute' => 'id',
+                    'header' => 'Color Id',
+                    'headerOptions' => ['class' => 'kartik-sheet-style']
+                ],
+                [
+                    'attribute' => 'name',
+                    'header' => '',
+                    'vAlign' => 'middle',
+                    'format' => 'raw',
+                ],
+                [
+                    'attribute' => 'code',
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style']
+                ],
+                [
+                    'attribute' => 'status',
+                    'value' => function ($model) {
+                        $status = "";
+                        if ($model->status == \app\models\Color::STATUS_PENDING_APPROVAL) {
+                            $status = "Pending Approval";
+                        } elseif ($model->status == \app\models\Color::STATUS_APPROVE) {
+                            $status = "Approved";
+                        } elseif ($model->status == \app\models\Color::STATUS_DECLINE) {
+                            $status = "Decline";
+                        }
+                        return $status;
+                    },
+                    'filter' => $arrStatus,
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filterWidgetOptions' => [
+                        'options' => ['prompt' => 'Select'],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                        ],
+                    ],
+                    'header' => 'Status',
+                    'headerOptions' => ['class' => 'kartik-sheet-style']
+                ],
+                [
+                    'class' => 'kartik\grid\ActionColumn',
+                ],
             ],
-            [
-                'attribute' => 'name',
-                'header' => '',
-                'vAlign' => 'middle',
-                'format' => 'raw',
-            ],
-            [
-                'attribute' => 'code',
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style']
-            ],
-            [
-                'class' => 'kartik\grid\ActionColumn',
-            ],
-        ],
 
-        'pjax' => true, // pjax is set to always true for this demo
-        // set your toolbar
-        'toolbar' => [
-            [
-                'content' =>
-                    Html::button('<i class="fa fa-plus-circle"> Add Color</i>', [
-                        'class' => 'btn btn-success',
-                        'title' => \Yii::t('kvgrid', 'Add Color'),
-                        'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/color/create']) . "';",
-                    ]),
-                'options' => ['class' => 'btn-group mr-2']
+            'pjax' => true, // pjax is set to always true for this demo
+            // set your toolbar
+            'toolbar' => [
+                [
+                    'content' =>
+                        Html::button('<i class="fa fa-plus-circle"> Add Color</i>', [
+                            'class' => 'btn btn-success',
+                            'title' => \Yii::t('kvgrid', 'Add Color'),
+                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/color/create']) . "';",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                [
+                    'content' =>
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . \yii\helpers\Url::to(['color/index']) . "';",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                '{toggleData}',
             ],
-            [
-                'content' =>
-                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Reset Filter',
-                        'onclick' => "window.location.href = '" . \yii\helpers\Url::to(['color/index']) . "';",
-                    ]),
-                'options' => ['class' => 'btn-group mr-2']
-            ],
-            '{toggleData}',
-        ],
-        'toggleDataContainer' => ['class' => 'btn-group mr-2'],
+            'toggleDataContainer' => ['class' => 'btn-group mr-2'],
 
-        // parameters from the demo form
-        'bordered' => true,
-        'striped' => true,
-        'condensed' => true,
-        'responsive' => false,
-        'panel' => [
-            'type' => GridView::TYPE_DEFAULT,
-            //'heading' => 'Colors',
-        ],
-        'persistResize' => false,
-        'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'color',
-        'itemLabelPlural' => 'Colors'
-    ]);
-    ?>
+            // parameters from the demo form
+            'bordered' => true,
+            'striped' => true,
+            'condensed' => true,
+            'responsive' => false,
+            'panel' => [
+                'type' => GridView::TYPE_DEFAULT,
+                //'heading' => 'Colors',
+            ],
+            'persistResize' => false,
+            'toggleDataOptions' => ['minCount' => 10],
+            'itemLabelSingle' => 'color',
+            'itemLabelPlural' => 'Colors'
+        ]);
+        ?>
 
     </div>
 </div>

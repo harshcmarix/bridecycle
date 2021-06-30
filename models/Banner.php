@@ -18,6 +18,7 @@ use yii\behaviors\TimestampBehavior;
 class Banner extends ActiveRecord
 {
     const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
     const IMAGE_EMPTY = 1;
     const IMAGE_NOT_EMPTY = 0;
 
@@ -48,10 +49,11 @@ class Banner extends ActiveRecord
     public function rules()
     {
         return [
-            [['name','created_at', 'updated_at'], 'safe'],
+            [['name', 'created_at', 'updated_at'], 'safe'],
             [['image',], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
-            [['image'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['name', 'image'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['name'], 'required', 'on' => self::SCENARIO_UPDATE],
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
             }, 'whenClient' => "function (attribute, value) {

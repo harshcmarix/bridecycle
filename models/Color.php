@@ -11,6 +11,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property string $name
  * @property string $code
+ * @property string $status
  * @property string $created_at
  * @property string|null $updated_at
  */
@@ -40,6 +41,16 @@ class Color extends \yii\db\ActiveRecord
     const SCENARIO_ADD_COLOR = 'create_color_admin';
     const SCENARIO_UPDATE_COLOR = 'update_color_admin';
 
+    const STATUS_PENDING_APPROVAL = 1;
+    const STATUS_APPROVE = 2;
+    const STATUS_DECLINE = 3;
+
+    public $arrStatus = [
+        self::STATUS_PENDING_APPROVAL => 'Pending Approval',
+        self::STATUS_APPROVE => ' Approved',
+        self::STATUS_DECLINE => ' Decline'
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -49,7 +60,7 @@ class Color extends \yii\db\ActiveRecord
             [['name'], 'required'],
             [['name', 'code'], 'required', 'on' => self::SCENARIO_ADD_COLOR],
             [['name', 'code'], 'required', 'on' => self::SCENARIO_UPDATE_COLOR],
-            [['created_at', 'updated_at'], 'safe'],
+            [['status', 'created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 100],
             [['code'], 'string', 'max' => 15],
         ];

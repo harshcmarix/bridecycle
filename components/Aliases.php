@@ -94,7 +94,6 @@ class Aliases extends Component
         Yii::setAlias('@tailorVoucherImageThumbRelativePath', Yii::getAlias('@tailorVoucherImageRelativePath') . '/thumbs');
 
 
-
         // Used for order invoice
         Yii::setAlias('@orderInvoiceAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/invoices');
         Yii::setAlias('@orderInvoiceRelativePath', Yii::getAlias('@uploadsRelativePath') . '/invoices');
@@ -112,5 +111,12 @@ class Aliases extends Component
         // Used for DressType image thumbnail
         Yii::setAlias('@dressTypeImageThumbAbsolutePath', Yii::getAlias('@dressTypeImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@dressTypeImageThumbRelativePath', Yii::getAlias('@dressTypeImageRelativePath') . '/thumbs');
+
+        // Used for ads image
+        Yii::setAlias('@adsImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/ads_images');
+        Yii::setAlias('@adsImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/ads_images');
+        // Used for ads image thumbnail
+        Yii::setAlias('@adsImageThumbAbsolutePath', Yii::getAlias('@adsImageAbsolutePath') . '/thumbs');
+        Yii::setAlias('@adsImageThumbRelativePath', Yii::getAlias('@adsImageRelativePath') . '/thumbs');
     }
 }

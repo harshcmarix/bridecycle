@@ -46,6 +46,16 @@ class Brand extends ActiveRecord
         self::NOT_TOP_BRAND => 'no',
     ];
 
+    const STATUS_PENDING_APPROVAL = 1;
+    const STATUS_APPROVE = 2;
+    const STATUS_DECLINE = 3;
+
+    const ARR_BRAND_STATUS = [
+        self::STATUS_PENDING_APPROVAL => 'Pending Approval',
+        self::STATUS_APPROVE => ' Approved',
+        self::STATUS_DECLINE => ' Decline'
+    ];
+
     /**
      * {@inheritdoc}
      */

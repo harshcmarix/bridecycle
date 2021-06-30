@@ -7,19 +7,31 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\Color */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+<div class="box box-default">
+    <div class="box-header"></div>
+    <div class="box-body">
+        <div class="color-form">
 
-<div class="color-form">
+            <?php $form = ActiveForm::begin(); ?>
 
-    <?php $form = ActiveForm::begin(); ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
+                'data' => $model->arrStatus,
+                //'options' => ['placeholder' => 'Select'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            <div class="form-group">
+                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            </div>
+
+            <?php ActiveForm::end(); ?>
+
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

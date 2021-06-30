@@ -12,30 +12,48 @@ $this->params['breadcrumbs'][] = ['label' => 'Colors', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="color-view">
+<div class="box box-default">
+    <div class="box-header"></div>
+    <div class="box-body">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+        <!--    <p>-->
+        <!--        --><?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <!--        --><?php //echo Html::a('Delete', ['delete', 'id' => $model->id], [
+        //            'class' => 'btn btn-danger',
+        //            'data' => [
+        //                'confirm' => 'Are you sure you want to delete this item?',
+        //                'method' => 'post',
+        //            ],
+        //        ]) ?>
+        <!--    </p>-->
 
-    <!--    <p>-->
-    <!--        --><?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-    <!--        --><?php //echo Html::a('Delete', ['delete', 'id' => $model->id], [
-    //            'class' => 'btn btn-danger',
-    //            'data' => [
-    //                'confirm' => 'Are you sure you want to delete this item?',
-    //                'method' => 'post',
-    //            ],
-    //        ]) ?>
-    <!--    </p>-->
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'name',
-            'code',
-
-        ],
-    ]) ?>
-    <p>
-        <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
-    </p>
+        <?= DetailView::widget([
+            'model' => $model,
+            'attributes' => [
+                'name',
+                'code',
+                [
+                    'attribute' => 'status',
+                    'value' => function ($model) {
+                        $status = "";
+                        if ($model->status == \app\models\Color::STATUS_PENDING_APPROVAL) {
+                            $status = "Pending Approval";
+                        } elseif ($model->status == \app\models\Color::STATUS_APPROVE) {
+                            $status = "Approved";
+                        } elseif ($model->status == \app\models\Color::STATUS_DECLINE) {
+                            $status = "Decline";
+                        }
+                        return $status;
+                    },
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style']
+                ],
+            ],
+        ]) ?>
+    </div>
+    <div class="box-footer">
+        <p>
+            <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+        </p>
+    </div>
 </div>

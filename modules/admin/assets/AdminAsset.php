@@ -1,6 +1,7 @@
 <?php
 
 namespace app\modules\admin\assets;
+
 use yii\web\AssetBundle;
 
 class AdminAsset extends AssetBundle
@@ -11,6 +12,7 @@ class AdminAsset extends AssetBundle
     public $css = [
         'theme/admin/css/bootstrap3-wysihtml5.min.css',
         'theme/admin/css/addbtn.css',
+        'theme/admin/css/custom.css',
     ];
     public $js = [
         'theme/admin/js/bootstrap3-wysihtml5.all.min.js',
@@ -24,9 +26,9 @@ class AdminAsset extends AssetBundle
         'yii\bootstrap\BootstrapAsset',
         'yii\bootstrap\BootstrapPluginAsset',
     ];
-   
+
     public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
-    
+
 
     public function init()
     {

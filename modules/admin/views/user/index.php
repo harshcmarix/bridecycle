@@ -19,7 +19,7 @@ $this->title = 'Users';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">
-    <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
+    <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
         <?php
         $gridColumns = [
             //['class' => 'kartik\grid\SerialColumn'],

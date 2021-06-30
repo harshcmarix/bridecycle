@@ -26,11 +26,23 @@ class ProductCategory extends \yii\db\ActiveRecord
      */
     const SCENARIO_CREATE = 'create';
     /**
-     * used for image validation 
+     * used for image validation
      */
     const IMAGE_EMPTY = 1;
     const IMAGE_NOT_EMPTY = 0;
     public $is_image_empty;
+
+
+    const STATUS_PENDING_APPROVAL = 1;
+    const STATUS_APPROVE = 2;
+    const STATUS_DECLINE = 3;
+
+    const ARR_CATEGORY_STATUS = [
+        self::STATUS_PENDING_APPROVAL => 'Pending Approval',
+        self::STATUS_APPROVE => ' Approved',
+        self::STATUS_DECLINE => ' Decline'
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -39,7 +51,7 @@ class ProductCategory extends \yii\db\ActiveRecord
         return 'product_categories';
     }
 
-     /**
+    /**
      * @return array[]
      */
     public function behaviors()
@@ -60,11 +72,11 @@ class ProductCategory extends \yii\db\ActiveRecord
         return [
             [['name'], 'required'],
             [['parent_category_id'], 'integer'],
-            [['status','created_at', 'updated_at'], 'safe'],
+            [['status', 'created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['name'], 'unique'],
             [['image'], 'file', 'extensions' => 'png,jpg'],
-            [['image'], 'required','on'=>self::SCENARIO_CREATE],
+            [['image'], 'required', 'on' => self::SCENARIO_CREATE],
             //[['image'], 'string', 'max' => 255],
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_image_empty == '1';

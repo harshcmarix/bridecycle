@@ -13,32 +13,39 @@ use kartik\select2\Select2;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="subscription-form">
+<div class="box box-default">
+    <div class="box-header"></div>
+    <div class="box-body">
 
-    <?php $form = ActiveForm::begin(); ?>
+        <div class="subscription-form">
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+            <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'amount')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-     <!-- $form->field($model, 'status')->dropDownList($subscription_status, ['prompt' => ''])  -->
+            <?= $form->field($model, 'amount')->textInput(['maxlength' => true]) ?>
 
-     <?= $form->field($model, 'status')->widget(Select2::classname(), [
-    'data' => $subscription_status,
-    'size' => Select2::MEDIUM,
-     'options' => [
+            <!-- $form->field($model, 'status')->dropDownList($subscription_status, ['prompt' => ''])  -->
+
+            <?= $form->field($model, 'status')->widget(Select2::classname(), [
+                'data' => $subscription_status,
+                'size' => Select2::MEDIUM,
+                'options' => [
                     'placeholder' => 'Select status',
                 ],
-    'pluginOptions' => [
-        'allowClear' => true
-    ],
-]);?>
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
 
-    <div class="form-group">
-        <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            <div class="form-group">
+                <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            </div>
+
+            <?php ActiveForm::end(); ?>
+
+        </div>
+
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

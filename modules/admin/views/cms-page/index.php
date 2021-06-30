@@ -49,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['class' => 'kartik-sheet-style']
                 ],
                 [
+
                     'format' => 'html',
                     'attribute' => 'description',
                     'value' => function ($model) {

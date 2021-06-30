@@ -25,16 +25,16 @@ class BrandController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
+    public function behaviors()
     {
         return [
-           'access' => [
+            'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update','view','delete','update-top-brand'],
+                'only' => ['index', 'create', 'update', 'view', 'delete', 'update-top-brand'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update','view','delete','update-top-brand'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'update-top-brand'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -81,13 +81,13 @@ class BrandController extends Controller
         $model->scenario = Brand::SCENARIO_CREATE;
         $brand_image = UploadedFile::getInstance($model, 'image');
 
-         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             return \yii\widgets\ActiveForm::validate($model);
         }
         if ($model->load(Yii::$app->request->post())) {
-            
-            if(!empty($brand_image)){
+
+            if (!empty($brand_image)) {
                 $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
                 $thumbImagePath = '';
@@ -102,18 +102,18 @@ class BrandController extends Controller
                     mkdir($uploadThumbDirPath, 0777);
                 }
 
-                    $ext = $brand_image->extension;
-                    $fileName = pathinfo($brand_image->name, PATHINFO_FILENAME);
-                    $fileName = $fileName . '_' . time() . '.' . $ext;
-                    // Upload profile picture
-                    $brand_image->saveAs($uploadDirPath . '/' . $fileName);
-                    // Create thumb of profile picture
-                    $actualImagePath = $uploadDirPath . '/' . $fileName;
-                    $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                    // p($actualImagePath);
-                    Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                    // Insert profile picture name into database
-                    $model->image = $fileName;
+                $ext = $brand_image->extension;
+                $fileName = pathinfo($brand_image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $brand_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
             }
 
             if ($model->save()) {
@@ -138,22 +138,22 @@ class BrandController extends Controller
      */
     public function actionUpdate($id)
     {
-            $model = $this->findModel($id);
-            $old_image = $model->image;
+        $model = $this->findModel($id);
+        $old_image = $model->image;
 
-            $new_image = UploadedFile::getInstance($model, 'image');
+        $new_image = UploadedFile::getInstance($model, 'image');
 
-         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             return \yii\widgets\ActiveForm::validate($model);
         }
 
         if ($model->load(Yii::$app->request->post())) {
-           
+
             if (!empty($new_image)) {
-                    $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
-                    $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
-                    $thumbImagePath = '';
+                $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+                $thumbImagePath = '';
 
                 // Create product image upload directory if not exist
                 if (!is_dir($uploadDirPath)) {
@@ -172,23 +172,23 @@ class BrandController extends Controller
                     unlink($uploadThumbDirPath . '/' . $old_image);
                 }
 
-                    $ext = $new_image->extension;
-                    $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-                    $fileName = $fileName . '_' . time() . '.' . $ext;
-                    // Upload profile picture
-                    $new_image->saveAs($uploadDirPath . '/' . $fileName);
-                    // Create thumb of profile picture
-                    $actualImagePath = $uploadDirPath . '/' . $fileName;
-                    $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                    // p($actualImagePath);
-                    Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                    // Insert profile picture name into database
-                    $model->image = $fileName;
+                $ext = $new_image->extension;
+                $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
+                $fileName = $fileName . '_' . time() . '.' . $ext;
+                // Upload profile picture
+                $new_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+                // p($actualImagePath);
+                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
 
             } else {
                 $model->image = $old_image;
             }
-            
+
             if ($model->save()) {
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Brand updated successfully.");
             } else {
@@ -212,16 +212,16 @@ class BrandController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-         $image = $model->image;
-         $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
-         // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$image) && !empty($image)){
-                unlink($uploadDirPath.'/'.$image);
-         }
-         if(file_exists($uploadThumbDirPath.'/'.$image) && !empty($image)){
-                unlink($uploadThumbDirPath.'/'.$image);
-         }
+        $image = $model->image;
+        $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $image) && !empty($image)) {
+            unlink($uploadDirPath . '/' . $image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $image) && !empty($image)) {
+            unlink($uploadThumbDirPath . '/' . $image);
+        }
         if ($model->delete()) {
             Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Brand deleted successfully.");
         } else {
@@ -246,31 +246,34 @@ class BrandController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-     /**
+
+    /**
      * Deletes an existing image from perticular field.
      * If deletion is successful, success message will get in update page result.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionImageDelete($id){
+    public function actionImageDelete($id)
+    {
         $model = $this->findModel($id);
-        
-         $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
-         // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$model->image) && !empty($model->image)){
-                unlink($uploadDirPath.'/'.$model->image);
-         }
-         if(file_exists($uploadThumbDirPath.'/'.$model->image) && !empty($model->image)){
-                unlink($uploadThumbDirPath.'/'.$model->image);
-         }
-         $model->image = null;
-        if($model->save()){
-           return Json::encode(['success'=>'image successfully deleted']);
+
+        $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $model->image) && !empty($model->image)) {
+            unlink($uploadDirPath . '/' . $model->image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $model->image) && !empty($model->image)) {
+            unlink($uploadThumbDirPath . '/' . $model->image);
+        }
+        $model->image = null;
+        if ($model->save()) {
+            return Json::encode(['success' => 'image successfully deleted']);
         }
     }
-      /**
+
+    /**
      * @return bool[]|false[]
      * @throws NotFoundHttpException
      */
