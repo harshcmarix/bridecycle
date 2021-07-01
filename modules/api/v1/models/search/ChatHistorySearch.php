@@ -176,6 +176,11 @@ class ChatHistorySearch extends ChatHistory
 
 
                         $dataRow['unread_message_count'] = $lastMessage->getOneToOneUnreadNotificationCount($userDetails->id, $userModel->id);
+                        $resultBrand['brand'] = $lastMessage->product0->brand;
+
+                        $result['product_result'] = $lastMessage->product0;
+
+                        $dataRow['product0'] = array_merge($result['product_result']->toArray(),$resultBrand);
                         $dataRow['fromUser0'] = $lastMessage->fromUser0;
                         $dataRow['toUser0'] = $lastMessage->toUser0;
 

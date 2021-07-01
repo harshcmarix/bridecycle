@@ -6,6 +6,7 @@ use app\models\BlockUser;
 use app\models\Notification;
 use app\models\ProductReceipt;
 use app\models\SearchHistory;
+use app\models\ShippingPrice;
 use app\modules\api\v1\models\User;
 use Yii;
 use app\models\{
@@ -194,7 +195,9 @@ class ProductController extends ActiveController
         if ($model->load($productData) && $model->validate()) {
 
             $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
+
             $model->shipping_country_id = (!empty($productData['Product']['shipping_country_id'])) ? $productData['Product']['shipping_country_id'] : "";
+            $model->shipping_country_price = (!empty($productData['Product']['shipping_country_price'])) ? $productData['Product']['shipping_country_price'] : "";
 
             if (!empty($model->option_size)) {
                 $model->option_size = strtolower($model->option_size);
@@ -283,6 +286,19 @@ class ProductController extends ActiveController
                     if ($modelAddress->save(false)) {
                         $model->address_id = $modelAddress->id;
                         $model->save(false);
+                    }
+                }
+
+                //  shipping cost
+                if (!empty($model->shipping_country_id) && !empty($model->shipping_country_price)) {
+                    $shippingCosts = explode(",", $model->shipping_country_price);
+                    $shippingCountries = explode(",", $model->shipping_country_id);
+                    foreach ($shippingCountries as $key => $shippingCountry) {
+                        $shippingPrice = new ShippingPrice();
+                        $shippingPrice->product_id = $model->id;
+                        $shippingPrice->shipping_cost_id = $shippingCountry;
+                        $shippingPrice->price = $shippingCosts[$key];
+                        $shippingPrice->save(false);
                     }
                 }
 
@@ -393,6 +409,9 @@ class ProductController extends ActiveController
             if (!empty($productData['Product']['shipping_country_id'])) {
                 $model->shipping_country_id = $productData['Product']['shipping_country_id'];
             }
+            if (!empty($productData['Product']['shipping_country_price'])) {
+                $model->shipping_country_price = $productData['Product']['shipping_country_price'];
+            }
 
             if ($model->save(false)) {
 
@@ -410,6 +429,29 @@ class ProductController extends ActiveController
                         $model->save(false);
                     }
                 }
+
+                //  shipping cost
+                if (!empty($model->shipping_country_id) && !empty($model->shipping_country_price)) {
+                    $shippingCosts = explode(",", $model->shipping_country_price);
+                    $shippingCountries = explode(",", $model->shipping_country_id);
+
+                    $modelsShippingPrice = ShippingPrice::find()->where(['in', 'shipping_cost_id', $shippingCountries])->andWhere(['product_id' => $model->id])->all();
+                    if (!empty($modelsShippingPrice)) {
+                        foreach ($modelsShippingPrice as $keys => $modelShippingPrice) {
+                            $modelShippingPrice->delete();
+                        }
+                    }
+
+                    foreach ($shippingCountries as $key => $shippingCountry) {
+                        $shippingPrice = new ShippingPrice();
+                        $shippingPrice->product_id = $model->id;
+                        $shippingPrice->shipping_cost_id = $shippingCountry;
+                        $shippingPrice->price = $shippingCosts[$key];
+                        $shippingPrice->save(false);
+                    }
+                }
+
+
             }
         }
         return $model;

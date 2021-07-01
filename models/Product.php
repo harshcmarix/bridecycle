@@ -39,7 +39,6 @@ use app\modules\api\v1\models\User;
  * @property int $status_id
  * @property int $address_id
  * @property string|null $option_color
- * @property string|null $shipping_country_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -91,6 +90,8 @@ class Product extends \yii\db\ActiveRecord
     }
 
     public $images;
+    public $shipping_country_id;
+    public $shipping_country_price;
 
     const IS_TOP_SELLING_YES = '1';
     const IS_TOP_SELLING_NO = '0';
@@ -163,7 +164,7 @@ class Product extends \yii\db\ActiveRecord
             [['images'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             //[['option_color'], 'string', 'max' => 255],
-            [['option_color'], 'safe'],
+            [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
             [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::className(), 'targetAttribute' => ['dress_type_id' => 'id']],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
@@ -593,8 +594,15 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getShippingCountry0()
     {
-        $countries = explode(",", $this->shipping_country_id);
-        $country = Country::find()->where(['in', 'id', $countries])->all();
+        $country = ShippingPrice::find()->where(['product_id' => $this->id])->all();
+        $data=[];
+        if (!empty($country)) {
+            foreach ($country as $key => $countryRow) {
+                $result['shippingCost'] = $countryRow->shippingCost->toArray();
+                $data[] = array_merge($countryRow->toArray(),$result);
+            }
+            $country =$data;
+        }
         return $country;
     }
 }

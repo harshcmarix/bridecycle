@@ -41,15 +41,15 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'index', 'forgot-password'],
+                'only' => ['logout', 'index', 'forgot-password', 'error'],
                 'rules' => [
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'error'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['forgot-password'],
+                        'actions' => ['forgot-password', 'error'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -182,5 +182,15 @@ class SiteController extends Controller
         return $this->render('reset-password', [
             'model' => $model,
         ]);
+    }
+
+    public function actionError()
+    {
+
+        $this->layout = 'error';
+        $exception = Yii::$app->errorHandler->exception;
+        if ($exception !== null) {
+            return $this->render('error', ['exception' => $exception]);
+        }
     }
 }
