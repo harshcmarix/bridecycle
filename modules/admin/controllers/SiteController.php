@@ -91,6 +91,51 @@ class SiteController extends Controller
         $modelTotalOrder = Order::find()->count();
         $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
         $modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
+        $modelTotalIncome = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
+
+        // Chart uses
+
+        $min = $max = 0;
+        $month = [
+            0 => 'Jan',
+            1 => 'Feb',
+            2 => 'Mar',
+            3 => 'Apr',
+            4 => 'May',
+            5 => 'Jun',
+            6 => 'Jul',
+            7 => 'Aug',
+            8 => 'Sep',
+            9 => 'Oct',
+            10 => 'Nov',
+            11 => 'Dec',
+        ];
+
+        $isLeapYear = $this->yearCheckIsLeap(date('Y'));
+        $thirtyOneDays = [0, 2, 4, 6, 7, 9, 11];
+        $thirtyDays = [3, 5, 8, 10];
+
+        $monthWiseOrders = [];
+        for ($i = 0; $i < 12; $i++) {
+            $mnt = ($i + 1);
+            $year = date('Y');
+            $monthStartDate = date('Y-m-d 00:00:01', strtotime($year . "-" . $mnt . "-1"));
+            if (in_array($i, $thirtyOneDays)) {
+                $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-31"));
+            } elseif (in_array($i, $thirtyDays)) {
+                $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-30"));
+            } else {
+                if (!$isLeapYear) {
+                    $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-28"));
+                } else {
+                    $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-29"));
+                }
+            }
+            $monthWiseOrders[] = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->count();
+        }
+        $min = (!empty($monthWiseOrders)) ? min($monthWiseOrders) : 0;
+        $max = (!empty($monthWiseOrders)) ? max($monthWiseOrders) : 0;
+        $monthWiseOrders = [$monthWiseOrders[0], $monthWiseOrders[1], $monthWiseOrders[2], $monthWiseOrders[3], $monthWiseOrders[4], $monthWiseOrders[5], $monthWiseOrders[6], $monthWiseOrders[7], $monthWiseOrders[8], $monthWiseOrders[9], $monthWiseOrders[10], $monthWiseOrders[11]];
 
         return $this->render('index', [
             'totalCustomer' => $modelTotalCustomer,
@@ -99,6 +144,11 @@ class SiteController extends Controller
             'totalOrder' => $modelTotalOrder,
             'totalOrderDeliveredAndCompleted' => $modelTotalOrderDelivered,
             'totalOrderPending' => $modelTotalOrderPending,
+            'totalIncome' => (!empty($modelTotalIncome)) ? $modelTotalIncome : 0,
+            'month' => $month,
+            'monthWiseOrders' => $monthWiseOrders,
+            'min' => $min,
+            'max' => $max
         ]);
 
     }
@@ -192,5 +242,20 @@ class SiteController extends Controller
         if ($exception !== null) {
             return $this->render('error', ['exception' => $exception]);
         }
+    }
+
+    public function yearCheckIsLeap($my_year)
+    {
+        $result = false;
+        if ($my_year % 400 == 0)
+            $result = true;
+        if ($my_year % 4 == 0)
+            $result = true;
+        else if ($my_year % 100 == 0)
+            $result = false;
+        else
+            $result = false;
+
+        return $result;
     }
 }

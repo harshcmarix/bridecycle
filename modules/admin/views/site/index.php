@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use miloschuman\highcharts\Highcharts;
 
 $this->title = 'Dashboard';
 ?>
@@ -117,7 +118,7 @@ $this->title = 'Dashboard';
     <div class="col-md-3 col-xs-6">
         <div class="small-box bg-aqua">
             <div class="inner">
-                <h3>150</h3>
+                <h3><?php echo $totalIncome; ?></h3>
 
                 <p>Total income</p>
             </div>
@@ -130,5 +131,40 @@ $this->title = 'Dashboard';
         </div>
     </div>
 
+</div>
+
+<div class="box box-basic">
+    <div class="box-header">
+    </div>
+    <div class="box-body">
+
+        <?php
+        echo Highcharts::widget([
+            'options' => [
+                'title' => ['text' => 'Orders ' . date('Y')],
+                //'boxplot' => ['fillColor' => '#EADBC4'],
+                'plotOptions' => [
+                    'column' => [
+                        'cursor' => 'pointer',
+                        'color' => '#3366CC',
+                    ],
+                ],
+                'xAxis' => [
+                    'categories' => $month,
+
+                ],
+                'yAxis' => [
+                    'title' => ['text' => 'Orders'],
+                    'min' => $min,
+                    'max' => $max,
+                ],
+                'series' => [
+                  //  ['type' => 'column', 'name' => 'Months', 'data' => $monthWiseOrders],
+                    ['type' => 'column', 'name' => 'Months', 'data' => $monthWiseOrders],
+                ]
+            ]
+        ]);
+        ?>
+    </div>
 </div>
 
