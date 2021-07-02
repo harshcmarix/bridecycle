@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v1\controllers;
 
+use app\models\ShippingPrice;
 use Yii;
 use app\models\{
     Product,
@@ -134,9 +135,8 @@ class CountryController extends ActiveController
         }
 
         $modelsShippingCountry = [];
-        if (!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->shipping_country_id)) {
-            $shippingCountryId = explode(",", $modelProduct->shipping_country_id);
-            $modelsShippingCountry = ShippingCost::find()->where(['in', 'id', $shippingCountryId])->all();
+        if (!empty($modelProduct) && $modelProduct instanceof Product) {
+            $modelsShippingCountry = ShippingPrice::find()->where(['product_id' => $modelProduct->id])->all();
         }
 
         $result = $this->getCountryAndGoogleCodeFromZipCode($postcode);
@@ -167,11 +167,12 @@ class CountryController extends ActiveController
         $data['shipping_cost'] = Yii::$app->formatter->asCurrency(0.0);
         if (!empty($result) && !empty($result['country_name']) && !empty($result['country_google_code']) && !empty($modelsShippingCountry)) {
             foreach ($modelsShippingCountry as $key => $modelShippingCountryRow) {
-                if (!empty($modelShippingCountryRow) && $modelShippingCountryRow instanceof ShippingCost) {
-                    //if (strtolower($modelShippingCountryRow->name) == strtolower($result['country_name']) && strtolower($modelShippingCountryRow->code) == strtolower($result['country_google_code'])) {
-                    if (strtolower($modelShippingCountryRow->name) == strtolower($continent)) {
-                        $data['is_feasible'] = 1;
-                        $data['shipping_cost'] = Yii::$app->formatter->asCurrency($modelShippingCountryRow->price) . "(" . $continent . ")";
+                if (!empty($modelShippingCountryRow) && $modelShippingCountryRow instanceof ShippingPrice) {
+                    if (!empty($modelShippingCountryRow) && !empty($modelShippingCountryRow->shippingCost) && $modelShippingCountryRow->shippingCost instanceof ShippingCost) {
+                        if (strtolower($modelShippingCountryRow->shippingCost->name) == strtolower($continent)) {
+                            $data['is_feasible'] = 1;
+                            $data['shipping_cost'] = Yii::$app->formatter->asCurrency($modelShippingCountryRow->price) . "(" . $continent . ")";
+                        }
                     }
                 }
             }

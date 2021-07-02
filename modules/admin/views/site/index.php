@@ -132,39 +132,76 @@ $this->title = 'Dashboard';
     </div>
 
 </div>
+<div class="row">
+    <div class="col-md-6 col-xl-6">
+        <div class="box box-basic">
+            <div class="box-header">
+            </div>
+            <div class="box-body">
 
-<div class="box box-basic">
-    <div class="box-header">
+                <?php
+                //p($monthWiseOrders);
+                echo Highcharts::widget([
+                    'options' => [
+                        'title' => ['text' => 'Orders ' . date('Y')],
+                        //'boxplot' => ['fillColor' => '#EADBC4'],
+                        'plotOptions' => [
+                            'column' => [
+                                'cursor' => 'pointer',
+                                'color' => '#3366CC',
+                            ],
+                        ],
+                        'xAxis' => [
+                            'categories' => $month,
+
+                        ],
+                        'yAxis' => [
+                            'title' => ['text' => 'Order'],
+                            'min' => $min,
+                            'max' => $max,
+                        ],
+                        'series' => [
+                            ['type' => 'column', 'name' => 'Order', 'data' => $monthWiseOrders],
+                        ]
+                    ]
+                ]);
+                ?>
+            </div>
+        </div>
     </div>
-    <div class="box-body">
+    <div class="col-md-6 col-xl-6">
+        <div class="box box-basic">
+            <div class="box-header">
+            </div>
+            <div class="box-body">
 
-        <?php
-        echo Highcharts::widget([
-            'options' => [
-                'title' => ['text' => 'Orders ' . date('Y')],
-                //'boxplot' => ['fillColor' => '#EADBC4'],
-                'plotOptions' => [
-                    'column' => [
-                        'cursor' => 'pointer',
-                        'color' => '#3366CC',
-                    ],
-                ],
-                'xAxis' => [
-                    'categories' => $month,
+                <?php
+                echo Highcharts::widget([
+                    'options' => [
+                        'title' => ['text' => 'Income ' . date('Y')],
+                        //'boxplot' => ['fillColor' => '#EADBC4'],
+                        'plotOptions' => [
+                            'column' => [
+                                'cursor' => 'pointer',
+                                'color' => '#3366CC',
+                            ],
+                        ],
+                        'xAxis' => [
+                            'categories' => $month,
 
-                ],
-                'yAxis' => [
-                    'title' => ['text' => 'Orders'],
-                    'min' => $min,
-                    'max' => $max,
-                ],
-                'series' => [
-                  //  ['type' => 'column', 'name' => 'Months', 'data' => $monthWiseOrders],
-                    ['type' => 'column', 'name' => 'Months', 'data' => $monthWiseOrders],
-                ]
-            ]
-        ]);
-        ?>
+                        ],
+                        'yAxis' => [
+                            'title' => ['text' => 'Income'],
+                            'min' => $minIncome,
+                            'max' => $maxIncome,
+                        ],
+                        'series' => [
+                            ['type' => 'column', 'name' => 'Income', 'data' => $monthWiseIncomes],
+                        ]
+                    ]
+                ]);
+                ?>
+            </div>
+        </div>
     </div>
 </div>
-

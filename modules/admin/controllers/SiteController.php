@@ -116,6 +116,7 @@ class SiteController extends Controller
         $thirtyDays = [3, 5, 8, 10];
 
         $monthWiseOrders = [];
+        $monthWiseIncomes = [];
         for ($i = 0; $i < 12; $i++) {
             $mnt = ($i + 1);
             $year = date('Y');
@@ -132,10 +133,18 @@ class SiteController extends Controller
                 }
             }
             $monthWiseOrders[] = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->count();
+            $monthIncome = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
+            $monthWiseIncomes[] = (!empty($monthIncome)) ? $monthIncome : 0;
         }
+
         $min = (!empty($monthWiseOrders)) ? min($monthWiseOrders) : 0;
         $max = (!empty($monthWiseOrders)) ? max($monthWiseOrders) : 0;
-        $monthWiseOrders = [$monthWiseOrders[0], $monthWiseOrders[1], $monthWiseOrders[2], $monthWiseOrders[3], $monthWiseOrders[4], $monthWiseOrders[5], $monthWiseOrders[6], $monthWiseOrders[7], $monthWiseOrders[8], $monthWiseOrders[9], $monthWiseOrders[10], $monthWiseOrders[11]];
+        $monthWiseOrders = [(double)$monthWiseOrders[0], (double)$monthWiseOrders[1], (double)$monthWiseOrders[2], (double)$monthWiseOrders[3], (double)$monthWiseOrders[4], (double)$monthWiseOrders[5], (double)$monthWiseOrders[6], (double)$monthWiseOrders[7], (double)$monthWiseOrders[8], (double)$monthWiseOrders[9], (double)$monthWiseOrders[10], (double)$monthWiseOrders[11]];
+
+        $minIncome = (!empty($monthWiseIncomes)) ? min($monthWiseIncomes) : 0;
+        $maxIncome = (!empty($monthWiseIncomes)) ? max($monthWiseIncomes) : 0;
+        $monthWiseIncomes = [(double)$monthWiseIncomes[0], (double)$monthWiseIncomes[1], (double)$monthWiseIncomes[2], (double)$monthWiseIncomes[3], (double)$monthWiseIncomes[4], (double)$monthWiseIncomes[5], (double)$monthWiseIncomes[6], (double)$monthWiseIncomes[7], (double)$monthWiseIncomes[8], (double)$monthWiseIncomes[9], (double)$monthWiseIncomes[10], (double)$monthWiseIncomes[11]];
+
 
         return $this->render('index', [
             'totalCustomer' => $modelTotalCustomer,
@@ -148,7 +157,10 @@ class SiteController extends Controller
             'month' => $month,
             'monthWiseOrders' => $monthWiseOrders,
             'min' => $min,
-            'max' => $max
+            'max' => $max + 1,
+            'monthWiseIncomes' => $monthWiseIncomes,
+            'minIncome' => $minIncome,
+            'maxIncome' => $maxIncome + 1,
         ]);
 
     }
