@@ -40,6 +40,7 @@ class ProductSearch extends Product
             'status' => 'status',
             'address' => 'address',
             'favouriteProduct' => 'favouriteProduct',
+            'shippingCountry0' => 'shippingCountry0',
         ];
     }
 
@@ -125,7 +126,7 @@ class ProductSearch extends Product
         /* ########## Active Data Filter End ######### */
 
         /* ########## Prepare Query With Default Filter Start ######### */
-        $query = self::find();
+        $query = self::find()->where(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);
 
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1) {
             $query->joinWith('category AS category');

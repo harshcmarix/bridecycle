@@ -33,6 +33,6 @@ use dmstr\widgets\Alert;
     </section>
 </div>
 
-<footer class="main-footer">
+<footer class="main-footer text-right">
     <strong>Copyright &copy; <?php echo date('Y'); ?> <a href="javascript:void(0);"><?= Yii::$app->name ?></a>.</strong>
 </footer>

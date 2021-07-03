@@ -595,13 +595,13 @@ class Product extends \yii\db\ActiveRecord
     public function getShippingCountry0()
     {
         $country = ShippingPrice::find()->where(['product_id' => $this->id])->all();
-        $data=[];
+        $data = [];
         if (!empty($country)) {
             foreach ($country as $key => $countryRow) {
                 $result['shippingCost'] = $countryRow->shippingCost->toArray();
-                $data[] = array_merge($countryRow->toArray(),$result);
+                $data[] = array_merge($countryRow->toArray(), $result);
             }
-            $country =$data;
+            $country = $data;
         }
         return $country;
     }

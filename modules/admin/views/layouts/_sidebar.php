@@ -46,6 +46,10 @@ use app\modules\admin\models\DailyReportType;
         $menuList[] = ['label' => 'Order', 'icon' => 'reorder', 'url' => ['order/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['subscription/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Content', 'icon' => 'align-center', 'url' => ['cms-page/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Report', 'icon' => 'book', 'items' => [
+            ['label' => 'Sales', 'icon' => 'fas fa-angle-right', 'url' => ['report/sales', 'p' => 'w'], 'visible' => $visible],
+            ['label' => "Customers", 'icon' => 'fas fa-angle-right', 'url' => ['report/customers', 'p' => 'w'], 'visible' => $visible],
+        ],];
         $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Tailor', 'icon' => 'cut', 'url' => ['tailor/index'], 'visible' => $visible];

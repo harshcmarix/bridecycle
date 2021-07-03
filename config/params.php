@@ -8,7 +8,8 @@ return [
     'token_expire_time' => (86400 * 365),// 365 day
     //'token_expire_time' => 3.154e+7,// 365 day
     'token_segment' => 1,
-    'default_page_size' => 10,
+    //'default_page_size' => 10,
+    'default_page_size' => 10000,
     // Used in reset password expire token
     'password_reset_token_expire_time' => 3600,
     'support_email' => 'robot@devreadwrite.com',

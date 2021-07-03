@@ -126,12 +126,14 @@ class TailorController extends ActiveController
         }
         $model->shop_image = $tailor_shop_image;
 
-        $tailor_voucher_image = '';
+        $tailor_voucher_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         if (!empty($model->voucher) && file_exists(Yii::getAlias('@tailorVoucherImageRelativePath') . '/' . $model->voucher)) {
             $tailor_voucher_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorVoucherImageThumbAbsolutePath') . '/' . $model->voucher;
         }
 
+        $model->zip_code = (string)$model->zip_code;
         $model->voucher = $tailor_voucher_image;
+
         return $model;
     }
 

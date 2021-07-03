@@ -66,12 +66,15 @@ class ProductController extends Controller
 
         $productType = [Product::PRODUCT_TYPE_NEW => 'New', Product::PRODUCT_TYPE_USED => 'Used'];
 
+        $statuses = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'categories' => $categories,
             'subCategories' => $subCategories,
-            'productType' => $productType
+            'productType' => $productType,
+            'arrStatus' => $statuses
         ]);
     }
 
@@ -104,7 +107,8 @@ class ProductController extends Controller
 
         $postData = Yii::$app->request->post('Product');
 
-        $model->option_color = (!empty($postData['option_color'])) ? implode(",", $postData['option_color']) : "";
+        //$postData['option_color'] = (!empty($postData['option_color'])) ? (string) implode(",", $postData['option_color']) : "";
+
         $model->scenario = Product::SCENARIO_CREATE;
         $model->is_top_selling = Product::IS_TOP_SELLING_NO;
         if (!empty($postData['is_top_selling'])) {
@@ -121,9 +125,11 @@ class ProductController extends Controller
             $model->is_admin_favourite = $postData['is_admin_favourite'];
         }
 
+        $model->user_id = Yii::$app->user->identity->id;
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $images = UploadedFile::getInstances($model, 'images');
-            $model->user_id = Yii::$app->user->identity->id;
+            $model->option_color = implode(",", $postData['option_color']);
             if ($model->save()) {
                 if (!empty($images)) {
                     foreach ($images as $img) {

@@ -27,11 +27,10 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
             <div class="row">
-                <div class="col col-md-6">
+                <div class="col col-md-10">
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                 </div>
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'number')->textInput() ?>
+                <div class="col col-md-2">
                 </div>
             </div>
             <div class="row">

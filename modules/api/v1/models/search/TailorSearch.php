@@ -126,7 +126,8 @@ class TailorSearch extends Tailor
                 $lat = (!empty(Yii::$app->user->identity->latitude)) ? Yii::$app->user->identity->latitude : "";
                 $long = (!empty(Yii::$app->user->identity->longitude)) ? Yii::$app->user->identity->longitude : '';
             }
-
+//p($lat,0);
+//p($long);
             if (!empty($lat) && !empty($long)) {
                 $SelectString = "(3956 * 2 * ASIN(SQRT( POWER(SIN(( $lat - latitude) *  pi()/180 / 2), 2) +COS( $lat * pi()/180) * COS(latitude * pi()/180) * POWER(SIN(( $long - longitude) * pi()/180 / 2), 2) ))) as distance";
                 $select = ['tailors.*', $SelectString];
@@ -175,6 +176,7 @@ class TailorSearch extends Tailor
             }
 
 
+            $tailorModels[$key]['zip_code'] = (string)$value->zip_code;
             $tailorModels[$key]['shop_image'] = $profilePicture;
             $tailorModels[$key]['voucher'] = $voucherPicture;
         }

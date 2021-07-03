@@ -172,7 +172,7 @@ class CartItemController extends ActiveController
 
         if ($model->load($cartIteam) && $model->validate()) {
 
-            $cartIteamAlreadyAdded = CartItem::find()->where(['product_id' => $model->product_id, 'user_id' => $model->user_id, 'is_checkout' => CartItem::IS_CHECKOUT_NO])->one();
+            $cartIteamAlreadyAdded = CartItem::find()->where(['product_id' => $model->product_id, 'user_id' => $model->user_id, 'is_checkout' => CartItem::IS_CHECKOUT_NO, 'color' => $model->color, 'size' => $model->size])->one();
             if (!empty($cartIteamAlreadyAdded) && $cartIteamAlreadyAdded instanceof CartItem) {
                 throw new BadRequestHttpException('You have already this product added to the cart"');
             }

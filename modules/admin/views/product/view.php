@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = 'View Product';
                         },
                     ],
                     'name',
-                    'number',
+                    //'number',
                     [
                         'attribute' => 'category_id',
                         'label' => 'Category',
@@ -138,7 +138,26 @@ $this->params['breadcrumbs'][] = 'View Product';
                     [
                         'attribute' => 'option_color',
                         'value' => function ($model) {
-                            return (!empty($model->color) && $model->color instanceof Color && !empty($model->color->name)) ? $model->color->name : "-";
+                            $colorIds = "";
+                            if (!empty($model) && !empty($model->option_color)) {
+                                $colorIds = explode(",", $model->option_color);
+                            }
+                            $color = "";
+                            if (!empty($colorIds)) {
+                                $modelColors = Color::find()->where(['in', 'id', $colorIds])->all();
+                                if (!empty($modelColors)) {
+                                    foreach ($modelColors as $key => $modelColor) {
+                                        if (!empty($modelColor) && $modelColor instanceof Color) {
+                                            if ($key < count($modelColors)-1) {
+                                                $color .= $modelColor->name . ",";
+                                            } else {
+                                                $color .= $modelColor->name;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            return $color;
                         },
                     ],
                     [
