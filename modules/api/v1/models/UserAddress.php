@@ -21,20 +21,22 @@ use yii\behaviors\TimestampBehavior;
  * @property string $state
  * @property string $country
  * @property string $zip_code
+ * @property string $is_primary_address
  * @property string|null $created_at
  * @property string|null $updated_at
  *
  * @property Orders[] $orders
- * @property Users $user
+ * @property User $user
  */
 class UserAddress extends ActiveRecord
 {
     /**
-     * address type 
+     * address type
      */
     const BILLING = '1';
     const SHIPPING = '2';
     const SHOP = '3';
+
     /**
      * {@inheritdoc}
      */
@@ -42,7 +44,8 @@ class UserAddress extends ActiveRecord
     {
         return 'user_addresses';
     }
-     /**
+
+    /**
      * @return array[]
      */
     public function behaviors()
@@ -62,7 +65,7 @@ class UserAddress extends ActiveRecord
     {
         return [
             [['user_id'], 'integer'],
-            [['type'], 'string'],
+            [['is_primary_address','type'], 'string'],
             [['address', 'street', 'city', 'state', 'country', 'zip_code'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['address', 'zip_code'], 'string', 'max' => 100],

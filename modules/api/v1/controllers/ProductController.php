@@ -26,6 +26,7 @@ use yii\filters\auth\{
     HttpBearerAuth,
     QueryParamAuth
 };
+use yii\base\BaseObject;
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
@@ -276,18 +277,29 @@ class ProductController extends ActiveController
                     }
                 }
 
-                $modelAddress = new UserAddress();
-                $addressData['UserAddress'] = $postData;
-                $modelAddress->user_id = Yii::$app->user->identity->id;
-                $modelAddress->type = UserAddress::TYPE_SHOP;
-                if ($modelAddress->load($addressData) && $modelAddress->validate()) {
-                    $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
-                    $modelAddress->type = UserAddress::TYPE_SHOP;
-                    if ($modelAddress->save(false)) {
-                        $model->address_id = $modelAddress->id;
-                        $model->save(false);
-                    }
+                $modelAddress = "";
+                if (!empty($productData['Product']['is_profile_address']) && ($productData['Product']['is_profile_address'] == 1 || $productData['Product']['is_profile_address'] == "1")) {
+                    $modelAddress = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
                 }
+                if (empty($modelAddress)) {
+                    $modelAddress = new UserAddress();
+                    $addressData['UserAddress'] = $postData;
+                    $modelAddress->user_id = Yii::$app->user->identity->id;
+
+                    $modelAddress->type = UserAddress::TYPE_SHOP;
+                    if ($modelAddress->load($addressData) && $modelAddress->validate()) {
+                        $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
+                        $modelAddress->type = UserAddress::TYPE_SHOP;
+                        if ($modelAddress->save(false)) {
+                            $model->address_id = $modelAddress->id;
+                            $model->save(false);
+                        }
+                    }
+                } else {
+                    $model->address_id = $modelAddress->id;
+                    $model->save(false);
+                }
+
 
                 //  shipping cost
                 if (!empty($model->shipping_country_id) && !empty($model->shipping_country_price)) {
@@ -416,17 +428,50 @@ class ProductController extends ActiveController
             if ($model->save(false)) {
 
                 $modelAddress = $model->address;
-                if (empty($modelAddress)) {
+                if (empty($modelAddress) && empty($productData['Product']['is_profile_address'])) {
                     $modelAddress = new UserAddress();
                     $modelAddress->user_id = Yii::$app->user->identity->id;
-                }
-                $addressData['UserAddress'] = $postData;
-                $modelAddress->type = UserAddress::TYPE_SHOP;
-                if ($modelAddress->load($addressData) && $modelAddress->validate()) {
-                    $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
-                    if ($modelAddress->save(false)) {
+                    $addressData['UserAddress'] = $postData;
+                    $modelAddress->type = UserAddress::TYPE_SHOP;
+                    if ($modelAddress->load($addressData) && $modelAddress->validate()) {
+                        $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
+                        if ($modelAddress->save(false)) {
+                            $model->address_id = $modelAddress->id;
+                            $model->save(false);
+                        }
+                    }
+                } elseif (empty($modelAddress) && !empty($productData['Product']['is_profile_address']) && ($productData['Product']['is_profile_address'] == 1 || $productData['Product']['is_profile_address'] == "1")) {
+                    $modelAddress = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
+                    if (!empty($modelAddress)) {
                         $model->address_id = $modelAddress->id;
                         $model->save(false);
+                    } else {
+                        $modelAddress = new UserAddress();
+                        $modelAddress->user_id = Yii::$app->user->identity->id;
+                        $addressData['UserAddress'] = $postData;
+                        $modelAddress->type = UserAddress::TYPE_SHOP;
+                        if ($modelAddress->load($addressData) && $modelAddress->validate()) {
+                            $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
+                            if ($modelAddress->save(false)) {
+                                $model->address_id = $modelAddress->id;
+                                $model->save(false);
+                            }
+                        }
+                    }
+
+                } elseif (!empty($modelAddress) && !empty($productData['Product']['is_profile_address']) && ($productData['Product']['is_profile_address'] == 1 || $productData['Product']['is_profile_address'] == "1")) {
+                    $modelAddress = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
+                    $model->address_id = $modelAddress->id;
+                    $model->save(false);
+                } elseif (!empty($modelAddress) && empty($productData['Product']['is_profile_address'])) {
+                    $addressData['UserAddress'] = $postData;
+                    $modelAddress->type = UserAddress::TYPE_SHOP;
+                    if ($modelAddress->load($addressData) && $modelAddress->validate()) {
+                        $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
+                        if ($modelAddress->save(false)) {
+                            $model->address_id = $modelAddress->id;
+                            $model->save(false);
+                        }
                     }
                 }
 
@@ -450,12 +495,9 @@ class ProductController extends ActiveController
                         $shippingPrice->save(false);
                     }
                 }
-
-
             }
         }
         return $model;
-
     }
 
     /**

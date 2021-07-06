@@ -18,11 +18,12 @@ use yii\behaviors\TimestampBehavior;
  * @property string $state
  * @property string $country
  * @property string $zip_code
+ * @property string $is_primary_address 1 => yes, 0 => no
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Orders[] $orders
- * @property Users $user
+ * @property Order[] $orders
+ * @property User $user
  */
 class UserAddress extends \yii\db\ActiveRecord
 {
@@ -51,6 +52,8 @@ class UserAddress extends \yii\db\ActiveRecord
     const TYPE_SHIPPING = '2';
     const TYPE_SHOP = '3';
 
+    const IS_ADDRESS_PRIMARY_YES = "1";
+    const IS_ADDRESS_PRIMARY_NO = "0";
 
     /**
      * {@inheritdoc}
@@ -58,10 +61,10 @@ class UserAddress extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['street', 'city', 'state', 'country', 'zip_code','user_id'], 'required'],
+            [['street', 'city', 'state', 'country', 'zip_code', 'user_id'], 'required'],
             [['user_id'], 'integer'],
-            [['type'], 'string'],
-            [['created_at', 'updated_at','address'], 'safe'],
+            [['is_primary_address', 'type'], 'string'],
+            [['created_at', 'updated_at', 'address'], 'safe'],
             [['address', 'zip_code'], 'string', 'max' => 100],
             [['street', 'city', 'state', 'country'], 'string', 'max' => 50],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],

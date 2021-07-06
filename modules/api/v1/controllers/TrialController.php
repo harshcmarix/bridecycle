@@ -8,6 +8,7 @@ use app\modules\api\v1\models\User;
 use Yii;
 use app\models\Trial;
 use yii\base\BaseObject;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\auth\{
     HttpBasicAuth,
@@ -43,6 +44,8 @@ class TrialController extends ActiveController
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
             'create' => ['POST', 'OPTIONS'],
+            'get-trial-list-seller' => ['POST', 'OPTIONS'],
+            'get-trial-list-user' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             //'delete' => ['POST', 'DELETE'],
         ];
@@ -56,7 +59,7 @@ class TrialController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update'], //, 'delete'
+            'only' => ['index', 'view', 'create', 'update', 'get-trial-list-seller','get-trial-list-user'], //, 'delete'
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -330,5 +333,37 @@ class TrialController extends ActiveController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws BadRequestHttpException
+     */
+    public function actionGetTrialListSeller()
+    {
+        $postData = Yii::$app->request->post();
+
+        if (empty($postData) || empty($postData['receiver_id'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "receiver_id"');
+        }
+
+        $models = Trial::find()->where(['receiver_id' => $postData['receiver_id']])->all();
+        return $models;
+    }
+
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws BadRequestHttpException
+     */
+    public function actionGetTrialListUser()
+    {
+        $postData = Yii::$app->request->post();
+
+        if (empty($postData) || empty($postData['sender_id'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "sender_id"');
+        }
+
+        $models = Trial::find()->where(['sender_id' => $postData['sender_id']])->all();
+        return $models;
     }
 }

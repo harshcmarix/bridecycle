@@ -178,7 +178,9 @@ class CartItemController extends ActiveController
             }
 
             $productData = Product::find()->where(['id' => $model->product_id])->one();
-            $model->price = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
+            $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
+            $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
+            $model->price = ($basePrice + $taxPrice);
             $model->save();
         }
         return $model;
@@ -202,7 +204,10 @@ class CartItemController extends ActiveController
         $cartIteam['CartItem']['user_id'] = Yii::$app->user->identity->id;
         if ($model->load($cartIteam) && $model->validate()) {
             $productData = Product::find()->where(['id' => $model->product_id])->one();
-            $model->price = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
+
+            $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
+            $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
+            $model->price = ($basePrice + $taxPrice);
             $model->save();
         }
         return $model;
@@ -308,14 +313,21 @@ class CartItemController extends ActiveController
         $productIds = explode(",", $post['product_id']);
         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
         $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
+        $cartTotalShipping = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('shipping_cost');
         //p(Yii::$app->formatter->asCurrency($cartTotal));
 
-        if (empty($cartTotal)) {
+        if (empty($cartTotal) && empty($cartTotalShipping)) {
             //$cartTotal = OrderItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->sum('price');
             $cartTotal = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('price');
+            $cartTotalShipping = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('shipping_cost');
         }
-        $modelOrder->total_amount = (!empty($cartTotal)) ? $cartTotal : 0.00;
+
+        $subTotal = (!empty($cartTotal)) ? $cartTotal : 0.00;
+
+        $modelOrder->total_amount = (!empty($cartTotal)) ? ($cartTotal + $cartTotalShipping) : 0.00;
         $modelOrder->save(false);
+
+        $grandTotal = $modelOrder->total_amount;
 
         if (!empty($modelCartItems)) {
             foreach ($modelCartItems as $key => $modelCartItemRow) {
@@ -327,6 +339,7 @@ class CartItemController extends ActiveController
                     $modelOrderItem->color = $modelCartItemRow->color;
                     $modelOrderItem->size = $modelCartItemRow->size;
                     $modelOrderItem->price = $modelCartItemRow->price;
+                    $modelOrderItem->shipping_cost = $modelCartItemRow->shipping_cost;
                     if ($modelOrderItem->save(false)) {
                         // Delete from cart
                         $modelCartItemRow->delete();
@@ -351,7 +364,7 @@ class CartItemController extends ActiveController
             $cardHoderName = explode(" ", $modelOrderPayment->card_holder_name);
 
             $paymentRequestData = [
-                'total' => $cartTotal,
+                'total' => $grandTotal,
                 'user_id' => $user_id,
                 'order_id' => $modelOrder->id,
                 'card_type' => $cardType,
@@ -359,7 +372,7 @@ class CartItemController extends ActiveController
                 'card_exp_year' => $expMontYear[1],
                 'card_first_name' => $cardHoderName[0],
                 'card_last_name' => $cardHoderName[1],
-                'sub_total' => $cartTotal,
+                'sub_total' => $subTotal,
                 'user' => Yii::$app->user->identity,
                 'user_address' => $modelAddress,
                 'user_address_billing' => $modelAddressBillingFind,

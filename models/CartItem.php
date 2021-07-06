@@ -15,6 +15,7 @@ use Yii;
  * @property int $product_id
  * @property int $quantity
  * @property float $price
+ * @property float $shipping_cost
  * @property string|null $color
  * @property int|null $size
  * @property int|null $is_checkout
@@ -59,7 +60,7 @@ class CartItem extends \yii\db\ActiveRecord
             //[['user_id', 'product_id', 'quantity', 'price'], 'required'],
             [['user_id', 'product_id', 'quantity'], 'required'],
             [['user_id', 'product_id', 'quantity'], 'integer'],
-            [['price'], 'number'],
+            [['shipping_cost', 'price'], 'number'],
             [['size', 'is_checkout', 'created_at', 'updated_at'], 'safe'],
             [['color'], 'string', 'max' => 100],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],

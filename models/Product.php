@@ -67,6 +67,7 @@ class Product extends \yii\db\ActiveRecord
     public $is_product_images_empty;
 
     public $receipt;
+    public $is_profile_address;
 
     /**
      * {@inheritdoc}

@@ -14,6 +14,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $quantity
  * @property string|null $color
  * @property string|null $price
+ * @property float|null $shipping_cost
  * @property string|null $invoice
  * @property int|null $size
  * @property string|null $created_at
@@ -53,7 +54,7 @@ class OrderItem extends \yii\db\ActiveRecord
         return [
             [['order_id', 'product_id', 'quantity'], 'required'],
             [['order_id', 'product_id', 'quantity', 'size'], 'integer'],
-            [['price'], 'number'],
+            [['shipping_cost','price'], 'number'],
             [['color'], 'string', 'max' => 100],
             [['invoice', 'created_at', 'updated_at'], 'safe'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],

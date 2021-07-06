@@ -50,10 +50,22 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col col-md-12">
                 <div class="box box-primary">
                     <div class="box-header">
-                        <h4>New Customer</h4>
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <h4>Customer</h4>
+                            </div>
+                            <div class="col col-md-6">
+                                <div class="text-right">
+                                    <a class="btn btn-primary"
+                                       href="<?php echo Url::to(['report/export-customers-report', 'p' => Yii::$app->request->get('p')]) ?>"><i
+                                                class="fa fa-arrow-up"></i> Export
+                                        to Excel</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="box-body">
-                        <table id="customer" style="width:100%;border: solid:2px;border-color: black;">
+                        <table id="customer" border="1" width="100%">
                             <tr>
                                 <th><?php echo (Yii::$app->request->get('p') == 'y') ? "Month" : 'Date'; ?></th>
                                 <th><?php echo "Customers"; ?></th>
@@ -73,9 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </table>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-

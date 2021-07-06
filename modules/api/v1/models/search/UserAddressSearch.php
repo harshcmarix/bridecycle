@@ -18,7 +18,7 @@ class UserAddressSearch extends UserAddress
     {
         return [
             [['id', 'user_id'], 'integer'],
-            [['type', 'address', 'street', 'city', 'state', 'country', 'zip_code', 'created_at', 'updated_at'], 'safe'],
+            [['is_primary_address','type', 'address', 'street', 'city', 'state', 'country', 'zip_code', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -65,6 +65,7 @@ class UserAddressSearch extends UserAddress
         ]);
 
         $query->andFilterWhere(['like', 'type', $this->type])
+            ->andFilterWhere(['like', 'is_primary_address', $this->is_primary_address])
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'street', $this->street])
             ->andFilterWhere(['like', 'city', $this->city])

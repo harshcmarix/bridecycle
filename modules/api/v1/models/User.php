@@ -324,7 +324,17 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserAddresses()
     {
-        return $this->hasMany(UserAddress::className(), ['user_id' => 'id']);
+        //return $this->hasMany(UserAddress::className(), ['user_id' => 'id']);
+        $result = UserAddress::find()->where(['user_id' => $this->id])->all();
+
+        if (!empty($result)) {
+            foreach ($result as $key => $resultRow) {
+                if (!empty($resultRow) && $resultRow instanceof UserAddress) {
+                    $result[$key]['is_primary_address'] = (string)$resultRow->is_primary_address;
+                }
+            }
+        }
+        return $result;
     }
 
     /**
