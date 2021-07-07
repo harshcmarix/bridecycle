@@ -86,6 +86,7 @@ class UserAddressController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
+        //unset($actions['view']);
         return $actions;
     }
 
@@ -97,23 +98,19 @@ class UserAddressController extends ActiveController
     public function actionCreate()
     {
         $model = new UserAddress();
-        $addressData = \Yii::$app->request->post();
+        $addressData = Yii::$app->request->post();
         $address['UserAddress'] = $addressData;
+
         $address['UserAddress']['user_id'] = Yii::$app->user->identity->id;
-
-        if (!empty($address['UserAddress']['is_primary_address'])) {
-            $address['UserAddress']['is_primary_address'] = UserAddress::IS_ADDRESS_PRIMARY_YES;
-        } else {
-            $address['UserAddress']['is_primary_address'] = UserAddress::IS_ADDRESS_PRIMARY_NO;
-        }
-
+        $address['UserAddress']['is_primary_address'] = (!empty($address['UserAddress']['is_primary_address'])) ? '1' : '0';
         if ($model->load($address) && $model->validate()) {
             $model->type = UserAddress::TYPE_BILLING;
             $model->address = $model->street . ' ' . $model->city . ' ' . $model->state . ' ' . $model->country . ' ' . $model->zip_code;
-            $model->save();
+            $model->save(false);
         }
-        if ($address['UserAddress']['is_primary_address'] = UserAddress::IS_ADDRESS_PRIMARY_YES) {
-            $previousAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES, 'user_id' => Yii::$app->user->identity->id])->all();
+
+        if ($address['UserAddress']['is_primary_address'] == UserAddress::IS_ADDRESS_PRIMARY_YES) {
+            $previousAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES, 'user_id' => Yii::$app->user->identity->id])->andWhere('id!=' . $model->id)->all();
             if (!empty($previousAddress)) {
                 foreach ($previousAddress as $keys => $previousAddressRow) {
                     if (!empty($previousAddressRow) && $previousAddressRow instanceof UserAddress) {
@@ -122,8 +119,13 @@ class UserAddressController extends ActiveController
                     }
                 }
             }
+        } else {
+            $addedAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES, 'user_id' => Yii::$app->user->identity->id])->all();
+            if (empty($addedAddress)) {
+                $model->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_YES;
+                $model->save(false);
+            }
         }
-
         return $model;
     }
 
@@ -144,20 +146,21 @@ class UserAddressController extends ActiveController
         $address['UserAddress'] = $addressData;
         $address['UserAddress']['user_id'] = Yii::$app->user->identity->id;
 
-        if (!empty($address['UserAddress']['is_primary_address'])) {
-            $address['UserAddress']['is_primary_address'] = UserAddress::IS_ADDRESS_PRIMARY_YES;
-        } else {
-            $address['UserAddress']['is_primary_address'] = UserAddress::IS_ADDRESS_PRIMARY_NO;
-        }
-
         if ($model->load($address) && $model->validate()) {
+
+            if (!empty($address['UserAddress']['is_primary_address'])) {
+                $model->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_YES;
+            } else {
+                $model->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_NO;
+            }
+
             $model->type = UserAddress::TYPE_BILLING;
             $model->address = $model->street . ' ' . $model->city . ' ' . $model->state . ' ' . $model->country . ' ' . $model->zip_code;
-            $model->save();
+            $model->save(false);
         }
 
-        if ($address['UserAddress']['is_primary_address'] = UserAddress::IS_ADDRESS_PRIMARY_YES) {
-            $previousAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES, 'user_id' => Yii::$app->user->identity->id])->all();
+        if ($address['UserAddress']['is_primary_address'] == UserAddress::IS_ADDRESS_PRIMARY_YES) {
+            $previousAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES, 'user_id' => Yii::$app->user->identity->id])->andWhere('id!=' . $model->id)->all();
             if (!empty($previousAddress)) {
                 foreach ($previousAddress as $keys => $previousAddressRow) {
                     if (!empty($previousAddressRow) && $previousAddressRow instanceof UserAddress) {
@@ -202,7 +205,12 @@ class UserAddressController extends ActiveController
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "is_profile_address"');
         }
 
-        $profileAddress = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
+        if (empty($postData) || empty($postData['user_id'])) {
+            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "user_id"');
+        }
+
+        //$profileAddress = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
+        $profileAddress = UserAddress::find()->where(['user_id' => $postData['user_id'], 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
         if (!$profileAddress instanceof UserAddress) {
             throw new NotFoundHttpException('Primary address doesn\'t exist.');
         }

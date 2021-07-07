@@ -18,7 +18,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $state
  * @property string $country
  * @property string $zip_code
- * @property string $is_primary_address 1 => yes, 0 => no
+ * @property int $is_primary_address 1 => yes, 0 => no
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -62,8 +62,8 @@ class UserAddress extends \yii\db\ActiveRecord
     {
         return [
             [['street', 'city', 'state', 'country', 'zip_code', 'user_id'], 'required'],
-            [['user_id'], 'integer'],
-            [['is_primary_address', 'type'], 'string'],
+            [['is_primary_address','user_id'], 'integer'],
+            [[ 'type'], 'string'],
             [['created_at', 'updated_at', 'address'], 'safe'],
             [['address', 'zip_code'], 'string', 'max' => 100],
             [['street', 'city', 'state', 'country'], 'string', 'max' => 50],

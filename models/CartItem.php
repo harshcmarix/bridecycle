@@ -58,7 +58,7 @@ class CartItem extends \yii\db\ActiveRecord
     {
         return [
             //[['user_id', 'product_id', 'quantity', 'price'], 'required'],
-            [['user_id', 'product_id', 'quantity'], 'required'],
+            [['user_id', 'product_id', 'quantity','shipping_cost'], 'required'],
             [['user_id', 'product_id', 'quantity'], 'integer'],
             [['shipping_cost', 'price'], 'number'],
             [['size', 'is_checkout', 'created_at', 'updated_at'], 'safe'],

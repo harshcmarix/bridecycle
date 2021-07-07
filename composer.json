@@ -37,7 +37,9 @@
     "rmrevin/yii2-fontawesome": "~2.9",
     "dmstr/yii2-adminlte-asset": "^2.1",
     "miloschuman/yii2-highcharts-widget": "^9.0",
-    "yii2tech/spreadsheet": "^1.0"
+    "yii2tech/spreadsheet": "^1.0",
+    "google/apiclient": "^2.0",
+    "yiimaker/yii2-google-analytics": "*"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

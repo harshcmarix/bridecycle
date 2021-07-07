@@ -172,7 +172,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER, self::SCENARIO_USER_CREATE_FROM_SOCIAL]],
+            [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
+            [['first_name', 'last_name'], 'required', 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]],
             [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
             [['top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size', 'height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
@@ -325,7 +326,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUserAddresses()
     {
         //return $this->hasMany(UserAddress::className(), ['user_id' => 'id']);
-        $result = UserAddress::find()->where(['user_id' => $this->id])->all();
+        $result = UserAddress::find()->where(['user_id' => $this->id])->orderBy(['is_primary_address' => SORT_DESC])->all();
 
         if (!empty($result)) {
             foreach ($result as $key => $resultRow) {

@@ -28,6 +28,7 @@ use app\models\{
     ShopDetail
 };
 use Yii;
+use yii\base\BaseObject;
 use yii\helpers\Url;
 use yii\filters\Cors;
 use yii\imagine\Image;
@@ -209,7 +210,12 @@ class UserController extends ActiveController
             $model->user_type = (string)User::USER_TYPE_NORMAL;
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
 
-            $model->verification_code = $model->getVerificationCode();
+            if (empty($postData['is_login_from'])) {
+                $model->verification_code = $model->getVerificationCode();
+            } else {
+                $model->verification_code = "";
+                $model->is_verify_user = User::IS_VERIFY_USER_YES;
+            }
 
             if ($model->save()) {
                 // Insert shop details
@@ -219,6 +225,7 @@ class UserController extends ActiveController
                     if ($userAddressModel->load($userAddressData)) {
                         $userAddressModel->user_id = $model->id;
                         $userAddressModel->type = UserAddress::TYPE_SHOP;
+                        $userAddressModel->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_YES;
                         $userAddressModel->save(false);
                     }
 
@@ -289,11 +296,13 @@ class UserController extends ActiveController
                     }
                 }
 
-                Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $model])
-                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                    ->setTo($model->email)
-                    ->setSubject('Profile verification code!')
-                    ->send();
+                if (empty($postData['is_login_from'])) {
+                    Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $model])
+                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                        ->setTo($model->email)
+                        ->setSubject('Profile verification code!')
+                        ->send();
+                }
 
                 // shop owner detail end
                 // Get profile picture
@@ -332,6 +341,41 @@ class UserController extends ActiveController
 
             if ($model->save()) {
 
+
+                if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
+
+                    $userAddressModel = new UserAddress();
+                    $userAddressData['UserAddress'] = $postData;
+                    $userAddressData['UserAddress']['user_id'] = $model->id;
+                    $addressModel = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'street' => $userAddressData['UserAddress']['street'], 'city' => $userAddressData['UserAddress']['city'], 'state' => $userAddressData['UserAddress']['state'], 'country' => $userAddressData['UserAddress']['country'], 'zip_code' => $userAddressData['UserAddress']['zip_code']])->one();
+
+                    if ($userAddressModel->load($userAddressData) && $userAddressModel->validate()) {
+
+                        if (!empty($addressModel) && $addressModel instanceof UserAddress && $userAddressData['UserAddress']['is_primary_address'] == UserAddress::IS_ADDRESS_PRIMARY_YES) {
+                            $previousAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES, 'user_id' => Yii::$app->user->identity->id])->andWhere('id!=' . $addressModel->id)->all();
+                            if (!empty($previousAddress)) {
+                                foreach ($previousAddress as $keys => $previousAddressRow) {
+                                    if (!empty($previousAddressRow) && $previousAddressRow instanceof UserAddress) {
+                                        $previousAddressRow->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_NO;
+                                        $previousAddressRow->save(false);
+                                    }
+                                }
+                            }
+                            $addressModel->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_YES;
+                            $addressModel->save(false);
+                        } else if (empty($addressModel) && (!empty($userAddressData['UserAddress']['is_primary_address'])) && $userAddressData['UserAddress']['is_primary_address'] == UserAddress::IS_ADDRESS_PRIMARY_YES) {
+                            $userAddressModel->type = UserAddress::TYPE_SHOP;
+                            $userAddressModel->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_YES;
+                            $userAddressModel->save(false);
+                        } elseif (empty($addressModel) && empty($userAddressData['UserAddress']['is_primary_address'])) {
+                            $userAddressModel->type = UserAddress::TYPE_SHOP;
+                            $userAddressModel->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_YES;
+                            $userAddressModel->save(false);
+                        }
+                    } else {
+                        return $userAddressModel;
+                    }
+                }
                 $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
                 $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
                 $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -341,7 +385,6 @@ class UserController extends ActiveController
                 $model->profile_picture = $showProfilePicture;
             }
         }
-
         return $model;
     }
 
@@ -542,11 +585,13 @@ class UserController extends ActiveController
                 $modelUser->verification_code = $modelUser->getVerificationCode();
                 $modelUser->save(false);
 
-                Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
-                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                    ->setTo($modelUser->email)
-                    ->setSubject('Profile verification code!')
-                    ->send();
+                if (!empty($modelUser->email)) {
+                    Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
+                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                        ->setTo($modelUser->email)
+                        ->setSubject('Profile verification code!')
+                        ->send();
+                }
             }
             $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user]);
             return $dataResponse;
@@ -614,13 +659,16 @@ class UserController extends ActiveController
             $userModel->password_hash = $model->getUser()->password_hash;
             $userModel->temporary_password = $tmpPassword;
             if ($userModel->save()) {
-                $mail = \Yii::$app->mailer->compose('api/forgot_password', ['model' => $model, 'user' => $userModel, 'appname' => Yii::$app->name])
-                    ->setFrom([\Yii::$app->params['from_email'] => \Yii::$app->name])
-                    ->setTo($model->email)
-                    ->setSubject('Forgot your password')
-                    ->send();
-                if (!$mail) {
-                    throw new ServerErrorHttpException("Unable to send an email. Please try again later");
+
+                if (!empty($model->email)) {
+                    $mail = \Yii::$app->mailer->compose('api/forgot_password', ['model' => $model, 'user' => $userModel, 'appname' => Yii::$app->name])
+                        ->setFrom([\Yii::$app->params['from_email'] => \Yii::$app->name])
+                        ->setTo($model->email)
+                        ->setSubject('Forgot your password')
+                        ->send();
+                    if (!$mail) {
+                        throw new ServerErrorHttpException("Unable to send an email. Please try again later");
+                    }
                 }
             }
         }
@@ -719,6 +767,14 @@ class UserController extends ActiveController
         if (!empty($model) && $model instanceof User) {
             $model->verification_code = "";
             $model->is_verify_user = User::IS_VERIFY_USER_YES;
+            if ($model->is_shop_owner == 1 || $model->is_shop_owner == '1') {
+                $addedAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_NO, 'user_id' => $model->id])->all();
+                if (!empty($addedAddress) && !empty($addedAddress[0]) && $addedAddress[0] instanceof UserAddress) {
+                    $address = $addedAddress[0];
+                    $address->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_YES;
+                    $address->save(false);
+                }
+            }
             $model->save(false);
         }
 
@@ -740,7 +796,6 @@ class UserController extends ActiveController
      */
     public function actionResendVerificationCode()
     {
-
         $post = \Yii::$app->request->post();
         if (empty($post) || empty($post['email'])) {
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "email"');
@@ -754,11 +809,13 @@ class UserController extends ActiveController
         $modelUser->verification_code = $modelUser->getVerificationCode();
         $modelUser->save(false);
 
-        Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
-            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-            ->setTo($modelUser->email)
-            ->setSubject('Profile verification code!')
-            ->send();
+        if (!empty($modelUser->email)) {
+            Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
+                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                ->setTo($modelUser->email)
+                ->setSubject('Profile verification code!')
+                ->send();
+        }
     }
 
     /**

@@ -69,6 +69,9 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 </div>
                 <div class="col col-md-2">
                     <?php if (Yii::$app->controller->action->id == 'update') {
+//                        if(!is_string($model->option_color)){
+//                            $model->option_color = implode(",", $model->option_color);
+//                        }
                         $colorIds = explode(",", $model->option_color);
                         //$color = ArrayHelper::map(Color::find()->where(['in', 'id', $colorIds])->all(), 'id', 'name');
                         $model->option_color = $colorIds;

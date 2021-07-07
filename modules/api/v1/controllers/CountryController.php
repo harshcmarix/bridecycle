@@ -164,19 +164,22 @@ class CountryController extends ActiveController
         }
 
         $data['is_feasible'] = 0;
-        $data['shipping_cost'] = Yii::$app->formatter->asCurrency(0.0);
+        $data['shipping_cost'] = 0.0;
+        $data['shipping_country'] = "";
         if (!empty($result) && !empty($result['country_name']) && !empty($result['country_google_code']) && !empty($modelsShippingCountry)) {
             foreach ($modelsShippingCountry as $key => $modelShippingCountryRow) {
                 if (!empty($modelShippingCountryRow) && $modelShippingCountryRow instanceof ShippingPrice) {
                     if (!empty($modelShippingCountryRow) && !empty($modelShippingCountryRow->shippingCost) && $modelShippingCountryRow->shippingCost instanceof ShippingCost) {
                         if (strtolower($modelShippingCountryRow->shippingCost->name) == strtolower($continent)) {
                             $data['is_feasible'] = 1;
-                            $data['shipping_cost'] = Yii::$app->formatter->asCurrency($modelShippingCountryRow->price) . "(" . $continent . ")";
+                            $data['shipping_cost'] = $modelShippingCountryRow->price;
+                            $data['shipping_country'] = "(" . $continent . ")";
                         }
                     }
                 }
             }
         }
+        $data['shipping_cost_symbol'] = substr(Yii::$app->formatter->asCurrency($data['shipping_cost']),0,1);
         $output[] = $data;
         return $output;
     }

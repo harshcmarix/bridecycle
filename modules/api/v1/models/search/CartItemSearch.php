@@ -106,7 +106,7 @@ class CartItemSearch extends CartItem
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id', 'product_id', 'user_id', 'color', 'size', 'price', 'quantity'];
+            $select = ['id', 'product_id', 'user_id', 'color', 'size', 'price','shipping_cost','is_checkout', 'quantity'];
         }
 
         $query->select($select);

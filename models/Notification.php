@@ -106,14 +106,23 @@ class Notification extends \yii\db\ActiveRecord
      * @param $messageString
      * @return bool|string
      */
-    public function sendPushNotificationAndroid($id, $type, $notificationToken, $messageString)
+    public function sendPushNotificationAndroid($id, $type, $notificationToken, $messageString, $senderName = 'BrideCycle')
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
         $fields = array(
+
             'registration_ids' => $notificationToken,
             'data' => array(
                 'id' => $id,
-                'title' => Yii::$app->name,
+                'title' => (!empty($type) && $type == 'chat_history') ? "New message from " . Yii::$app->name : Yii::$app->name,
+                'body' => (!empty($type) && $type == 'chat_history') ? 'sender' . ' : ' . $messageString : $messageString,
+                'type' => $type, //emergency, post
+                'message' => $messageString
+            ),
+            'notification' => array(
+                'id' => $id,
+                'title' => (!empty($type) && $type == 'chat_history') ? "New message from " . Yii::$app->name : Yii::$app->name,
+                'body' => (!empty($type) && $type == 'chat_history') ? 'sender' . ' : ' . $messageString : $messageString,
                 'type' => $type, //emergency, post
                 'message' => $messageString
             ),

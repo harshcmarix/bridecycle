@@ -358,7 +358,8 @@ class ProductController extends ActiveController
                                             $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
                                             if ($userDevice->device_platform == 'android') {
                                                 $notificationToken = array($userDevice->notification_token);
-                                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText);
+                                                $senderName = $model->user->first_name . " " . $model->user->last_name;
+                                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
                                             } else {
                                                 $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                 $note->setBadge($badge);

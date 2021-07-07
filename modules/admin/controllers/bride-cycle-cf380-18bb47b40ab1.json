@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "bride-cycle-cf380",
+  "private_key_id": "18bb47b40ab1a9c02c99dc4e2d5bfaa95ec1bfca",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDh745RiCBYVBdp\nTiFDDfVwvmjtE1yHWIN1lZPwZ21P3MfE3Ggpw/CN92d6RzZpNHSmtViBNy7daXvF\nF0a9uW6Yc6UWSxAn9jrQtAUJKYcwtgZT5/F3xCNnl4ZdkRR5gHmSzSYno6DAGPAv\nryl2q1EGJt/7HN5+WbT5/T473ob/W2/hqLJT9T2IGaw195N+3O+cKHqFAaVzsAVi\nZ7r7x+lkowr02X+9ImDQPV2smWrfGqWpBHVVva4eDcLJVkXx0r00RY1VHXR3HoNo\niTS5KfzgbzrLaTUm4xnKODvkl8kr7mVF4UVPqL4XIOXgrwxp6Cwpt/sm2NZZFhcK\nRlN6+hkRAgMBAAECggEABxKivlBBz8IO9ML3YGWaRPjdyNFavvnsYGZZ7T3i1CWY\nACra/LbsW7IrarTtmFMfqIbAyiEm6TnmIAAsiYy5tss+ZCyq/Gh4fhQRaRbQ62hA\n80HgwA92mqv826AxDeSrUAcppjZr6XErNuYhQo/DLfgfLUZ04jh/GKkiC5zzVbpB\nL+ZqSajfjevM6XDK8yjllxOIP++3cVS9NyPc0PPrLT8taLLqucPlgZ4Y0Sgn92iS\n7yTDSYeCdE2lAKRoRn6fhfnJefXfCtycdj+JiUK1U5WxZxl2PwSYALgFV4oxxvih\nlyJaSCu5NMWuphgwK7QHox+o1LUyZgHxXLW+QNm2aQKBgQD5XtdGZK13CwAsPvIW\n/FrRso+BXyJpNwN3xPxIKvNkrs1ZsGKj4HZpiVFoskt9lj0inR7vtTBXKQZgiE3U\nezx7wBl6/YjPi3AxkLIEGbFCfCn3HQI5H1HyFPWi45yYSGc4MM6ivpW4DATXsYcT\n0u2+IAtVLSrPdt34SAMx6CCsBwKBgQDn8TlD/tudHLMgLZzFiZClxusQLIO5SUd2\na7jq8+BuZ2Ddp6YykwX/rEsJFe8nL/EI5YB+5wdTyT5S8fIeJZ3wnvus2iH4bqTe\n8AxS0CfMBiiXYpPWYsBxw4g3utAAk/eCKX537RyidNzWwnFPGexJggA1BycTaT09\nbGACjc/8JwKBgQC8g0TMUzmK/4bu69rJI5ZoZcr0av2xekQl24U37Tg4Caj1P1Ei\nP4Jkf8lKE1bcJqIqs4p6fYeArGPEv+XOVidACdV5U4aEFw4GejMIxH9rGkADLivL\nEPE6xzt2Gwj7Weil4sei4d5+1p8mi27ovpC5JLJMfquZUGu20IGRzcA9KwKBgHCj\nmk7mLxseu/Ltk8vu4btQXgmtxI6wAq+E4vnfU+fp9oXOjAzVj705m/seltTuGF1c\nr0lxwwIyojy/2PhBBnG7k7e++25dtV27MBDrm9geSYozSl57+L+G2NlPtQIC2dlx\nc0SkdxqCLFlzdnmWukR8iMM35QctPZtdzUaQPihTAoGAbYQX1V61Jyj+sI9nNlmM\ns3AoRdtjPz4uFQlDUyfZMMWNqoCH20ocJp+CNoYCDUaMdliYos8qo2naeO5GK0bT\nbUOenGFCe+cCDJtzatQtrcIxbe+hVo4bomzMk+fs9y4Pa7yJ3cFoytUZOHKZveqq\nkbmHumYQBmNrw9yy1d0FrD0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-47r2q@bride-cycle-cf380.iam.gserviceaccount.com",
+  "client_id": "101515763135510528805",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-47r2q%40bride-cycle-cf380.iam.gserviceaccount.com"
+}

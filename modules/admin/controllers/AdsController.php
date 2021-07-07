@@ -46,6 +46,24 @@ class AdsController extends Controller
      */
     public function actionIndex()
     {
+        $analytics = \Yii::createObject([
+            'class' => \ymaker\google\analytics\mp\Analytics::className(),
+            'v' => 1,                                       // Protocol version. Default value: 1
+            'tid' => 'UA-201471334-1',                            // Tracking ID / Web Property ID
+            'cid' => '101515763135510528805' // Client ID. Random UUID (http://www.ietf.org/rfc/rfc4122.txt)
+        ]);
+        $responce = $analytics->send([
+            't' => 'preview',     // Hit Type.
+            'ec' => 'video',    // Event Category.
+            'ea' => 'play',     // Event Action.
+            'el' => 'bridecycle',  // Event label.
+            'ev' => 300,        // Event value.
+            'dp' => 'ads/index', // Page
+            'dh'=>'203.109.113.157/bridecycle/web/admin',
+        ]);
+        p($responce);
+
+
         $searchModel = new AdsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -268,4 +286,106 @@ class AdsController extends Controller
             return Json::encode(['success' => 'image successfully deleted']);
         }
     }
+
+
+//
+//
+//    /**
+//     * Initializes an Analytics Reporting API V4 service object.
+//     *
+//     * @return An authorized Analytics Reporting API V4 service object.
+//     */
+//    public function initializeAnalytics()
+//    {
+//
+//        // Use the developers console and download your service account
+//        // credentials in JSON format. Place them in this directory or
+//        // change the key file location if necessary.
+//        $KEY_FILE_LOCATION = __DIR__ . '/bride-cycle-cf380-18bb47b40ab1.json';
+//
+//        // Create and configure a new client object.
+//        $client = new \Google_Client();
+//        $client->setApplicationName("Hello Analytics Reporting");
+//        $client->setAuthConfig($KEY_FILE_LOCATION);
+//        $client->setScopes(['https://www.googleapis.com/auth/analytics.readonly']);
+//        $analytics = new \Google_Service_AnalyticsReporting($client);
+//
+//        return $analytics;
+//    }
+//
+//
+//    /**
+//     * Queries the Analytics Reporting API V4.
+//     *
+//     * @param service An authorized Analytics Reporting API V4 service object.
+//     * @return The Analytics Reporting API V4 response.
+//     */
+//    public function getReport($analytics) {
+//
+//        // Replace with your view ID, for example XXXX.
+//        //$VIEW_ID = "http://203.109.113.157/bridecycle/web/admin/ads/view?id=1";
+//
+//
+//
+//        $VIEW_ID = "246399535";
+//
+//        // Create the DateRange object.
+//        $dateRange = new \Google_Service_AnalyticsReporting_DateRange();
+//        $dateRange->setStartDate("7daysAgo");
+//        $dateRange->setEndDate("today");
+//
+//        // Create the Metrics object.
+//        $sessions = new \Google_Service_AnalyticsReporting_Metric();
+//        $sessions->setExpression("ga:sessions");
+//        $sessions->setAlias("sessions");
+//
+//        // Create the ReportRequest object.
+//        $request = new \Google_Service_AnalyticsReporting_ReportRequest();
+//
+//
+//
+//        $request->setViewId($VIEW_ID);
+//        $request->setDateRanges($dateRange);
+//        $request->setMetrics(array($sessions));
+//
+//        $body = new \Google_Service_AnalyticsReporting_GetReportsRequest();
+//        $body->setReportRequests( array( $request) );
+//        p($analytics->reports->batchGet( $body ));
+//        return $analytics->reports->batchGet( $body );
+//    }
+//
+//
+//    /**
+//     * Parses and prints the Analytics Reporting API V4 response.
+//     *
+//     * @param An Analytics Reporting API V4 response.
+//     */
+//    public function printResults($reports) {
+//        for ( $reportIndex = 0; $reportIndex < count( $reports ); $reportIndex++ ) {
+//            $report = $reports[ $reportIndex ];
+//            $header = $report->getColumnHeader();
+//            $dimensionHeaders = $header->getDimensions();
+//            $metricHeaders = $header->getMetricHeader()->getMetricHeaderEntries();
+//            $rows = $report->getData()->getRows();
+//
+//            for ( $rowIndex = 0; $rowIndex < count($rows); $rowIndex++) {
+//                $row = $rows[ $rowIndex ];
+//                $dimensions = $row->getDimensions();
+//                $metrics = $row->getMetrics();
+//                for ($i = 0; $i < count($dimensionHeaders) && $i < count($dimensions); $i++) {
+//                    print($dimensionHeaders[$i] . ": " . $dimensions[$i] . "\n");
+//                }
+//
+//                for ($j = 0; $j < count($metrics); $j++) {
+//                    $values = $metrics[$j]->getValues();
+//                    for ($k = 0; $k < count($values); $k++) {
+//                        $entry = $metricHeaders[$k];
+//                        print($entry->getName() . ": " . $values[$k] . "\n");
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+
 }
