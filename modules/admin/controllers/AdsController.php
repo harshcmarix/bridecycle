@@ -2,12 +2,17 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Brand;
+use app\models\Product;
+use app\models\ProductCategory;
+use app\models\ProductStatus;
 use kartik\growl\Growl;
 use Yii;
 use app\models\Ads;
 use app\models\search\AdsSearch;
 use yii\base\BaseObject;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\imagine\Image;
 use yii\web\Controller;
@@ -46,30 +51,16 @@ class AdsController extends Controller
      */
     public function actionIndex()
     {
-        $analytics = \Yii::createObject([
-            'class' => \ymaker\google\analytics\mp\Analytics::className(),
-            'v' => 1,                                       // Protocol version. Default value: 1
-            'tid' => 'UA-201471334-1',                            // Tracking ID / Web Property ID
-            'cid' => '101515763135510528805' // Client ID. Random UUID (http://www.ietf.org/rfc/rfc4122.txt)
-        ]);
-        $responce = $analytics->send([
-            't' => 'preview',     // Hit Type.
-            'ec' => 'video',    // Event Category.
-            'ea' => 'play',     // Event Action.
-            'el' => 'bridecycle',  // Event label.
-            'ev' => 300,        // Event value.
-            'dp' => 'ads/index', // Page
-            'dh'=>'203.109.113.157/bridecycle/web/admin',
-        ]);
-        p($responce);
-
-
         $searchModel = new AdsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $product = ArrayHelper::map(Product::find()->where(['IN', 'status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]])->all(), 'id', 'name');
+        $brand = ArrayHelper::map(Brand::find()->where(['IN', 'status', [Brand::STATUS_APPROVE]])->all(), 'id', 'name');
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'product' => $product,
+            'brand' => $brand
         ]);
     }
 
@@ -97,12 +88,16 @@ class AdsController extends Controller
         $model->scenario = Ads::SCENARIO_CREATE;
         $ad_image = UploadedFile::getInstance($model, 'image');
 
+        $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->andWhere(['IN', 'status', [ProductCategory::STATUS_APPROVE]])->all(), 'id', 'name');
+        $subCategory = ArrayHelper::map(ProductCategory::find()->where(['>', 'parent_category_id', 0])->andWhere(['IN', 'status', [ProductCategory::STATUS_APPROVE]])->all(), 'id', 'name');
+        $product = ArrayHelper::map(Product::find()->where(['IN', 'status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]])->all(), 'id', 'name');
+        $brand = ArrayHelper::map(Brand::find()->where(['IN', 'status', [Brand::STATUS_APPROVE]])->all(), 'id', 'name');
+
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             return \yii\widgets\ActiveForm::validate($model);
         }
         if ($model->load(Yii::$app->request->post())) {
-
             if (!empty($ad_image)) {
                 $uploadDirPath = Yii::getAlias('@adsImageRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@adsImageThumbRelativePath');
@@ -139,9 +134,12 @@ class AdsController extends Controller
             }
             return $this->redirect(['index']);
         }
-
         return $this->render('create', [
             'model' => $model,
+            'category' => $category,
+            'subCategory' => $subCategory,
+            'product' => $product,
+            'brand' => $brand,
         ]);
     }
 
@@ -156,6 +154,11 @@ class AdsController extends Controller
     {
         $model = $this->findModel($id);
         $old_image = $model->image;
+
+        $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->andWhere(['IN', 'status', [ProductCategory::STATUS_APPROVE]])->all(), 'id', 'name');
+        $subCategory = ArrayHelper::map(ProductCategory::find()->where(['>', 'parent_category_id', 0])->andWhere(['IN', 'status', [ProductCategory::STATUS_APPROVE]])->all(), 'id', 'name');
+        $product = ArrayHelper::map(Product::find()->where(['IN', 'status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]])->all(), 'id', 'name');
+        $brand = ArrayHelper::map(Brand::find()->where(['IN', 'status', [Brand::STATUS_APPROVE]])->all(), 'id', 'name');
 
         $new_image = UploadedFile::getInstance($model, 'image');
 
@@ -215,6 +218,10 @@ class AdsController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'category' => $category,
+            'subCategory' => $subCategory,
+            'product' => $product,
+            'brand' => $brand,
         ]);
     }
 
@@ -259,7 +266,6 @@ class AdsController extends Controller
         if (($model = Ads::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 

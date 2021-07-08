@@ -127,7 +127,7 @@ class BrandController extends ActiveController
 
         $brand_image = UploadedFile::getInstanceByName('image');
         $model->image = $brand_image;
-        $model->scenario = Brand::SCENARIO_CREATE_API;
+        //$model->scenario = Brand::SCENARIO_CREATE_API;
         if ($model->load($brandData) && $model->validate()) {
 
             if (!empty($brand_image)) {

@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-header"></div>
     <div class="box-body">
 
-        <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
+        <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
             <?php
             echo GridView::widget([
@@ -35,6 +35,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $id;
                         },
                         'width' => '8%',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
+                    [
+                        'attribute' => 'title',
+                        'value' => function ($model) {
+
+                            return $model->title;
+                        },
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
@@ -74,7 +83,48 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                             return $url;
                         },
+                        'width' => '20%',
                         'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
+                    [
+                        'attribute' => 'product_id',
+                        'value' => function ($model) {
+                            $productName = "";
+                            if (!empty($model->product) && $model->product instanceof \app\models\Product && !empty($model->product->name)) {
+                                $productName = $model->product->name;
+                            }
+                            return $productName;
+                        },
+                        'filter' => $product,
+                        'filterType' => GridView::FILTER_SELECT2,
+                        'filterWidgetOptions' => [
+                            'options' => ['prompt' => 'Select'],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                            ],
+                        ],
+                        'header' => 'Product',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
+                    [
+                        'attribute' => 'brand_id',
+                        'value' => function ($model) {
+                            $brandName = "";
+                            if (!empty($model->brand) && $model->brand instanceof \app\models\Brand && !empty($model->brand->name)) {
+                                $brandName = $model->brand->name;
+                            }
+                            return $brandName;
+                        },
+                        'filter' => $brand,
+                        'filterType' => GridView::FILTER_SELECT2,
+                        'filterWidgetOptions' => [
+                            'options' => ['prompt' => 'Select'],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                            ],
+                        ],
+                        'header' => 'Brand',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
@@ -134,7 +184,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'bordered' => true,
                 'striped' => true,
                 'condensed' => true,
-                'responsive' => false,
+                'responsive' => true,
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
                     //'heading' => 'Ads',

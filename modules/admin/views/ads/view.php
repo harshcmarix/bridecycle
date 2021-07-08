@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             \yii\bootstrap\Modal::end();
                             $adsmodal = "adsmodal('" . $model->id . "');";
-                            return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $adsmodal, 'height' => '100px', 'width' => '100px']);
+                            return Html::img($image_path, ['alt' => 'some', 'class' => '', 'onclick' => $adsmodal, 'height' => '100px', 'width' => '100px']);
                         },
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']

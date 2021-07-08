@@ -77,22 +77,63 @@ echo Dialog::widget(
 
             <?php } ?>
 
-            <?= $form->field($model, 'url')->textarea(['rows' => 2]) ?>
+            <?= $form->field($model, 'url')->textInput() ?>
 
-            <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
-                'data' => Ads::ARR_ADS_STATUS,
-                //'options' => ['placeholder' => 'Select Category'],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]); ?>
+            <div class="row">
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => Ads::ARR_ADS_STATUS,
+                        //'options' => ['placeholder' => 'Select Category'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+                </div>
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'category_id')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => $category,
+                        'options' => ['placeholder' => 'Select Category'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ])->label('Category'); ?>
+                </div>
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'sub_category_id')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => $subCategory,
+                        'options' => ['placeholder' => 'Select Sub Category'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ])->label('Sub category'); ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'product_id')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => $product,
+                        'options' => ['placeholder' => 'Select Product'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ])->label('Product'); ?>
+                </div>
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => $brand,
+                        'options' => ['placeholder' => 'Select Brand'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ])->label('Brand'); ?>
+                </div>
+            </div>
 
             <div class="form-group">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             </div>
-
             <?php ActiveForm::end(); ?>
-
         </div>
 
     </div>

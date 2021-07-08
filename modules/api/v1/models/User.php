@@ -409,10 +409,19 @@ class User extends ActiveRecord implements IdentityInterface
         return (object)$modelRate;
     }
 
+    /**
+     * @return array
+     */
     public function getBlockUsersId()
     {
-        $models = BlockUser::find()->select('user_id')->where(['user_id' => $this->id])->indexBy('id')->all();
-        p($models);
+        $sellerIds = [];
+        $models = BlockUser::find()->select(['seller_id'])->where(['user_id' => $this->id])->indexBy('seller_id')->all();
+        if (!empty($models)) {
+            foreach ($models as $key => $model) {
+                $sellerIds[] = $model->seller_id;
+            }
+        }
+        return $sellerIds;
     }
 
     /************************************************************************/

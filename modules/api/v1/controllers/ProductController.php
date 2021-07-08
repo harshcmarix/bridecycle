@@ -133,13 +133,14 @@ class ProductController extends ActiveController
      */
     public function actionIndexList()
     {
+
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        return $model->search($requestParams);
+        return $model->search($requestParams, Yii::$app->user->identity->id);
     }
 
     /**
@@ -373,6 +374,19 @@ class ProductController extends ActiveController
                                                         'message' => $notificationText,
                                                     ]);
                                                 $response = Yii::$app->fcm->send($message);
+                                            }
+
+
+                                        }
+
+                                        if ($userROW->is_saved_searches_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                            $message = "Product is uploaded as per your saved search";
+                                            if (!empty($userROW->email)) {
+                                                Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                    ->setTo($userROW->email)
+                                                    ->setSubject('New product added same as your search!')
+                                                    ->send();
                                             }
 
 

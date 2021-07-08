@@ -415,7 +415,7 @@ class CartItemController extends ActiveController
                                                 $userDevice = $userROW->userDevice;
 
                                                 // Insert into notification.
-                                                $notificationText = $userROW->first_name . " " . $userROW->last_name . " Place a new order";
+                                                $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
                                                 $modelNotification = new Notification();
                                                 $modelNotification->owner_id = $user_id;
                                                 $modelNotification->notification_receiver_id = $userROW->id;
@@ -445,6 +445,20 @@ class CartItemController extends ActiveController
                                                         ]);
                                                     $response = Yii::$app->fcm->send($message);
                                                 }
+                                            }
+
+                                            if ($userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                                $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+
+                                                if (!empty($userROW->email)) {
+                                                    Yii::$app->mailer->compose('api/addNewOrder', ['sender' => $modelOrder->user, 'receiver' => $userROW, 'message' => $message])
+                                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                        ->setTo($userROW->email)
+                                                        ->setSubject('Place a new order of your product')
+                                                        ->send();
+                                                }
+
+
                                             }
                                         }
                                     }

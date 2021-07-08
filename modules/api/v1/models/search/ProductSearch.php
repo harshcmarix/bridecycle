@@ -76,7 +76,7 @@ class ProductSearch extends Product
      * @param $requestParams
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = null)
     {
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
@@ -312,10 +312,19 @@ class ProductSearch extends Product
         // For sale product listing screen
         if (!empty($requestParams['user_id']) && !empty($requestParams['is_from_sell_screen']) && $requestParams['is_from_sell_screen'] == 1) {
             $query->andWhere(['user_id' => $requestParams['user_id']]);
-            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED]]);
+            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
         }
 
         /** End for search screen */
+
+        /** Start for Block user */
+
+        if (!empty($userId)) {
+            $modelUser = User::find()->where('id=' . $userId)->one();
+            $query->andWhere(['NOT IN', 'user_id', $modelUser->blockUsersId]);
+        }
+
+        /** End for Block user */
 
         if (!empty($requestParams['sort_by'])) {
             if (strtolower($requestParams['sort_by']) == 'nf') {
@@ -359,13 +368,6 @@ class ProductSearch extends Product
 
                 }
             }
-            //$productModelData[$key]['dressType0'] = $value->dressType;
-//            $data['status'] = (!empty($productModelData[$key]['status_id']) && !empty($value->status) && !empty($value->status->status)) ? $value->status->status : "";
-//            $data['user'] = (!empty($productModelData[$key]['user_id']) && !empty($value->user)) ? $value->user->first_name . " " . $value->user->last_name : "";
-//            $data['brand'] = (!empty($productModelData[$key]['brand_id']) && !empty($value->brand) && !empty($value->brand->name)) ? $value->brand->name : "";
-//            $data['image'] = $productImg;
-//
-//            $productData[] = array_merge($value->toArray(), $data);
         }
         //$productModelData = $productData;
         $activeDataProvider->setModels($productModelData);

@@ -91,7 +91,7 @@ class Brand extends ActiveRecord
             // [['image'], 'string', 'max' => 250],
             [['image'], 'file', 'extensions' => 'png, jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['image'], 'required', 'on' => self::SCENARIO_CREATE_API],
+            //[['image'], 'required', 'on' => self::SCENARIO_CREATE_API],
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
                 return $model->scenario == self::SCENARIO_CREATE;

@@ -17,7 +17,7 @@ class AdsSearch extends Ads
     public function rules()
     {
         return [
-            [['id', 'status'], 'integer'],
+            [['id', 'product_id', 'brand_id', 'status'], 'integer'],
             [['title', 'image', 'url', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -46,6 +46,7 @@ class AdsSearch extends Ads
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -60,6 +61,8 @@ class AdsSearch extends Ads
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
+            'product_id' => $this->product_id,
+            'brand_id' => $this->brand_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

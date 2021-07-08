@@ -5,16 +5,14 @@ namespace app\modules\api\v1\models\search;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\Model;
-use yii\data\{
-    ActiveDataFilter,
-    ActiveDataProvider
-};
-use app\models\Color;
+use yii\data\ActiveDataFilter;
+use yii\data\ActiveDataProvider;
+use app\models\Ads;
 
 /**
- * ColorSearch represents the model behind the search form of `app\models\Color`.
+ * AdsSearch represents the model behind the search form of `app\models\Ads`.
  */
-class ColorSearch extends Color
+class AdsSearch extends Ads
 {
     /**
      * @var $hiddenFields Array of hidden fields which not needed in APIs
@@ -27,8 +25,8 @@ class ColorSearch extends Color
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name', 'code', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'status'], 'integer'],
+            [['category_id', 'sub_category_id', 'product_id', 'brand_id', 'title', 'image', 'url', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -99,13 +97,13 @@ class ColorSearch extends Color
         /* ########## Active Data Filter End ######### */
 
         /* ########## Prepare Query With Default Filter Start ######### */
-        $query = self::find()->where(['status' => Color::STATUS_APPROVE]);
+        $query = self::find()->where(['status' => Ads::STATUS_ACTIVE]);
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['color.*',];
+            $select = ['ads.*'];
         }
 
         $query->select($select);
@@ -114,7 +112,7 @@ class ColorSearch extends Color
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->groupBy('color.id');
+        $query->groupBy('ads.id');
 
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
@@ -128,15 +126,16 @@ class ColorSearch extends Color
             ],
         ]);
 
-        $colorModelData = $activeDataProvider->getModels();
-        if (!empty($colorModelData)) {
-            foreach ($colorModelData as $key => $data) {
-                if (!empty($data) && $data instanceof Color) {
-                    $colorModelData[$key]['name'] = (!empty($data->name)) ? $data->name : "";
-                }
+        $adsModelData = $activeDataProvider->getModels();
+
+        foreach ($adsModelData as $key => $value) {
+            $adsImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($adsModelData[$key]['image']) && file_exists(Yii::getAlias('@adsImageThumbRelativePath') . '/' . $value->image)) {
+                $adsImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@adsImageThumbAbsolutePath') . '/' . $value->image;
             }
+            $adsModelData[$key]['image'] = $adsImage;
         }
-        $activeDataProvider->setModels($colorModelData);
+        $activeDataProvider->setModels($adsModelData);
         return $activeDataProvider;
     }
 }
