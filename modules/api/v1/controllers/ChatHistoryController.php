@@ -272,7 +272,7 @@ class ChatHistoryController extends ActiveController
             $getUsers[] = $model->toUser;
             if (!empty($getUsers)) {
                 foreach ($getUsers as $userROW) {
-                    if ($userROW instanceof User) {
+                    if ($userROW instanceof User && ($model->from_user_id != $userROW->id)) {
                         if ($userROW->is_new_message_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                             $userDevice = $userROW->userDevice;
 

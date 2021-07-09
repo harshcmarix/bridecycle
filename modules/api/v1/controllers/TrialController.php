@@ -151,7 +151,7 @@ class TrialController extends ActiveController
                 $getUsers[] = $model->receiver;
                 if (!empty($getUsers)) {
                     foreach ($getUsers as $userROW) {
-                        if ($userROW instanceof User) {
+                        if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
                             if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                 $userDevice = $userROW->userDevice;
 
@@ -250,7 +250,7 @@ class TrialController extends ActiveController
 
                 if (!empty($getUsers) && !empty($notificationText)) {
                     foreach ($getUsers as $userROW) {
-                        if ($userROW instanceof User) {
+                        if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id))  {
                             if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                 $userDevice = $userROW->userDevice;
 

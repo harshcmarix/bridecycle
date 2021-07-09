@@ -5,6 +5,8 @@ namespace app\modules\api\v1\controllers;
 use Yii;
 use app\models\FavouriteProduct;
 use app\modules\api\v1\models\search\FavouriteProductSearch;
+use yii\base\BaseObject;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
@@ -21,7 +23,7 @@ use yii\filters\Cors;
  */
 class FavouriteProductController extends ActiveController
 {
-   /**
+    /**
      * @var string
      */
     public $modelClass = 'app\models\FavouriteProduct';
@@ -31,7 +33,7 @@ class FavouriteProductController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v1\models\search\FavouriteProductSearch';
 
-       /**
+    /**
      * @return array
      */
     protected function verbs()
@@ -39,12 +41,13 @@ class FavouriteProductController extends ActiveController
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
-            'create' =>['POST','OPTIONS'],
+            'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
         ];
     }
-     /**
+
+    /**
      * @return array
      */
     public function behaviors()
@@ -52,7 +55,7 @@ class FavouriteProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view','create','update','delete'],
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -76,10 +79,11 @@ class FavouriteProductController extends ActiveController
 
         return $behaviors;
     }
-     /**
+
+    /**
      * @return array
      */
-     public function actions()
+    public function actions()
     {
         $actions = parent::actions();
         unset($actions['index']);
@@ -103,7 +107,8 @@ class FavouriteProductController extends ActiveController
         }
         return $model->search($requestParams);
     }
-     /**
+
+    /**
      * Creates a new SearchHistory model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -114,10 +119,15 @@ class FavouriteProductController extends ActiveController
         $postData = Yii::$app->request->post();
         $favouriteProduct['FavouriteProduct'] = $postData;
         $favouriteProduct['FavouriteProduct']['user_id'] = Yii::$app->user->identity->id;
+
+        $modelFavourite = FavouriteProduct::find()->where(['product_id' => $favouriteProduct['FavouriteProduct']['product_id'], 'user_id' => Yii::$app->user->identity->id])->one();
+        if (!empty($modelFavourite)) {
+            throw new BadRequestHttpException('This product has been already favourited!');
+        }
         if ($model->load($favouriteProduct) && $model->validate()) {
             $model->save();
         }
 
-       return $model;
+        return $model;
     }
 }

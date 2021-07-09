@@ -15,10 +15,11 @@ use Yii;
  */
 class ProductRatingSearch extends ProductRating
 {
-     /**
+    /**
      * @var $hiddenFields Array of hidden fields which not needed in APIs
      */
     protected $hiddenFields = [];
+
     /**
      * {@inheritdoc}
      */
@@ -47,9 +48,9 @@ class ProductRatingSearch extends ProductRating
      *
      * @return ActiveDataProvider
      */
-     public function search($requestParams)
+    public function search($requestParams)
     {
-      
+
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
             foreach ($requestParams['filter'] as $key => $val) {
@@ -104,7 +105,7 @@ class ProductRatingSearch extends ProductRating
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id','user_id','product_id','rating','review','created_at'];
+            $select = ['id', 'user_id', 'product_id', 'rating', 'review', 'created_at'];
         }
 
         $query->select($select);
@@ -113,8 +114,12 @@ class ProductRatingSearch extends ProductRating
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
+        if (!empty($requestParams['product_id'])) {
+            $query->andWhere(['product_id' => $requestParams['product_id']]);
+        }
+        $query->orderBy(['id' => SORT_DESC]);
         $query->groupBy('product_ratings.id');
-        
+
         return Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,

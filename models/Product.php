@@ -382,6 +382,16 @@ class Product extends \yii\db\ActiveRecord
         return $this->hasMany(ProductReceipt::className(), ['product_id' => 'id']);
     }
 
+    /**
+     * Gets query for [[ProductShippingCost]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShippingCost()
+    {
+        return $this->hasMany(ShippingCost::className(), ['product_id' => 'id']);
+    }
+
     ///////////////////////For api use only /////////////////////////////////////////////
 
     /**

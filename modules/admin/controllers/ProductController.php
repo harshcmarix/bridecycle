@@ -8,6 +8,7 @@ use app\models\ProductCategory;
 use app\models\ProductImage;
 use app\models\ProductStatus;
 use app\models\search\ProductSearch;
+use app\models\ShippingCost;
 use Yii;
 use app\models\Product;
 use yii\base\BaseObject;
@@ -104,6 +105,8 @@ class ProductController extends Controller
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
         $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
+        $shippingPrice = $model->shippingCost;
 
         $postData = Yii::$app->request->post('Product');
 
@@ -177,7 +180,9 @@ class ProductController extends Controller
             'subcategory' => $subcategory,
             'brand' => $brand,
             'color' => $color,
-            'status' => $status
+            'status' => $status,
+            'shippingCountry' => $shippingCountry,
+            'shippingPrice' => $shippingPrice
         ]);
     }
 
@@ -193,6 +198,9 @@ class ProductController extends Controller
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
         $model->receipt = $model->productReceipt;
+
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
+        $shippingPrice = $model->shippingCost;
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $model->category_id])->all(), 'id', 'name');;
@@ -294,7 +302,9 @@ class ProductController extends Controller
             'subcategory' => $subcategory,
             'brand' => $brand,
             'color' => $color,
-            'status' => $status
+            'status' => $status,
+            'shippingCountry' => $shippingCountry,
+            'shippingPrice' => $shippingPrice
         ]);
     }
 

@@ -410,7 +410,7 @@ class CartItemController extends ActiveController
                                 $getUsers[] = $orderItemRow->product->user;
                                 if (!empty($getUsers)) {
                                     foreach ($getUsers as $userROW) {
-                                        if ($userROW instanceof User) {
+                                        if ($userROW instanceof User && ($user_id != $userROW->id)) {
                                             if ($userROW->is_order_placed_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                                 $userDevice = $userROW->userDevice;
 

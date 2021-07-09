@@ -340,7 +340,7 @@ class ProductController extends ActiveController
 
                             if (!empty($getUsers)) {
                                 foreach ($getUsers as $keys => $userROW) {
-                                    if ($userROW instanceof User) {
+                                    if ($userROW instanceof User && ($model->user_id != $userROW->id)) {
                                         if ($userROW->is_saved_searches_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                             $userDevice = $userROW->userDevice;
 
@@ -375,8 +375,6 @@ class ProductController extends ActiveController
                                                     ]);
                                                 $response = Yii::$app->fcm->send($message);
                                             }
-
-
                                         }
 
                                         if ($userROW->is_saved_searches_email_notification_on == User::IS_NOTIFICATION_ON) {

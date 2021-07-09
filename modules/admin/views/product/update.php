@@ -19,7 +19,9 @@ $this->params['breadcrumbs'][] = 'Update Product';
         'subcategory' => $subcategory,
         'brand' => $brand,
         'color' => $color,
-        'status' => $status
+        'status' => $status,
+        'shippingCountry' => $shippingCountry,
+        'shippingPrice' => $shippingPrice
     ]) ?>
 
 </div>

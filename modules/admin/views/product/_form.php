@@ -100,8 +100,42 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-12">
                     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
                 </div>
+                <div class="col col-md-12">
+                    <?= $form->field($model, 'other_info')->textarea(['rows' => 3]) ?>
+                </div>
             </div>
             <!-- image validation -->
+
+            <div class="row">
+                <div class="col col-md-4">
+                    <lable><strong>Shipping Country</strong></lable>
+                    <?= $form->field($model, 'shipping_country_id[]')->checkboxList($shippingCountry, [
+
+                        'item' => function ($index, $label, $name, $checked, $value) {
+                            $checked = 'checked';
+                            $key = $index + 1;
+                            echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' type='checkbox' {$checked} name='{$name}' value='{$value}'> {$label}</label></div>";
+
+                        }])->label(false) ?>
+                </div>
+
+                <div class="col col-md-4">
+                    <label>Shipping Cost</label>
+                    <?php
+                    if (Yii::$app->controller->action->id == 'create') {
+                        $shippingPrice = $shippingCountry;
+                    }
+                    ?>
+                    <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
+                        <?= $form->field($model, 'shipping_country_price[]')->textInput(['value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key] : "",
+                            'class' => 'shipping_country_' . $key,
+
+                        ])->label(false) ?>
+                    <?php } ?>
+
+                </div>
+
+            </div>
 
             <div class="row">
                 <div class="col col-md-<?php echo (Yii::$app->controller->action->id == 'update') ? '4' : '8' ?>">
@@ -171,7 +205,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?= $form->field($model, 'option_size')->textInput(['maxlength' => true]) ?>
                 </div>
                 <div class="col col-md-4">
-                    <?= $form->field($model, 'option_price')->textInput() ?>
+                    <?= $form->field($model, 'option_price')->textInput()->label('Tax') ?>
                 </div>
                 <div class="col col-md-4">
                     <?= $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) ?>
@@ -268,6 +302,13 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
 <script type="text/javascript">
     $(document).ready(function () {
+
+        $('#product-option_price, #product-price').keypress(function (event) {
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+
         $('#product-category_id').change(function () {
             var categoryId = $(this).val();
             $.ajax({

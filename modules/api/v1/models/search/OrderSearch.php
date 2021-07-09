@@ -110,6 +110,10 @@ class OrderSearch extends Order
         if (!empty($filter)) {
             $query->andWhere($filter);
         }
+
+        if (!empty($requestParams['user_id'])) {
+            $query->andWhere(['user_id' => $requestParams['user_id']]);
+        }
         /* ########## Prepare Query With Default Filter End ######### */
 
         $query->groupBy('orders.id');

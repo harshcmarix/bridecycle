@@ -111,6 +111,7 @@ class ProductRatingController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
+        //p($requestParams);
         return $model->search($requestParams);
     }
 
@@ -195,7 +196,7 @@ class ProductRatingController extends ActiveController
 
             if (!empty($getUsers)) {
                 foreach ($getUsers as $keys => $userROW) {
-                    if ($userROW instanceof User) {
+                    if ($userROW instanceof User && ($model->user_id != $userROW->id)) {
                         if ($userROW->is_new_message_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                             $userDevice = $userROW->userDevice;
 
