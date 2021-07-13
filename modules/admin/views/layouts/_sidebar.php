@@ -50,12 +50,12 @@ use app\modules\admin\models\DailyReportType;
             ['label' => 'Sales', 'icon' => 'fas fa-angle-right', 'url' => ['report/sales', 'p' => 'w'], 'visible' => $visible],
             ['label' => "Customers", 'icon' => 'fas fa-angle-right', 'url' => ['report/customers', 'p' => 'w'], 'visible' => $visible],
         ],];
+        $menuList[] = ['label' => 'Dress Type', 'icon' => 'snowflake-o', 'url' => ['dress-type/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Tailor', 'icon' => 'cut', 'url' => ['tailor/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Color', 'icon' => 'paint-brush', 'url' => ['color/index'], 'visible' => $visible];
-
-
+        
         ?>
         <!-- Sidebar menu start -->
         <?php
