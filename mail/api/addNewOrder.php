@@ -7,7 +7,6 @@ use yii\helpers\Html;
 /* @var $body  string the review */
 ?>
 
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
