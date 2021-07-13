@@ -126,7 +126,11 @@ class ProductSearch extends Product
         /* ########## Active Data Filter End ######### */
 
         /* ########## Prepare Query With Default Filter Start ######### */
-        $query = self::find()->where(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);
+        $query = self::find();
+        if (empty($requestParams['user_id']) && empty($requestParams['is_from_sell_screen']) || $requestParams['is_from_sell_screen'] == 0) {
+            $query->where(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);
+        }
+
 
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1) {
             $query->joinWith('category AS category');
@@ -296,7 +300,7 @@ class ProductSearch extends Product
             if (!empty($data)) {
                 foreach ($data as $dataRow) {
                     if (!empty($dataRow) && $dataRow instanceof SearchHistory) {
-                        $query->orFilterWhere([
+                        $query->andFilterWhere([
                             'or',
                             ['like', 'products.name', $dataRow->search_text],
                             ['like', 'category.name', $dataRow->search_text],

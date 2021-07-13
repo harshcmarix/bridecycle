@@ -30,6 +30,9 @@ return [
         'option_key' => 'km_range'
     ],
 
+    //'mail_image_base_path' => Yii::$app->request->baseUrl . '/web',
+    'mail_image_base_path' => 'http://203.109.113.157/bridecycle/web',
+
     // Recent time for general uses in system
     'recent_time' => '1 week',
 

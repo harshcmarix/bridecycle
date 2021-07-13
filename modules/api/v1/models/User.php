@@ -51,6 +51,7 @@ use Yii;
  * @property string|null $verification_code
  * @property string|null $facebook_id
  * @property string|null $apple_id
+ * @property string|null $google_id
  * @property string|null $latitude
  * @property string|null $longitude
  *
@@ -144,6 +145,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     const IS_LOGIN_FROM_FACEBOOK = "facebook";
     const IS_LOGIN_FROM_APPLE = "apple";
+    const IS_LOGIN_FROM_GOOGLE = "google";
 
     /**
      * @return string
@@ -173,11 +175,11 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
-            [['first_name', 'last_name'], 'required', 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]],
+            [['first_name'], 'required', 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]], // 'last_name'
             [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
             [['top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size', 'height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
-            [['facebook_id', 'apple_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
+            [['facebook_id', 'apple_id', 'google_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
             //[['mobile', 'shop_phone_number'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],

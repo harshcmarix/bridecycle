@@ -314,13 +314,13 @@ class ChatHistoryController extends ActiveController
                         if ($userROW->is_new_message_email_notification_on == User::IS_NOTIFICATION_ON) {
                             $message = $model->fromUser->first_name . " " . $model->fromUser->last_name . " Send new message\n" . $model->message;
 
-                            if (!empty($userROW->email)) {
-                                Yii::$app->mailer->compose('api/addSendNewMessage', ['sender' => $model->fromUser, 'receiver' => $userROW, 'message' => $message])
-                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                    ->setTo($userROW->email)
-                                    ->setSubject('Send new message')
-                                    ->send();
-                            }
+//                            if (!empty($userROW->email)) {
+//                                Yii::$app->mailer->compose('api/addSendNewMessage', ['sender' => $model->fromUser, 'receiver' => $userROW, 'message' => $message])
+//                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+//                                    ->setTo($userROW->email)
+//                                    ->setSubject('Send new message')
+//                                    ->send();
+//                            }
 
 
                         }

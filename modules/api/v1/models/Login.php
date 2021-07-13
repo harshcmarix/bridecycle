@@ -81,20 +81,24 @@ class Login extends Model
                 $modelDevice = UserDevice::find()->where(['notification_token' => Yii::$app->request->post('notification_token'), 'device_platform' => Yii::$app->request->post('device_platform'), 'user_id' => $this->_user->id])->one();
                 if (empty($modelDevice)) {
                     $accessToken = $this->_user->generateAccessToken();
-                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+                    //$accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + (3600 * 24 * 365));
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 } else {
                     $accessToken = $this->_user->access_token;
                     $accessTokenExpiredAt = $this->_user->access_token_expired_at;
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 }
-                
+
 //                $accessToken = $this->_user->generateAccessToken();
 //                $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
 //                $this->_user->access_token_expired_at = $accessTokenExpiredAt;
 
                 $this->_user->save();
-                Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
+                Yii::$app->user->login($this->_user, 3600 * 24 * 365);
+                //Yii::$app->user->login($this->_user, 60 * 60 * 24 * 365);
+
+                //Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
 
                 $this->access_token = $accessToken;
                 $this->access_token_expired_at = $accessTokenExpiredAt;
@@ -111,7 +115,8 @@ class Login extends Model
                 $modelDevice = UserDevice::find()->where(['notification_token' => Yii::$app->request->post('notification_token'), 'device_platform' => Yii::$app->request->post('device_platform'), 'user_id' => $this->_user->id])->one();
                 if (empty($modelDevice)) {
                     $accessToken = $this->_user->generateAccessToken();
-                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+                    //$accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + (3600 * 24 * 365));
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 } else {
                     $accessToken = $this->_user->access_token;
@@ -120,7 +125,8 @@ class Login extends Model
                 }
 
                 $this->_user->save();
-                Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
+                //Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
+                Yii::$app->user->login($this->_user, 3600 * 24 * 365);
 
                 $this->access_token = $accessToken;
                 $this->access_token_expired_at = $accessTokenExpiredAt;
@@ -146,6 +152,8 @@ class Login extends Model
             $this->_user = User::find()->where(['facebook_id' => Yii::$app->request->post('facebook_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
         } elseif ($this->_user === false && !empty($loginFrom) && $loginFrom == 'apple') {
             $this->_user = User::find()->where(['apple_id' => Yii::$app->request->post('apple_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
+        }elseif ($this->_user === false && !empty($loginFrom) && $loginFrom == 'google') {
+            $this->_user = User::find()->where(['google_id' => Yii::$app->request->post('google_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
         }
         return $this->_user;
     }

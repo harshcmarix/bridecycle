@@ -18,6 +18,7 @@ class SearchHistorySearch extends SearchHistory
      * @var $hiddenFields Array of hidden fields which not needed in APIs
      */
     protected $hiddenFields = [];
+
     /**
      * {@inheritdoc}
      */
@@ -47,7 +48,7 @@ class SearchHistorySearch extends SearchHistory
      */
     public function search($requestParams)
     {
-      
+
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
             foreach ($requestParams['filter'] as $key => $val) {
@@ -109,22 +110,15 @@ class SearchHistorySearch extends SearchHistory
         if (!empty($filter)) {
             $query->andWhere($filter);
         }
+
+
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->groupBy('search_histories.id');
+        if (!empty($requestParams['user_id'])) {
+            $query->andWhere(['search_histories.user_id' => $requestParams['user_id']]);
+        }
 
-
-//        return Yii::createObject([
-//            'class' => ActiveDataProvider::class,
-//            'query' => $query,
-//            'pagination' => [
-//                'params' => $requestParams,
-//                'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : Yii::$app->params['default_page_size'], //set page size here
-//            ],
-//            'sort' => [
-//                'params' => $requestParams,
-//            ],
-//        ]);
+        $query->groupBy('search_histories.search_text', 'search_histories.id');
 
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,

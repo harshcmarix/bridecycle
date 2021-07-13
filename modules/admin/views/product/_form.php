@@ -107,14 +107,21 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <!-- image validation -->
 
             <div class="row">
+
                 <div class="col col-md-4">
                     <lable><strong>Shipping Country</strong></lable>
-                    <?= $form->field($model, 'shipping_country_id[]')->checkboxList($shippingCountry, [
+                    <?php
+                    echo $form->field($model, 'shipping_country[]')->checkboxList($shippingCountry, [
 
                         'item' => function ($index, $label, $name, $checked, $value) {
-                            $checked = 'checked';
+
+                            if (Yii::$app->controller->action->id == 'create') {
+                                $checked = "checked";
+                            } else {
+                                $checked = "";
+                            }
                             $key = $index + 1;
-                            echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' type='checkbox' {$checked} name='{$name}' value='{$value}'> {$label}</label></div>";
+                            echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='{$index}'> {$label}</label></div>";
 
                         }])->label(false) ?>
                 </div>
@@ -127,12 +134,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     }
                     ?>
                     <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
-                        <?= $form->field($model, 'shipping_country_price[]')->textInput(['value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key] : "",
-                            'class' => 'shipping_country_' . $key,
+                        <?php $pKey = $key + 1; ?>
+                        <?php echo $form->field($model, 'shipping_country_price[]')->textInput(['value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
+                            'class' => 'shipping_country_cost_' . $pKey,
 
                         ])->label(false) ?>
                     <?php } ?>
-
                 </div>
 
             </div>
@@ -285,6 +292,71 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ])->label('Product Type'); ?>
                 </div>
+
+                <div class="col col-md-6 receiptUpload"
+                     style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
+                    <?php
+                    $is_product_receipt_images_empty = Product::IMAGE_EMPTY;
+                    if (Yii::$app->controller->action->id == 'update') {
+                        if (!empty($model->productReceipt)) {
+                            $is_product_receipt_images_empty = Product::IMAGE_NOT_EMPTY;
+                        }
+                    }
+                    ?>
+                    <?= $form->field($model, 'is_product_receipt_images_empty')->hiddenInput(['value' => $is_product_receipt_images_empty])->label(false) ?>
+
+                    <?= $form->field($model, 'receipt[]')->widget(FileInput::classname(), [
+                        'options' => ['accept' => 'image/*', 'id' => 'product-receipt', 'multiple' => true],
+                        'pluginOptions' => [
+                            'allowedFileExtensions' => ['jpg', 'png'],
+                            'showPreview' => true,
+                            //'showCaption' => true,
+                            //'showRemove' => true,
+                            'showUpload' => false,
+                            'maxFileCount' => 5,
+                        ]
+                    ]); ?>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <?php if ((Yii::$app->controller->action->id == 'update') && !empty($model->productReceipt)) {
+                    $data = "";
+                    foreach ($model->productReceipt as $imageRow) {
+
+                        if (!empty($imageRow) && $imageRow instanceof \app\models\ProductReceipt && !empty($imageRow->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . '/' . $imageRow->file)) {
+                            $image_path = Yii::getAlias('@productReceiptImageThumbAbsolutePath') . '/' . $imageRow->file;
+                        } else {
+                            $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        }
+
+
+                        Modal::begin([
+                            'id' => 'contentmodalProductImgReceiptEdit_' . $imageRow->id,
+                            'header' => '<h4>Receipt Picture</h4>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
+
+                        echo Html::img($image_path, ['width' => '570']);
+
+                        Modal::end();
+                        // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
+                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_Receipt_picture' onclick='contentmodelProductImgReceiptEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-receipt-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_receipt_img', 'height' => '100px', 'width' => '100px']);
+
+                    }
+                    echo $data;
+
+                    echo \kartik\dialog\Dialog::widget([
+                        'libName' => 'krajeeDialog',
+                        'options' => [
+                            //'class' => 'admin_delete_record',
+                            //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
+                        ], // default options
+                    ]);
+
+                } ?>
             </div>
 
 
@@ -303,11 +375,24 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $('#product-option_price, #product-price').keypress(function (event) {
+        $('#product-option_price, #product-price, .shipping_country_cost_1, .shipping_country_cost_2, .shipping_country_cost_3, .shipping_country_cost_4, .shipping_country_cost_5').keypress(function (event) {
             if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
                 event.preventDefault();
             }
         });
+
+        "<?php if(Yii::$app->controller->action->id == 'update'){ ?>"
+        "<?php if(!empty($shippingPrice)){ ?>"
+        "<?php foreach($shippingPrice as $key=>$list){ ?>"
+        "<?php if(!empty($list) && $list instanceof \app\models\ShippingPrice){ ?>"
+        "<?php if(!empty($list->id)  ){ ?>"
+        var Id = "<?php echo $key + 1 ?>";
+        $('.shipping_country_' + Id).prop("checked", true);
+        "<?php } ?>"
+        "<?php } ?>"
+        "<?php } ?>"
+        "<?php } ?>"
+        "<?php } ?>"
 
         $('#product-category_id').change(function () {
             var categoryId = $(this).val();
@@ -322,9 +407,52 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 }
             })
         });
+
+        $('#product-is_cleaned').change(function () {
+            var valueData = $(this).val();
+            if (valueData == 1) {
+                $('.receiptUpload').show();
+            } else {
+                $('.receiptUpload').hide();
+            }
+
+        });
+
     });
+
 
     function contentmodelProductImgEdit(id) {
         $('#contentmodalProductImgEdit_' + id).modal('show');
+    }
+
+    function contentmodelProductImgReceiptEdit(id) {
+        $('#contentmodalProductImgReceiptEdit_' + id).modal('show');
+    }
+
+    function shippingCost(obj) {
+        var idIndex = $(obj).attr('tabindex');
+        idIndex = parseInt(idIndex) + 1;
+        var errDiv = $('.shipping_country_cost_' + idIndex).parent('.field-product-shipping_country_price').children('.help-block');
+        if ($(obj).prop("checked") == true) {
+            var html = '';
+            "<?php if (Yii::$app->controller->action->id == 'update')  { ?>"
+            html += '<div class="form-group field-product-shipping_country_price">';
+            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_"' + idIndex + ' name="Product[shipping_country_price][]" value="">';
+            html += '<div class="help-block"></div></div>';
+            $('.field-product-shipping_country_price').last().append(html);
+            "<?php }else{ ?>"
+            $('.shipping_country_cost_' + idIndex).show();
+            errDiv.show();
+            "<?php } ?>"
+        } else if ($(obj).prop("checked") == false) {
+            "<?php if (Yii::$app->controller->action->id == 'update')  { ?>"
+            $('.field-product-shipping_country_price').last().remove();
+            "<?php }else{ ?>"
+            $('.shipping_country_cost_' + idIndex).hide();
+            $('.shipping_country_cost_' + idIndex).val('');
+            errDiv.html("");
+            errDiv.hide();
+            "<?php } ?>"
+        }
     }
 </script>

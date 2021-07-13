@@ -30,6 +30,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
         <?php
         $gridColumns = [
+            ['class' => 'yii\grid\CheckboxColumn'],
             ['class' => 'kartik\grid\SerialColumn'],
             [
                 'attribute' => 'name',
@@ -179,7 +180,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return (!empty($model) && !empty($model->available_quantity)) ? $model->available_quantity : "-";
                 },
                 'header' => '',
-                'width'=>'5%',
+                'width' => '5%',
                 'headerOptions' => ['class' => 'kartik-sheet-style']
             ],
             [
@@ -306,6 +307,16 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
+                [
+                    'content' =>
+                        Html::button('<i class="fa fa-refresh"> Multiple Delete </i>', [
+                            'class' => 'btn btn-danger',
+                            'title' => 'Multiple Delete',
+                            'id' => "btn-delete_all",
+                            //'onclick' => "window.location.href = '" . Url::to(['product/index']) . "';",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],
@@ -329,6 +340,42 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     </div>
 </div>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $('#btn-delete_all').click(function () {
+            var atLeastOneIsChecked = $('input[name="selection[]"]:checked').length > 0;
+            if (atLeastOneIsChecked == true) {
+                krajeeDialog.confirm('Are you sure you want to delete this Products?', function (out) {
+                    if (out) {
+                        var ids = [];
+                        $('input[name="selection[]"]:checked').each(function (index, obj) {
+                            ids.push(obj.value);
+                        });
+
+                        $.ajax({
+                            type: 'POST',
+                            url: "<?php echo Url::to(['product/delete-multiple']); ?>",
+                            data: {
+                                'ids': ids,
+                                _csrf: yii.getCsrfToken()
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.success) {
+                                    location.reload(true);
+                                    //$(this).closest('tr').remove(); //or whatever html you use for displaying rows
+                                }
+                            }
+                        });
+                    } else {
+                        location.reload(true);
+                    }
+                });
+            } else {
+                krajeeDialog.alert("Please select atleast one product to perform this action");
+            }
+        });
+    });
+
     $(document).on('change', '#productsearch-category_id', function () {
         var categoryId = $(this).val();
         $.ajax({

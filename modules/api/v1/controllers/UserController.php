@@ -175,6 +175,13 @@ class UserController extends ActiveController
             $model->apple_id = $postData['apple_id'];
         }
 
+        if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_GOOGLE) {
+            if (empty($postData) || empty($postData['google_id'])) {
+                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "google_id"');
+            }
+            $model->google_id = $postData['google_id'];
+        }
+
         $model->profile_picture = UploadedFile::getInstanceByName('profile_picture');
         $model->shop_logo = UploadedFile::getInstanceByName('shop_logo');
         $model->shop_cover_picture = UploadedFile::getInstanceByName('shop_cover_picture');
@@ -546,6 +553,22 @@ class UserController extends ActiveController
                 throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "apple_id"');
             }
             $modelPostData = User::find()->where(['apple_id' => $postData['apple_id']])->one();
+            //p($modelPostData);
+            if (!empty($modelPostData) && $modelPostData instanceof User) {
+                $data['Login']['email'] = $modelPostData->email;
+                //$data['Login']['password'] = $modelPostData->email;
+                $model->email = $modelPostData->email;
+                // $model->password = $modelPostData->password_hash;
+            } else {
+                throw new NotFoundHttpException('User doesn\'t exist.');
+            }
+        }
+
+        if (!empty($postData) && !empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_GOOGLE) {
+            if (empty($postData) || empty($postData['google_id'])) {
+                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "google_id"');
+            }
+            $modelPostData = User::find()->where(['google_id' => $postData['google_id']])->one();
             //p($modelPostData);
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;

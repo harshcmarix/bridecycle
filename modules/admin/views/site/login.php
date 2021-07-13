@@ -47,8 +47,6 @@ $fieldOptions2 = [
 
         <?php //echo $form->field($model, 'rememberMe')->checkbox(['template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",]) ?>
 
-
-
         <div class="row">
             <div class="col-xs-4">
                 <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
@@ -57,10 +55,10 @@ $fieldOptions2 = [
                 <div class="col-lg-offset-1" style="color:#999;">
                     <!-- You may login with <strong>admin/admin</strong> or <strong>demo/demo</strong>.<br>
                     To modify the username/password, please check out the code <code>app\models\User::$users</code>. -->
-                    <div>
-                        If you forgot your password you
-                        can <?= Html::a('reset it', Url::to(['site/forgot-password'])) ?>.
-                    </div>
+<!--                    <div>-->
+<!--                        If you forgot your password you-->
+<!--                        can --><?php //echo Html::a('reset it', Url::to(['site/forgot-password'])) ?><!--.-->
+<!--                    </div>-->
                 </div>
             </div>
 

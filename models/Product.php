@@ -68,6 +68,7 @@ class Product extends \yii\db\ActiveRecord
 
     public $receipt;
     public $is_profile_address;
+    public $is_product_receipt_images_empty;
 
     /**
      * {@inheritdoc}
@@ -92,6 +93,7 @@ class Product extends \yii\db\ActiveRecord
 
     public $images;
     public $shipping_country_id;
+    public $shipping_country;
     public $shipping_country_price;
 
     const IS_TOP_SELLING_YES = '1';
@@ -162,7 +164,7 @@ class Product extends \yii\db\ActiveRecord
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
             [['is_receipt', 'is_admin_favourite'], 'safe'],
-            [['images'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             //[['option_color'], 'string', 'max' => 255],
             [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
@@ -186,7 +188,7 @@ class Product extends \yii\db\ActiveRecord
                 return $model->is_cleaned == '1';
             },
                 'whenClient' => "function (attribute, value) {
-                    if ($('#product-is_cleaned').val() == 1) {            
+                    if ($('#product-is_cleaned').val() == 1 && $('#product-is_product_receipt_images_empty').val() ==1) {            
                                     return $('#product-receipt').val() == '';                                    
                                     }
                                 }",],
@@ -389,7 +391,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getShippingCost()
     {
-        return $this->hasMany(ShippingCost::className(), ['product_id' => 'id']);
+        return $this->hasMany(ShippingPrice::className(), ['product_id' => 'id']);
     }
 
     ///////////////////////For api use only /////////////////////////////////////////////

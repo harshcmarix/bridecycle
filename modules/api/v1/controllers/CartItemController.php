@@ -450,13 +450,13 @@ class CartItemController extends ActiveController
                                             if ($userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
                                                 $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
 
-                                                if (!empty($userROW->email)) {
-                                                    Yii::$app->mailer->compose('api/addNewOrder', ['sender' => $modelOrder->user, 'receiver' => $userROW, 'message' => $message])
-                                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                                        ->setTo($userROW->email)
-                                                        ->setSubject('Place a new order of your product')
-                                                        ->send();
-                                                }
+//                                                if (!empty($userROW->email)) {
+//                                                    Yii::$app->mailer->compose('api/addNewOrder', ['sender' => $modelOrder->user, 'receiver' => $userROW, 'message' => $message])
+//                                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+//                                                        ->setTo($userROW->email)
+//                                                        ->setSubject('Place a new order of your product')
+//                                                        ->send();
+//                                                }
 
 
                                             }
