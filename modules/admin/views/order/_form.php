@@ -12,17 +12,17 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?= $form->field($model, 'user_id')->textInput(['readonly' => true]) ?>
 
-    <?= $form->field($model, 'user_address_id')->textInput() ?>
+    <?= $form->field($model, 'user_address_id')->textInput(['readonly' => true]) ?>
 
-    <?= $form->field($model, 'total_amount')->textInput() ?>
+    <?= $form->field($model, 'total_amount')->textInput(['readonly' => true]) ?>
 
-    <?= $form->field($model, 'status')->dropDownList([ 1 => '1', 2 => '2', 3 => '3', 4 => '4', ], ['prompt' => '']) ?>
+    <?= $form->field($model, 'status')->dropDownList([ 1 => 'pending', 2 => 'in progress', 3 => 'completed', 4 => 'cancelled', ], ['prompt' => '']) ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
+    <?= $form->field($model, 'created_at')->textInput(['readonly' => true]) ?>
 
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?= $form->field($model, 'updated_at')->textInput(['readonly' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
