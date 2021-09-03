@@ -39,6 +39,7 @@ class ResetPassword extends User
         return [
             [['tmp_password', 'password', 'confirm_password'], 'required'],
             ['tmp_password', 'validateTmpPassword'],
+            [['password', 'confirm_password'], 'string','min'=> 6],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"]
         ];
     }
@@ -84,6 +85,7 @@ class ResetPassword extends User
     {
         // return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password])->one();
         return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password, 'user_type' => User::USER_TYPE_NORMAL])->one();
+        //return $this->_user = User::find()->where(['temporary_password' => $this->tmp_password])->one();
     }
 
     /**

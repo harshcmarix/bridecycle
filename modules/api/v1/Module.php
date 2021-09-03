@@ -14,7 +14,7 @@ class Module extends \yii\base\Module
     public $controllerNamespace = 'app\modules\api\v1\controllers';
 
     /**
-     * {@inheritdoc}
+     * @throws \yii\base\InvalidConfigException
      */
     public function init()
     {

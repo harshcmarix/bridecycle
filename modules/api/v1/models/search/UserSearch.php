@@ -24,9 +24,16 @@ class UserSearch extends User
      */
     public function rules()
     {
+        // return [
+        //     [['id', 'mobile', 'shop_phone_number'], 'integer'],
+        //     [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'personal_information', 'user_type', 'is_shop_owner', 'shop_name', 'shop_email', 'created_at', 'updated_at'], 'safe'],
+        //     [['weight', 'height'], 'number'],
+        // ];
+
         return [
-            [['id', 'mobile', 'shop_phone_number'], 'integer'],
-            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'user_type', 'is_shop_owner', 'shop_name', 'shop_email', 'created_at', 'updated_at'], 'safe'],
+            [['id'], 'integer'],
+            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'mobile', 'personal_information', 'user_type', 'is_shop_owner', 'shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website', 'shop_address', 'is_newsletter_subscription', 'created_at', 'updated_at'], 'safe'],
+            [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
         ];
     }
 
@@ -94,12 +101,15 @@ class UserSearch extends User
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id', 'email', 'first_name', 'last_name', 'mobile', 'user_type', 'is_shop_owner'];
+            //$select = ['id', 'email', 'first_name', 'last_name', 'mobile', 'user_type', 'is_shop_owner','profile_picture',];
+            $select = ['users.*',];
+
         }
 
         $query->select($select);
@@ -109,8 +119,8 @@ class UserSearch extends User
         /* ########## Prepare Query With Default Filter End ######### */
 
         $query->groupBy('users.id');
-        //p($query->createCommand()->getRawSql());
-        return Yii::createObject([
+
+        $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
             'pagination' => [
@@ -121,5 +131,25 @@ class UserSearch extends User
                 'params' => $requestParams,
             ],
         ]);
+        $userModelData = $activeDataProvider->getModels();
+
+        foreach ($userModelData as $key => $value) {
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($userModelData[$key]['profile_picture']) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $value->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture;
+            }
+            $userModelData[$key]['profile_picture'] = $profilePicture;
+
+            $userModelData[$key]['height'] = (string)$value->height;
+            $userModelData[$key]['top_size'] = (string)$value->top_size;
+            $userModelData[$key]['pant_size'] = (string)$value->pant_size;
+            $userModelData[$key]['bust_size'] = (string)$value->bust_size;
+            $userModelData[$key]['waist_size'] = (string)$value->waist_size;
+            $userModelData[$key]['hip_size'] = (string)$value->hip_size;
+
+        }
+        $activeDataProvider->setModels($userModelData);
+
+        return $activeDataProvider;
     }
 }

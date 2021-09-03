@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v1\models;
 
+use app\models\UserDevice;
 use Yii;
 use yii\base\Model;
 
@@ -18,13 +19,16 @@ class Login extends Model
     public $token_type;
     private $_user = false;
 
+    const SCENARIO_LOGIN_FROM_APP = 'login_from_app';
+
+
     /**
      * @return array the validation rules.
      */
     public function rules()
     {
         return [
-            [['email', 'password'], 'required'],
+            [['email', 'password'], 'required', 'on' => self::SCENARIO_LOGIN_FROM_APP],
             [['access_token_expired_at', 'token_type'], 'safe'],
             [['access_token'], 'string', 'max' => 255],
             // password is validated by validatePassword()
@@ -58,7 +62,7 @@ class Login extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Incorrect email or password.');
             }
         }
     }
@@ -69,32 +73,87 @@ class Login extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
-            if ($this->getUser()) {
-                $accessToken = $this->_user->generateAccessToken();
-                $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
-                $this->_user->access_token_expired_at = $accessTokenExpiredAt;
+
+        if (!empty(Yii::$app->request->post('is_login_from'))) {
+            $loginFrom = Yii::$app->request->post('is_login_from');
+            if ($this->getUser($loginFrom)) {
+
+                $modelDevice = UserDevice::find()->where(['notification_token' => Yii::$app->request->post('notification_token'), 'device_platform' => Yii::$app->request->post('device_platform'), 'user_id' => $this->_user->id])->one();
+                if (empty($modelDevice)) {
+                    $accessToken = $this->_user->generateAccessToken();
+                    //$accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + (3600 * 24 * 365));
+                    $this->_user->access_token_expired_at = $accessTokenExpiredAt;
+                } else {
+                    $accessToken = $this->_user->access_token;
+                    $accessTokenExpiredAt = $this->_user->access_token_expired_at;
+                    $this->_user->access_token_expired_at = $accessTokenExpiredAt;
+                }
+
+//                $accessToken = $this->_user->generateAccessToken();
+//                $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+//                $this->_user->access_token_expired_at = $accessTokenExpiredAt;
+
                 $this->_user->save();
-                Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
+                Yii::$app->user->login($this->_user, 3600 * 24 * 365);
+                //Yii::$app->user->login($this->_user, 60 * 60 * 24 * 365);
+
+                //Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
 
                 $this->access_token = $accessToken;
                 $this->access_token_expired_at = $accessTokenExpiredAt;
-                $this->token_type = Yii::$app->params['token_type'];
+                $this->token_type = ucfirst(Yii::$app->params['token_type']);
+
                 return true;
             }
+
+        } else if ($this->validate()) {
+            if ($this->getUser()) {
+                Yii::$app->request->post('notification_token');
+                Yii::$app->request->post('device_platform');
+
+                $modelDevice = UserDevice::find()->where(['notification_token' => Yii::$app->request->post('notification_token'), 'device_platform' => Yii::$app->request->post('device_platform'), 'user_id' => $this->_user->id])->one();
+                if (empty($modelDevice)) {
+                    $accessToken = $this->_user->generateAccessToken();
+                    //$accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
+                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + (3600 * 24 * 365));
+                    $this->_user->access_token_expired_at = $accessTokenExpiredAt;
+                } else {
+                    $accessToken = $this->_user->access_token;
+                    $accessTokenExpiredAt = $this->_user->access_token_expired_at;
+                    $this->_user->access_token_expired_at = $accessTokenExpiredAt;
+                }
+
+                $this->_user->save();
+                //Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
+                Yii::$app->user->login($this->_user, 3600 * 24 * 365);
+
+                $this->access_token = $accessToken;
+                $this->access_token_expired_at = $accessTokenExpiredAt;
+                $this->token_type = ucfirst(Yii::$app->params['token_type']);
+
+                return true;
+            }
+            //} else if (!empty(Yii::$app->request->post('is_login_from')) && (!empty(Yii::$app->request->post('facebook_id')) || !empty(Yii::$app->request->post('apple_id')))) {
         }
         return false;
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds user by [[email]]
      * @return User|null
      */
-    public function getUser()
+    public function getUser($loginFrom = null)
     {
-        if ($this->_user === false) {
+        if ($this->_user === false && empty($loginFrom)) {
             //$this->_user = User::findByEmail($this->email);
             $this->_user = User::find()->where(['email' => $this->email, 'user_type' => User::USER_TYPE_NORMAL])->one();
+        } elseif ($this->_user === false && !empty($loginFrom) && $loginFrom == 'facebook') {
+            $this->_user = User::find()->where(['facebook_id' => Yii::$app->request->post('facebook_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
+        } elseif ($this->_user === false && !empty($loginFrom) && $loginFrom == 'apple') {
+            $this->_user = User::find()->where(['apple_id' => Yii::$app->request->post('apple_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
+        }elseif ($this->_user === false && !empty($loginFrom) && $loginFrom == 'google') {
+            $this->_user = User::find()->where(['google_id' => Yii::$app->request->post('google_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
         }
         return $this->_user;
     }
