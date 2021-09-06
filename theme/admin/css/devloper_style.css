@@ -5,17 +5,17 @@
 
 
 .skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side {
-    background-color: #343a40 !important;
+    background-color: #1A1A1A !important;
 }
 
 
 .skin-blue .main-header .logo{
-    background-color: #17a2b8 !important;    
+    background-color: #8A9673 !important;    
 }
 
 
 .skin-blue .main-header .navbar{
-    background-color: #17a2b8 !important;
+    background-color: #8A9673 !important;
 }
 
 
@@ -25,9 +25,6 @@
 }
 
 
-#ads-grid-container .form-inline .form-control {
-    width: 100px;
-}
 
 
 #ads-grid-container .select2-container--krajee .select2-selection--single {
@@ -38,7 +35,127 @@
       color: red !important;
 }
 
-
 .glyphicon-eye-open{
-    color: #00a65a;
+    color: #3b70f7;
+}
+
+.glyphicon-pencil{
+    margin: 0 5px;
+}
+
+
+.table-bordered>thead>tr>th, .table-bordered>thead>tr>td {
+    text-align: center;
+   
+}
+
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td{
+    vertical-align: middle;
+}
+
+.form-inline .form-control {
+    width: 100px;
+}
+
+
+.bootstrap-dialog.type-warning .modal-header {
+    background-color: #3b70f7 !important;
+}
+
+.bootstrap-dialog.type-warning .modal-header {
+    background-color: #3b70f7 !important;
+}
+
+.btn-success{
+    background-color: #3b70f7 !important;
+    border-color: #3b70f7 !important;
+}
+
+
+.form-group.has-success label {
+    color: #3b70f7 !important;
+}
+
+
+.order-products_tbl tr th{
+        padding: 5px;
+}
+
+#customer tr td, #customer tr th{
+    padding: 10px;
+}
+
+
+.skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar .nav>li>a:active, .skin-blue .main-header .navbar .nav>li>a:focus, .skin-blue .main-header .navbar .nav .open>a, .skin-blue .main-header .navbar .nav .open>a:hover, .skin-blue .main-header .navbar .nav .open>a:focus, .skin-blue .main-header .navbar .nav>.active>a{
+    background: #8a9673;
+}
+
+.skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar .nav>li>a:active, .skin-blue .main-header .navbar .nav>li>a:focus, .skin-blue .main-header .navbar .nav .open>a, .skin-blue .main-header .navbar .nav .open>a:hover, .skin-blue .main-header .navbar .nav .open>a:focus, .skin-blue .main-header .navbar .nav>.active>a{
+    background: transparent !important;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+    background-color: #1a1a1a !important;
+}
+
+.navbar-custom-menu>.navbar-nav>li>.dropdown-menu{
+    top: 50px;
+}
+
+.skin-blue .main-header li.user-header{
+    background-color: #686868 !important;
+}
+
+
+.select2-container .select2-selection--single .select2-selection__rendered{
+    line-height: 30px;
+}
+
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th{
+    word-break: keep-all;
+}
+
+.table-bordered thead tr th{
+    white-space: nowrap;
+}
+
+.table-bordered tbody tr td img{
+        object-fit: contain;
+}
+
+
+.table-bordered thead tr th:last-child{
+        padding: 0 20px;    
+}
+
+
+.select2-container--krajee .select2-selection--single .select2-selection__clear, .select2-container--krajee .select2-selection--multiple .select2-selection__clear{
+    top: 4px;
+}
+
+
+.pull-left.image{
+    width: 35px;
+    height: 30;
+    height: 35px;
+    position: relative;
+    left: 10px;
+    top: 5px;
+}
+
+
+.sidebar-collapse .pull-left.image{
+    left: 0px;
+}
+
+.user-panel>.image>img{
+    width: 100%;
+    max-width: 100% !important;
+    height: 100% !important;
+}
+
+
+.left-scroll{
+    overflow-y: auto;
+    height: calc(100vh - 120px)
 }

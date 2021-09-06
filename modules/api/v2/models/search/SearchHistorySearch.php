@@ -118,7 +118,7 @@ class SearchHistorySearch extends SearchHistory
             $query->andWhere(['search_histories.user_id' => $requestParams['user_id']]);
         }
 
-        $query->groupBy('search_histories.search_text', 'search_histories.id');
+        $query->groupBy(['search_histories.search_text', 'search_histories.id']);
 
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
