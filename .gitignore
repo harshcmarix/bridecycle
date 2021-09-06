@@ -34,3 +34,6 @@ tests/_support/_generated
 
 composer.lock
 config/db.php
+
+runtime/debug/
+web/assets/
