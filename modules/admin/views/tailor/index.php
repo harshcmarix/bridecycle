@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     Modal::end();
                     $tailorimagemodal = "tailorimagemodal('" . $model->id . "');";
-                    return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $tailorimagemodal, 'height' => '100px', 'width' => '100px']);
+                    return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $tailorimagemodal, 'height' => '50px', 'width' => '50px']);
                 },
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']

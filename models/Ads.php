@@ -68,7 +68,7 @@ class Ads extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'status'], 'required'],
+            [['title', 'url'], 'required'],
             [['category_id', 'sub_category_id', 'product_id', 'brand_id'], 'integer'],
             [['url'], 'url'],
             [['status'], 'integer'],

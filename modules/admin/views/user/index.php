@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     Modal::end();
                     $contentmodel = "contentmodel('" . $model->id . "');";
-                    return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '100px', 'width' => '100px']);
+                    return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '50px', 'width' => '50px']);
                 },
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
