@@ -38,14 +38,22 @@ echo Dialog::widget(
                     <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput() ?>
                 </div>
             </div>
+
             <div class="row">
-                <div class="col col-md-5">
+                <div class="col col-md-6">
                     <?php echo $form->field($model, 'password')->passwordInput(['maxlength' => true, 'value' => ""]) ?>
                 </div>
-                <div class="col col-md-5">
+                <div class="col col-md-6">
                     <?php echo $form->field($model, 'confirm_password')->passwordInput(['maxlength' => true, 'value' => ""]) ?>
                 </div>
-                <div class="col col-md-2">
+            </div>
+
+            <div class="row">
+                <div class="col col-md-6">
+                    <input type="file" name="profile_picture" id="profile_picture">
+                </div>
+              
+                <div class="col col-md-6">
                     <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
                 </div>
             </div>
@@ -67,8 +75,6 @@ echo Dialog::widget(
                             'pluginOptions' => [
                                 'allowedFileExtensions' => ['jpg', 'png'],
                                 'showPreview' => true,
-//                        'showCaption' => true,
-//                        'showRemove' => true,
                                 'showUpload' => false
                             ]
                         ]); ?>
@@ -119,13 +125,13 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_phone_number', ['enableAjaxValidation' => true])->textInput() ?>
                     </div>
                     <div class="row">
-                        <div class="col col-md-4">
+                        <div class="col col-md-6">
                             <?= $form->field($model, 'shop_address_street')->textInput() ?>
                         </div>
-                        <div class="col col-md-4">
+                        <div class="col col-md-6">
                             <?= $form->field($model, 'shop_address_city')->textInput() ?>
                         </div>
-                        <div class="col col-md-4">
+                        <div class="col col-md-6">
                             <?= $form->field($model, 'shop_address_state')->textInput() ?>
                         </div>
                     </div>

@@ -57,6 +57,7 @@ use app\modules\admin\models\DailyReportType;
 
         ?>
         <!-- Sidebar menu start -->
+        <div class="left-scroll">
         <?php
         echo dmstr\widgets\Menu::widget(
             [
@@ -65,6 +66,7 @@ use app\modules\admin\models\DailyReportType;
             ]
         );
         ?>
+        </div>
         <!-- Sidebar menu end -->
     </section>
 </aside>
