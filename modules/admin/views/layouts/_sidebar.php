@@ -13,10 +13,8 @@ use app\modules\admin\models\DailyReportType;
             <div class="pull-left image">
                 <?php
                 $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/logo.png';
-//                if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
-//                    $profilePic = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
-//                }
                 ?>
+                
                 <img src="<?= $profilePic ?>" alt="User Image" class="img-circle" style="background-color: #b8c7ce;"/>
             </div>
             <?php if (!Yii::$app->user->isGuest) { ?>
@@ -58,14 +56,14 @@ use app\modules\admin\models\DailyReportType;
         ?>
         <!-- Sidebar menu start -->
         <div class="left-scroll">
-        <?php
-        echo dmstr\widgets\Menu::widget(
-            [
-                'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
-                'items' => $menuList
-            ]
-        );
-        ?>
+            <?php
+            echo dmstr\widgets\Menu::widget(
+                [
+                    'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
+                    'items' => $menuList
+                ]
+            );
+            ?>
         </div>
         <!-- Sidebar menu end -->
     </section>
@@ -73,7 +71,7 @@ use app\modules\admin\models\DailyReportType;
 
 
 <style>
-    /*.treeview > a {*/
+/*.treeview > a {*/
     /*    white-space: nowrap;*/
     /*    overflow: hidden;*/
     /*    text-overflow: ellipsis;*/

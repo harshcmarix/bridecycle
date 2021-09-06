@@ -135,30 +135,23 @@ class User extends ActiveRecord implements IdentityInterface
             [['password', 'confirm_password'], 'string', 'min' => 6],
             [['password', 'confirm_password'], 'safe'],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match",],
-//            [['shop_logo'], 'required', 'when' => function ($model) {
-//                //return $model->is_image_empty == '1';
-//            },
-//                'whenClient' => "function (attribute, value) {
-//                    if ($('#user-is_shop_logo_empty').val() == 1) {
-//                                    return $('#user-shop_logo').val() == '';
-//                                    }
-//                                }",],
+
             [['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required',
-                'when' => function ($model) {
-                },
-                'whenClient' => "function (attribute, value) {
-                    if ($('#user-is_shop_owner').prop('checked') == true) {            
-                                    return $('#user-shop_name').val() == '';
-                                    return $('#user-shop_logo').val() == '';
-                                    return $('#user-shop_address_street').val() == '';
-                                    return $('#user-shop_address_city').val() == '';
-                                    return $('#user-shop_address_state').val() == '';
-                                    return $('#user-shop_address_country').val() == '';
-                                    return $('#user-shop_address_zip_code').val() == '';
-                                    return $('#user-shop_phone_number').val() == '';
-                                    return $('#user-shop_email').val() == '';
-                                    }
-                                }",],
+            'when' => function ($model) {
+            },
+            'whenClient' => "function (attribute, value) {
+                if ($('#user-is_shop_owner').prop('checked') == true) {            
+                    return $('#user-shop_name').val() == '';
+                    return $('#user-shop_logo').val() == '';
+                    return $('#user-shop_address_street').val() == '';
+                    return $('#user-shop_address_city').val() == '';
+                    return $('#user-shop_address_state').val() == '';
+                    return $('#user-shop_address_country').val() == '';
+                    return $('#user-shop_address_zip_code').val() == '';
+                    return $('#user-shop_phone_number').val() == '';
+                    return $('#user-shop_email').val() == '';
+                }
+            }",],
         ];
     }
 

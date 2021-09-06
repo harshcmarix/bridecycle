@@ -6,9 +6,6 @@ use kartik\file\FileInput;
 use yii\bootstrap\Modal;
 use kartik\dialog\Dialog;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\admin\models\User */
-/* @var $form yii\widgets\ActiveForm */
 echo Dialog::widget(
     ['overrideYiiConfirm' => true]
 );
@@ -52,12 +49,11 @@ echo Dialog::widget(
                 <div class="col col-md-6">
                     <input type="file" name="profile_picture" id="profile_picture">
                 </div>
-              
+                
                 <div class="col col-md-6">
                     <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
                 </div>
             </div>
-
 
             <div id="shop-details" class="shop-personal-details">
                 <div class="row">

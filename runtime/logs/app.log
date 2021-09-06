@@ -1,0 +1,399 @@
+2021-09-06 06:47:28 [192.168.1.205][82][-][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+    in /var/www/html/bridecycle/modules/admin/views/layouts/main.php:70
+    in /var/www/html/bridecycle/modules/admin/controllers/UserController.php:61
+2021-09-06 06:47:28 [192.168.1.205][82][-][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+2021-09-06 06:47:28 [192.168.1.205][82][-][info][application] $_GET = []
+
+$_POST = []
+
+$_FILES = []
+
+$_COOKIE = [
+    '_adminUser' => '5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa:2:{i:0;s:10:\"_adminUser\";i:1;s:17:\"[82,null,2592000]\";}'
+    '_csrf' => '8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd\";}'
+    '_ga' => 'GA1.1.1820264929.1630658622'
+    '_ga_NXLFFXY4HG' => 'GS1.1.1630907462.6.1.1630907470.0'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__returnUrl' => '/bridecycle/web/admin'
+    '__id' => 82
+    '__authKey' => null
+]
+
+$_SERVER = [
+    'REDIRECT_STATUS' => '200'
+    'HTTP_HOST' => '192.168.1.205'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_PRAGMA' => 'no-cache'
+    'HTTP_CACHE_CONTROL' => 'no-cache'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+    'HTTP_REFERER' => 'http://192.168.1.205/bridecycle/web/admin/user/index?UserSearch%5Bid%5D=&UserSearch%5Bfirst_name%5D=&UserSearch%5Blast_name%5D=&UserSearch%5Bemail%5D=&UserSearch%5Bmobile%5D=&UserSearch%5Buser_type%5D='
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7'
+    'HTTP_COOKIE' => '_adminUser=5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa%3A2%3A%7Bi%3A0%3Bs%3A10%3A%22_adminUser%22%3Bi%3A1%3Bs%3A17%3A%22%5B82%2Cnull%2C2592000%5D%22%3B%7D; _csrf=8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd%22%3B%7D; _ga=GA1.1.1820264929.1630658622; _ga_NXLFFXY4HG=GS1.1.1630907462.6.1.1630907470.0'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.41 (Ubuntu) Server at 192.168.1.205 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.41 (Ubuntu)'
+    'SERVER_NAME' => '192.168.1.205'
+    'SERVER_ADDR' => '192.168.1.205'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.1.205'
+    'DOCUMENT_ROOT' => '/var/www/html'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html'
+    'SERVER_ADMIN' => 'webmaster@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/bridecycle/web/index.php'
+    'REMOTE_PORT' => '40458'
+    'REDIRECT_URL' => '/bridecycle/web/admin/user/index'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/bridecycle/web/admin/user/index'
+    'SCRIPT_NAME' => '/bridecycle/web/index.php'
+    'PHP_SELF' => '/bridecycle/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1630910848.7021
+    'REQUEST_TIME' => 1630910848
+]
+2021-09-06 06:47:29 [192.168.1.205][-][kdrs6btuaed9t86rdbbhrrcacf][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "theme/admin/images/favicon.jpg". in /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Module.php:543
+Stack trace:
+#0 /var/www/html/bridecycle/vendor/yiisoft/yii2/web/Application.php(104): yii\base\Module->runAction()
+#1 /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Application.php(392): yii\web\Application->handleRequest()
+#2 /var/www/html/bridecycle/web/index.php(35): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Page not found. in /var/www/html/bridecycle/vendor/yiisoft/yii2/web/Application.php:116
+Stack trace:
+#0 /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Application.php(392): yii\web\Application->handleRequest()
+#1 /var/www/html/bridecycle/web/index.php(35): yii\base\Application->run()
+#2 {main}
+2021-09-06 06:47:29 [192.168.1.205][-][kdrs6btuaed9t86rdbbhrrcacf][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+    in /var/www/html/bridecycle/vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-app/layouts/main.php:61
+2021-09-06 06:47:29 [192.168.1.205][-][kdrs6btuaed9t86rdbbhrrcacf][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+2021-09-06 06:47:29 [192.168.1.205][-][kdrs6btuaed9t86rdbbhrrcacf][info][application] $_GET = []
+
+$_POST = []
+
+$_FILES = []
+
+$_COOKIE = [
+    '_adminUser' => '5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa:2:{i:0;s:10:\"_adminUser\";i:1;s:17:\"[82,null,2592000]\";}'
+    '_csrf' => '8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd\";}'
+    '_ga' => 'GA1.1.1820264929.1630658622'
+    '_ga_NXLFFXY4HG' => 'GS1.1.1630910848.7.1.1630910849.0'
+]
+
+$_SESSION = [
+    '__flash' => []
+]
+
+$_SERVER = [
+    'REDIRECT_STATUS' => '200'
+    'HTTP_HOST' => '192.168.1.205'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_PRAGMA' => 'no-cache'
+    'HTTP_CACHE_CONTROL' => 'no-cache'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+    'HTTP_ACCEPT' => 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+    'HTTP_REFERER' => 'http://192.168.1.205/bridecycle/web/admin/user/index'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7'
+    'HTTP_COOKIE' => '_adminUser=5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa%3A2%3A%7Bi%3A0%3Bs%3A10%3A%22_adminUser%22%3Bi%3A1%3Bs%3A17%3A%22%5B82%2Cnull%2C2592000%5D%22%3B%7D; _csrf=8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd%22%3B%7D; _ga=GA1.1.1820264929.1630658622; _ga_NXLFFXY4HG=GS1.1.1630910848.7.1.1630910849.0'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.41 (Ubuntu) Server at 192.168.1.205 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.41 (Ubuntu)'
+    'SERVER_NAME' => '192.168.1.205'
+    'SERVER_ADDR' => '192.168.1.205'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.1.205'
+    'DOCUMENT_ROOT' => '/var/www/html'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html'
+    'SERVER_ADMIN' => 'webmaster@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/bridecycle/web/index.php'
+    'REMOTE_PORT' => '40472'
+    'REDIRECT_URL' => '/bridecycle/web/theme/admin/images/favicon.jpg'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/bridecycle/web/theme/admin/images/favicon.jpg'
+    'SCRIPT_NAME' => '/bridecycle/web/index.php'
+    'PHP_SELF' => '/bridecycle/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1630910849.2015
+    'REQUEST_TIME' => 1630910849
+]
+2021-09-06 07:10:22 [192.168.1.205][82][-][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+    in /var/www/html/bridecycle/modules/admin/views/layouts/main.php:70
+    in /var/www/html/bridecycle/modules/admin/controllers/UserController.php:59
+2021-09-06 07:10:22 [192.168.1.205][82][-][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+2021-09-06 07:10:22 [192.168.1.205][82][-][info][application] $_GET = []
+
+$_POST = []
+
+$_FILES = []
+
+$_COOKIE = [
+    '_adminUser' => '5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa:2:{i:0;s:10:\"_adminUser\";i:1;s:17:\"[82,null,2592000]\";}'
+    '_csrf' => '8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd\";}'
+    '_ga' => 'GA1.1.1820264929.1630658622'
+    '_ga_NXLFFXY4HG' => 'GS1.1.1630910848.7.1.1630910849.0'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__returnUrl' => '/bridecycle/web/admin'
+    '__id' => 82
+    '__authKey' => null
+]
+
+$_SERVER = [
+    'REDIRECT_STATUS' => '200'
+    'HTTP_HOST' => '192.168.1.205'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_PRAGMA' => 'no-cache'
+    'HTTP_CACHE_CONTROL' => 'no-cache'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+    'HTTP_REFERER' => 'http://192.168.1.205/bridecycle/web/admin/user/index?UserSearch%5Bid%5D=&UserSearch%5Bfirst_name%5D=&UserSearch%5Blast_name%5D=&UserSearch%5Bemail%5D=&UserSearch%5Bmobile%5D=&UserSearch%5Buser_type%5D='
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7'
+    'HTTP_COOKIE' => '_adminUser=5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa%3A2%3A%7Bi%3A0%3Bs%3A10%3A%22_adminUser%22%3Bi%3A1%3Bs%3A17%3A%22%5B82%2Cnull%2C2592000%5D%22%3B%7D; _csrf=8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd%22%3B%7D; _ga=GA1.1.1820264929.1630658622; _ga_NXLFFXY4HG=GS1.1.1630910848.7.1.1630910849.0'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.41 (Ubuntu) Server at 192.168.1.205 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.41 (Ubuntu)'
+    'SERVER_NAME' => '192.168.1.205'
+    'SERVER_ADDR' => '192.168.1.205'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.1.205'
+    'DOCUMENT_ROOT' => '/var/www/html'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html'
+    'SERVER_ADMIN' => 'webmaster@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/bridecycle/web/index.php'
+    'REMOTE_PORT' => '40688'
+    'REDIRECT_URL' => '/bridecycle/web/admin/user/index'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/bridecycle/web/admin/user/index'
+    'SCRIPT_NAME' => '/bridecycle/web/index.php'
+    'PHP_SELF' => '/bridecycle/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1630912222.1558
+    'REQUEST_TIME' => 1630912222
+]
+2021-09-06 07:10:22 [192.168.1.205][-][as1foovjfh3bsnfvuhvfh1tt5r][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "theme/admin/images/favicon.jpg". in /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Module.php:543
+Stack trace:
+#0 /var/www/html/bridecycle/vendor/yiisoft/yii2/web/Application.php(104): yii\base\Module->runAction()
+#1 /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Application.php(392): yii\web\Application->handleRequest()
+#2 /var/www/html/bridecycle/web/index.php(35): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Page not found. in /var/www/html/bridecycle/vendor/yiisoft/yii2/web/Application.php:116
+Stack trace:
+#0 /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Application.php(392): yii\web\Application->handleRequest()
+#1 /var/www/html/bridecycle/web/index.php(35): yii\base\Application->run()
+#2 {main}
+2021-09-06 07:10:22 [192.168.1.205][-][as1foovjfh3bsnfvuhvfh1tt5r][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+    in /var/www/html/bridecycle/vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-app/layouts/main.php:61
+2021-09-06 07:10:22 [192.168.1.205][-][as1foovjfh3bsnfvuhvfh1tt5r][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+2021-09-06 07:10:22 [192.168.1.205][-][as1foovjfh3bsnfvuhvfh1tt5r][info][application] $_GET = []
+
+$_POST = []
+
+$_FILES = []
+
+$_COOKIE = [
+    '_adminUser' => '5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa:2:{i:0;s:10:\"_adminUser\";i:1;s:17:\"[82,null,2592000]\";}'
+    '_csrf' => '8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd\";}'
+    '_ga' => 'GA1.1.1820264929.1630658622'
+    '_ga_NXLFFXY4HG' => 'GS1.1.1630910848.7.1.1630912222.0'
+]
+
+$_SESSION = [
+    '__flash' => []
+]
+
+$_SERVER = [
+    'REDIRECT_STATUS' => '200'
+    'HTTP_HOST' => '192.168.1.205'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_PRAGMA' => 'no-cache'
+    'HTTP_CACHE_CONTROL' => 'no-cache'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+    'HTTP_ACCEPT' => 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+    'HTTP_REFERER' => 'http://192.168.1.205/bridecycle/web/admin/user/index'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7'
+    'HTTP_COOKIE' => '_adminUser=5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa%3A2%3A%7Bi%3A0%3Bs%3A10%3A%22_adminUser%22%3Bi%3A1%3Bs%3A17%3A%22%5B82%2Cnull%2C2592000%5D%22%3B%7D; _csrf=8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd%22%3B%7D; _ga=GA1.1.1820264929.1630658622; _ga_NXLFFXY4HG=GS1.1.1630910848.7.1.1630912222.0'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.41 (Ubuntu) Server at 192.168.1.205 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.41 (Ubuntu)'
+    'SERVER_NAME' => '192.168.1.205'
+    'SERVER_ADDR' => '192.168.1.205'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.1.205'
+    'DOCUMENT_ROOT' => '/var/www/html'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html'
+    'SERVER_ADMIN' => 'webmaster@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/bridecycle/web/index.php'
+    'REMOTE_PORT' => '40696'
+    'REDIRECT_URL' => '/bridecycle/web/theme/admin/images/favicon.jpg'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/bridecycle/web/theme/admin/images/favicon.jpg'
+    'SCRIPT_NAME' => '/bridecycle/web/index.php'
+    'PHP_SELF' => '/bridecycle/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1630912222.6767
+    'REQUEST_TIME' => 1630912222
+]
+2021-09-06 07:10:23 [192.168.1.205][82][-][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+    in /var/www/html/bridecycle/modules/admin/views/layouts/main.php:70
+    in /var/www/html/bridecycle/modules/admin/controllers/UserController.php:59
+2021-09-06 07:10:23 [192.168.1.205][82][-][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+2021-09-06 07:10:23 [192.168.1.205][82][-][info][application] $_GET = []
+
+$_POST = []
+
+$_FILES = []
+
+$_COOKIE = [
+    '_adminUser' => '5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa:2:{i:0;s:10:\"_adminUser\";i:1;s:17:\"[82,null,2592000]\";}'
+    '_csrf' => '8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd\";}'
+    '_ga' => 'GA1.1.1820264929.1630658622'
+    '_ga_NXLFFXY4HG' => 'GS1.1.1630910848.7.1.1630912222.0'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__returnUrl' => '/bridecycle/web/admin'
+    '__id' => 82
+    '__authKey' => null
+]
+
+$_SERVER = [
+    'REDIRECT_STATUS' => '200'
+    'HTTP_HOST' => '192.168.1.205'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_PRAGMA' => 'no-cache'
+    'HTTP_CACHE_CONTROL' => 'no-cache'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+    'HTTP_REFERER' => 'http://192.168.1.205/bridecycle/web/admin/user/index?UserSearch%5Bid%5D=&UserSearch%5Bfirst_name%5D=&UserSearch%5Blast_name%5D=&UserSearch%5Bemail%5D=&UserSearch%5Bmobile%5D=&UserSearch%5Buser_type%5D='
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7'
+    'HTTP_COOKIE' => '_adminUser=5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa%3A2%3A%7Bi%3A0%3Bs%3A10%3A%22_adminUser%22%3Bi%3A1%3Bs%3A17%3A%22%5B82%2Cnull%2C2592000%5D%22%3B%7D; _csrf=8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd%22%3B%7D; _ga=GA1.1.1820264929.1630658622; _ga_NXLFFXY4HG=GS1.1.1630910848.7.1.1630912222.0'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.41 (Ubuntu) Server at 192.168.1.205 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.41 (Ubuntu)'
+    'SERVER_NAME' => '192.168.1.205'
+    'SERVER_ADDR' => '192.168.1.205'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.1.205'
+    'DOCUMENT_ROOT' => '/var/www/html'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html'
+    'SERVER_ADMIN' => 'webmaster@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/bridecycle/web/index.php'
+    'REMOTE_PORT' => '40696'
+    'REDIRECT_URL' => '/bridecycle/web/admin/user/index'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/bridecycle/web/admin/user/index'
+    'SCRIPT_NAME' => '/bridecycle/web/index.php'
+    'PHP_SELF' => '/bridecycle/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1630912223.0382
+    'REQUEST_TIME' => 1630912223
+]
+2021-09-06 07:10:23 [192.168.1.205][-][3ia6p4uq5rnete33bsf26i7hrk][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "theme/admin/images/favicon.jpg". in /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Module.php:543
+Stack trace:
+#0 /var/www/html/bridecycle/vendor/yiisoft/yii2/web/Application.php(104): yii\base\Module->runAction()
+#1 /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Application.php(392): yii\web\Application->handleRequest()
+#2 /var/www/html/bridecycle/web/index.php(35): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Page not found. in /var/www/html/bridecycle/vendor/yiisoft/yii2/web/Application.php:116
+Stack trace:
+#0 /var/www/html/bridecycle/vendor/yiisoft/yii2/base/Application.php(392): yii\web\Application->handleRequest()
+#1 /var/www/html/bridecycle/web/index.php(35): yii\base\Application->run()
+#2 {main}
+2021-09-06 07:10:23 [192.168.1.205][-][3ia6p4uq5rnete33bsf26i7hrk][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+    in /var/www/html/bridecycle/vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-app/layouts/main.php:61
+2021-09-06 07:10:23 [192.168.1.205][-][3ia6p4uq5rnete33bsf26i7hrk][warning][yii\debug\Module::checkAccess] Access to debugger is denied due to IP address restriction. The requesting IP address is 192.168.1.205
+2021-09-06 07:10:23 [192.168.1.205][-][3ia6p4uq5rnete33bsf26i7hrk][info][application] $_GET = []
+
+$_POST = []
+
+$_FILES = []
+
+$_COOKIE = [
+    '_adminUser' => '5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa:2:{i:0;s:10:\"_adminUser\";i:1;s:17:\"[82,null,2592000]\";}'
+    '_csrf' => '8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd\";}'
+    '_ga' => 'GA1.1.1820264929.1630658622'
+    '_ga_NXLFFXY4HG' => 'GS1.1.1630910848.7.1.1630912223.0'
+]
+
+$_SESSION = [
+    '__flash' => []
+]
+
+$_SERVER = [
+    'REDIRECT_STATUS' => '200'
+    'HTTP_HOST' => '192.168.1.205'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_PRAGMA' => 'no-cache'
+    'HTTP_CACHE_CONTROL' => 'no-cache'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
+    'HTTP_ACCEPT' => 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+    'HTTP_REFERER' => 'http://192.168.1.205/bridecycle/web/admin/user/index'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7'
+    'HTTP_COOKIE' => '_adminUser=5b55bfbc335d567e1d4844d4ae95c5baae0157fd7cdac02dba7cbb1483e78dafa%3A2%3A%7Bi%3A0%3Bs%3A10%3A%22_adminUser%22%3Bi%3A1%3Bs%3A17%3A%22%5B82%2Cnull%2C2592000%5D%22%3B%7D; _csrf=8804d11f5a8f10d4aff135b849e204d195fe100040ac275f814fa3a9609d9ba2a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22_h7ticvDTm5YiLAWb7A0MgHLCPQwtApd%22%3B%7D; _ga=GA1.1.1820264929.1630658622; _ga_NXLFFXY4HG=GS1.1.1630910848.7.1.1630912223.0'
+    'PATH' => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.41 (Ubuntu) Server at 192.168.1.205 Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.41 (Ubuntu)'
+    'SERVER_NAME' => '192.168.1.205'
+    'SERVER_ADDR' => '192.168.1.205'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '192.168.1.205'
+    'DOCUMENT_ROOT' => '/var/www/html'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/var/www/html'
+    'SERVER_ADMIN' => 'webmaster@localhost'
+    'SCRIPT_FILENAME' => '/var/www/html/bridecycle/web/index.php'
+    'REMOTE_PORT' => '40698'
+    'REDIRECT_URL' => '/bridecycle/web/theme/admin/images/favicon.jpg'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/bridecycle/web/theme/admin/images/favicon.jpg'
+    'SCRIPT_NAME' => '/bridecycle/web/index.php'
+    'PHP_SELF' => '/bridecycle/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1630912223.3237
+    'REQUEST_TIME' => 1630912223
+]
