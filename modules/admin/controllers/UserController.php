@@ -52,7 +52,6 @@ class UserController extends Controller
     {
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->sort = false;
       
         return $this->render('index', [
             'searchModel' => $searchModel,

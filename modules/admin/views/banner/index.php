@@ -18,25 +18,26 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
- <?php
-    echo GridView::widget([
+       <?php
+       echo GridView::widget([
         'id' => 'banner-grid',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            [
-                'attribute' => 'id',
-                'value' => function ($model) {
-                    $id = '';
-                    if ($model instanceof Banner) {
-                        $id = $model->id;
-                    }
-                    return $id;
-                },
-                'width' => '8%',
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            ],
+            // [
+            //     'attribute' => 'id',
+            //     'value' => function ($model) {
+            //         $id = '';
+            //         if ($model instanceof Banner) {
+            //             $id = $model->id;
+            //         }
+            //         return $id;
+            //     },
+            //     'width' => '8%',
+            //     'header' => '',
+            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            // ],
+            ['class' => 'kartik\grid\SerialColumn'],
             [
                 'attribute' => 'name',
                 'headerOptions' => ['style' => 'text-align: center !important']
@@ -68,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
-           
+            
             // [
             //     'attribute' => 'created_at',
             //     'value' => function ($model) {
@@ -93,20 +94,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'toolbar' => [
             [
                 'content' =>
-                    Html::button('<i class="fa fa-plus-circle"> Add Banner</i>', [
-                        'class' => 'btn btn-success',
-                        'title' => \Yii::t('kvgrid', 'Add Banner'),
-                        'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/banner/create']) . "';",
-                    ]),
+                Html::button('<i class="fa fa-plus-circle"> Add Banner</i>', [
+                    'class' => 'btn btn-success',
+                    'title' => \Yii::t('kvgrid', 'Add Banner'),
+                    'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/banner/create']) . "';",
+                ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
             [
                 'content' =>
-                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Reset Filter',
-                        'onclick' => "window.location.href = '" . Url::to(['banner/index']) . "';",
-                    ]),
+                Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                    'class' => 'btn btn-basic',
+                    'title' => 'Reset Filter',
+                    'onclick' => "window.location.href = '" . Url::to(['banner/index']) . "';",
+                ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
             '{toggleData}',
@@ -131,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     ?>
 
-    </div>
+</div>
 </div>
 <script type="text/javascript">
     function bannermodal(id) {
@@ -152,25 +153,25 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         $(document)
-            .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-            .on('keyup', filter_selector, function(e) {
-                input = $(this).attr('name');
-                var keyCode = e.keyCode ? e.keyCode : e.which;
-                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
-                    if (submit_form === false) {
-                        submit_form = true;
-                        $("#banner-grid").yiiGridView("applyFilter");
-                    }
+        .off('keydown.yiiGridView change.yiiGridView', filter_selector)
+        .on('keyup', filter_selector, function(e) {
+            input = $(this).attr('name');
+            var keyCode = e.keyCode ? e.keyCode : e.which;
+            if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
+                if (submit_form === false) {
+                    submit_form = true;
+                    $("#banner-grid").yiiGridView("applyFilter");
                 }
-            })
-            .on('pjax:success', function() {
-                var i = $("[name='"+input+"']");
-                var val = i.val();
-                i.focus().val(val);
+            }
+        })
+        .on('pjax:success', function() {
+            var i = $("[name='"+input+"']");
+            var val = i.val();
+            i.focus().val(val);
 
-                var searchInput = $(i);
-                var strLength = searchInput.val().length * 2;
-                searchInput[0].setSelectionRange(strLength, strLength);
-            });
+            var searchInput = $(i);
+            var strLength = searchInput.val().length * 2;
+            searchInput[0].setSelectionRange(strLength, strLength);
+        });
     });
 </script>

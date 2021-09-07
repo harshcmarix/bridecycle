@@ -31,19 +31,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                [
-                    'attribute' => 'id',
-                    'value' => function ($model) {
-                        $id = '';
-                        if ($model instanceof Brand) {
-                            $id = $model->id;
-                        }
-                        return $id;
-                    },
-                    'width' => '8%',
-                    'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                ],
+                // [
+                //     'attribute' => 'id',
+                //     'value' => function ($model) {
+                //         $id = '';
+                //         if ($model instanceof Brand) {
+                //             $id = $model->id;
+                //         }
+                //         return $id;
+                //     },
+                //     'width' => '8%',
+                //     'header' => '',
+                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                // ],
+                ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'format' => ['raw'],
                     'enableSorting' => false,
@@ -166,20 +167,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'toolbar' => [
                 [
                     'content' =>
-                        Html::button('<i class="fa fa-plus-circle"> Add Brand</i>', [
-                            'class' => 'btn btn-success',
-                            'title' => \Yii::t('kvgrid', 'Add Brand'),
-                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/create']) . "';",
-                        ]),
+                    Html::button('<i class="fa fa-plus-circle"> Add Brand</i>', [
+                        'class' => 'btn btn-success',
+                        'title' => \Yii::t('kvgrid', 'Add Brand'),
+                        'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/create']) . "';",
+                    ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
                     'content' =>
-                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                            'class' => 'btn btn-basic',
-                            'title' => 'Reset Filter',
-                            'onclick' => "window.location.href = '" . Url::to(['brand/index']) . "';",
-                        ]),
+                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Reset Filter',
+                        'onclick' => "window.location.href = '" . Url::to(['brand/index']) . "';",
+                    ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 '{toggleData}',
@@ -284,27 +285,27 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         $(document)
-            .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-            .on('keyup', filter_selector, function(e) {
-                input = $(this).attr('name');
-                var keyCode = e.keyCode ? e.keyCode : e.which;
-                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
-                    if (submit_form === false) {
-                        submit_form = true;
-                        $("#brand-grid").yiiGridView("applyFilter");
-                    }
+        .off('keydown.yiiGridView change.yiiGridView', filter_selector)
+        .on('keyup', filter_selector, function(e) {
+            input = $(this).attr('name');
+            var keyCode = e.keyCode ? e.keyCode : e.which;
+            if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
+                if (submit_form === false) {
+                    submit_form = true;
+                    $("#brand-grid").yiiGridView("applyFilter");
                 }
-            })
-            .on('pjax:success', function() {
-                if (isInput) {
-                    var i = $("[name='" + input + "']");
-                    var val = i.val();
-                    i.focus().val(val);
+            }
+        })
+        .on('pjax:success', function() {
+            if (isInput) {
+                var i = $("[name='" + input + "']");
+                var val = i.val();
+                i.focus().val(val);
 
-                    var searchInput = $(i);
-                    var strLength = searchInput.val().length * 2;
-                    searchInput[0].setSelectionRange(strLength, strLength);
-                }
-            });
+                var searchInput = $(i);
+                var strLength = searchInput.val().length * 2;
+                searchInput[0].setSelectionRange(strLength, strLength);
+            }
+        });
     });
 </script>

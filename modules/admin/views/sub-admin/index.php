@@ -24,15 +24,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                [
-                    'attribute' => 'id',
-                    'value' => function ($model) {
-                        return $model->id;
-                    },
-                    'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-                    'width' => '8%'
-                ],
+                // [
+                //     'attribute' => 'id',
+                //     'value' => function ($model) {
+                //         return $model->id;
+                //     },
+                //     'header' => '',
+                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+                //     'width' => '8%'
+                // ],
+                ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'attribute' => 'first_name',
                     'value' => function ($model) {

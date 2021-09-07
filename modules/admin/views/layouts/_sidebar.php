@@ -15,7 +15,7 @@ use app\modules\admin\models\DailyReportType;
                 $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/logo.png';
                 ?>
                 
-                <img src="<?= $profilePic ?>" alt="User Image" class="img-circle" style="background-color: #b8c7ce;"/>
+                <img src="<?= $profilePic ?>" alt="User Image" style="background-color: #b8c7ce;padding: 2px;"/>
             </div>
             <?php if (!Yii::$app->user->isGuest) { ?>
                 <div class="pull-left info">
@@ -31,28 +31,28 @@ use app\modules\admin\models\DailyReportType;
         }
         //$modelsModule = Module::find()->where(['is_show' => 1])->orderBy(['in_order' => SORT_ASC])->all();
         $menuList[] = ['label' => 'Dashboard', 'icon' => 'home', 'url' => ['site/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'Ads', 'icon' => 'picture-o', 'url' => ['ads/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Ads', 'icon' => 'film', 'url' => ['ads/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'User', 'icon' => 'users', 'url' => ['user/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'User', 'icon' => 'user', 'url' => ['user/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Category', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'Brand', 'icon' => 'list', 'url' => ['brand/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Brand', 'icon' => 'tag', 'url' => ['brand/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Product', 'icon' => 'product-hunt', 'url' => ['product/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Product Rating', 'icon' => 'star', 'url' => ['product-rating/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'Order', 'icon' => 'reorder', 'url' => ['order/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Order', 'icon' => 'cart-arrow-down', 'url' => ['order/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['subscription/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'Content', 'icon' => 'align-center', 'url' => ['cms-page/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'Report', 'icon' => 'book', 'items' => [
+        $menuList[] = ['label' => 'Content', 'icon' => 'file-text-o', 'url' => ['cms-page/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Report', 'icon' => 'flag', 'items' => [
             ['label' => 'Sales', 'icon' => 'fas fa-angle-right', 'url' => ['report/sales', 'p' => 'w'], 'visible' => $visible],
             ['label' => "Customers", 'icon' => 'fas fa-angle-right', 'url' => ['report/customers', 'p' => 'w'], 'visible' => $visible],
         ],];
-        $menuList[] = ['label' => 'Dress Type', 'icon' => 'snowflake-o', 'url' => ['dress-type/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Dress Type', 'icon' => 'female', 'url' => ['dress-type/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Tailor', 'icon' => 'cut', 'url' => ['tailor/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Color', 'icon' => 'paint-brush', 'url' => ['color/index'], 'visible' => $visible];
 
-
+        
         ?>
         <!-- Sidebar menu start -->
         <div class="left-scroll">
