@@ -32,8 +32,8 @@ tests/_support/_generated
 #vagrant folder
 /.vagrant
 
-composer.lock
-config/db.php
+/composer.lock
+/config/db.php
 
-runtime/debug/
-web/assets/
+/runtime/
+/web/assets/

@@ -152,7 +152,16 @@ $this->params['breadcrumbs'][] = $this->title;
         $('#tailorimagemodal_' + id).modal('show');
     }
 
+    function clearFilter(element) {
+        element.previousSibling.value = '';
+        var e = $.Event('keyup');
+        e.which = 65;
+        $(element).prev().trigger(e);
+    }
+
     $('document').ready(function(){
+        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+
         var input;
         var submit_form = false;
         var filter_selector = '#tailor-grid-filters input';
@@ -182,9 +191,27 @@ $this->params['breadcrumbs'][] = $this->title;
             var val = i.val();
             i.focus().val(val);
 
-            var searchInput = $(i);
-            var strLength = searchInput.val().length * 2;
-            searchInput[0].setSelectionRange(strLength, strLength);
-        });
+                var searchInput = $(i);
+                if (searchInput.length > 0) {
+                    var strLength = searchInput.val().length * 2;
+                    searchInput[0].setSelectionRange(strLength, strLength);
+                }
+
+                if ($('thead td i').length == 0) {
+                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                }
+
+                $('.pagination').find('li a').on('click', function () {
+                    setTimeout(function () {
+                        $(document).scrollTop($(document).innerHeight());
+                    }, 200);
+                })
+            });
     });
+
+    $('.pagination').find('li a').on('click', function () {
+        setTimeout(function () {
+            $(document).scrollTop($(document).innerHeight());
+        }, 200);
+    })
 </script>

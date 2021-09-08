@@ -35,7 +35,7 @@ $config = [
 
 $config['dsn'] = 'mysql:host=127.0.0.1;dbname=bridecycle';
 $config['username'] = 'root';
-$config['password'] = 'admin';
+$config['password'] = 'root';
 
 
 return $config;
