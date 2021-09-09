@@ -47,7 +47,50 @@ echo Dialog::widget(
 
             <div class="row">
                 <div class="col col-md-6">
-                    <input type="file" name="profile_picture" id="profile_picture">
+                    <?= $form->field($model, 'profile_picture')->widget(FileInput::classname(), [
+                        'options' => ['accept' => 'image/*', 'id' => 'user-profile_picture'],
+                        'pluginOptions' => [
+                            'allowedFileExtensions' => ['jpg', 'png'],
+                            'showPreview' => false,
+                            'showUpload' => false
+                        ]
+                    ]); ?>
+
+                     <!-- image validation code -->
+                        <?php
+                        $is_profile_picture_empty = '1';
+                        if (!empty($model->profile_picture)) {
+                            $is_profile_picture_empty = '0';
+                        }
+                        ?>
+                        <?= $form->field($model, 'is_profile_picture_empty')->hiddenInput(['value' => $is_profile_picture_empty])->label(false) ?>
+                        <!-- image code -->
+                    <?php
+                    if (!empty($model->profile_picture)) {
+                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        if (file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $model->profile_picture)) {
+                            $image_path = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                        }
+                        Modal::begin([
+                            'id' => 'profilemodal_' . $model->id,
+                            'header' => '<h3 class="modal-title">Profile Picture</h3>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
+
+                        echo Html::img($image_path, ['width' => '570']);
+
+                        Modal::end();
+                        $profilePicturemodal = "profilePicturemodal('" . $model->id . "');";
+                        ?>
+
+                        <div class="image-class">
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'profile_picture-delete-link', 'delete-url' => '../user/profile-delete?id=' . $model->id]) ?>
+                        </div>
+                        <div class="form-group image-class">
+                            <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $profilePicturemodal]); ?>
+                        </div>
+                    <?php } ?>
+                    <!-- image code end -->
                 </div>
                 
                 <div class="col col-md-6">
@@ -64,23 +107,19 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col col-md-6">
                         <?= $form->field($model, 'shop_logo')->widget(FileInput::classname(), [
                             'options' => ['accept' => 'image/*', 'id' => 'user-shop_logo'],
                             'pluginOptions' => [
                                 'allowedFileExtensions' => ['jpg', 'png'],
-                                'showPreview' => true,
+                                'showPreview' => false,
                                 'showUpload' => false
                             ]
                         ]); ?>
-                        <!-- image code -->
-                        <?php
-                        // if (!empty($model->shop_logo)) {
-                        //     $profile = Html::img(Yii::getAlias('@shopLogoAbsolutePath') . '/' . $model->shop_logo, ['alt' => 'shop logo', 'class' => 'your_class', 'height' => '100px', 'width' => '100px']);
-                        //     echo $profile;
-                        // }
-                        ?>
+                    </div>
+                    <div class="col col-md-6">
                         <!-- image validation code -->
                         <?php
                         $is_shop_logo_empty = '1';
@@ -98,7 +137,7 @@ echo Dialog::widget(
                             }
                             Modal::begin([
                                 'id' => 'shoplogomodal_' . $model->id,
-                                'header' => '<h3>Shop Image</h3>',
+                                'header' => '<h3 class="modal-title">Shop Image</h3>',
                                 'size' => Modal::SIZE_DEFAULT
                             ]);
 
@@ -108,7 +147,7 @@ echo Dialog::widget(
                             $shoplogomodal = "shoplogomodal('" . $model->id . "');";
                             ?>
 
-                            <div class="form-group image-class">
+                            <div class="image-class">
                                 <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'shop_logo-delete-link', 'delete-url' => '../user/shop-logo-delete?id=' . $model->shopDetail->id]) ?>
                             </div>
                             <div class="form-group image-class">
@@ -117,38 +156,46 @@ echo Dialog::widget(
                         <?php } ?>
                         <!-- image code end -->
                     </div>
+                </div>
+
+                <div class="row">
                     <div class="col col-md-6">
                         <?= $form->field($model, 'shop_phone_number', ['enableAjaxValidation' => true])->textInput() ?>
                     </div>
-                    <div class="row">
-                        <div class="col col-md-6">
-                            <?= $form->field($model, 'shop_address_street')->textInput() ?>
-                        </div>
-                        <div class="col col-md-6">
-                            <?= $form->field($model, 'shop_address_city')->textInput() ?>
-                        </div>
-                        <div class="col col-md-6">
-                            <?= $form->field($model, 'shop_address_state')->textInput() ?>
-                        </div>
+                    <div class="col col-md-6">
+                        <?= $form->field($model, 'shop_address_street')->textInput() ?>
                     </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col col-md-6">
+                        <?= $form->field($model, 'shop_address_city')->textInput() ?>
+                    </div>
+                    <div class="col col-md-6">
+                        <?= $form->field($model, 'shop_address_state')->textInput() ?>
+                    </div>
+                </div>
 
+                <div class="row">
                     <div class="col col-md-6">
                         <?= $form->field($model, 'shop_address_country')->textInput() ?>
                     </div>
                     <div class="col col-md-6">
                         <?= $form->field($model, 'shop_address_zip_code')->textInput() ?>
                     </div>
-
                 </div>
-            </div>
-        </div>
 
-        <div class="form-group">
+            </div>
+
+        </div>
+        <div class="form-group ">
             <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
         </div>
-        <?php ActiveForm::end(); ?>
     </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
 
 </div>
 </div>
@@ -197,7 +244,31 @@ echo Dialog::widget(
         });
     });
 
+    // profile image popup
+    $('.profile_picture-delete-link').on('click', function (e) {
+        e.preventDefault();
+        var deleteUrl = $(this).attr('delete-url');
+        var result = krajeeDialog.confirm('Are you sure you want to delete this profile ?', function (result) {
+            if (result) {
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'post',
+                    error: function (xhr, status, error) {
+                        alert('There was an error with your request.' + xhr.responseText);
+                    }
+                }).done(function (data) {
+                    $('.image-class').hide();
+                    $('#user-is_profile_picture_empty').val('1');
+                });
+            }
+        });
+    });
+
     function shoplogomodal(id) {
         $('#shoplogomodal_' + id).modal('show');
+    } 
+
+    function profilePicturemodal(id) {
+        $('#profilemodal_' + id).modal('show');
     }
 </script>

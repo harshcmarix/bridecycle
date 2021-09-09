@@ -33,43 +33,76 @@ echo Dialog::widget(
 
             <?php $form = ActiveForm::begin(); ?>
 
-            <?= $form->field($model, 'name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
+                </div>
 
-            <!-- $form->field($model, 'image')->fileInput(['maxlength' => true])  -->
-            <?= $form->field($model, 'image')->widget(FileInput::classname(), [
-                'options' => ['accept' => 'image/*', 'id' => 'productcategory-image'],
-                'pluginOptions' => [
-                    'allowedFileExtensions' => ['jpg', 'png'],
-                    'showPreview' => true,
-//                        'showCaption' => true,
-//                        'showRemove' => true,
-                    'showUpload' => false
-                ]
-            ]); ?>
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'image')->widget(FileInput::classname(), [
+                        'options' => ['accept' => 'image/*', 'id' => 'productcategory-image'],
+                        'pluginOptions' => [
+                            'allowedFileExtensions' => ['jpg', 'png'],
+                            'showPreview' => false,
+                            'showUpload' => false
+                        ]
+                    ]); ?>
 
-            <!-- $form->field($model, 'parent_category_id')->dropDownList(ArrayHelper::map($parent_category,'id','name'),['prompt'=>'select parent category']) -->
+                    <!-- image display and image popup -->
+                    <?php
+                    if (!empty($model->image)) {
+                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
+                            $image_path = Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+                        }
+                        Modal::begin([
+                            'id' => 'productcategorymodal_' . $model->id,
+                            'header' => '<h3>Category Image</h3>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
 
-            <?= $form->field($model, 'parent_category_id')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($parent_category, 'id', 'name'),
-                'size' => Select2::MEDIUM,
-                'options' => [
-                    'placeholder' => 'Select Parent Category',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]); ?>
+                        echo Html::img($image_path, ['width' => '570']);
+                        Modal::end();
+                        $productcategorymodal = "productcategorymodal('" . $model->id . "');";
+                        ?>
+                        <div class="form-group image-class">
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../product-category/image-delete?id=' . $model->id]) ?>
+                        </div>
+                        <div class="form-group image-class">
+                            <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $productcategorymodal]); ?>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
 
-            <?= $form->field($model, 'status')->widget(Select2::classname(), [
-                'data' => ProductCategory::ARR_CATEGORY_STATUS,
-                'size' => Select2::MEDIUM,
-                'options' => [
-                    //'placeholder' => 'Select Parent Category',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]); ?>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'parent_category_id')->widget(Select2::classname(), [
+                        'data' => ArrayHelper::map($parent_category, 'id', 'name'),
+                        'size' => Select2::MEDIUM,
+                        'options' => [
+                            'placeholder' => 'Select Parent Category',
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+                </div>
+
+                <div class="col col-md-6">
+
+                    <?= $form->field($model, 'status')->widget(Select2::classname(), [
+                        'data' => ProductCategory::ARR_CATEGORY_STATUS,
+                        'size' => Select2::MEDIUM,
+                        'options' => [
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+
+                </div>
+            </div>
 
             <!-- image validation code -->
             <?php
@@ -80,30 +113,7 @@ echo Dialog::widget(
             ?>
             <?= $form->field($model, 'is_image_empty')->hiddenInput(['value' => $is_image_empty])->label(false) ?>
 
-            <!-- image display and image popup -->
-            <?php
-            if (!empty($model->image)) {
-                $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                if (!empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
-                    $image_path = Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
-                }
-                Modal::begin([
-                    'id' => 'productcategorymodal_' . $model->id,
-                    'header' => '<h3>Category Image</h3>',
-                    'size' => Modal::SIZE_DEFAULT
-                ]);
-
-                echo Html::img($image_path, ['width' => '570']);
-                Modal::end();
-                $productcategorymodal = "productcategorymodal('" . $model->id . "');";
-                ?>
-                <div class="form-group image-class">
-                    <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../product-category/image-delete?id=' . $model->id]) ?>
-                </div>
-                <div class="form-group image-class">
-                    <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $productcategorymodal]); ?>
-                </div>
-            <?php } ?>
+            
 
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>

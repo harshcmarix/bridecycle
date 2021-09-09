@@ -32,9 +32,7 @@ echo Dialog::widget(
                 'options' => ['accept' => 'image/*', 'id' => 'banner-image'],
                 'pluginOptions' => [
                     'allowedFileExtensions' => ['jpg', 'png'],
-                    'showPreview' => true,
-//                        'showCaption' => true,
-//                        'showRemove' => true,
+                    'showPreview' => false,
                     'showUpload' => false
                 ]
             ]); ?>

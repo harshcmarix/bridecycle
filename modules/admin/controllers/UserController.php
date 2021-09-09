@@ -52,7 +52,7 @@ class UserController extends Controller
     {
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-      
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -99,8 +99,9 @@ class UserController extends Controller
 
             $model->user_type = User::USER_TYPE_NORMAL_USER;
 
-            $model->profile_picture = UploadedFile::getInstanceByName('profile_picture');
-            if ($model->profile_picture instanceof UploadedFile) {
+            $profilePicture = UploadedFile::getInstance($model, 'profile_picture');
+            if (isset($profilePicture)) {
+
                 $uploadDirPath = Yii::getAlias('@profilePictureRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
                 $thumbImagePath = '';
@@ -114,11 +115,11 @@ class UserController extends Controller
                     mkdir($uploadThumbDirPath, 0777);
                 }
 
-                $ext = $model->profile_picture->extension;
-                $fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
+                $ext = $profilePicture->extension;
+                $fileName = pathinfo($profilePicture->name, PATHINFO_FILENAME);
                 $fileName = $fileName . '_' . time() . '.' . $ext;
                 // Upload profile picture
-                $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);
+                $profilePicture->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
                 $actualImagePath = $uploadDirPath . '/' . $fileName;
                 $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
@@ -155,6 +156,7 @@ class UserController extends Controller
                         $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
                         $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
                         Image::thumbnail(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        
                         $modelUserShopDetail->shop_logo = $shop_logo_picture;
                     }
                     $modelUserShopDetail->save(false);
@@ -231,7 +233,31 @@ class UserController extends Controller
                 $model->password_hash = Yii::$app->getSecurity()->generatePasswordHash($new_password);
             }
 
-            $model->profile_picture = $oldProfileFile;
+
+
+            $newProfilePictureFile = UploadedFile::getInstance($model, 'profile_picture');
+            if (isset($newProfilePictureFile)) {
+
+                $profilePicture = time() . rand(99999, 88888) . '.' . $newProfilePictureFile->extension;
+                if (!empty($oldProfileFile) && file_exists(Yii::getAlias('@profilePictureRelativePath') . "/" . $oldProfileFile)) {
+                    unlink(Yii::getAlias('@profilePictureRelativePath') . "/" . $oldProfileFile);
+                }
+                if (!empty($oldProfileFile) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . "/" . $oldProfileFile)) {
+                    unlink(Yii::getAlias('@profilePictureThumbRelativePath') . "/" . $oldProfileFile);
+                }
+
+                $newProfilePictureFile->saveAs(Yii::getAlias('@profilePictureRelativePath') . "/" . $profilePicture);
+
+                Image::thumbnail(Yii::getAlias('@profilePictureRelativePath') . "/" . $profilePicture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save(Yii::getAlias('@profilePictureThumbRelativePath') . "/" . $profilePicture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+
+                $model->profile_picture = $profilePicture;
+            } else if (empty($newProfilePictureFile)) {
+                $model->profile_picture = $oldProfileFile;
+            } else {
+                $model->profile_picture = '';
+            }
+
+
 
             if (empty($modelShopDetail)) {
                 $modelShopDetail = new ShopDetail();
@@ -289,7 +315,7 @@ class UserController extends Controller
                 $modelShopDetail->save(false);
             } else {
                 $model->is_shop_owner = User::IS_SHOP_OWNER_NO;
-                //$modelShopDetail->shop_name = $modelShopDetail->shop_email = $modelShopDetail->shop_phone_number = ""; //= $model->shop_address
+
                 if (!empty($modelShopDetail)) {
 
                     if (!empty($modelShopDetail->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . "/" . $modelShopDetail->shop_logo)) {
@@ -392,7 +418,6 @@ class UserController extends Controller
      */
      public function actionShopLogoDelete($id){
         $model = ShopDetail::findOne($id);
-        // p($id);
         $uploadDirPath = Yii::getAlias('@shopLogoRelativePath');
         $uploadThumbDirPath = Yii::getAlias('@shopLogoThumbRelativePath');
          // unlink images with thumb
@@ -404,7 +429,25 @@ class UserController extends Controller
         }
         $model->shop_logo = '';
         if($model->save(false)){
-           return Json::encode(['success'=>'image successfully deleted']);
-       }
-   }
+         return Json::encode(['success'=>'image successfully deleted']);
+     }
+ }
+
+ public function actionProfileDelete($id){
+    $model = User::findOne($id);
+    $uploadDirPath = Yii::getAlias('@profilePictureRelativePath');
+    $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+    
+    // unlink images with thumb
+    if(file_exists($uploadDirPath.'/'.$model->profile_picture) && !empty($model->profile_picture)){
+        unlink($uploadDirPath.'/'.$model->profile_picture);
+    }
+    if(file_exists($uploadThumbDirPath.'/'.$model->profile_picture) && !empty($model->profile_picture)){
+        unlink($uploadThumbDirPath.'/'.$model->profile_picture);
+    }
+    $model->profile_picture = '';
+    if($model->save(false)){
+        return Json::encode(['success'=>'Profile image successfully deleted']);
+ }
+}
 }

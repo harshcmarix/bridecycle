@@ -20,83 +20,86 @@ use yii\helpers\Url;
 
             <ul class="nav navbar-nav">
                 <?php //if (Yii::$app->user->identity->isAdmin() || Yii::$app->user->identity->isSuperAdmin()) { ?>
-                <!--                    <li class="dropdown live-users-menu">-->
-                <!--                        <a href="-->
-                <?php //echo Url::to(['admin-user/online-users']); ?><!--" class="dropdown-toggle"-->
-                <!--                           title="Online Users">-->
-                <!--                            <i class="fa fa-users" id="live-users-count" style="color:greenyellow"></i>-->
-                <!--                        </a>-->
-                <!--                    </li>-->
-                <?php //} ?>
-                <!-- Messages: style can be found in dropdown.less-->
-                <li class="dropdown user user-menu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <?php
-                        $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/logo.png';
-//                        if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
-//                            $profilePic = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
-//                        }
-                        ?>
-                        <img src="<?= $profilePic ?>"
-                             class="user-image" alt="User Image"/>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="user-header" onclick="event.stopPropagation()">
-                            <?php
-                            $profilePicInner = Yii::getAlias('@uploadsAbsolutePath') . '/logo.png';
-//                            if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
-//                                $profilePicInner = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
-//                            }
-                            ?>
-                            <img src="<?= $profilePicInner ?>" class="img-circle" alt="User Image"/>
-
-                            <?php if (!Yii::$app->user->isGuest) { ?>
-                                <p>
-                                    <b>
-
-                                        <?= Yii::$app->user->identity->first_name ?>
-                                        <?= Yii::$app->user->identity->last_name ?>
-
-                                    </b>
-                                </p>
-                            <?php } ?>
-
-                            <p>
-                                <?php
-                                $role = "";
-                                if (!empty(Yii::$app->user->identity->user_type)) {
-                                    if (Yii::$app->user->identity->user_type == \app\modules\admin\models\User::USER_TYPE_ADMIN) {
-                                        $role = 'Admin';
-                                    } elseif (Yii::$app->user->identity->user_type == \app\modules\admin\models\User::USER_TYPE_SUB_ADMIN) {
-                                        $role = 'Sub Admin';
-                                    } elseif (Yii::$app->user->identity->user_type == \app\modules\admin\models\User::USER_TYPE_NORMAL_USER) {
-                                        $role = 'Normal User';
+                    <!--                    <li class="dropdown live-users-menu">-->
+                        <!--                        <a href="-->
+                            <?php //echo Url::to(['admin-user/online-users']); ?><!--" class="dropdown-toggle"-->
+                            <!--                           title="Online Users">-->
+                            <!--                            <i class="fa fa-users" id="live-users-count" style="color:greenyellow"></i>-->
+                            <!--                        </a>-->
+                            <!--                    </li>-->
+                            <?php //} ?>
+                            <!-- Messages: style can be found in dropdown.less-->
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Cilck to View Profile">
+                                    <?php
+                                    if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
+                                        $profilePic = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
+                                    } else {
+                                        $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                                     }
-                                }
-                                ?>
-                                BrideCycle - <?= $role ?>
-                            </p>
-                        </li>
+                                    ?>
+                                    <img src="<?= $profilePic ?>" class="user-image" alt="User Image"/>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="user-header" onclick="event.stopPropagation()">
+                                        <?php
 
-                        <li class="user-footer" onclick="event.stopPropagation()">
-                            <div class="pull-left">
-                                <?= Html::a(
-                                    'Profile',
-                                    ['user/update' ,'id' => Yii::$app->user->identity->id ],
-                                    ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
-                                ) ?>
-                            </div>
-                            <div class="pull-right" onclick="event.stopPropagation()">
-                                <?= Html::a(
-                                    'Sign out',
-                                    ['site/logout'],
-                                    ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
-                                ) ?>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</header>
+
+                                        if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
+                                            $profilePicInner = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
+                                        } else {
+                                            $profilePicInner = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                                        }
+
+                                        ?>
+                                        <img src="<?= $profilePicInner ?>" class="img-circle" alt="User Image"/>
+
+                                        <?php if (!Yii::$app->user->isGuest) { ?>
+                                            <p>
+                                                <b>
+
+                                                    <?= Yii::$app->user->identity->first_name ?>
+                                                    <?= Yii::$app->user->identity->last_name ?>
+
+                                                </b>
+                                            </p>
+                                        <?php } ?>
+
+                                        <p>
+                                            <?php
+                                            $role = "";
+                                            if (!empty(Yii::$app->user->identity->user_type)) {
+                                                if (Yii::$app->user->identity->user_type == \app\modules\admin\models\User::USER_TYPE_ADMIN) {
+                                                    $role = 'Admin';
+                                                } elseif (Yii::$app->user->identity->user_type == \app\modules\admin\models\User::USER_TYPE_SUB_ADMIN) {
+                                                    $role = 'Sub Admin';
+                                                } elseif (Yii::$app->user->identity->user_type == \app\modules\admin\models\User::USER_TYPE_NORMAL_USER) {
+                                                    $role = 'Normal User';
+                                                }
+                                            }
+                                            ?>
+                                        </p>
+                                    </li>
+
+                                    <li class="user-footer" onclick="event.stopPropagation()">
+                                        <div class="pull-left">
+                                            <?= Html::a(
+                                                'Profile',
+                                                ['user/update' ,'id' => Yii::$app->user->identity->id ],
+                                                ['data-method' => 'post', 'class' => 'btn btn-success ']
+                                            ) ?>
+                                        </div>
+                                        <div class="pull-right" onclick="event.stopPropagation()">
+                                            <?= Html::a(
+                                                'Sign out',
+                                                ['site/logout'],
+                                                ['data-method' => 'post', 'class' => 'btn btn-success ']
+                                            ) ?>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>

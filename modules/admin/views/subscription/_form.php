@@ -23,20 +23,25 @@ use kartik\select2\Select2;
 
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-            <?= $form->field($model, 'amount')->textInput(['maxlength' => true]) ?>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'amount')->textInput(['maxlength' => true]) ?>
+                </div>
 
-            <!-- $form->field($model, 'status')->dropDownList($subscription_status, ['prompt' => ''])  -->
-
-            <?= $form->field($model, 'status')->widget(Select2::classname(), [
-                'data' => $subscription_status,
-                'size' => Select2::MEDIUM,
-                'options' => [
-                    'placeholder' => 'Select status',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]); ?>
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'status')->widget(Select2::classname(), [
+                        'data' => $subscription_status,
+                        'size' => Select2::MEDIUM,
+                        'options' => [
+                            'placeholder' => 'Select status',
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+                </div>
+                <!-- $form->field($model, 'status')->dropDownList($subscription_status, ['prompt' => ''])  -->
+            </div>
 
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>

@@ -32,67 +32,76 @@ echo Dialog::widget(
 
             <?php $form = ActiveForm::begin(); ?>
 
-            <?= $form->field($model, 'name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
-
-
-            <?= $form->field($model, 'image')->widget(FileInput::classname(), [
-                'options' => ['accept' => 'image/*', 'id' => 'brand-image'],
-                'pluginOptions' => [
-                    'allowedFileExtensions' => ['jpg', 'png'],
-                    'showPreview' => true,
-//                        'showCaption' => true,
-//                        'showRemove' => true,
-                    'showUpload' => false
-                ]
-            ]); ?>
-
-            <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
-                'data' => Brand::ARR_BRAND_STATUS,
-                //'options' => ['placeholder' => 'Select Category'],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]); ?>
-
-            <?php echo $form->field($model, 'is_top_brand')
-                ->checkBox(['label' => $model->getAttributeLabel('is_top_brand'), 'id' => 'brand-is_top_brand', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No", 'selected' => false]); ?>
-
-
-            <!-- image validation -->
-            <?php
-            $is_brand_image_empty = Brand::IMAGE_EMPTY;
-            if (!empty($model->image)) {
-                $is_brand_image_empty = Brand::IMAGE_NOT_EMPTY;
-            } ?>
-
-            <?= $form->field($model, 'is_brand_image_empty')->hiddenInput(['value' => $is_brand_image_empty])->label(false) ?>
-            <!-- image display and image popup -->
-            <?php
-            if (!empty($model->image)) {
-                $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)) {
-                    $image_path = Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
-                }
-                Modal::begin([
-                    'id' => 'brandmodal_' . $model->id,
-                    'header' => '<h3>Brand Image</h3>',
-                    'size' => Modal::SIZE_DEFAULT
-                ]);
-
-                echo Html::img($image_path, ['width' => '570']);
-
-                Modal::end();
-                $brandmodal = "brandmodal('" . $model->id . "');";
-                ?>
-
-                <div class="form-group image-class">
-                    <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../brand/image-delete?id=' . $model->id]) ?>
-                </div>
-                <div class="form-group image-class">
-                    <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $brandmodal]); ?>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
                 </div>
 
-            <?php } ?>
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'image')->widget(FileInput::classname(), [
+                        'options' => ['accept' => 'image/*', 'id' => 'brand-image'],
+                        'pluginOptions' => [
+                            'allowedFileExtensions' => ['jpg', 'png'],
+                            'showPreview' => false,
+                            'showUpload' => false
+                        ]
+                    ]); ?>
+
+                    <!-- image validation -->
+                    <?php
+                    $is_brand_image_empty = Brand::IMAGE_EMPTY;
+                    if (!empty($model->image)) {
+                        $is_brand_image_empty = Brand::IMAGE_NOT_EMPTY;
+                    } ?>
+
+                    <?= $form->field($model, 'is_brand_image_empty')->hiddenInput(['value' => $is_brand_image_empty])->label(false) ?>
+                    <!-- image display and image popup -->
+                    <?php
+                    if (!empty($model->image)) {
+                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)) {
+                            $image_path = Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+                        }
+                        Modal::begin([
+                            'id' => 'brandmodal_' . $model->id,
+                            'header' => '<h3>Brand Image</h3>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
+
+                        echo Html::img($image_path, ['width' => '570']);
+
+                        Modal::end();
+                        $brandmodal = "brandmodal('" . $model->id . "');";
+                        ?>
+
+                        <div class="form-group image-class">
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../brand/image-delete?id=' . $model->id]) ?>
+                        </div>
+                        <div class="form-group image-class">
+                            <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $brandmodal]); ?>
+                        </div>
+
+                    <?php } ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => Brand::ARR_BRAND_STATUS,
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+
+                </div>
+
+                <div class="col col-md-6">
+                    <?php echo $form->field($model, 'is_top_brand')
+                    ->checkBox(['label' => $model->getAttributeLabel('is_top_brand'), 'id' => 'brand-is_top_brand', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No", 'selected' => false]); ?>
+                </div>
+            </div>
+
 
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
