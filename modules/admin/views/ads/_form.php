@@ -27,60 +27,67 @@ echo Dialog::widget(
         <div class="ads-form">
 
             <?php $form = ActiveForm::begin(); ?>
+            <div class="row">
+                <div class="col col-md-6">
 
-            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-
-            <?= $form->field($model, 'image')->widget(FileInput::classname(), [
-                'options' => ['accept' => 'image/*', 'id' => 'ads-image'],
-                'pluginOptions' => [
-                    'allowedFileExtensions' => ['jpg', 'png', 'jpeg'],
-                    'showPreview' => true,
-//                        'showCaption' => true,
-//                        'showRemove' => true,
-                    'showUpload' => false
-                ]
-            ]); ?>
-
-            <!-- image validation -->
-            <?php
-            $is_ads_image_empty = Ads::IMAGE_EMPTY;
-            if (!empty($model->image)) {
-                $is_ads_image_empty = Ads::IMAGE_NOT_EMPTY;
-            } ?>
-
-            <?= $form->field($model, 'is_ads_image_empty')->hiddenInput(['value' => $is_ads_image_empty])->label(false) ?>
-
-            <?php
-            if (!empty($model->image)) {
-                $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                if (!empty($model->image) && file_exists(Yii::getAlias('@adsImageThumbRelativePath') . '/' . $model->image)) {
-                    $image_path = Yii::getAlias('@adsImageThumbAbsolutePath') . '/' . $model->image;
-                }
-                Modal::begin([
-                    'id' => 'adsmodal_' . $model->id,
-                    'header' => '<h3>Ads Image</h3>',
-                    'size' => Modal::SIZE_DEFAULT
-                ]);
-
-                echo Html::img($image_path, ['width' => '570']);
-
-                Modal::end();
-                $adsmodal = "adsmodal('" . $model->id . "');";
-                ?>
-
-                <div class="form-group image-class">
-                    <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../ads/image-delete?id=' . $model->id]) ?>
+                    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
                 </div>
-                <div class="form-group image-class">
-                    <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $adsmodal]); ?>
+                <div class="col col-md-6">
+
+                    <?= $form->field($model, 'image')->widget(FileInput::classname(), [
+                        'options' => ['accept' => 'image/*', 'id' => 'ads-image'],
+                        'pluginOptions' => [
+                            'allowedFileExtensions' => ['jpg', 'png', 'jpeg'],
+                            'showPreview' => false,
+                            'showUpload' => false
+                        ]
+                    ]); ?>
+
+                    <!-- image validation -->
+                    <?php
+                    $is_ads_image_empty = Ads::IMAGE_EMPTY;
+                    if (!empty($model->image)) {
+                        $is_ads_image_empty = Ads::IMAGE_NOT_EMPTY;
+                    } ?>
+
+                    <?= $form->field($model, 'is_ads_image_empty')->hiddenInput(['value' => $is_ads_image_empty])->label(false) ?>
+
+                    <?php
+                    if (!empty($model->image)) {
+                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        if (!empty($model->image) && file_exists(Yii::getAlias('@adsImageThumbRelativePath') . '/' . $model->image)) {
+                            $image_path = Yii::getAlias('@adsImageThumbAbsolutePath') . '/' . $model->image;
+                        }
+                        Modal::begin([
+                            'id' => 'adsmodal_' . $model->id,
+                            'header' => '<h3>Ads Image</h3>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
+
+                        echo Html::img($image_path, ['width' => '570']);
+
+                        Modal::end();
+                        $adsmodal = "adsmodal('" . $model->id . "');";
+                        ?>
+
+                        <div class="image-class">
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../ads/image-delete?id=' . $model->id]) ?>
+                        </div>
+                        <div class="form-group image-class">
+                            <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '50px', 'width' => '50px', 'onclick' => $adsmodal]); ?>
+                        </div>
+
+                    <?php } ?>
                 </div>
+            </div>
 
-            <?php } ?>
-
-            <?= $form->field($model, 'url')->textInput() ?>
 
             <div class="row">
-                <div class="col col-md-4">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'url')->textInput() ?>
+                </div>
+
+                <div class="col col-md-6">
                     <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
                         'data' => Ads::ARR_ADS_STATUS,
                         'options' => ['placeholder' => 'Select Status', 'value' => 1],
@@ -89,7 +96,9 @@ echo Dialog::widget(
                         ],
                     ]); ?>
                 </div>
-                <div class="col col-md-4">
+            </div>
+            <div class="row">
+                <div class="col col-md-6">
                     <?= $form->field($model, 'category_id')->widget(\kartik\select2\Select2::classname(), [
                         'data' => $category,
                         'options' => ['placeholder' => 'Select Category'],
@@ -98,7 +107,7 @@ echo Dialog::widget(
                         ],
                     ])->label('Category'); ?>
                 </div>
-                <div class="col col-md-4">
+                <div class="col col-md-6">
                     <?= $form->field($model, 'sub_category_id')->widget(\kartik\select2\Select2::classname(), [
                         'data' => $subCategory,
                         'options' => ['placeholder' => 'Select Sub Category'],
@@ -110,7 +119,7 @@ echo Dialog::widget(
             </div>
 
             <div class="row">
-                <div class="col col-md-4">
+                <div class="col col-md-6">
                     <?= $form->field($model, 'product_id')->widget(\kartik\select2\Select2::classname(), [
                         'data' => $product,
                         'options' => ['placeholder' => 'Select Product'],
@@ -119,7 +128,7 @@ echo Dialog::widget(
                         ],
                     ])->label('Product'); ?>
                 </div>
-                <div class="col col-md-4">
+                <div class="col col-md-6">
                     <?= $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::classname(), [
                         'data' => $brand,
                         'options' => ['placeholder' => 'Select Brand'],

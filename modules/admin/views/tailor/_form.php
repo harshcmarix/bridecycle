@@ -25,42 +25,45 @@ echo Dialog::widget(
             <div class="row">
                 <div class="col-md-6">
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col-md-6">
                     <?= $form->field($model, 'shop_name')->textInput(['maxlength' => true]) ?>
 
                 </div>
-                <div class="col-md-6">
-                    <?= $form->field($model, 'address')->textarea(['rows' => 5]) ?>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $form->field($model, 'address')->textarea(['rows' => 3]) ?>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput(['type' => 'number']) ?>
                 </div>
-                <div class="col-md-3">
-                    <?= $form->field($model, 'latitude')->textInput(['maxlength' => true]) ?>
-                </div>
-                <div class="col-md-3">
-                    <?= $form->field($model, 'longitude')->textInput(['maxlength' => true]) ?>
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <?= $form->field($model, 'zip_code')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <!-- $form->field($model, 'shop_image')->fileInput(['maxlength' => true])  -->
+                    <?= $form->field($model, 'latitude')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'longitude')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
                     <?= $form->field($model, 'shop_image')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'tailor-shop_image'],
                         'pluginOptions' => [
                             'allowedFileExtensions' => ['jpg', 'png'],
-                            'showPreview' => true,
-                            //                        'showCaption' => true,
-                            //                        'showRemove' => true,
+                            'showPreview' => false,
                             'showUpload' => false
                         ]
                     ]); ?>
-                </div>
-                <div class="col-md-6">
+
                     <!-- image validation code -->
                     <?php
                     $is_shop_image_empty = Tailor::IMAGE_EMPTY;
@@ -95,22 +98,18 @@ echo Dialog::widget(
                         </div>
                     <?php } ?>
                 </div>
-            </div>
-            <div class="row">
+
                 <div class="col-md-6">
                     <!-- $form->field($model, 'shop_image')->fileInput(['maxlength' => true])  -->
                     <?= $form->field($model, 'voucher')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'tailor-voucher'],
                         'pluginOptions' => [
                             'allowedFileExtensions' => ['jpg', 'png'],
-                            'showPreview' => true,
-                            //                        'showCaption' => true,
-                            //                        'showRemove' => true,
+                            'showPreview' => false,
                             'showUpload' => false
                         ]
                     ]); ?>
-                </div>
-                <div class="col-md-6">
+
                     <!-- image validation code -->
                     <?php
                     $is_shop_image_empty = Tailor::IMAGE_EMPTY;
@@ -145,14 +144,16 @@ echo Dialog::widget(
                         </div>
                     <?php } ?>
                 </div>
+                
             </div>
-            <div class="form-group">
-                <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
-                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-            </div>
-            <?php ActiveForm::end(); ?>
         </div>
+        <div class="form-group">
+            <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+            <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
     </div>
+</div>
 </div>
 <script>
     //image delete using rejax

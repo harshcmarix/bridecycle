@@ -12,14 +12,18 @@ use app\modules\admin\models\DailyReportType;
         <div class="user-panel">
             <div class="pull-left image">
                 <?php
-                $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/logo.png';
+                if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
+                    $profilePic = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
+                } else {
+                    $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                }
                 ?>
                 
-                <img src="<?= $profilePic ?>" alt="User Image" style="background-color: #b8c7ce;padding: 2px;"/>
+                <img src="<?= $profilePic ?>" alt="User Image" class="sidebar-profile"/>
             </div>
             <?php if (!Yii::$app->user->isGuest) { ?>
                 <div class="pull-left info">
-                    <p><?= Yii::$app->user->identity->first_name ?> <?= Yii::$app->user->identity->last_name ?></p>
+                    <p class=""><?= Yii::$app->user->identity->first_name ?> <?= Yii::$app->user->identity->last_name ?></p>
                     <a href="#"><i class="fa fa-circle text-success"></i>Online</a>
                 </div>
             <?php } ?>
