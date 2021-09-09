@@ -429,11 +429,11 @@ class UserController extends Controller
         }
         $model->shop_logo = '';
         if($model->save(false)){
-         return Json::encode(['success'=>'image successfully deleted']);
-     }
- }
+           return Json::encode(['success'=>'image successfully deleted']);
+       }
+   }
 
- public function actionProfileDelete($id){
+   public function actionProfileDelete($id){
     $model = User::findOne($id);
     $uploadDirPath = Yii::getAlias('@profilePictureRelativePath');
     $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
@@ -448,6 +448,6 @@ class UserController extends Controller
     $model->profile_picture = '';
     if($model->save(false)){
         return Json::encode(['success'=>'Profile image successfully deleted']);
- }
+    }
 }
 }
