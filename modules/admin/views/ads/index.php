@@ -284,4 +284,10 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     })
+
+    $('select').on('change', function() {
+        setTimeout(function () {
+            location.reload();
+        }, 200);
+    })
 </script>

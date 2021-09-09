@@ -11,6 +11,7 @@ use app\models\ProductStatus;
 use app\models\search\ProductSearch;
 use app\models\ShippingCost;
 use app\models\ShippingPrice;
+use Imagine\Image\Box;
 use Yii;
 use app\models\Product;
 use yii\base\BaseObject;
@@ -184,7 +185,8 @@ class ProductController extends Controller
                         $actualImagePath = $uploadDirPath . '/' . $fileName;
                         $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
 
-                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+//                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         // Insert product picture name into database
 
                         $modelImage->product_id = $model->id;
@@ -222,6 +224,7 @@ class ProductController extends Controller
                         chmod($actualImagePathReceipt, 0777);
 
                         Image::thumbnail($actualImagePathReceipt, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        Image::getImagine()->open($actualImagePathReceipt)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         chmod($thumbImagePathReceipt, 0777);
 
                         // Insert product picture name into database
@@ -375,7 +378,8 @@ class ProductController extends Controller
                         $actualImagePath = $uploadDirPath . '/' . $fileName;
                         $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
 
-                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+//                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         // Insert product picture name into database
 
                         $modelImage->product_id = $model->id;
@@ -412,7 +416,8 @@ class ProductController extends Controller
 
                         chmod($actualImagePathReceipt, 0777);
 
-                        Image::thumbnail($actualImagePathReceipt, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+//                        Image::thumbnail($actualImagePathReceipt, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        Image::getImagine()->open($actualImagePathReceipt)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         chmod($thumbImagePathReceipt, 0777);
 
                         // Insert product picture name into database
