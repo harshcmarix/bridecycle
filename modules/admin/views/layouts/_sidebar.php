@@ -75,28 +75,21 @@ use app\modules\admin\models\DailyReportType;
 
 
 <style>
-/*.treeview > a {*/
-    /*    white-space: nowrap;*/
-    /*    overflow: hidden;*/
-    /*    text-overflow: ellipsis;*/
-    /*    max-width: 228px;*/
-    /*}*/
+.skin-blue .sidebar-menu > li > a {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
 
-    .skin-blue .sidebar-menu > li > a {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-    }
+.treeview > a {
+    white-space: break-spaces
+}
 
-    .treeview > a {
-        white-space: break-spaces
-    }
-
-    .treeview a span {
-        display: inline-block;
-        width: 140px;
-    }
+.treeview a span {
+    display: inline-block;
+    width: 140px;
+}
 </style>

@@ -22,7 +22,7 @@ $this->title = 'Dashboard';
         </a>
     </div> 
 
-     <div class="col-md-3 col-xs-6">
+    <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl. '/admin/user/index' ?>" class="small-box-footer">
             <div class="small-box bg-lime">
                 <div class="inner">
@@ -36,7 +36,7 @@ $this->title = 'Dashboard';
         </a>
     </div>
 
-     <div class="col-md-3 col-xs-6">
+    <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl. '/admin/sub-admin/index' ?>" class="small-box-footer">
             <div class="small-box bg-teal">
                 <div class="inner">
