@@ -35,12 +35,12 @@ use app\modules\admin\models\DailyReportType;
         }
         //$modelsModule = Module::find()->where(['is_show' => 1])->orderBy(['in_order' => SORT_ASC])->all();
         $menuList[] = ['label' => 'Dashboard', 'icon' => 'home', 'url' => ['site/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'Ads', 'icon' => 'film', 'url' => ['ads/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'User', 'icon' => 'user', 'url' => ['user/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'Category', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Ads', 'icon' => 'film', 'url' => ['ads/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Brand', 'icon' => 'tag', 'url' => ['brand/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Product', 'icon' => 'product-hunt', 'url' => ['product/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Product Category', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Product Rating', 'icon' => 'star', 'url' => ['product-rating/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Order', 'icon' => 'cart-arrow-down', 'url' => ['order/index'], 'visible' => $visible];

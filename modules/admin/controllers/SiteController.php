@@ -26,6 +26,9 @@ use yii\web\{
 use Yii;
 use yii\base\InvalidParamException;
 use kartik\growl\Growl;
+use app\models\Ads;
+use app\models\Brand;
+use app\models\Tailor;
 
 /**
  * Class SiteController
@@ -81,20 +84,24 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $modelTotalCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->count();
+        $modelTotalCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '0'])->count();
+        $totalShopOwnerCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->count();
+        $totSubAdmin = User::find()->where(['user_type' => User::USER_TYPE_SUB_ADMIN])->count();
 
         $todayFrom = date('Y-m-d 00:00:01');
         $todayTo = date('Y-m-d 23:59:59');
         $modelTotalCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
+        $totalActiveAds = Ads::find()->where(['status' => '2'])->count();
+        $totalBrand = Brand::find()->count();
         $modelTotalProduct = Product::find()->count();
         $modelTotalOrder = Order::find()->count();
         $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
         $modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
         $modelTotalIncome = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
+        $totalTailor = Tailor::find()->count();
 
         // Chart uses
-
         $min = $max = 0;
         $month = [
             0 => 'Jan',
@@ -148,12 +155,17 @@ class SiteController extends Controller
 
         return $this->render('index', [
             'totalCustomer' => $modelTotalCustomer,
+            'totalShopOwnerCustomer' => $totalShopOwnerCustomer,
+            'totSubAdmin' => $totSubAdmin,
             'totalCustomerToday' => $modelTotalCustomerToday,
+            'totalActiveAds' => $totalActiveAds,
+            'totalBrand' => $totalBrand,
             'totalProduct' => $modelTotalProduct,
             'totalOrder' => $modelTotalOrder,
             'totalOrderDeliveredAndCompleted' => $modelTotalOrderDelivered,
             'totalOrderPending' => $modelTotalOrderPending,
             'totalIncome' => (!empty($modelTotalIncome)) ? $modelTotalIncome : 0,
+            'totalTailor' => $totalTailor,
             'month' => $month,
             'monthWiseOrders' => $monthWiseOrders,
             'min' => $min,
