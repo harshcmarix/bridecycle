@@ -22,8 +22,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="product-rating-index">
 
-            <?php
-            echo GridView::widget([
+            <?=
+            GridView::widget([
                 'id' => 'product-rating-grid',
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
@@ -224,23 +224,79 @@ $this->params['breadcrumbs'][] = $this->title;
                 var val = i.val();
                 i.focus().val(val);
 
-                    var searchInput = $(i);
-                    if (searchInput.length > 0) {
-                        var strLength = searchInput.val().length * 2;
-                        searchInput[0].setSelectionRange(strLength, strLength);
-                    }
-
-                    if ($('thead td i').length == 0) {
-                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
-                    }
-
-                    $('.pagination').find('li a').on('click', function () {
-                        setTimeout(function () {
-                            $(document).scrollTop($(document).innerHeight());
-                        }, 200);
-                    })
+                var searchInput = $(i);
+                if (searchInput.length > 0) {
+                    var strLength = searchInput.val().length * 2;
+                    searchInput[0].setSelectionRange(strLength, strLength);
                 }
-            });
+
+                if ($('thead td i').length == 0) {
+                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                }
+
+                $('.pagination').find('li a').on('click', function () {
+                    setTimeout(function () {
+                        $(document).scrollTop($(document).innerHeight());
+                    }, 200);
+                })
+            }
+        });
+
+        //select box filter
+        var select;
+        var submit_form = false;
+        var select_filter_selector = '#product-rating-filters select';
+        var isSelect = true;
+
+        $('select').on('change', function () {
+            isSelect = true;
+        });
+        $('input').on('keypress', function () {
+            isSelect = false;
+        });
+        $("body").on('beforeFilter', "#product-rating" , function(event) {
+            if (isSelect) {
+                return submit_form;
+            }
+        });
+        $("body").on('afterFilter', "#product-rating" , function(event) {
+            if (isSelect) {
+                submit_form = false;
+            }
+        });
+
+        $(document)
+        .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
+        .on('change', select_filter_selector, function(e) {
+            select = $(this).attr('name');
+            if (submit_form === false) {
+                submit_form = true;
+                $("#product-rating").yiiGridView("applyFilter");
+            }
+        })
+        .on('pjax:success', function() {
+            var i = $("[name='" + input + "']");
+            var val = i.val();
+            i.focus().val(val);
+
+            var searchInput = $(i);
+            if (searchInput.length > 0) {
+                var strLength = searchInput.val().length * 2;
+                searchInput[0].setSelectionRange(strLength, strLength);
+            }
+
+            if (isSelect) {
+                if ($('thead td i').length == 0) {
+                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                }
+
+                $('.pagination').find('li a').on('click', function () {
+                    setTimeout(function () {
+                        $(document).scrollTop($(document).innerHeight());
+                    }, 200);
+                })
+            }
+        });
     });
 
     $('.pagination').find('li a').on('click', function () {
