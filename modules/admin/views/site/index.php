@@ -24,7 +24,7 @@ $this->title = 'Dashboard';
 
     <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl. '/admin/user/index' ?>" class="small-box-footer">
-            <div class="small-box bg-lime">
+            <div class="small-box bg-yellow">
                 <div class="inner">
                     <h3><?php echo $totalShopOwnerCustomer ?></h3>
                     <p>Shop Owner Customers</p>
@@ -107,8 +107,22 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/tailor/index' ?>" class="small-box-footer">
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3><?php echo $totalTailor; ?></h3>
+                    <p>Tailor</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-cut"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl. '/admin/order/index' ?>" class="small-box-footer">
-            <div class="small-box bg-olive">
+            <div class="small-box bg-lime">
                 <div class="inner">
                     <h3><?php echo $totalOrder ?></h3>
                     <p>Total Order Placed</p>
@@ -123,7 +137,7 @@ $this->title = 'Dashboard';
 
     <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl. '/admin/order/index' ?>" class="small-box-footer">
-            <div class="small-box bg-red">
+            <div class="small-box bg-lime">
                 <div class="inner">
                     <h3><?php echo $totalOrderDeliveredAndCompleted ?></h3>
                     <p>Order Delivered and Completed</p>
@@ -137,27 +151,13 @@ $this->title = 'Dashboard';
 
     <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl. '/admin/order/index' ?>" class="small-box-footer">
-            <div class="small-box bg-yellow">
+            <div class="small-box bg-lime">
                 <div class="inner">
                     <h3><?php echo $totalOrderPending ?></h3>
                     <p>Order Pending</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-clock-o"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/tailor/index' ?>" class="small-box-footer">
-            <div class="small-box bg-green">
-                <div class="inner">
-                    <h3><?php echo $totalTailor; ?></h3>
-                    <p>Tailor</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-cut"></i>
                 </div>
             </div>
         </a>
