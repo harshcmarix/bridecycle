@@ -181,7 +181,7 @@ class UserController extends ActiveController
             }
             $model->google_id = $postData['google_id'];
         }
-
+     
         $model->profile_picture = UploadedFile::getInstanceByName('profile_picture');
         $model->shop_logo = UploadedFile::getInstanceByName('shop_logo');
         $model->shop_cover_picture = UploadedFile::getInstanceByName('shop_cover_picture');
@@ -776,19 +776,20 @@ class UserController extends ActiveController
      */
     public function actionVerifyProfileVerificationCode()
     {
+        // p('jhgjhgg');
         $postData = \Yii::$app->request->post();
         if (empty($postData) || empty($postData['verification_code'])) {
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "verification_code"');
         }
 
-        //$model = User::find()->where(['verification_code' => $postData['verification_code'], 'user_type' => User::USER_TYPE_NORMAL, 'is_shop_owner' => User::SHOP_OWNER_YES])->one();
         $model = User::find()->where(['verification_code' => $postData['verification_code'], 'user_type' => User::USER_TYPE_NORMAL])->one();
+
         if (!$model instanceof User) {
             throw new NotFoundHttpException('Verification code doesn\'t exist.');
         }
 
         if (!empty($model) && $model instanceof User) {
-            $model->verification_code = "";
+            // $model->verification_code = "";
             $model->is_verify_user = User::IS_VERIFY_USER_YES;
             if ($model->is_shop_owner == 1 || $model->is_shop_owner == '1') {
                 $addedAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_NO, 'user_id' => $model->id])->all();

@@ -52,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => ['raw'],
                         'enableSorting' => false,
                         'filter' => false,
+                        'width' => '5%',
                         'attribute' => 'image',
                         'value' => function ($model) {
                             $image_path = "";
@@ -130,6 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'status',
+                        'width' => '10%',
                         'value' => function ($model) {
                             $status = "";
                             if ($model->status == Ads::STATUS_INACTIVE) {
@@ -152,7 +154,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'class' => 'kartik\grid\ActionColumn',
-                        'width' => '12%'
+                        'width' => '10%'
                     ],
                 ],
 
