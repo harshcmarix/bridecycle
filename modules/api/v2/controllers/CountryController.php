@@ -179,7 +179,7 @@ class CountryController extends ActiveController
                 }
             }
         }
-        $data['shipping_cost_symbol'] = substr(Yii::$app->formatter->asCurrency($data['shipping_cost']),0,1);
+        $data['shipping_cost_symbol'] = mb_substr(Yii::$app->formatter->asCurrency($data['shipping_cost']),0,1);
         $output[] = $data;
         return $output;
     }
