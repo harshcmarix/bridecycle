@@ -178,21 +178,21 @@ class Product extends \yii\db\ActiveRecord
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
             [['images'], 'required', 'when' => function ($model) {
             },
-                'whenClient' => "function (attribute, value) {
-                    if ($('#product-is_product_images_empty').val() == 1) {            
-                                    return $('#product-images').val() == '';                                    
-                                    }
-                                }",],
+            'whenClient' => "function (attribute, value) {
+                if ($('#product-is_product_images_empty').val() == 1) {            
+                    return $('#product-images').val() == '';                                    
+                }
+            }",],
 
 
             [['receipt'], 'required', 'when' => function ($model) {
                 return $model->is_cleaned == '1';
             },
-                'whenClient' => "function (attribute, value) {
-                    if ($('#product-is_cleaned').val() == 1 && $('#product-is_product_receipt_images_empty').val() ==1) {            
-                                    return $('#product-receipt').val() == '';                                    
-                                    }
-                                }",],
+            'whenClient' => "function (attribute, value) {
+                if ($('#product-is_cleaned').val() == 1 && $('#product-is_product_receipt_images_empty').val() ==1) {            
+                    return $('#product-receipt').val() == '';                                    
+                }
+            }",],
         ];
     }
 
@@ -569,13 +569,16 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getRating()
     {
+
+        // $modelRate['total_rated_count'] = (int)number_format(SellerRating::find()->where(['seller_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
+
         $modelRate['total_rated_count'] = (int)number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
-        $modelRate['over_all_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id])->average('rating');
-        $modelRate['one_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->count();
-        $modelRate['two_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::TWO_STAR_RATE])->count();
-        $modelRate['three_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::THREE_STAR_RATE])->count();
-        $modelRate['four_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FOUR_STAR_RATE])->count();
-        $modelRate['five_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FIVE_STAR_RATE])->count();
+        $modelRate['over_all_rate'] = (float)number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rating'),2);
+        $modelRate['one_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
+        $modelRate['two_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::TWO_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
+        $modelRate['three_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::THREE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
+        $modelRate['four_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FOUR_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
+        $modelRate['five_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::FIVE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
 
         return (object)$modelRate;
     }

@@ -153,6 +153,7 @@ class ProductController extends ActiveController
     public function actionView($id)
     {
         $model = Product::findOne($id);
+        // p($model);
         if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }

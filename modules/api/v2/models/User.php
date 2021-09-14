@@ -399,14 +399,13 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getRating()
     {
-        //$modelRate['total_rated_count'] = (int)number_format(SellerRating::find()->where(['seller_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
-        $modelRate['total_rated_count'] = (int)number_format(SellerRating::find()->where(['seller_id' => $this->id])->count(), 1);
-        $modelRate['over_all_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id])->average('rate');
-        $modelRate['one_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::ONE_STAR_RATE])->count();
-        $modelRate['two_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::TWO_STAR_RATE])->count();
-        $modelRate['three_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::THREE_STAR_RATE])->count();
-        $modelRate['four_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::FOUR_STAR_RATE])->count();
-        $modelRate['five_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::FIVE_STAR_RATE])->count();
+        $modelRate['total_rated_count'] = (int)number_format(SellerRating::find()->where(['seller_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
+        $modelRate['over_all_rate'] = (float)number_format(SellerRating::find()->where(['seller_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rate'),2);
+        $modelRate['one_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::ONE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
+        $modelRate['two_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::TWO_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
+        $modelRate['three_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::THREE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
+        $modelRate['four_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::FOUR_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
+        $modelRate['five_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::FIVE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
 
         return (object)$modelRate;
     }
