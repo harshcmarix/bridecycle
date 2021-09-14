@@ -153,17 +153,17 @@ class ProductController extends ActiveController
     public function actionView($id)
     {
         $model = Product::findOne($id);
-        // p($model);
+
         if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }
-//        $model['productTracking'] = [];
-//        if ($model->type == Product::PRODUCT_TYPE_USED) {
-//            if (!empty($model->productTracking)) {
-//                $modelProductTracking = ProductTracking::find()->where(['parent_id' => $model->product_tracking_id])->orderBy('created_at')->all();
-//                $model['productTracking'] = array_merge($model->productTracking->toArray(), $modelProductTracking->toArray());
-//            }
-//        }
+        // $model['productTracking'] = [];
+        // if ($model->type == Product::PRODUCT_TYPE_USED) {
+        //     if (!empty($model->productTracking)) {
+        //         $modelProductTracking = ProductTracking::find()->where(['parent_id' => $model->product_tracking_id])->orderBy('created_at')->all();
+        //         $model['productTracking'] = array_merge($model->productTracking->toArray(), $modelProductTracking->toArray());
+        //     }
+        // }
         return $model;
     }
 
@@ -377,11 +377,11 @@ class ProductController extends ActiveController
                                                 $message = Yii::$app->fcm->createMessage();
                                                 $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
                                                 $message->setNotification($note)
-                                                    ->setData([
-                                                        'id' => $modelNotification->ref_id,
-                                                        'type' => $modelNotification->ref_type,
-                                                        'message' => $notificationText,
-                                                    ]);
+                                                ->setData([
+                                                    'id' => $modelNotification->ref_id,
+                                                    'type' => $modelNotification->ref_type,
+                                                    'message' => $notificationText,
+                                                ]);
                                                 $response = Yii::$app->fcm->send($message);
                                             }
                                         }

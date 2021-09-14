@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 use \yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
-use app\modules\api\v1\models\user;
+use app\modules\api\v1\models\User;
 
 /**
  * This is the model class for table "favourite_products".
@@ -31,8 +31,8 @@ class FavouriteProduct extends ActiveRecord
      /**
      * @return array[]
      */
-    public function behaviors()
-    {
+     public function behaviors()
+     {
         return [
             [
                 'class' => TimestampBehavior::class,
@@ -71,13 +71,13 @@ class FavouriteProduct extends ActiveRecord
    /**
      * @return array|false
      */
-    public function extraFields()
-    {
-        return [
-            'user0'=>'user0',
-            'product'=>'product'
-        ];
-    }
+   public function extraFields()
+   {
+    return [
+        'user0'=>'user0',
+        'product'=>'product'
+    ];
+}
 
     /**
      * Gets query for [[User]].
