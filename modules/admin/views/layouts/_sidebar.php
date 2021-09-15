@@ -55,6 +55,7 @@ use app\modules\admin\models\DailyReportType;
         $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Tailor', 'icon' => 'cut', 'url' => ['tailor/index'], 'visible' => $visible];
         $menuList[] = ['label' => 'Color', 'icon' => 'paint-brush', 'url' => ['color/index'], 'visible' => $visible];
+        $menuList[] = ['label' => 'Trial', 'icon' => 'ticket', 'url' => ['trial/index'], 'visible' => $visible];
 
         
         ?>
