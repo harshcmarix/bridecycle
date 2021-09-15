@@ -145,6 +145,7 @@ class TrialController extends ActiveController
         $postData['Trial']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
 
         if ($model->load($postData) && $model->validate()) {
+            $model->status = Trial::STATUS_PENDING;
             if ($model->save()) {
 
                 // Send Push notification and email notification start
