@@ -111,6 +111,7 @@ class OrderController extends ActiveController
      */
     public function actionView($id)
     {
+        p('fdfsdfsdf');
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
