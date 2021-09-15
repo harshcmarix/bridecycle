@@ -80,7 +80,6 @@ class ChatHistorySearch extends ChatHistory
             }
         }
         /* ########## Prepare Request Filter End ######### */
-
         /* ########## Active Data Filter Start ######### */
         $activeDataFilter = new ActiveDataFilter();
         $activeDataFilter->setSearchModel($this);
@@ -117,8 +116,8 @@ class ChatHistorySearch extends ChatHistory
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        //$query->groupBy('chat_history.id');
-        $query->groupBy("from_user_id, to_user_id");
+        $query->groupBy('chat_history.id');
+        // $query->groupBy("chat_history.from_user_id, chat_history.to_user_id");
 
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
@@ -133,7 +132,7 @@ class ChatHistorySearch extends ChatHistory
         ]);
 
         $chatHistoryModelData = $activeDataProvider->getModels();
-
+// p(35465);
 
         if (!empty($chatHistoryModelData)) {
             $getUserIDs = [];
