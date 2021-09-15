@@ -147,7 +147,7 @@ class TrialController extends ActiveController
         if ($model->load($postData) && $model->validate()) {
             $model->status = Trial::STATUS_PENDING;
             if ($model->save()) {
-
+                $model->status = $model->arrTrialStatus[$model->status];
                 // Send Push notification and email notification start
                 $getUsers[] = $model->receiver;
                 if (!empty($getUsers)) {

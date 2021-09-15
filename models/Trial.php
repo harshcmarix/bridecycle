@@ -37,6 +37,12 @@ class Trial extends \yii\db\ActiveRecord
     const STATUS_ACCEPT = '2';
     const STATUS_REJECT = '3';
 
+    public $arrTrialStatus = [
+        self::STATUS_PENDING => 'pending',
+        self::STATUS_ACCEPT => 'accept',
+        self::STATUS_REJECT => 'reject'
+    ];
+
     const SCENARIO_ACCEPT_REJECT = 'accept_reject_request';
 
     /**
