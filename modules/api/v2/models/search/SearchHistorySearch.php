@@ -103,7 +103,7 @@ class SearchHistorySearch extends SearchHistory
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['*'];
+            $select = ['search_histories.*'];
         }
 
         $query->select($select);
