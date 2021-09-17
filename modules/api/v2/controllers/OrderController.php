@@ -96,6 +96,7 @@ class OrderController extends ActiveController
     {
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
+        // p($requestParams);
 
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
@@ -111,7 +112,6 @@ class OrderController extends ActiveController
      */
     public function actionView($id)
     {
-        p('fdfsdfsdf');
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);

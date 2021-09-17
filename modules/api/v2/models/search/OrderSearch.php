@@ -117,7 +117,7 @@ class OrderSearch extends Order
         /* ########## Prepare Query With Default Filter End ######### */
 
         $query->groupBy('orders.id');
-        
+
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
