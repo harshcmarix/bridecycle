@@ -96,7 +96,6 @@ class OrderController extends ActiveController
     {
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
-        // p($requestParams);
 
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();

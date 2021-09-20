@@ -49,6 +49,8 @@ use yii\filters\auth\{
     QueryParamAuth
 };
 use yii\filters\Cors;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 /**
  * CartItemController implements the CRUD actions for CartItem model.
@@ -422,7 +424,7 @@ class CartItemController extends ActiveController
 
                                 // Need setting for generate pdf on server
 
-                                //$generateInvoice = $this->generateInvoice($orderItemRow->id);
+                                $generateInvoice = $this->generateInvoice($orderItemRow->id);
 
 
                                 // Send Push notification start
@@ -457,11 +459,11 @@ class CartItemController extends ActiveController
                                                     $message = Yii::$app->fcm->createMessage();
                                                     $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
                                                     $message->setNotification($note)
-                                                        ->setData([
-                                                            'id' => $modelNotification->ref_id,
-                                                            'type' => $modelNotification->ref_type,
-                                                            'message' => $notificationText,
-                                                        ]);
+                                                    ->setData([
+                                                        'id' => $modelNotification->ref_id,
+                                                        'type' => $modelNotification->ref_type,
+                                                        'message' => $notificationText,
+                                                    ]);
                                                     $response = Yii::$app->fcm->send($message);
                                                 }
                                             }
@@ -676,10 +678,27 @@ class CartItemController extends ActiveController
             $modelseller = $modelOrderItem->product->user;
             $modelsellerDetail = (!empty($modelOrderItem->product->user) && !empty($modelOrderItem->product->user->ShopDetails)) ? $modelOrderItem->product->user->ShopDetails : "";
         }
-        $content = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail]);
+        // p($modelOrderItem,0);
+        // p($modelOrder,0);
+        // p($modelProduct,0);
+        // p($modelseller,0);
+        // p($modelsellerDetail);
+        $currentDate = date('d-m-Y H:i');
+        $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail, 'currentDate' => $currentDate]);
 
-        $fileName = 'order-' . time() . "-" . $modelOrder->id . ".pdf";
-        Yii::$app->html2pdf->convert($content)->saveAs(Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName);
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', true);
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+        $output = $dompdf->output();
+        $fileName = "order-" . time() . "-" . $modelOrder->id . ".pdf";
+
+        file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName , $output);
+        $file1 = Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName . ".pdf";
+
 
         $modelOrderItem->invoice = $fileName;
         $modelOrderItem->save(false);
