@@ -6,7 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 
 // use app\modules\admin\models\User;
-use app\modules\api\v1\models\User;
+use app\modules\api\v2\models\User;
 
 /**
  * This is the model class for table "products".

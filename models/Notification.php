@@ -3,7 +3,7 @@
 namespace app\models;
 
 use Yii;
-use app\modules\api\v1\models\User;
+use app\modules\api\v2\models\User;
 
 /**
  * This is the model class for table "notification".

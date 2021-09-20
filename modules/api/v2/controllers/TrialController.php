@@ -157,7 +157,7 @@ class TrialController extends ActiveController
                                 $userDevice = $userROW->userDevice;
 
                                 // Insert into notification.
-                                $notificationText = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                                $notificationText = $model->name . " has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
                                 $modelNotification = new Notification();
                                 $modelNotification->owner_id = Yii::$app->user->identity->id;
                                 $modelNotification->notification_receiver_id = $userROW->id;

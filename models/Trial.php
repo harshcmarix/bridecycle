@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\modules\api\v1\models\User;
+use app\modules\api\v2\models\User;
 use Yii;
 
 /**
