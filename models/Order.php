@@ -140,7 +140,7 @@ class Order extends \yii\db\ActiveRecord
     public function getOrderItems0()
     {
 
-        $modelOrderItems = OrderItem::find()->where(['order_id' => $this->id])->all();
+        $modelOrderItems = OrderItem::find()->where(['order_id' => $this->id])->one();
         if (!empty($modelOrderItems)) {
             foreach ($modelOrderItems as $key => $modelOrderItemRow) {
                 if (!empty($modelOrderItemRow) && $modelOrderItemRow instanceof OrderItem) {
