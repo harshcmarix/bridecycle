@@ -572,7 +572,7 @@ class Product extends \yii\db\ActiveRecord
     {
 
         $modelRate['total_rated_count'] = (int)number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
-        $modelRate['over_all_rate'] = (float)number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rating'),2);
+        $modelRate['over_all_rate'] = number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rating'),2);
         $modelRate['one_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
         $modelRate['two_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::TWO_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
         $modelRate['three_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::THREE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
@@ -650,6 +650,5 @@ class Product extends \yii\db\ActiveRecord
         $modelProductTracking = ProductTracking::find()->where(['id' => $this->product_tracking_id])->Orwhere(['parent_id' => $this->product_tracking_id])->orderBy(['id' => SORT_ASC])->all();
         return $modelProductTracking;
     }
-
 
 }
