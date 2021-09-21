@@ -141,16 +141,10 @@ class Order extends \yii\db\ActiveRecord
     {
 
         $modelOrderItems = OrderItem::find()->where(['order_id' => $this->id])->one();
-        if (!empty($modelOrderItems)) {
-            foreach ($modelOrderItems as $key => $modelOrderItemRow) {
-                if (!empty($modelOrderItemRow) && $modelOrderItemRow instanceof OrderItem) {
+        if ($modelOrderItems instanceof OrderItem) {
 
-                    if (!empty($modelOrderItemRow->invoice) && file_exists(Yii::getAlias('@orderInvoiceRelativePath') . "/" . $modelOrderItemRow->invoice)) {
-                        $modelOrderItemRow->invoice = Yii::$app->request->getHostInfo() . Yii::getAlias('@orderInvoiceAbsolutePath') . "/" . $modelOrderItemRow->invoice;
-                    } else {
-                        $modelOrderItemRow->invoice = "";
-                    }
-                }
+            if (!empty($modelOrderItems->invoice) && file_exists(Yii::getAlias('@orderInvoiceRelativePath') . "/" . $modelOrderItems->invoice)) {
+                $modelOrderItems->invoice = Yii::$app->request->getHostInfo() . Yii::getAlias('@orderInvoiceAbsolutePath') . "/" . $modelOrderItems->invoice;
             }
         }
         return $modelOrderItems;

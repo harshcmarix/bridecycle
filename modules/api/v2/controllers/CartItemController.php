@@ -316,8 +316,9 @@ class CartItemController extends ActiveController
         $productIds = explode(",", $post['product_id']);
         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
         $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
+
         $cartTotalShipping = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('shipping_cost');
-        //p(Yii::$app->formatter->asCurrency($cartTotal));
+        
 
         if (empty($cartTotal) && empty($cartTotalShipping)) {
             //$cartTotal = OrderItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->sum('price');
@@ -343,10 +344,11 @@ class CartItemController extends ActiveController
                     $modelOrderItem->size = $modelCartItemRow->size;
                     $modelOrderItem->price = $modelCartItemRow->price;
                     $modelOrderItem->shipping_cost = $modelCartItemRow->shipping_cost;
-                    if ($modelOrderItem->save(false)) {
-                        // Delete from cart
-                        $modelCartItemRow->delete();
-                    }
+                    $modelOrderItem->save(false);
+                    // if ($modelOrderItem->save(false)) {
+                    //     // Delete from cart
+                    //     $modelCartItemRow->delete();
+                    // }
                 }
             }
 
@@ -423,7 +425,6 @@ class CartItemController extends ActiveController
 
 
                                 // Need setting for generate pdf on server
-
                                 $generateInvoice = $this->generateInvoice($orderItemRow->id);
 
 
@@ -471,15 +472,6 @@ class CartItemController extends ActiveController
                                             if ($userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
                                                 $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
 
-//                                                if (!empty($userROW->email)) {
-//                                                    Yii::$app->mailer->compose('api/addNewOrder', ['sender' => $modelOrder->user, 'receiver' => $userROW, 'message' => $message])
-//                                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-//                                                        ->setTo($userROW->email)
-//                                                        ->setSubject('Place a new order of your product')
-//                                                        ->send();
-//                                                }
-
-
                                             }
                                         }
                                     }
@@ -492,6 +484,15 @@ class CartItemController extends ActiveController
 
                     if (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') {
                         $modelOrder->status = Order::STATUS_ORDER_COMPLETED;
+
+                        $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
+
+                        foreach ($modelCartItems as $key => $modelCartItemRow) {
+                            if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
+                                // Delete from cart
+                                $modelCartItemRow->delete();
+                            }
+                        }
                     }
 
                     $modelOrder->save(false);
@@ -678,11 +679,7 @@ class CartItemController extends ActiveController
             $modelseller = $modelOrderItem->product->user;
             $modelsellerDetail = (!empty($modelOrderItem->product->user) && !empty($modelOrderItem->product->user->ShopDetails)) ? $modelOrderItem->product->user->ShopDetails : "";
         }
-        // p($modelOrderItem,0);
-        // p($modelOrder,0);
-        // p($modelProduct,0);
-        // p($modelseller,0);
-        // p($modelsellerDetail);
+        
         $currentDate = date('d-m-Y H:i');
         $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail, 'currentDate' => $currentDate]);
 
