@@ -239,9 +239,9 @@ class TrialController extends ActiveController
 
                 if ($model->status == Trial::STATUS_ACCEPT) {
                     $action = "accept_trial";
-                    $notificationText = $modelProduct->name . "'s" . " seller has accepted your request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                    $notificationText = $modelProduct->name . "'s" . " seller has accepted your request for trial of " . $modelProduct->name . " on date " . $model->date . " at " . $model->time;
                 } elseif ($model->status == Trial::STATUS_REJECT) {
-                    $notificationText = $modelProduct->name . "'s" . " seller has rejected your request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                    $notificationText = $modelProduct->name . "'s" . " seller has rejected your request for trial of " . $modelProduct->name . " on date " . $model->date . " at " . $model->time;
                     $action = "reject_trial";
                 } else {
                     $notificationText = $action = "";

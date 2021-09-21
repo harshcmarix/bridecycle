@@ -376,7 +376,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserDevice()
     {
-        $device = UserDevice::find()->where(['user_id' => Yii::$app->user->identity->id])->orderBy(['id' => SORT_DESC])->one();
+        $device = UserDevice::find()->where(['user_id' => $this->id])->orderBy(['id' => SORT_DESC])->one();
         return $device;
     }
 
