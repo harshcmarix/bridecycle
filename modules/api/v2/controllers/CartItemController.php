@@ -464,7 +464,7 @@ class CartItemController extends ActiveController
                                                         'type' => $modelNotification->ref_type,
                                                         'message' => $notificationText,
                                                     ]);
-                                                    $response = Yii::$app->fcm->send($message);
+                                                    $notificationResponse = Yii::$app->fcm->send($message);
                                                 }
                                             }
 
