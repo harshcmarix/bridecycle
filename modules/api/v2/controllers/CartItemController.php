@@ -695,9 +695,14 @@ class CartItemController extends ActiveController
 
         file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName , $output);
         $file1 = Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName . ".pdf";
-
-
         $modelOrderItem->invoice = $fileName;
+
+        $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
+        $existTrackingId = OrderItem::find()->where(['order_tracking_id' => $uniqueNumber])->one();
+        if($existTrackingId instanceof OrderItem){
+            $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
+        }
+        $modelOrderItem->order_tracking_id = $uniqueNumber;
         $modelOrderItem->save(false);
 
         return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;
