@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 //     'header' => '',
                 //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 // ],
-                ['class' => 'kartik\grid\SerialColumn'],
+                ['class' => 'kartik\grid\SerialColumn','width' => '5%',],
                 [
                     'attribute' => 'code',
                     'value' => function ($model) {
@@ -47,7 +47,76 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         return $code;
                     },
-                    'width' => '80%',
+                    'width' => '20%',
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'attribute' => 'type',
+                    'value' => function ($model) {
+                        $type = '';
+                        if ($model instanceof PromoCode) {
+                            $type = $model->type;
+                        }
+                        return $type;
+                    },
+                    'width' => '10%',
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'attribute' => 'value',
+                    'value' => function ($model) {
+                        $value = '';
+                        if ($model instanceof PromoCode) {
+                            $value = $model->value;
+                        }
+                        return $value;
+                    },
+                    'width' => '10%',
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'attribute' => 'start_date',
+                    'value' => function ($model) {
+                        $startDate = '';
+                        if ($model instanceof PromoCode) {
+                            $startDate = $model->start_date;
+                        }
+                        return $startDate;
+                    },
+                    'width' => '10%',
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'attribute' => 'end_date',
+                    'value' => function ($model) {
+                        $endDate = '';
+                        if ($model instanceof PromoCode) {
+                            $endDate = $model->end_date;
+                        }
+                        return $endDate;
+                    },
+                    'width' => '10%',
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'attribute' => 'status',
+                    'value' => function ($model) {
+                        $status = '';
+                        if ($model instanceof PromoCode) {
+                            if ($model->status == PromoCode::STATUS_ACTIVE) {
+                                $status = PromoCode::ARR_PROMOCODE_STATUS[PromoCode::STATUS_ACTIVE];
+                            } else {
+                                $status = PromoCode::ARR_PROMOCODE_STATUS[PromoCode::STATUS_INACTIVE];
+                            }
+                        }
+                        return $status;
+                    },
+                    'width' => '10%',
                     'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],

@@ -9,6 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use kartik\growl\Growl;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * PromoCodeController implements the CRUD actions for PromoCode model.
@@ -72,6 +74,12 @@ class PromoCodeController extends Controller
     {
         $model = new PromoCode();
 
+        // Model validation with ajax
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+
         if ($model->load(Yii::$app->request->post())) {
             $model->user_id = Yii::$app->user->identity->id;
             if($model->save()){
@@ -97,6 +105,12 @@ class PromoCodeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
+        // Model validation with ajax
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
 
         if ($model->load(Yii::$app->request->post())) {
             $model->user_id = Yii::$app->user->identity->id;

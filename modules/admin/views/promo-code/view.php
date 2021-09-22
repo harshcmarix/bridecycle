@@ -45,6 +45,60 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $user_name;
                         },
                     ],
+                    [
+                        'attribute' => 'type',
+                        'value' => function ($model) {
+                            $type = '';
+                            if ($model instanceof PromoCode) {
+                                $type = $model->type;
+                            }
+                            return $type;
+                        },
+                    ],
+                    [
+                        'attribute' => 'value',
+                        'value' => function ($model) {
+                            $value = '';
+                            if ($model instanceof PromoCode) {
+                                $value = $model->value;
+                            }
+                            return $value;
+                        },
+                    ],
+                    [
+                        'attribute' => 'start_date',
+                        'value' => function ($model) {
+                            $startDate = '';
+                            if ($model instanceof PromoCode) {
+                                $startDate = $model->start_date;
+                            }
+                            return $startDate;
+                        },
+                    ],
+                    [
+                        'attribute' => 'end_date',
+                        'value' => function ($model) {
+                            $endDate = '';
+                            if ($model instanceof PromoCode) {
+                                $endDate = $model->end_date;
+                            }
+                            return $endDate;
+                        },
+                    ],
+                    [
+                        'attribute' => 'status',
+                        'value' => function ($model) {
+                            $status = '';
+                            if ($model instanceof PromoCode) {
+                                if ($model->status == PromoCode::STATUS_ACTIVE) {
+                                    $status = PromoCode::ARR_PROMOCODE_STATUS[PromoCode::STATUS_ACTIVE];
+                                } else {
+                                    $status = PromoCode::ARR_PROMOCODE_STATUS[PromoCode::STATUS_INACTIVE];
+                                }
+                            }
+                            return $status;
+                        },
+                    ],
                 ],
             ]) ?>
             <p>

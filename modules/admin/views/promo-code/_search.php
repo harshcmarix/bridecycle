@@ -21,6 +21,16 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'user_id') ?>
 
+    <?= $form->field($model, 'type') ?>
+
+    <?= $form->field($model, 'value') ?>
+
+    <?= $form->field($model, 'start_date') ?>
+
+    <?= $form->field($model, 'end_date') ?>
+
+    <?= $form->field($model, 'status') ?>
+
     <?= $form->field($model, 'created_at') ?>
 
     <?= $form->field($model, 'updated_at') ?>

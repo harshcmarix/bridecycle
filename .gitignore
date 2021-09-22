@@ -33,6 +33,7 @@ tests/_support/_generated
 /.vagrant
 
 /composer.lock
+composer.lock
 /config/db.php
 
 /runtime/

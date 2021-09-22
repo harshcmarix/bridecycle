@@ -78,3 +78,9 @@ table.kv-grid-table tr.filters td{vertical-align: top;}
 .small-box h3, .small-box p {color: #000 !important;}
 .trial-status-control {width: 100% !important;}
 .carousel-indicators{display: none !important;}
+.d-none {
+  display: none !important;
+}
+#promocodeDiscount {
+  margin-top: 31px;
+}
