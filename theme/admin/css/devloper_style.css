@@ -48,8 +48,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #b30000; 
 }
-
-
 form div.required label.control-label:after {content:" * ";color:red;}
 .data_center{text-align: center !important;}
 .panel-heading{padding: 0px !important;}
@@ -83,3 +81,4 @@ table.kv-grid-table tr.filters td{vertical-align: top;}
 .sidebar-menu .treeview a .pull-right-container .fa-angle-left {-webkit-transform: rotate(180deg);-ms-transform: rotate(180deg);-o-transform: rotate(180deg);transform: rotate(180deg);}
 .sidebar-menu .menu-open>a>.fa-angle-left, .sidebar-menu .menu-open>a>.pull-right-container>.fa-angle-left {-webkit-transform: rotate(270deg) !important;-ms-transform: rotate(270deg) !important;-o-transform: rotate(270deg) !important;transform: rotate(270deg) !important;}
 .red{color: red !important;}
+.btn.btn-success.toggle-on{color: white !important;}

@@ -56,15 +56,15 @@ echo Dialog::widget(
                         ]
                     ])->label('Profile Picture <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
 
-                     <!-- image validation code -->
-                        <?php
-                        $is_profile_picture_empty = '1';
-                        if (!empty($model->profile_picture)) {
-                            $is_profile_picture_empty = '0';
-                        }
-                        ?>
-                        <?= $form->field($model, 'is_profile_picture_empty')->hiddenInput(['value' => $is_profile_picture_empty])->label(false) ?>
-                        <!-- image code -->
+                    <!-- image validation code -->
+                    <?php
+                    $is_profile_picture_empty = '1';
+                    if (!empty($model->profile_picture)) {
+                        $is_profile_picture_empty = '0';
+                    }
+                    ?>
+                    <?= $form->field($model, 'is_profile_picture_empty')->hiddenInput(['value' => $is_profile_picture_empty])->label(false) ?>
+                    <!-- image code -->
                     <?php
                     if (!empty($model->profile_picture)) {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -101,10 +101,10 @@ echo Dialog::widget(
             <div id="shop-details" class="shop-personal-details">
                 <div class="row">
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_name')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'shop_name')->textInput(['maxlength' => true])->label('Shop Name <spna class="red">*</span>'); ?>
                     </div>
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'shop_email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true])->label('Shop Email <spna class="red">*</span>'); ?>
                     </div>
                 </div>
 
@@ -160,28 +160,28 @@ echo Dialog::widget(
 
                 <div class="row">
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_phone_number', ['enableAjaxValidation' => true])->textInput(['type' => 'number']) ?>
+                        <?= $form->field($model, 'shop_phone_number', ['enableAjaxValidation' => true])->textInput(['type' => 'number'])->label('Shop Phone Number <spna class="red">*</span>'); ?>
                     </div>
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_address_street')->textInput() ?>
+                        <?= $form->field($model, 'shop_address_street')->textInput()->label('Shop Address Street <spna class="red">*</span>'); ?>
                     </div>
                 </div>
                 
                 <div class="row">
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_address_city')->textInput() ?>
+                        <?= $form->field($model, 'shop_address_city')->textInput()->label('Shop Address City <spna class="red">*</span>'); ?>
                     </div>
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_address_state')->textInput() ?>
+                        <?= $form->field($model, 'shop_address_state')->textInput()->label('Shop Address State <spna class="red">*</span>'); ?>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_address_country')->textInput() ?>
+                        <?= $form->field($model, 'shop_address_country')->textInput()->label('Shop Address Country <spna class="red">*</span>'); ?>
                     </div>
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_address_zip_code')->textInput(['type' => 'number']) ?>
+                        <?= $form->field($model, 'shop_address_zip_code')->textInput(['type' => 'number'])->label('Shop Address Zip Code <spna class="red">*</span>'); ?>
                     </div>
                 </div>
 

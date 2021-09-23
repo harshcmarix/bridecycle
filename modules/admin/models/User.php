@@ -107,6 +107,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
 
     /**
      * @return array
@@ -153,14 +154,14 @@ class User extends ActiveRecord implements IdentityInterface
 
                 [['shop_address_zip_code'],'string', 'max' => 6],
 
-                [['shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required'],
+                // [['shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required' ],
 
-                [['shop_logo',], 'required', 'on' => self::SCENARIO_CREATE],
+                // [['shop_logo',], 'required', 'on' => self::SCENARIO_CREATE],
 
                 [['shop_logo'], 'required', 'when' => function ($model) {
-                    return $model->scenario == self::SCENARIO_CREATE;
+                    // return $model->scenario == self::SCENARIO_CREATE;
                     }, 'whenClient' => "function (attribute, value) {
-                        if ($('#user-is_shop_logo_empty').val() == 1) {   
+                        if ($('#user-is_shop_logo_empty').val() == 1 && $('#user-is_shop_owner').prop('checked') == true) {   
 
                             return $('#user-shop_logo').val() == '';                                    
                         }
