@@ -49,6 +49,7 @@ class Banner extends ActiveRecord
     {
         return [
             [['name','created_at', 'updated_at'], 'safe'],
+            [['name'], 'required'],
             [['image',], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],

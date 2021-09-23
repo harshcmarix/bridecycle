@@ -109,7 +109,6 @@ class BannerController extends Controller
                 Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 // Insert profile picture name into database
                 $model->image = $fileName;
-                $model->name = $banner_image->name;
             }
 
             if ($model->save()) {
