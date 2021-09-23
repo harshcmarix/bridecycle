@@ -68,6 +68,20 @@ if (Yii::$app->controller->action->id === 'login') {
 
     </div>
     <?php $this->endBody() ?>
+    <script>
+        $('document').ready(function () {
+            $('.main-sidebar .sidebar .left-scroll ul li').on('click', function () {
+                localStorage.setItem('sidebarScrollTop', $('.main-sidebar .left-scroll').scrollTop());
+            });
+
+            if (localStorage.getItem('sidebarScrollTop')) {
+                $('.main-sidebar .sidebar .left-scroll').scrollTop(localStorage.getItem('sidebarScrollTop'));
+                setTimeout(function () {
+                    localStorage.removeItem('sidebarScrollTop');
+                }, 500);
+            }
+        })
+    </script>
     </body>
     </html>
     <?php $this->endPage() ?>
