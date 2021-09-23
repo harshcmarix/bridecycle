@@ -32,7 +32,7 @@ echo Dialog::widget(
                     <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'autocomplete' => "off"]) ?>
                 </div>
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput() ?>
+                    <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput(['type' => 'number']) ?>
                 </div>
             </div>
 
@@ -54,7 +54,7 @@ echo Dialog::widget(
                             'showPreview' => false,
                             'showUpload' => false
                         ]
-                    ]); ?>
+                    ])->label('Profile Picture <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
 
                      <!-- image validation code -->
                         <?php
@@ -117,7 +117,7 @@ echo Dialog::widget(
                                 'showPreview' => false,
                                 'showUpload' => false
                             ]
-                        ]); ?>
+                        ])->label('Shop Logo <spna class="red">*</span>'); ?>
                     </div>
                     <div class="col col-md-6">
                         <!-- image validation code -->
@@ -147,10 +147,10 @@ echo Dialog::widget(
                             $shoplogomodal = "shoplogomodal('" . $model->id . "');";
                             ?>
 
-                            <div class="image-class">
+                            <div class="shop-image-class">
                                 <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'shop_logo-delete-link', 'delete-url' => '../user/shop-logo-delete?id=' . $model->shopDetail->id]) ?>
                             </div>
-                            <div class="form-group image-class">
+                            <div class="form-group shop-image-class">
                                 <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $shoplogomodal]); ?>
                             </div>
                         <?php } ?>
@@ -160,7 +160,7 @@ echo Dialog::widget(
 
                 <div class="row">
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_phone_number', ['enableAjaxValidation' => true])->textInput() ?>
+                        <?= $form->field($model, 'shop_phone_number', ['enableAjaxValidation' => true])->textInput(['type' => 'number']) ?>
                     </div>
                     <div class="col col-md-6">
                         <?= $form->field($model, 'shop_address_street')->textInput() ?>
@@ -181,7 +181,7 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_address_country')->textInput() ?>
                     </div>
                     <div class="col col-md-6">
-                        <?= $form->field($model, 'shop_address_zip_code')->textInput() ?>
+                        <?= $form->field($model, 'shop_address_zip_code')->textInput(['type' => 'number']) ?>
                     </div>
                 </div>
 
@@ -237,7 +237,7 @@ echo Dialog::widget(
                         alert('There was an error with your request.' + xhr.responseText);
                     }
                 }).done(function (data) {
-                    $('.image-class').hide();
+                    $('.shop-image-class').hide();
                     $('#user-is_shop_logo_empty').val('1');
                 });
             }

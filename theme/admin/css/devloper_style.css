@@ -78,23 +78,8 @@ table.kv-grid-table tr.filters td{vertical-align: top;}
 .small-box h3, .small-box p {color: #000 !important;}
 .trial-status-control {width: 100% !important;}
 .carousel-indicators{display: none !important;}
-.d-none {
-  display: none !important;
-}
-#promocodeDiscount {
-  margin-top: 31px;
-}
-
-.sidebar-menu .treeview a .pull-right-container .fa-angle-left {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  transform: rotate(180deg);
-}
-
-.sidebar-menu .menu-open>a>.fa-angle-left, .sidebar-menu .menu-open>a>.pull-right-container>.fa-angle-left {
-  -webkit-transform: rotate(270deg) !important;
-  -ms-transform: rotate(270deg) !important;
-  -o-transform: rotate(270deg) !important;
-  transform: rotate(270deg) !important;
-}
+.d-none {display: none !important;}
+#promocodeDiscount {margin-top: 31px;}
+.sidebar-menu .treeview a .pull-right-container .fa-angle-left {-webkit-transform: rotate(180deg);-ms-transform: rotate(180deg);-o-transform: rotate(180deg);transform: rotate(180deg);}
+.sidebar-menu .menu-open>a>.fa-angle-left, .sidebar-menu .menu-open>a>.pull-right-container>.fa-angle-left {-webkit-transform: rotate(270deg) !important;-ms-transform: rotate(270deg) !important;-o-transform: rotate(270deg) !important;transform: rotate(270deg) !important;}
+.red{color: red !important;}

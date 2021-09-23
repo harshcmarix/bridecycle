@@ -679,10 +679,23 @@ class CartItemController extends ActiveController
             $modelseller = $modelOrderItem->product->user;
             $modelsellerDetail = (!empty($modelOrderItem->product->user) && !empty($modelOrderItem->product->user->ShopDetails)) ? $modelOrderItem->product->user->ShopDetails : "";
         }
-        
-        $currentDate = date('d-m-Y H:i');
-        $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail, 'currentDate' => $currentDate]);
 
+        $buyerUser = User::findOne($modelOrder->user_id);
+        $buyerUserAddress = UserAddress::find()->where(['user_id' => $modelOrder->user_id ])->one();
+        $modelsellerDetail = $modelsellerDetail[0];
+        $sellerAddress = UserAddress::find()->where(['user_id' => $modelseller->id ])->one();
+        $currentDate = date('d-m-Y H:i');
+
+        // Start - Generate Ordre Tracking Number
+        $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
+        $existTrackingId = OrderItem::find()->where(['order_tracking_id' => $uniqueNumber])->one();
+        if($existTrackingId instanceof OrderItem){
+            $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
+        }
+        $modelOrderItem->order_tracking_id = $uniqueNumber;
+        // End - Generate Ordre Tracking Number
+
+        $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail , 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser , 'buyerUserAddress' => $buyerUserAddress]);
 
         $options = new Options();
         $options->set('isRemoteEnabled', true);
@@ -696,13 +709,7 @@ class CartItemController extends ActiveController
         file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName , $output);
         $file1 = Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName . ".pdf";
         $modelOrderItem->invoice = $fileName;
-
-        $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
-        $existTrackingId = OrderItem::find()->where(['order_tracking_id' => $uniqueNumber])->one();
-        if($existTrackingId instanceof OrderItem){
-            $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
-        }
-        $modelOrderItem->order_tracking_id = $uniqueNumber;
+        
         $modelOrderItem->save(false);
 
         return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;

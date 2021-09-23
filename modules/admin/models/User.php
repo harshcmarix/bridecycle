@@ -106,6 +106,8 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    const SCENARIO_CREATE = 'create';
+
     /**
      * @return array
      */
@@ -115,45 +117,73 @@ class User extends ActiveRecord implements IdentityInterface
             [['first_name', 'last_name', 'email', 'mobile'], 'required'],
 
             [['first_name', 'last_name', 'email', 'mobile', 'password', 'confirm_password', 'profile_picture'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
+
             [['first_name', 'last_name', 'email', 'mobile'], 'required', 'on' => [self::SCENARIO_UPDATE_NORMAL_USER]],
 
-            [['email', 'shop_email'], 'email'],
-            [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
+            [['profile_picture'], 'required', 'when' => function ($model) {
 
-            // [['mobile', 'shop_phone_number'], 'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
-            [['mobile', 'shop_phone_number'], 'string', 'max' => 15, 'min' => 5],
+                return $model->scenario == self::SCENARIO_CREATE_NORMAL_USER;
+                }, 'whenClient' => "function (attribute, value) {
+                    if ($('#user-is_profile_picture_empty').val() == 1) {   
 
-            [['weight', 'height'], 'number'],
-            [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
-            [['profile_picture', 'password_hash', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
-            [['first_name', 'last_name'], 'string', 'max' => 50],
-            [['email'], 'string', 'max' => 60],
-            [['shop_name', 'shop_email'], 'string', 'max' => 100],
-            [['shop_email'], 'unique', 'targetClass' => ShopDetail::ClassName(), 'targetAttribute' => ['shop_email'], 'filter' => ['!=', 'user_id', Yii::$app->request->get('id')], 'message' => 'Shop email already exist.'],
-            [['email'], 'unique', 'message' => 'Email already exist.'],
-            [['shop_logo'], 'file'],
-            [['password', 'confirm_password'], 'string', 'min' => 6],
-            [['password', 'confirm_password'], 'safe'],
-            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match",],
+                        return $('#user-profile_picture').val() == '';                                    
+                    }
+                }",],
 
-            [['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required',
-            'when' => function ($model) {
-            },
-            'whenClient' => "function (attribute, value) {
-                if ($('#user-is_shop_owner').prop('checked') == true) {            
-                    return $('#user-shop_name').val() == '';
-                    return $('#user-shop_logo').val() == '';
-                    return $('#user-shop_address_street').val() == '';
-                    return $('#user-shop_address_city').val() == '';
-                    return $('#user-shop_address_state').val() == '';
-                    return $('#user-shop_address_country').val() == '';
-                    return $('#user-shop_address_zip_code').val() == '';
-                    return $('#user-shop_phone_number').val() == '';
-                    return $('#user-shop_email').val() == '';
-                }
-            }",],
-        ];
-    }
+                [['email', 'shop_email'], 'email'],
+
+                [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
+
+                // [['mobile', 'shop_phone_number'], 'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
+                // [['mobile', 'shop_phone_number'], 'is13NumbersOnly'],
+                [['mobile', 'shop_phone_number'],'string', 'max' => 13,'min'=>10],
+
+                [['weight', 'height'], 'number'],
+                [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
+                [['profile_picture', 'password_hash', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
+                [['first_name', 'last_name'], 'string', 'max' => 50],
+                [['email'], 'string', 'max' => 60],
+                [['shop_name', 'shop_email'], 'string', 'max' => 100],
+                [['shop_email'], 'unique', 'targetClass' => ShopDetail::ClassName(), 'targetAttribute' => ['shop_email'], 'filter' => ['!=', 'user_id', Yii::$app->request->get('id')], 'message' => 'Shop email already exist.'],
+                [['email'], 'unique', 'message' => 'Email already exist.'],
+                [['shop_logo'], 'file'],
+                [['password', 'confirm_password'], 'string', 'min' => 6],
+                [['password', 'confirm_password'], 'safe'],
+                ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Passwords don't match",],
+
+                [['shop_address_zip_code'],'string', 'max' => 6],
+
+                [['shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required'],
+
+                [['shop_logo',], 'required', 'on' => self::SCENARIO_CREATE],
+
+                [['shop_logo'], 'required', 'when' => function ($model) {
+                    return $model->scenario == self::SCENARIO_CREATE;
+                    }, 'whenClient' => "function (attribute, value) {
+                        if ($('#user-is_shop_logo_empty').val() == 1) {   
+
+                            return $('#user-shop_logo').val() == '';                                    
+                        }
+                    }",],
+
+                    [['shop_logo', 'shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required',
+                    'when' => function ($model) {
+                    },
+                    'whenClient' => "function (attribute, value) {
+                        if ($('#user-is_shop_owner').prop('checked') == true) {            
+                            return $('#user-shop_name').val() == '';
+                            return $('#user-shop_logo').val() == '';
+                            return $('#user-shop_address_street').val() == '';
+                            return $('#user-shop_address_city').val() == '';
+                            return $('#user-shop_address_state').val() == '';
+                            return $('#user-shop_address_country').val() == '';
+                            return $('#user-shop_address_zip_code').val() == '';
+                            return $('#user-shop_phone_number').val() == '';
+                            return $('#user-shop_email').val() == '';
+                        }
+                    }",],
+                ];
+            }
 
     /**
      * @return string[]
@@ -408,5 +438,12 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserSubscription () {
         return $this->hasOne(UserSubscription::className(), ['user_id' => 'id']);
+    }
+
+    public function is13NumbersOnly($attribute)
+    {
+        if (!preg_match('/^[0-9]{10,13}$/', $this->$attribute)) {
+            $this->addError($attribute, 'Mobile number must contain 10 to 13 digits.');
+        }
     }
 }

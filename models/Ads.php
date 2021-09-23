@@ -78,37 +78,26 @@ class Ads extends \yii\db\ActiveRecord
             [['image',], 'required', 'on' => self::SCENARIO_CREATE],
             [['image'], 'required', 'when' => function ($model) {
                 return $model->scenario == self::SCENARIO_CREATE;
-            }, 'whenClient' => "function (attribute, value) {
+                }, 'whenClient' => "function (attribute, value) {
                     if ($('#ads-is_ads_image_empty').val() == 1) {   
-                    
-                                    return $('#ads-image').val() == '';                                    
-                                    }
-            }",],
+                        
+                        return $('#ads-image').val() == '';                                    
+                    }
+                }",],
+                [['url'], 'required', 'message' => '{attribute} cannot be blank or (Product or Brand cannot be blank).','when' => function ($model) {
+                    return ($model->product_id == "" && $model->category_id == "");
+                    }, 'whenClient' => "function (attribute, value) {
+                        if ($('#ads-product_id').val() == '' && $('#ads-brand_id').val() == '') {
+                            return $('#ads-url').val() == '';   
+                        }
+                    }",],
 
-
-//            [['product_id', 'brand_id'], 'required', 'when' => function ($model) {
-//                return $model->url == "";
-//            }, 'whenClient' => "function (attribute, value) {
-//                    if ($('#ads-url').val() == '') {
-//                                    return $('#ads-product_id').val() == '';
-//                                    return $('#ads-brand_id').val() == '';
-//                                    }
-//            }",],
-
-            [['url'], 'required', 'message' => '{attribute} cannot be blank or (Product or Brand cannot be blank).','when' => function ($model) {
-                return ($model->product_id == "" && $model->category_id == "");
-            }, 'whenClient' => "function (attribute, value) {
-                    if ($('#ads-product_id').val() == '' && $('#ads-brand_id').val() == '') {
-                                    return $('#ads-url').val() == '';   
-                                    }
-            }",],
-
-            [['category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['sub_category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
-        ];
-    }
+                    [['category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
+                    [['sub_category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
+                    [['product_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+                    [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
+                ];
+            }
 
     /**
      * {@inheritdoc}
