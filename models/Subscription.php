@@ -64,6 +64,7 @@ class Subscription extends ActiveRecord
             [['status'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 50],
+            [['month'], 'string', 'max' => 3],
         ];
     }
 

@@ -73,12 +73,11 @@ class SubscriptionController extends Controller
         $model = new Subscription();
         $subscription_status = Subscription::SUBSCRIPTION_STATUS_ARRAY;
         if ($model->load(Yii::$app->request->post())) {
-
-        if ($model->save()) {
-            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Subscription created successfully.");
-        } else {
-            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Subscription.");
-        }
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Subscription created successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Subscription.");
+            }
             return $this->redirect(['index']);
         }
 
@@ -102,11 +101,11 @@ class SubscriptionController extends Controller
         $subscription_status = Subscription::SUBSCRIPTION_STATUS_ARRAY;
         if ($model->load(Yii::$app->request->post())) {
 
-        if ($model->save()) {
-            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Subscription updated successfully.");
-        } else {
-            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Subscription.");
-        }
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Subscription updated successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Subscription.");
+            }
             return $this->redirect(['index']);
         }
 

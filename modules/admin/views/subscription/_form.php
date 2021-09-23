@@ -20,8 +20,14 @@ use kartik\select2\Select2;
         <div class="subscription-form">
 
             <?php $form = ActiveForm::begin(); ?>
-
-            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'month')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col col-md-6">
