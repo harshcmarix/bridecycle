@@ -282,7 +282,7 @@ class SiteController extends Controller
         return $result;
     }
 
-    public function actionCurrentYear () {
+    public function actionCurrentYearOrders () {
         $isLeapYear = $this->yearCheckIsLeap(date('Y'));
         $thirtyOneDays = [0, 2, 4, 6, 7, 9, 11];
         $thirtyDays = [3, 5, 8, 10];
@@ -344,7 +344,7 @@ class SiteController extends Controller
         /* Year, Month, Week, Day wise data end */
     }
 
-    public function actionCurrentMonth () {
+    public function actionCurrentMonthOrders () {
         $currentMonthOrders = [];
         for ($i = 1; $i <= 31; $i++) {
             $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
@@ -359,18 +359,118 @@ class SiteController extends Controller
         return json_encode($currentMonthOrders);
     }
 
-    public function actionCurrentWeek () {
+    public function actionCurrentWeekOrders () {
         $currentWeekOrders = [];
-        for ($i = 1; $i <= 7; $i++) {
-//            $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
-//            $endDate = date('Y').'-'.date('m').'-' .$i. ' 23:23:59';
+        $weekStart = date( 'd', strtotime( 'monday this week' ));
+        $weekEnd = date( 'd', strtotime( 'sunday this week' ));
+        for ($i = $weekStart; $i <= $weekEnd; $i++) {
+            $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
+            $endDate = date('Y').'-'.date('m').'-' .$i. ' 23:23:59';
+            $datetime = \DateTime::createFromFormat('Ymd', date('Y').date('m').$i);
+            $dayName = $datetime->format('D');
+            $tmparr = [
+                'name' => $dayName,
+                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count()
+            ];
+            array_push($currentWeekOrders, $tmparr);
         }
-        $currentWeekOrders = Order::find()->where('WEEK(created_at) = WEEK(NOW())')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
-
         return json_encode($currentWeekOrders);
     }
 
-    public function actionCurrentDay () {
-        return 'current-day';
+    public function actionCurrentDayOrders () {
+        $todayOrders = [];
+        $tmparr = [
+            'name' => 'Today',
+            'y' => (double)Order::find()->where('DATE(`created_at`) = CURRENT_DATE')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count()
+        ];
+        array_push($todayOrders, $tmparr);
+        return json_encode($todayOrders);
+    }
+
+
+    public function actionCurrentYearIncome () {
+        $isLeapYear = $this->yearCheckIsLeap(date('Y'));
+        $thirtyOneDays = [0, 2, 4, 6, 7, 9, 11];
+        $thirtyDays = [3, 5, 8, 10];
+
+        $monthWiseIncome = [];
+        for ($i = 0; $i < 12; $i++) {
+            $mnt = ($i + 1);
+            $year = date('Y');
+            $monthStartDate = date('Y-m-d 00:00:01', strtotime($year . "-" . $mnt . "-1"));
+            if (in_array($i, $thirtyOneDays)) {
+                $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-31"));
+            } elseif (in_array($i, $thirtyDays)) {
+                $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-30"));
+            } else {
+                if (!$isLeapYear) {
+                    $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-28"));
+                } else {
+                    $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-29"));
+                }
+            }
+            $monthWiseIncome[] = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
+        }
+
+        $monthWiseIncome = [(double)$monthWiseIncome[0], (double)$monthWiseIncome[1], (double)$monthWiseIncome[2], (double)$monthWiseIncome[3], (double)$monthWiseIncome[4], (double)$monthWiseIncome[5], (double)$monthWiseIncome[6], (double)$monthWiseIncome[7], (double)$monthWiseIncome[8], (double)$monthWiseIncome[9], (double)$monthWiseIncome[10], (double)$monthWiseIncome[11]];
+        $monthWiseIncome = [
+            ['name' => 'jan', 'y' => $monthWiseIncome[0]],
+            ['name' => 'feb', 'y' => $monthWiseIncome[1]],
+            ['name' => 'mar', 'y' => $monthWiseIncome[2]],
+            ['name' => 'apr', 'y' => $monthWiseIncome[3]],
+            ['name' => 'may', 'y' => $monthWiseIncome[4]],
+            ['name' => 'jun', 'y' => $monthWiseIncome[5]],
+            ['name' => 'jul', 'y' => $monthWiseIncome[6]],
+            ['name' => 'aug', 'y' => $monthWiseIncome[7]],
+            ['name' => 'sep', 'y' => $monthWiseIncome[8]],
+            ['name' => 'oct', 'y' => $monthWiseIncome[9]],
+            ['name' => 'nov', 'y' => $monthWiseIncome[10]],
+            ['name' => 'dec', 'y' => $monthWiseIncome[11]],
+        ];
+
+        return json_encode((array)$monthWiseIncome);
+    }
+
+    public function actionCurrentMonthIncome () {
+        $currentMonthIncome = [];
+        for ($i = 1; $i <= 31; $i++) {
+            $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
+            $endDate = date('Y').'-'.date('m').'-' .$i. ' 23:23:59';
+            $tmparr = [
+                'name' => (string)$i,
+                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount')
+            ];
+            array_push($currentMonthIncome, $tmparr);
+        }
+
+        return json_encode($currentMonthIncome);
+    }
+
+    public function actionCurrentWeekIncome () {
+        $currentWeekIncome = [];
+        $weekStart = date( 'd', strtotime( 'monday this week' ));
+        $weekEnd = date( 'd', strtotime( 'sunday this week' ));
+        for ($i = $weekStart; $i <= $weekEnd; $i++) {
+            $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
+            $endDate = date('Y').'-'.date('m').'-' .$i. ' 23:23:59';
+            $datetime = \DateTime::createFromFormat('Ymd', date('Y').date('m').$i);
+            $dayName = $datetime->format('D');
+            $tmparr = [
+                'name' => $dayName,
+                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount')
+            ];
+            array_push($currentWeekIncome, $tmparr);
+        }
+        return json_encode($currentWeekIncome);
+    }
+
+    public function actionCurrentDayIncome () {
+        $todayIncome = [];
+        $tmparr = [
+            'name' => 'Today',
+            'y' => (double)Order::find()->where('DATE(`created_at`) = CURRENT_DATE')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount')
+        ];
+        array_push($todayIncome, $tmparr);
+        return json_encode($todayIncome);
     }
 }

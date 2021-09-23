@@ -186,15 +186,15 @@ $this->title = 'Dashboard';
             </div>
             <div class="box-body">
                 <select id="orders">
-                    <option value="current-year">Year</option>
-                    <option value="current-month">Month</option>
-                    <option value="current-week">Week</option>
-                    <option value="current-day">Today</option>
+                    <option value="current-year-orders">Year</option>
+                    <option value="current-month-orders">Month</option>
+                    <option value="current-week-orders">Week</option>
+                    <option value="current-day-orders">Today</option>
                 </select>
                 <div id="ordersGraph"></div>
                 <script>
                     $(document).ready(function () {
-                        renderGraph('current-year');
+                        renderGraph('current-year-orders');
                     });
                     $('#orders').on('change', function () {
                         var action = this.value;
@@ -255,11 +255,11 @@ $this->title = 'Dashboard';
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
                                     series: [
-                                    {
-                                        name: "Orders",
-                                        colorByPoint: false,
-                                        data: graphData
-                                    }
+                                        {
+                                            name: "Orders",
+                                            colorByPoint: false,
+                                            data: graphData
+                                        }
                                     ]
                                 });
                             }
@@ -327,32 +327,85 @@ $this->title = 'Dashboard';
             <div class="box-header">
             </div>
             <div class="box-body">
+                <select id="income">
+                    <option value="current-year-income">Year</option>
+                    <option value="current-month-income">Month</option>
+                    <option value="current-week-income">Week</option>
+                    <option value="current-day-income">Today</option>
+                </select>
+                <div id="incomeGraph"></div>
+                <script>
+                    $(document).ready(function () {
+                        renderIncomeGraph('current-year-income');
+                    });
+                    $('#income').on('change', function () {
+                        var action = this.value;
+                        renderIncomeGraph(action);
+                    })
 
+                    function renderIncomeGraph(action) {
+                        $.ajax({
+                            url: '<?php echo Yii::$app->request->baseUrl. '/admin/site/' ?>'+action,
+                            type: 'get',
+                            success: function (data) {
+                                var incomeGraphData = JSON.parse(data);
+                                const d = new Date();
+                                var chart = Highcharts.chart('incomeGraph', {
+                                    chart: {
+                                        type: 'column'
+                                    },
+                                    title: {
+                                        text: 'Income ' + d.getFullYear()
+                                    },
+                                    xAxis: {
+                                        type: 'category'
+                                    },
+                                    yAxis: {
+                                        title: {
+                                            text: 'Income'
+                                        }
+                                    },
+                                    tooltip: {
+                                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
+                                    },
+                                    series: [
+                                        {
+                                            name: "Income",
+                                            colorByPoint: false,
+                                            data: incomeGraphData
+                                        }
+                                    ]
+                                });
+                            }
+                        });
+                    }
+                </script>
                 <?php
-                echo Highcharts::widget([
-                    'options' => [
-                        'title' => ['text' => 'Income ' . date('Y')],
-                        //'boxplot' => ['fillColor' => '#EADBC4'],
-                        'plotOptions' => [
-                            'column' => [
-                                'cursor' => 'pointer',
-                                'color' => '#3366CC',
-                            ],
-                        ],
-                        'xAxis' => [
-                            'categories' => $month,
-
-                        ],
-                        'yAxis' => [
-                            'title' => ['text' => 'Income'],
-                            'min' => $minIncome,
-                            'max' => $maxIncome,
-                        ],
-                        'series' => [
-                            ['type' => 'column', 'name' => 'Income', 'data' => $monthWiseIncomes],
-                        ]
-                    ]
-                ]);
+//                echo Highcharts::widget([
+//                    'options' => [
+//                        'title' => ['text' => 'Income ' . date('Y')],
+//                        //'boxplot' => ['fillColor' => '#EADBC4'],
+//                        'plotOptions' => [
+//                            'column' => [
+//                                'cursor' => 'pointer',
+//                                'color' => '#3366CC',
+//                            ],
+//                        ],
+//                        'xAxis' => [
+//                            'categories' => $month,
+//
+//                        ],
+//                        'yAxis' => [
+//                            'title' => ['text' => 'Income'],
+//                            'min' => $minIncome,
+//                            'max' => $maxIncome,
+//                        ],
+//                        'series' => [
+//                            ['type' => 'column', 'name' => 'Income', 'data' => $monthWiseIncomes],
+//                        ]
+//                    ]
+//                ]);
                 ?>
             </div>
         </div>

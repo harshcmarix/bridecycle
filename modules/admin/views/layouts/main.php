@@ -25,6 +25,7 @@ if (Yii::$app->controller->action->id === 'login') {
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-NXLFFXY4HG"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
