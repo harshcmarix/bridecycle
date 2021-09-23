@@ -66,7 +66,7 @@ class Tailor extends ActiveRecord
             [['address'], 'string'],
             [['latitude', 'longitude'], 'safe'],
             // [['mobile'], 'integer'],
-            [['zip_code'], 'integer'],
+            [['zip_code'], 'string', 'max' => 6],
             [['mobile'], 'string', 'max' => 15, 'min' => 5],
             [['shop_image', 'voucher'], 'file', 'extensions' => 'png,jpg'],
             [['shop_image'], 'required', 'on' => self::SCENARIO_CREATE],
