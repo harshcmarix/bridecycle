@@ -84,3 +84,17 @@ table.kv-grid-table tr.filters td{vertical-align: top;}
 #promocodeDiscount {
   margin-top: 31px;
 }
+
+.sidebar-menu .treeview a .pull-right-container .fa-angle-left {
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.sidebar-menu .menu-open>a>.fa-angle-left, .sidebar-menu .menu-open>a>.pull-right-container>.fa-angle-left {
+  -webkit-transform: rotate(270deg) !important;
+  -ms-transform: rotate(270deg) !important;
+  -o-transform: rotate(270deg) !important;
+  transform: rotate(270deg) !important;
+}
