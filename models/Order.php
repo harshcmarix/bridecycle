@@ -62,7 +62,7 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'user_address_id', 'total_amount'], 'required'],
+            [['user_id', 'user_address_id', 'total_amount', 'status'], 'required'],
             [['user_id', 'user_address_id', 'total_amount'], 'integer'],
             [['status'], 'string'],
             [['created_at', 'updated_at'], 'safe'],

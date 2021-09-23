@@ -26,7 +26,13 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'total_amount')->textInput(['readonly' => true]) ?>
         </div>
         <div class="col col-md-6">
-            <?= $form->field($model, 'status')->dropDownList([ 1 => 'pending', 2 => 'in progress', 3 => 'completed', 4 => 'cancelled', ], ['prompt' => '']) ?>
+            <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
+                'data' => $model->arrOrderStatus,
+                'options' => ['placeholder' => 'Select Status', 'value' => $model->status],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
         </div>
     </div>
 
