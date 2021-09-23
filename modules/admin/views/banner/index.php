@@ -101,15 +101,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
                 'options' => ['class' => 'btn-group mr-2']
             ],
-            [
-                'content' =>
-                Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                    'class' => 'btn btn-basic',
-                    'title' => 'Reset Filter',
-                    'onclick' => "window.location.href = '" . Url::to(['banner/index']) . "';",
-                ]),
-                'options' => ['class' => 'btn-group mr-2']
-            ],
             '{toggleData}',
         ],
         'toggleDataContainer' => ['class' => 'btn-group mr-2'],
