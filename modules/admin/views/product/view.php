@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = 'View Product';
                         'attribute' => 'user_id',
                         'label' => 'User',
                         'value' => function ($model) {
-                            return (!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\api\v1\models\User) ? $model->user->first_name . " " . $model->user->last_name : '';
+                            return (!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\api\v2\models\User) ? $model->user->first_name . " " . $model->user->last_name : '';
                         },
                     ],
                     'name',
@@ -183,7 +183,39 @@ $this->params['breadcrumbs'][] = 'View Product';
                     'height',
                     'weight',
                     'width',
-                    'receipt',
+                    [
+                        'format' => ['raw'],
+                        'enableSorting' => false,
+                        'filter' => false,
+                        'attribute' => 'receipt',
+                        'value' => function ($model) {
+                            $receiptImages = array_column($model->productReceipt,'file');
+                            $data = "";
+                            $image_path = "";
+                            if (!empty($receiptImages)) {
+                                foreach ($receiptImages as $receiptImage) {
+                                    if (!empty($receiptImage) && file_exists(Yii::getAlias('@productReceiptImageThumbRelativePath') . '/' . $receiptImage)) {
+                                        $image_path = Yii::getAlias('@productReceiptImageThumbAbsolutePath') . '/' . $receiptImage;
+                                    } else {
+                                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                                    }
+                                    Modal::begin([
+                                        'id' => 'productReceiptModal_' . $model->id,
+                                        'header' => '<h3>Product Receipt</h3>',
+                                        'size' => Modal::SIZE_DEFAULT
+                                    ]);
+
+                                    echo Html::img($image_path, ['width' => '570']);
+
+                                    Modal::end();
+                                    $productImageModal = "productReceiptModal('" . $model->id . "');";
+                                    $data .= Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $productImageModal, 'height' => '100px', 'width' => '100px']);
+                                }
+                            }
+                            return $data;
+                        },
+
+                    ],
                     [
                         'attribute' => 'type',
                         'label' => 'Product Type',
@@ -224,5 +256,9 @@ $this->params['breadcrumbs'][] = 'View Product';
 <script type="text/javascript">
     function contentmodelProductImg(id) {
         $('#contentmodalProductImg_' + id).modal('show');
+    }
+
+    function productReceiptModal(id) {
+        $('#productReceiptModal_' + id).modal('show');
     }
 </script>

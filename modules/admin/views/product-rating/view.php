@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'user_id',
                         'label' => 'User',
                         'value' => function ($model) {
-                            return (!empty($model->user) && $model->user instanceof \app\modules\api\v1\models\User) ? $model->user->first_name . " " . $model->user->last_name : "";
+                            return (!empty($model->user) && $model->user instanceof \app\modules\api\v2\models\User) ? $model->user->first_name . " " . $model->user->last_name : "";
                         },
                     ],
                     [
