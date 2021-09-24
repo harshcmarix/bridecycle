@@ -113,9 +113,6 @@ class ProductController extends Controller
 
         $postData = Yii::$app->request->post('Product');
 
-
-        //$postData['option_color'] = (!empty($postData['option_color'])) ? (string) implode(",", $postData['option_color']) : "";
-
         $model->scenario = Product::SCENARIO_CREATE;
         $model->is_top_selling = Product::IS_TOP_SELLING_NO;
         if (!empty($postData['is_top_selling'])) {
@@ -131,6 +128,7 @@ class ProductController extends Controller
         if (!empty($postData['is_admin_favourite'])) {
             $model->is_admin_favourite = $postData['is_admin_favourite'];
         }
+        
 
         $model->user_id = Yii::$app->user->identity->id;
 
@@ -138,6 +136,13 @@ class ProductController extends Controller
         $model->receipt = $ReceiptImages;
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            if (!empty($postData['option_show_only'])) {
+                $model->option_show_only = $postData['option_show_only'];
+            }else{
+                $model->option_show_only = '0';
+            }
+
             $images = UploadedFile::getInstances($model, 'images');
 
             $model->option_color = implode(",", $postData['option_color']);
@@ -190,6 +195,7 @@ class ProductController extends Controller
                         // Insert product picture name into database
 
                         $modelImage->product_id = $model->id;
+                        $modelImage->name = $fileName;
                         $modelImage->name = $fileName;
                         $modelImage->created_at = date('Y-m-d H:i:s');
                         $modelImage->save(false);
@@ -283,6 +289,13 @@ class ProductController extends Controller
 //            $postData['option_color'] = implode(",", $postData['option_color']);
 //        }
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            if (!empty($postData['option_show_only'])) {
+                $model->option_show_only = $postData['option_show_only'];
+            }else{
+                $model->option_show_only = '0';
+            }
+            
             $model->option_color = implode(",", $postData['option_color']);
             if (empty($oldUserId)) {
                 $model->user_id = Yii::$app->user->identity->id;
