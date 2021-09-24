@@ -205,6 +205,12 @@ class ProductController extends ActiveController
         $productData['Product']['user_id'] = Yii::$app->user->identity->id;
         if ($model->load($productData) && $model->validate()) {
 
+            if (!empty($postData['option_show_only'])) {
+                $model->option_show_only = $postData['option_show_only'];
+            }else{
+                $model->option_show_only = '0';
+            }
+
             $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
 
             $model->shipping_country_id = (!empty($productData['Product']['shipping_country_id'])) ? $productData['Product']['shipping_country_id'] : "";
@@ -431,6 +437,12 @@ class ProductController extends ActiveController
         $model->gender = Product::GENDER_FOR_FEMALE;
 
         if ($model->load($productData) && $model->validate()) {
+
+            if (!empty($postData['option_show_only'])) {
+                $model->option_show_only = $postData['option_show_only'];
+            }else{
+                $model->option_show_only = '0';
+            }
 
             $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
 
