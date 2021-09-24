@@ -64,11 +64,10 @@ echo Dialog::widget(
                         Modal::end();
                         $productcategorymodal = "productcategorymodal('" . $model->id . "');";
                         ?>
-                        <div class="form-group image-class">
-                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../product-category/image-delete?id=' . $model->id]) ?>
-                        </div>
-                        <div class="form-group image-class">
+
+                        <div class="form-group image-class product-image-block">
                             <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $productcategorymodal]); ?>
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../product-category/image-delete?id=' . $model->id]) ?>
                         </div>
                     <?php } ?>
                 </div>

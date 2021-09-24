@@ -82,16 +82,14 @@ echo Dialog::widget(
                         $profilePicturemodal = "profilePicturemodal('" . $model->id . "');";
                         ?>
 
-                        <div class="image-class">
-                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'profile_picture-delete-link', 'delete-url' => '../user/profile-delete?id=' . $model->id]) ?>
-                        </div>
-                        <div class="form-group image-class">
+                        <div class="form-group image-class product-image-block">
                             <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $profilePicturemodal]); ?>
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'profile_picture-delete-link', 'delete-url' => '../user/profile-delete?id=' . $model->id]) ?>
                         </div>
                     <?php } ?>
                     <!-- image code end -->
                 </div>
-                
+
                 <div class="col col-md-6">
                     <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
                 </div>
@@ -145,11 +143,9 @@ echo Dialog::widget(
                             $shoplogomodal = "shoplogomodal('" . $model->id . "');";
                             ?>
 
-                            <div class="shop-image-class">
-                                <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'shop_logo-delete-link', 'delete-url' => '../user/shop-logo-delete?id=' . $model->shopDetail->id]) ?>
-                            </div>
-                            <div class="form-group shop-image-class">
+                            <div class="form-group shop-image-class product-image-block">
                                 <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $shoplogomodal]); ?>
+                                <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'shop_logo-delete-link', 'delete-url' => '../user/shop-logo-delete?id=' . $model->shopDetail->id]) ?>
                             </div>
                         <?php } ?>
                         <!-- image code end -->
@@ -228,16 +224,16 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                $.ajax({
-                    url: deleteUrl,
-                    type: 'post',
-                    error: function (xhr, status, error) {
-                        alert('There was an error with your request.' + xhr.responseText);
-                    }
-                }).done(function (data) {
+                // $.ajax({
+                //     url: deleteUrl,
+                //     type: 'post',
+                //     error: function (xhr, status, error) {
+                //         alert('There was an error with your request.' + xhr.responseText);
+                //     }
+                // }).done(function (data) {
                     $('.shop-image-class').hide();
                     $('#user-is_shop_logo_empty').val('1');
-                });
+                // });
             }
         });
     });
@@ -248,16 +244,16 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this profile ?', function (result) {
             if (result) {
-                $.ajax({
-                    url: deleteUrl,
-                    type: 'post',
-                    error: function (xhr, status, error) {
-                        alert('There was an error with your request.' + xhr.responseText);
-                    }
-                }).done(function (data) {
+                // $.ajax({
+                //     url: deleteUrl,
+                //     type: 'post',
+                //     error: function (xhr, status, error) {
+                //         alert('There was an error with your request.' + xhr.responseText);
+                //     }
+                // }).done(function (data) {
                     $('.image-class').hide();
                     $('#user-is_profile_picture_empty').val('1');
-                });
+                // });
             }
         });
     });

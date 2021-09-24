@@ -69,11 +69,9 @@ echo Dialog::widget(
                         $adsmodal = "adsmodal('" . $model->id . "');";
                         ?>
 
-                        <div class="image-class">
-                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../ads/image-delete?id=' . $model->id]) ?>
-                        </div>
-                        <div class="form-group image-class">
+                        <div class="form-group image-class product-image-block">
                             <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '50px', 'width' => '50px', 'onclick' => $adsmodal]); ?>
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'pjax-delete-link', 'delete-url' => '../ads/image-delete?id=' . $model->id]) ?>
                         </div>
 
                     <?php } ?>

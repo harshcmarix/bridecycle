@@ -89,11 +89,9 @@ echo Dialog::widget(
                         Modal::end();
                         $tailorimagemodal = "tailorimagemodal('" . $model->id . "');";
                         ?>
-                        <div class="form-group image-class">
-                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'shop_image-delete-link', 'delete-url' => '../tailor/image-delete?id=' . $model->id]) ?>
-                        </div>
-                        <div class="form-group image-class">
+                        <div class="form-group image-class product-image-block">
                             <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $tailorimagemodal]); ?>
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'shop_image-delete-link', 'delete-url' => '../tailor/image-delete?id=' . $model->id]) ?>
                         </div>
                     <?php } ?>
                 </div>
@@ -134,11 +132,9 @@ echo Dialog::widget(
                         Modal::end();
                         $tailorimagevouchermodal = "tailorimagemodal('" . $model->id . "');";
                         ?>
-                        <div class="form-group image-class-voucher">
-                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'shop_image-voucher-delete-link', 'delete-url' => '../tailor/image-delete-voucher?id=' . $model->id]) ?>
-                        </div>
-                        <div class="form-group image-class-voucher">
+                        <div class="form-group image-class-voucher product-image-block">
                             <?= Html::img($image_pathvoucher, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $tailorimagevouchermodal]); ?>
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'shop_image-voucher-delete-link', 'delete-url' => '../tailor/image-delete-voucher?id=' . $model->id]) ?>
                         </div>
                     <?php } ?>
                 </div>
