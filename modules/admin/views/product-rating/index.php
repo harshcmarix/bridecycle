@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'user_id',
                         'value' => function ($model) {
                             $user = '';
-                            if ($model->user instanceof \app\modules\api\v1\models\User) {
+                            if ($model->user instanceof \app\modules\api\v2\models\User) {
                                 $user = $model->user->first_name . " " . $model->user->last_name;
                             }
                             return $user;

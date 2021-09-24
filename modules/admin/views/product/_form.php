@@ -138,7 +138,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         }
                         ?>
                         <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
-                            <?php $pKey = $key + 1; ?>
+                            <?php $pKey = $key; ?>
                             <?php echo $form->field($model, 'shipping_country_price[]')->textInput(['value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
                                 'class' => 'shipping_country_cost_' . $pKey,
 
