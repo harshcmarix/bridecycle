@@ -219,7 +219,7 @@ class Product extends \yii\db\ActiveRecord
             'description' => 'Description',
             'available_quantity' => 'Available Quantity',
             'is_top_selling' => 'Is Top Selling',
-            'is_top_trending' => 'Is Top Trending',
+            'is_top_trending' => 'Is Top Tranding',
             'brand_id' => 'Brand',
             'gender' => 'Gender',
             'is_cleaned' => 'Is Cleaned',
