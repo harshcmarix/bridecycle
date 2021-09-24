@@ -84,3 +84,8 @@ table.kv-grid-table tr.filters td{vertical-align: top;}
 .red{color: red !important;}
 .btn.btn-success.toggle-on{color: white !important;}
 .panel-footer .summary b:first-child{letter-spacing: 2px;}
+.product-image-block {display: inline;margin-right: 20px;}
+.product-image-block a {position: absolute;}
+.product-receipt-preview {margin: 0px 0px 15px 15px;}
+.product-receipt-image-block {display: inline;margin-right: 20px;}
+.product-receipt-image-block a {position: absolute;}

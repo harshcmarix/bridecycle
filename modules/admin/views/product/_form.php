@@ -171,8 +171,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                     $data = "";
                                     foreach ($model->productImages as $imageRow) {
 
-                                        if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
-                                            $image_path = Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $imageRow->name;
+                                        if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
+                                            $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
                                         } else {
                                             $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                                         }
@@ -188,10 +188,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
                                         Modal::end();
                                 // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
-                                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_picture' onclick='contentmodelProductImgEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']);
-
+//                                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_picture' onclick='contentmodelProductImgEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']);
+                                        $productImageModal = 'contentmodelProductImgEdit("' . $imageRow->id . '")';
+                                        $data .= "<div class='product-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productImageModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-image-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
                                     }
-                                    echo $data;
+                                    echo "<div>" . $data . "</div>";
 
                                     echo \kartik\dialog\Dialog::widget([
                                         'libName' => 'krajeeDialog',
@@ -336,7 +337,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             foreach ($model->productReceipt as $imageRow) {
 
                 if (!empty($imageRow) && $imageRow instanceof \app\models\ProductReceipt && !empty($imageRow->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . '/' . $imageRow->file)) {
-                    $image_path = Yii::getAlias('@productReceiptImageThumbAbsolutePath') . '/' . $imageRow->file;
+                    $image_path = Yii::getAlias('@productReceiptImageAbsolutePath') . '/' . $imageRow->file;
                 } else {
                     $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 }
@@ -352,10 +353,10 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
                 Modal::end();
                         // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
-                $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_Receipt_picture' onclick='contentmodelProductImgReceiptEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-receipt-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_receipt_img', 'height' => '100px', 'width' => '100px']);
-
+                $productReceiptModal = 'contentmodelProductImgReceiptEdit("' . $imageRow->id . '")';
+                $data .= "<div class='product-receipt-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productReceiptModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-receipt-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-receipt-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
             }
-            echo $data;
+            echo "<div class='product-receipt-preview'>" . $data . "</div>";
 
             echo \kartik\dialog\Dialog::widget([
                 'libName' => 'krajeeDialog',

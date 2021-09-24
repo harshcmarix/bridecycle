@@ -48,7 +48,10 @@ $this->params['breadcrumbs'][] = 'View Product';
                             return (!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\api\v2\models\User) ? $model->user->first_name . " " . $model->user->last_name : '';
                         },
                     ],
-                    'name',
+                    [
+                        'attribute' => 'name',
+                        'label' => 'Product Name',
+                    ],
                     //'number',
                     [
                         'attribute' => 'category_id',
@@ -93,8 +96,8 @@ $this->params['breadcrumbs'][] = 'View Product';
                             $images = $model->productImages;
                             if (!empty($images)) {
                                 foreach ($images as $imageRow) {
-                                    if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
-                                        $image_path = Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $imageRow->name;
+                                    if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
+                                        $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
                                     } else {
                                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                                     }
@@ -194,8 +197,8 @@ $this->params['breadcrumbs'][] = 'View Product';
                             $image_path = "";
                             if (!empty($receiptImages)) {
                                 foreach ($receiptImages as $receiptImage) {
-                                    if (!empty($receiptImage) && file_exists(Yii::getAlias('@productReceiptImageThumbRelativePath') . '/' . $receiptImage)) {
-                                        $image_path = Yii::getAlias('@productReceiptImageThumbAbsolutePath') . '/' . $receiptImage;
+                                    if (!empty($receiptImage) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . '/' . $receiptImage)) {
+                                        $image_path = Yii::getAlias('@productReceiptImageAbsolutePath') . '/' . $receiptImage;
                                     } else {
                                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                                     }
