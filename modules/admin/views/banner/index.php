@@ -66,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     $bannermodal = "bannermodal('" . $model->id . "');";
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $bannermodal, 'height' => '50px', 'width' => '50px']);
                 },
+                'width' => '20%',
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
@@ -85,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // ],
             [
                 'class' => 'kartik\grid\ActionColumn',
-                'width' => '12%'
+                'width' => '10%'
             ],
         ],
 

@@ -57,11 +57,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             'options' => ['prompt' => ''],
                             'pluginOptions' => [
                                 'allowClear' => true,
-                                // 'width'=>'20px'
                             ],
                         ],
                         'header' => 'Product',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 250px']
                     ],
                     [
                         'attribute' => 'user_id',
@@ -80,20 +79,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             'options' => ['prompt' => ''],
                             'pluginOptions' => [
                                 'allowClear' => true,
-                                // 'width'=>'20px'
                             ],
                         ],
                         'header' => 'User',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 300px']
                     ],
                     [
                         'attribute' => 'rating',
                         'value' => function ($model) {
                             return (!empty($model->rating)) ? $model->rating : '';
                         },
-                        'width' => '4%',
                         'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 100px']
                     ],
                     [
                         'attribute' => 'review',
@@ -102,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'header' => '',
                         'format'=>['html'],
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 300px']
                     ],
                     [
                         'attribute' => 'status',
@@ -126,12 +123,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Status',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 150px']
                     ],
                     [
                         'header' => 'Actions',
                         'class' => 'kartik\grid\ActionColumn',
-                        'width' => '12%'
                     ],
                 ],
                 'pjax' => true, // pjax is set to always true for this demo

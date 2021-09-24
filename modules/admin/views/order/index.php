@@ -151,7 +151,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
             'header' => 'Order Status',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
         ],
         [
             'class' => 'kartik\grid\ActionColumn',

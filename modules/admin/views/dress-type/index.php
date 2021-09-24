@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'header' => '',
                     'vAlign' => 'middle',
                     'format' => 'raw',
-                    'width' => '30%',
+                    'width' => '65%',
                     'headerOptions' => ['style' => 'text-align: center !important']
                 ],
                 [
@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $dresstypemodal, 'height' => '50px', 'width' => '50px']);
                     },
                     'header' => '',
-                    'width' => '22%',
+                    'width' => '20%',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
 //                [
@@ -89,7 +89,8 @@ $this->params['breadcrumbs'][] = $this->title;
 //                ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
-                    'template'=>'{view} {delete}'
+                    'template'=>'{view} {delete}',
+                    'width' => '10%'
                 ],
             ],
 

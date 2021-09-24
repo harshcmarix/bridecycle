@@ -38,7 +38,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return $model->name;
                 },
                 'header' => 'Name',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 200px']
             ],
             [
                 'format' => 'raw',
@@ -82,7 +82,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return $result;
                 },
                 'header' => 'Images',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 100px'],
 
             ],
 //        [
@@ -107,7 +107,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => 'Category',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
             ],
             [
                 'attribute' => 'sub_category_id',
@@ -123,7 +123,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => 'Sub Category',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
             ],
             [
                 'attribute' => 'price',
@@ -131,7 +131,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
                 },
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
             ],
 
             [
@@ -140,7 +140,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
                 },
                 'header' => 'Tax',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 70px'],
             ],
             [
                 'attribute' => 'option_conditions',
