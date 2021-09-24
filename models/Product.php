@@ -157,7 +157,9 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'status_id', 'option_color'], 'required'], //'is_top_selling', 'is_top_trending', 'number'
-            [['category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'status_id', 'user_id', 'address_id', 'dress_type_id', 'product_tracking_id'], 'integer'],
+            [['category_id', 'sub_category_id', 'available_quantity', 'brand_id', 'status_id', 'user_id', 'address_id', 'dress_type_id', 'product_tracking_id'], 'integer'],
+            [['price', 'height', 'weight', 'width'], 'number' , 'on' => self::SCENARIO_CREATE],
+            [['price', 'height', 'weight', 'width'], 'number'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
             [['number', 'other_info', 'created_at', 'updated_at'], 'safe'],
