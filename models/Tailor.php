@@ -80,6 +80,8 @@ class Tailor extends ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'shop_image', 'voucher'], 'string', 'max' => 255],
             [['shop_name'], 'string', 'max' => 50],
+            [['shop_image'], 'file', 'extensions' => 'jpg, png'],
+            [['voucher'], 'file', 'extensions' => 'jpg, png'],
         ];
     }
 

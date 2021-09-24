@@ -183,6 +183,8 @@ class User extends ActiveRecord implements IdentityInterface
                             return $('#user-shop_email').val() == '';
                         }
                     }",],
+                    [['profile_picture'], 'file', 'extensions' => 'jpg, png'],
+                    [['shop_logo'], 'file', 'extensions' => 'jpg, png'],
                 ];
             }
 

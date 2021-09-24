@@ -31,7 +31,6 @@ echo Dialog::widget(
             <?= $form->field($model, 'image')->widget(FileInput::classname(), [
                 'options' => ['accept' => 'image/*', 'id' => 'banner-image'],
                 'pluginOptions' => [
-                    'allowedFileExtensions' => ['jpg', 'png'],
                     'showPreview' => false,
                     'showUpload' => false
                 ]

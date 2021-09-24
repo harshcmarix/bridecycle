@@ -87,6 +87,7 @@ class ProductCategory extends \yii\db\ActiveRecord
                                     }
                                 }",],
             [['parent_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['parent_category_id' => 'id']],
+            [['image'], 'file', 'extensions' => 'jpg, png'],
         ];
     }
 

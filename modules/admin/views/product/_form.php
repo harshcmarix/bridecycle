@@ -150,7 +150,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         <?= $form->field($model, 'images[]')->widget(FileInput::classname(), [
                             'options' => ['accept' => 'image/*', 'id' => 'product-images', 'multiple' => true],
                             'pluginOptions' => [
-                                'allowedFileExtensions' => ['jpg', 'png'],
                                 'showPreview' => false,
                                 'showUpload' => false,
                                 'maxFileCount' => 5,
@@ -321,7 +320,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <?= $form->field($model, 'receipt[]')->widget(FileInput::classname(), [
                 'options' => ['accept' => 'image/*', 'id' => 'product-receipt', 'multiple' => true],
                 'pluginOptions' => [
-                    'allowedFileExtensions' => ['jpg', 'png'],
                     'showPreview' => false,
                     'showUpload' => false,
                     'maxFileCount' => 5,

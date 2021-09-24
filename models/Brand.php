@@ -100,6 +100,7 @@ class Brand extends ActiveRecord
                                     return $('#brand-image').val() == '';                                    
                                     }
             }",],
+            [['image'], 'file', 'extensions' => 'jpg, png'],
         ];
     }
 

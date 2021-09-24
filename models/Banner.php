@@ -60,6 +60,7 @@ class Banner extends ActiveRecord
                                     return $('#banner-image').val() == '';                                    
                                     }
             }",],
+            [['image'], 'file', 'extensions' => 'jpg, png'],
         ];
     }
 

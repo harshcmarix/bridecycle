@@ -302,6 +302,9 @@ class ProductController extends Controller
 
             $ReceiptImages = UploadedFile::getInstances($model, 'receipt');
 
+            if (!empty($postData['type'])) {
+                $model->type = $postData['type'];
+            }
 
             if ($model->save(false)) {
 

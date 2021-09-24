@@ -184,7 +184,7 @@ class Product extends \yii\db\ActiveRecord
                     return $('#product-images').val() == '';                                    
                 }
             }",],
-
+            [['images'], 'file', 'extensions' => 'jpg, png'],
 
             [['receipt'], 'required', 'when' => function ($model) {
                 return $model->is_cleaned == '1';
@@ -194,6 +194,7 @@ class Product extends \yii\db\ActiveRecord
                     return $('#product-receipt').val() == '';                                    
                 }
             }",],
+            [['receipt'], 'file', 'extensions' => 'jpg, png'],
         ];
     }
 

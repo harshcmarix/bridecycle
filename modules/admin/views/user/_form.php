@@ -50,7 +50,6 @@ echo Dialog::widget(
                     <?= $form->field($model, 'profile_picture')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'user-profile_picture'],
                         'pluginOptions' => [
-                            'allowedFileExtensions' => ['jpg', 'png'],
                             'showPreview' => false,
                             'showUpload' => false
                         ]
@@ -113,7 +112,6 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_logo')->widget(FileInput::classname(), [
                             'options' => ['accept' => 'image/*', 'id' => 'user-shop_logo'],
                             'pluginOptions' => [
-                                'allowedFileExtensions' => ['jpg', 'png'],
                                 'showPreview' => false,
                                 'showUpload' => false
                             ]

@@ -58,7 +58,6 @@ echo Dialog::widget(
                     <?= $form->field($model, 'shop_image')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'tailor-shop_image'],
                         'pluginOptions' => [
-                            'allowedFileExtensions' => ['jpg', 'png'],
                             'showPreview' => false,
                             'showUpload' => false
                         ]
@@ -104,7 +103,6 @@ echo Dialog::widget(
                     <?= $form->field($model, 'voucher')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'tailor-voucher'],
                         'pluginOptions' => [
-                            'allowedFileExtensions' => ['jpg', 'png'],
                             'showPreview' => false,
                             'showUpload' => false
                         ]
