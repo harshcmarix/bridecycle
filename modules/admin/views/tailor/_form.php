@@ -108,12 +108,12 @@ echo Dialog::widget(
 
                     <!-- image validation code -->
                     <?php
-                    $is_shop_image_empty = Tailor::IMAGE_EMPTY;
-                    if (!empty($model->shop_image)) {
-                        $is_shop_image_empty = Tailor::IMAGE_NOT_EMPTY;
+                    $is_voucher_image_empty = Tailor::IMAGE_EMPTY;
+                    if (!empty($model->voucher)) {
+                        $is_voucher_image_empty = Tailor::IMAGE_NOT_EMPTY;
                     }
                     ?>
-                    <?= $form->field($model, 'is_shop_image_empty')->hiddenInput(['value' => $is_shop_image_empty])->label(false) ?>
+                    <?= $form->field($model, 'is_voucher_image_empty')->hiddenInput(['value' => $is_voucher_image_empty])->label(false) ?>
                     <!-- image code -->
                     <?php
                     if (!empty($model->voucher)) {
@@ -157,16 +157,16 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                $.ajax({
-                    url: deleteUrl,
-                    type: 'post',
-                    error: function (xhr, status, error) {
-                        alert('There was an error with your request.' + xhr.responseText);
-                    }
-                }).done(function (data) {
+                // $.ajax({
+                //     url: deleteUrl,
+                //     type: 'post',
+                //     error: function (xhr, status, error) {
+                //         alert('There was an error with your request.' + xhr.responseText);
+                //     }
+                // }).done(function (data) {
                     $('.image-class').hide();
                     $('#tailor-is_shop_image_empty').val(image_empty);
-                });
+                // });
             }
         });
     });
@@ -176,16 +176,16 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                $.ajax({
-                    url: deleteUrl,
-                    type: 'post',
-                    error: function (xhr, status, error) {
-                        alert('There was an error with your request.' + xhr.responseText);
-                    }
-                }).done(function (data) {
+                // $.ajax({
+                //     url: deleteUrl,
+                //     type: 'post',
+                //     error: function (xhr, status, error) {
+                //         alert('There was an error with your request.' + xhr.responseText);
+                //     }
+                // }).done(function (data) {
                     $('.image-class-voucher').hide();
-                    //$('#tailor-is_shop_image_empty').val(image_empty);
-                });
+                    $('#tailor-is_voucher_image_empty').val(image_empty);
+                // });
             }
         });
     });

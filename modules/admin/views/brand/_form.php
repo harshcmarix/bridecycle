@@ -119,16 +119,16 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                $.ajax({
-                    url: deleteUrl,
-                    type: 'post',
-                    error: function (xhr, status, error) {
-                        alert('There was an error with your request.' + xhr.responseText);
-                    }
-                }).done(function (data) {
+                // $.ajax({
+                //     url: deleteUrl,
+                //     type: 'post',
+                //     error: function (xhr, status, error) {
+                //         alert('There was an error with your request.' + xhr.responseText);
+                //     }
+                // }).done(function (data) {
                     $('.image-class').hide();
                     $('#brand-is_brand_image_empty').val(image_empty);
-                });
+                // });
             }
         });
     });

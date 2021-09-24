@@ -183,7 +183,7 @@ class TailorController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post())) {
-
+            $postData = Yii::$app->request->post('Tailor');
             if (!empty($new_image)) {
                 $uploadDirPath = Yii::getAlias('@tailorShopImageRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@tailorShopImageThumbRelativePath');
@@ -261,6 +261,19 @@ class TailorController extends Controller
 
             } else {
                 $model->voucher = $old_image_voucher;
+            }
+
+            if (!empty($postData['is_voucher_image_empty']) && empty($model->voucher) && $postData['is_voucher_image_empty'] == 1) {
+                $uploadDirPath = Yii::getAlias('@tailorVoucherImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@tailorVoucherImageThumbRelativePath');
+                // unlink images with thumb
+                if (file_exists($uploadDirPath . '/' . $model->voucher) && !empty($model->voucher)) {
+                    unlink($uploadDirPath . '/' . $model->voucher);
+                }
+                if (file_exists($uploadThumbDirPath . '/' . $model->voucher) && !empty($model->voucher)) {
+                    unlink($uploadThumbDirPath . '/' . $model->voucher);
+                }
+                $model->voucher = null;
             }
 
             if ($model->save()) {
