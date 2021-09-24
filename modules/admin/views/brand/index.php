@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'options' => ['prompt' => ''],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            // 'width'=>'20px'
+                            'width'=>'70%'
                         ],
                     ],
 
@@ -136,12 +136,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'header' => 'Brand Of The Week',
                     'value' => function ($data) {
                         $totalSoldProducts = $data->isBrandOfTheWeek($data->id);
-                        $isBrandOfTheWeek = 'no';
+                        $isBrandOfTheWeek = 'No';
                         if (!empty($totalSoldProducts) && !empty($totalSoldProducts['total_sold_product']) && $totalSoldProducts['total_sold_product'] > 0) {
-                            $isBrandOfTheWeek = 'yes';
+                            $isBrandOfTheWeek = 'Yes';
                         }
                         return $isBrandOfTheWeek;
                     }
+
                 ],
                 // [
                 //     'attribute' => 'created_at',
@@ -386,9 +387,9 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     });
 
-    $('.pagination').find('li a').on('click', function () {
-        setTimeout(function () {
-            $(document).scrollTop($(document).innerHeight());
-        }, 200);
-    })
+$('.pagination').find('li a').on('click', function () {
+    setTimeout(function () {
+        $(document).scrollTop($(document).innerHeight());
+    }, 200);
+})
 </script>
