@@ -34,7 +34,7 @@ echo Dialog::widget(
                     'showPreview' => false,
                     'showUpload' => false
                 ]
-            ]); ?>
+            ])->label('Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
             <!-- image validation -->
             <?php
             $is_banner_image_empty = Banner::IMAGE_EMPTY;

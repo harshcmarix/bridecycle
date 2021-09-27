@@ -14,17 +14,17 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row text-center">
             <div class="col col-md-4">
                 <a href="<?php echo Url::to(['report/customers', 'p' => 'w']) ?>">
-                    <button class="btn btn-basic active">Weekly</button>
+                    <button class="btn btn-basic btn-sm btn-theme active">Weekly</button>
                 </a>
             </div>
             <div class="col col-md-4">
                 <a href="<?php echo Url::to(['report/customers', 'p' => 'm']) ?>">
-                    <button class="btn btn-basic">Monthly</button>
+                    <button class="btn btn-basic btn-sm btn-theme">Monthly</button>
                 </a>
             </div>
             <div class="col col-md-4">
                 <a href="<?php echo Url::to(['report/customers', 'p' => 'y']) ?>">
-                    <button class="btn btn-basic">Yearly</button>
+                    <button class="btn btn-basic btn-sm btn-theme">Yearly</button>
                 </a>
             </div>
             <div class="col col-md-12">
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </div>
                             <div class="col col-md-6">
                                 <div class="text-right">
-                                    <a class="btn btn-primary"
+                                    <a class="btn btn-primary btn-sm"
                                        href="<?php echo Url::to(['report/export-customers-report', 'p' => Yii::$app->request->get('p')]) ?>"><i
                                                 class="fa fa-arrow-up"></i> Export
                                         to Excel</a>

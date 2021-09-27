@@ -2,10 +2,8 @@
 
 use yii\helpers\Html;
 use miloschuman\highcharts\Highcharts;
-
 $this->title = 'Dashboard';
 ?>
-
 
 <div class="row">
     <div class="col-md-3 col-xs-6">
@@ -181,7 +179,7 @@ $this->title = 'Dashboard';
 
 <div class="row">
     <div class="col-md-6 col-xl-6">
-        <div class="box box-basic">
+        <div class="box box-basic chart-shadow">
             <div class="box-header">
             </div>
             <div class="box-body">
@@ -208,33 +206,6 @@ $this->title = 'Dashboard';
                             success: function (data) {
                                 var graphData = JSON.parse(data);
                                 const d = new Date();
-
-                                // var chart = Highcharts.chart('ordersGraph', {
-                                //     title: {
-                                //         text: 'Orders ' + d.getFullYear()
-                                //     },
-                                //     plotOptions: {
-                                //        column: {
-                                //            cursor: 'pointer',
-                                //            color: '#3366CC',
-                                //        },
-                                //     },
-                                //     series: {
-                                //         name: "Browsers",
-                                //         colorByPoint: true,
-                                //         data: [
-                                //             {name: "1", y: 62.74,}, {name: "2", y: 10.57,},{name: "3", y: 7.23,}, {name: "4", y: 5.58}, {name: "5", y: 4.02}
-                                //         ]
-                                //     },
-                                //     xAxis: {
-                                //         categories: 'categories',
-                                //     },
-                                //     yAxis: {
-                                //         title: {text: 'Order'},
-                                //         min: 0,
-                                //         max: 2,
-                                //     }
-                                // });
                                 var chart = Highcharts.chart('ordersGraph', {
                                     chart: {
                                         type: 'column'
@@ -255,75 +226,22 @@ $this->title = 'Dashboard';
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
                                     series: [
-                                        {
-                                            name: "Orders",
-                                            colorByPoint: false,
-                                            data: graphData
-                                        }
+                                    {
+                                        name: "Orders",
+                                        colorByPoint: false,
+                                        data: graphData
+                                    }
                                     ]
                                 });
                             }
                         });
                     }
                 </script>
-                <?php
-
-//                echo Highcharts::widget([
-//                    'options' => [
-//                        'title' => ['text' => 'Orders ' . date('Y')],
-//                        //'boxplot' => ['fillColor' => '#EADBC4'],
-//                        'plotOptions' => [
-//                            'column' => [
-//                                'cursor' => 'pointer',
-//                                'color' => '#3366CC',
-//                            ],
-//                        ],
-//                        'xAxis' => [
-//                            'categories' => $month,
-//
-//                        ],
-//                        'yAxis' => [
-//                            'title' => ['text' => 'Order'],
-//                            'min' => $min,
-//                            'max' => $max,
-//                        ],
-//                        'series' => [
-//                            ['type' => 'column', 'name' => 'Order', 'data' => $monthWiseOrders],
-//                        ]
-//                    ]
-//                ]);
-
-                /* Year, Month, Week, Day wise data start */
-//                echo Highcharts::widget([
-//                    'options' => [
-//                        'title' => ['text' => 'Orders ' . date('Y')],
-//                        //'boxplot' => ['fillColor' => '#EADBC4'],
-//                        'plotOptions' => [
-//                            'column' => [
-//                                'cursor' => 'pointer',
-//                                'color' => '#3366CC',
-//                            ],
-//                        ],
-//                        'xAxis' => [
-//                            'categories' => $month,
-//                        ],
-//                        'yAxis' => [
-//                            'title' => ['text' => 'Order'],
-//                            'min' => $min,
-//                            'max' => $max,
-//                        ],
-//                        'series' => [
-//                            ['type' => 'column', 'name' => 'Order', 'data' => $monthWiseOrders],
-//                        ]
-//                    ]
-//                ]);
-                /* Year, Month, Week, Day wise data end */
-                ?>
             </div>
         </div>
     </div>
     <div class="col-md-6 col-xl-6">
-        <div class="box box-basic">
+        <div class="box box-basic chart-shadow">
             <div class="box-header">
             </div>
             <div class="box-body">
@@ -370,43 +288,17 @@ $this->title = 'Dashboard';
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
                                     series: [
-                                        {
-                                            name: "Income",
-                                            colorByPoint: false,
-                                            data: incomeGraphData
-                                        }
+                                    {
+                                        name: "Income",
+                                        colorByPoint: false,
+                                        data: incomeGraphData
+                                    }
                                     ]
                                 });
                             }
                         });
                     }
                 </script>
-                <?php
-//                echo Highcharts::widget([
-//                    'options' => [
-//                        'title' => ['text' => 'Income ' . date('Y')],
-//                        //'boxplot' => ['fillColor' => '#EADBC4'],
-//                        'plotOptions' => [
-//                            'column' => [
-//                                'cursor' => 'pointer',
-//                                'color' => '#3366CC',
-//                            ],
-//                        ],
-//                        'xAxis' => [
-//                            'categories' => $month,
-//
-//                        ],
-//                        'yAxis' => [
-//                            'title' => ['text' => 'Income'],
-//                            'min' => $minIncome,
-//                            'max' => $maxIncome,
-//                        ],
-//                        'series' => [
-//                            ['type' => 'column', 'name' => 'Income', 'data' => $monthWiseIncomes],
-//                        ]
-//                    ]
-//                ]);
-                ?>
             </div>
         </div>
     </div>

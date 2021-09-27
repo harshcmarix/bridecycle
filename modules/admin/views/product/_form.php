@@ -154,7 +154,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                 'showUpload' => false,
                                 'maxFileCount' => 5,
                             ]
-                        ]); ?>
+                        ])->label('Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
                         <!-- </div> -->
 
                         <?php if (Yii::$app->controller->action->id == 'update') { ?>
@@ -324,7 +324,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     'showUpload' => false,
                     'maxFileCount' => 5,
                 ]
-            ]); ?>
+            ])->label('Receipt <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
 
         </div>
     </div>

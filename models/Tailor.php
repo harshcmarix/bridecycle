@@ -62,26 +62,24 @@ class Tailor extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'shop_name', 'address', 'zip_code', 'latitude', 'longitude', 'shop_image'], 'required'],
+            [['name', 'shop_name', 'address', 'zip_code', 'latitude', 'longitude'], 'required'],
+            [['shop_image'], 'required', 'on' => self::SCENARIO_CREATE],
             [['address'], 'string'],
             [['latitude', 'longitude'], 'safe'],
-            // [['mobile'], 'integer'],
             [['zip_code'], 'string', 'max' => 6],
-            [['mobile'], 'string', 'max' => 15, 'min' => 5],
+            [['mobile'], 'string', 'max' => 13, 'min' => 5],
             [['shop_image', 'voucher'], 'file', 'extensions' => 'png,jpg'],
-//            [['shop_image'], 'required', 'on' => self::SCENARIO_CREATE],
             [['shop_image'], 'required', 'when' => function ($model) {
-                //return $model->is_brand_image_empty == '1';
-            }, 'whenClient' => "function (attribute, value) {
+                }, 'whenClient' => "function (attribute, value) {
                     if ($('#tailor-is_shop_image_empty').val() == 1) {
                         return $('#tailor-shop_image').val() == '';
                     }
-            }",],
-            [['created_at', 'updated_at'], 'safe'],
-            [['name', 'shop_image', 'voucher'], 'string', 'max' => 255],
-            [['shop_name'], 'string', 'max' => 50],
-        ];
-    }
+                }",],
+                [['created_at', 'updated_at'], 'safe'],
+                [['name', 'shop_image', 'voucher'], 'string', 'max' => 255],
+                [['shop_name'], 'string', 'max' => 50],
+            ];
+        }
 
     /**
      * {@inheritdoc}

@@ -61,7 +61,7 @@ echo Dialog::widget(
                             'showPreview' => false,
                             'showUpload' => false
                         ]
-                    ]); ?>
+                    ])->label('Shop Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
 
                     <!-- image validation code -->
                     <?php

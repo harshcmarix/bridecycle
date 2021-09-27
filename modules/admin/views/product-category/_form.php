@@ -45,7 +45,7 @@ echo Dialog::widget(
                             'showPreview' => false,
                             'showUpload' => false
                         ]
-                    ]); ?>
+                    ])->label('Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
 
                     <!-- image display and image popup -->
                     <?php
