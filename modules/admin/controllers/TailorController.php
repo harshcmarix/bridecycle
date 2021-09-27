@@ -77,7 +77,7 @@ class TailorController extends Controller
     public function actionCreate()
     {
         $model = new Tailor();
-        $model->scenario = Tailor::SCENARIO_CREATE;
+//        $model->scenario = Tailor::SCENARIO_CREATE;
         $shop_image = UploadedFile::getInstance($model, 'shop_image');
         $shop_image_voucher = UploadedFile::getInstance($model, 'voucher');
 
