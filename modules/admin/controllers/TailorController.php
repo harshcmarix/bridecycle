@@ -263,7 +263,7 @@ class TailorController extends Controller
                 $model->voucher = $old_image_voucher;
             }
 
-            if (!empty($postData['is_voucher_image_empty']) && empty($model->voucher) && $postData['is_voucher_image_empty'] == 1) {
+            if (!empty($postData['is_voucher_image_empty']) && $postData['is_voucher_image_empty'] == 1) {
                 $uploadDirPath = Yii::getAlias('@tailorVoucherImageRelativePath');
                 $uploadThumbDirPath = Yii::getAlias('@tailorVoucherImageThumbRelativePath');
                 // unlink images with thumb

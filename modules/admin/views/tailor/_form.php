@@ -152,6 +152,7 @@ echo Dialog::widget(
 <script>
     //image delete using rejax
     var image_empty = <?php echo Tailor::IMAGE_EMPTY?>;
+    var image_not_empty = <?php echo Tailor::IMAGE_NOT_EMPTY?>;
     $('.shop_image-delete-link').on('click', function (e) {
         e.preventDefault();
         var deleteUrl = $(this).attr('delete-url');
@@ -189,6 +190,10 @@ echo Dialog::widget(
             }
         });
     });
+
+    $('#tailor-voucher').on('change', function () {
+        $('#tailor-is_voucher_image_empty').val(image_not_empty);
+    })
 
     //image popup
     function tailorimagemodal(id) {

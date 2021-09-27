@@ -74,8 +74,8 @@ class Tailor extends ActiveRecord
                 //return $model->is_brand_image_empty == '1';
             }, 'whenClient' => "function (attribute, value) {
                     if ($('#tailor-is_shop_image_empty').val() == 1) {            
-                                    return $('#tailor-shop_image').val() == '';                                    
-                                    }
+                        return $('#tailor-shop_image').val() == '';                                    
+                    }
             }",],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'shop_image', 'voucher'], 'string', 'max' => 255],
