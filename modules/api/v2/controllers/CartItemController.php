@@ -51,10 +51,9 @@ use yii\filters\auth\{
 use yii\filters\Cors;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use app\models\Setting;
 
-/**
- * CartItemController implements the CRUD actions for CartItem model.
- */
+// CartItemController implements the CRUD actions for CartItem model.
 class CartItemController extends ActiveController
 {
     /**
@@ -695,7 +694,14 @@ class CartItemController extends ActiveController
         $modelOrderItem->order_tracking_id = $uniqueNumber;
         // End - Generate Ordre Tracking Number
 
-        $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail , 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser , 'buyerUserAddress' => $buyerUserAddress]);
+        $transactionFees = Setting::find()->where(['option_key' => 'transaction_fees'])->one();
+        $transactionFeesAmount = 0;
+        if($transactionFees instanceof Setting)
+        {
+            $transactionFeesAmount = $transactionFees->option_value;
+        }
+
+        $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail , 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser , 'buyerUserAddress' => $buyerUserAddress, 'transactionFeesAmount' => $transactionFeesAmount]);
 
         $options = new Options();
         $options->set('isRemoteEnabled', true);

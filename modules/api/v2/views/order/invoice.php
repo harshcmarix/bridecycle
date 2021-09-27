@@ -8,7 +8,6 @@
 <body>
     <div class="wrapper">
 
-
         <table style="width:100%;padding: 30px 30px;background: #f9f9f9;">
             <tbody>
 
@@ -98,12 +97,21 @@
                     </td>
                 </tr>
 
+                <tr class="total-amount" style="border: 0;border-collapse: collapse;background: #f9f9f9;">
+                    <td class="col-5 text-right" style="text-align: right;width: 50%;border: 0;border-collapse: collapse;text-align: right;" colspan="5">
+                        <p style="padding:3px 0px 3px;font-size:13px;color:#2d2d2d;font-weight:600;text-transform:uppercase;margin:0px;font-size:16px;">Tax</p>
+                    </td>
+                    <td class="col-20 text-right" style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
+                        <p style="padding:3px 0px 3px;margin:0px;text-align: right;padding-right: 15px;"><?php echo number_format($transactionFeesAmount,2); ?></p>
+                    </td>
+                </tr>
+
                 <tr class="total-amount tax" style="border: 0;border-collapse: collapse;background: #f9f9f9;">
                     <td class="col-5 text-right" style="text-align: right;width: 50%;border: 0;border-collapse: collapse;text-align: right;" colspan="5">
                         <p style="padding-bottom: 10px;margin:0px;font-size:18px;">Total</p>
                     </td>
                     <td class="col-20 text-right" style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
-                        <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo number_format($order->total_amount,2); ?></p>
+                        <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo number_format($order->total_amount + $transactionFeesAmount,2); ?></p>
                     </td>
                 </tr>
 
@@ -112,7 +120,7 @@
                         <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;font-size:20px;color: #2d2d2d;font-weight: bold;">Total</p>
                     </td>
                     <td class="col-20 text-right" style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
-                        <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo number_format($order->total_amount,2); ?></p>
+                        <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo number_format($order->total_amount + $transactionFeesAmount,2); ?></p>
                     </td>
                 </tr>
             </table>
