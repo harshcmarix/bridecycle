@@ -72,13 +72,23 @@ if (Yii::$app->controller->action->id === 'login') {
     <script>
         $('document').ready(function () {
             $('.main-sidebar .sidebar .left-scroll ul li').on('click', function () {
+                var url = document.URL.substr(0,document.URL.lastIndexOf('/'));
+                var currentFolder = url.slice(url.lastIndexOf('/'));
+
                 localStorage.setItem('sidebarScrollTop', $('.main-sidebar .left-scroll').scrollTop());
+                localStorage.setItem('currentFolder', currentFolder);
             });
 
-            if (localStorage.getItem('sidebarScrollTop')) {
+            if (localStorage.getItem('sidebarScrollTop') && localStorage.getItem('currentFolder')) {
                 $('.main-sidebar .sidebar .left-scroll').scrollTop(localStorage.getItem('sidebarScrollTop'));
                 setTimeout(function () {
-                    localStorage.removeItem('sidebarScrollTop');
+                    var url = document.URL.substr(0,document.URL.lastIndexOf('/'));
+                    var currentFolder = url.slice(url.lastIndexOf('/'));
+                    if (localStorage.getItem('currentFolder') !== currentFolder) {
+                        localStorage.setItem('sidebarScrollTop', $('.main-sidebar .left-scroll').scrollTop());
+                        localStorage.setItem('currentFolder', currentFolder);
+                        // localStorage.removeItem('sidebarScrollTop');
+                    }
                 }, 500);
             }
         })
