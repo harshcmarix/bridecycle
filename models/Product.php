@@ -198,7 +198,7 @@ class Product extends \yii\db\ActiveRecord
                     }
                 }",
             ],
-            [['receipt'], 'file', 'extensions' => 'jpg, png, jpeg',
+            [['receipt'], 'file', 'extensions' => 'jpg, png, jpeg'],
         ];
     }
 
