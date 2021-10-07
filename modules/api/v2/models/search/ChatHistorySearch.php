@@ -161,11 +161,11 @@ class ChatHistorySearch extends ChatHistory
 
                         if (!empty($lastMessage) && !empty($lastMessage->message_type) && in_array($lastMessage->message_type, [ChatHistory::MESSAGE_TYPE_IMAGE, ChatHistory::MESSAGE_TYPE_VIDEO])) {
                             //$lastMessage->last_message = (!empty($lastMessage) && !empty($lastMessage->message)) ? Yii::getAlias('@apiImagesRoot') . Yii::getAlias('@chatMediaAbsolutePath') . '/' . $lastMessage->message : "";
-                            // $dataRow['last_message'] = (!empty($lastMessage) && !empty($lastMessage->message)) ? Yii::$app->request->getHostInfo() . Yii::getAlias('@chatMediaThumbAbsolutePath') . '/' . $lastMessage->message : "";
+                            // $dataRow['last_message'] = (!empty($lastMessage) && !empty($lastMessage->message)) ? Yii::$app->request->getHostInfo() . Yii::getAlias('@chatMediaAbsolutePath') . '/' . $lastMessage->message : "";
 
                             $imgFile = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                            if (!empty($lastMessage) && !empty($lastMessage->message) && file_exists(Yii::getAlias('@chatMediaThumbRelativePath') . '/' . $lastMessage->message)) {
-                                $imgFile = Yii::$app->request->getHostInfo() . Yii::getAlias('@chatMediaThumbAbsolutePath') . '/' . $lastMessage->message;
+                            if (!empty($lastMessage) && !empty($lastMessage->message) && file_exists(Yii::getAlias('@chatMediaRelativePath') . '/' . $lastMessage->message)) {
+                                $imgFile = Yii::$app->request->getHostInfo() . Yii::getAlias('@chatMediaAbsolutePath') . '/' . $lastMessage->message;
                             }
                             $dataRow['last_message'] = $imgFile;
                             $lastMessage->message = $imgFile;
