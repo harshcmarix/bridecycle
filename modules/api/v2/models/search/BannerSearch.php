@@ -130,8 +130,8 @@ class BannerSearch extends Banner
 
         foreach ($bannerModelData as $key => $value) {
             $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($bannerModelData[$key]['image']) && file_exists(Yii::getAlias('@bannerImageThumbRelativePath') . '/' . $value->image)) {
-                $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@bannerImageThumbAbsolutePath') . '/' . $value->image;
+            if (!empty($bannerModelData[$key]['image']) && file_exists(Yii::getAlias('@bannerImageRelativePath') . '/' . $value->image)) {
+                $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@bannerImageAbsolutePath') . '/' . $value->image;
             }
             $bannerModelData[$key]['image'] = $bannerImage;
         }

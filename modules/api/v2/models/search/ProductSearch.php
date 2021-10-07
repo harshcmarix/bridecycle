@@ -365,9 +365,9 @@ class ProductSearch extends Product
             $productImg = [];
             if (!empty($value->productImages)) {
                 foreach ($value->productImages as $keys => $productImageRow) {
-                    if (!empty($productImageRow) && $productImageRow instanceof ProductImage && !empty($productImageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $productImageRow->name)) {
+                    if (!empty($productImageRow) && $productImageRow instanceof ProductImage && !empty($productImageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $productImageRow->name)) {
 
-                        $productImg[] = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $productImageRow->name;
+                        $productImg[] = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageAbsolutePath') . '/' . $productImageRow->name;
                     }
 
                 }

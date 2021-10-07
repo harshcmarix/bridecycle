@@ -132,8 +132,8 @@ class AdsSearch extends Ads
 
         foreach ($adsModelData as $key => $value) {
             $adsImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($adsModelData[$key]['image']) && file_exists(Yii::getAlias('@adsImageThumbRelativePath') . '/' . $value->image)) {
-                $adsImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@adsImageThumbAbsolutePath') . '/' . $value->image;
+            if (!empty($adsModelData[$key]['image']) && file_exists(Yii::getAlias('@adsImageRelativePath') . '/' . $value->image)) {
+                $adsImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@adsImageAbsolutePath') . '/' . $value->image;
             }
             $adsModelData[$key]['image'] = $adsImage;
         }

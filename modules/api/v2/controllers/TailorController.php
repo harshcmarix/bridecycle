@@ -122,13 +122,13 @@ class TailorController extends ActiveController
 
         $tailor_shop_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         if (!empty($model->shop_image) && file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $model->shop_image)) {
-            $tailor_shop_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorShopImageThumbAbsolutePath') . '/' . $model->shop_image;
+            $tailor_shop_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorShopImageAbsolutePath') . '/' . $model->shop_image;
         }
         $model->shop_image = $tailor_shop_image;
 
         $tailor_voucher_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         if (!empty($model->voucher) && file_exists(Yii::getAlias('@tailorVoucherImageRelativePath') . '/' . $model->voucher)) {
-            $tailor_voucher_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorVoucherImageThumbAbsolutePath') . '/' . $model->voucher;
+            $tailor_voucher_image = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorVoucherImageAbsolutePath') . '/' . $model->voucher;
         }
 
         $model->zip_code = (string)$model->zip_code;

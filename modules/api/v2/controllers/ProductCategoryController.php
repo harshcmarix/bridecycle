@@ -130,8 +130,8 @@ class ProductCategoryController extends ActiveController
             if (!empty($moldelsSubcategory)) {
                 foreach ($moldelsSubcategory as $key => $modelRow) {
                     if($modelRow->status == 2){
-                    if (!empty($modelRow) && $modelRow instanceof ProductCategory && !empty($modelRow->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $modelRow->image)) {
-                        $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $modelRow->image;
+                    if (!empty($modelRow) && $modelRow instanceof ProductCategory && !empty($modelRow->image) && file_exists(Yii::getAlias('@productCategoryImageRelativePath') . '/' . $modelRow->image)) {
+                        $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageAbsolutePath') . '/' . $modelRow->image;
                     } else {
                         $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }                    
@@ -154,8 +154,8 @@ class ProductCategoryController extends ActiveController
         if (!$model instanceof ProductCategory) {
             throw new NotFoundHttpException('Product category doesn\'t exist.');
         }
-        if (!empty($model) && !empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $model->image)) {
-            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $model->image;
+        if (!empty($model) && !empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageRelativePath') . '/' . $model->image)) {
+            $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageAbsolutePath') . '/' . $model->image;
         } else {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         }
