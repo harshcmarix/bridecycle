@@ -2,17 +2,15 @@
 
 namespace app\modules\api\v2\models\search;
 
+use app\models\Product;
 use app\models\ProductImage;
 use app\models\ProductStatus;
 use app\models\SearchHistory;
 use app\modules\api\v2\models\User;
 use Yii;
-use yii\base\BaseObject;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
-use app\models\Product;
-use yii\helpers\ArrayHelper;
 
 /**
  * ProductSearch represents the model behind the search form of `app\models\Product`.
@@ -78,6 +76,7 @@ class ProductSearch extends Product
      */
     public function search($requestParams, $userId = null)
     {
+
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
             foreach ($requestParams['filter'] as $key => $val) {
@@ -205,11 +204,13 @@ class ProductSearch extends Product
         }
 
         if (!empty($requestParams['category_id'])) {
+
             $categoryIDs = explode(",", $requestParams['category_id']);
             $query->andFilterWhere([
                 'and',
-                ['in', 'products.category_id', $categoryIDs],
+                ['IN', 'products.category_id', $categoryIDs],
             ]);
+
         }
 
         if (!empty($requestParams['color'])) {
@@ -324,8 +325,9 @@ class ProductSearch extends Product
         /** Start for Block user */
 
         if (!empty($userId)) {
-            $modelUser = User::find()->where('id=' . $userId)->one();
+            $modelUser = User::find()->where(['id' => $userId])->one();
             $query->andWhere(['NOT IN', 'user_id', $modelUser->blockUsersId]);
+
         }
 
         /** End for Block user */
@@ -359,20 +361,19 @@ class ProductSearch extends Product
         ]);
 
         $productModelData = $activeDataProvider->getModels();
-
-        $productData = [];
         foreach ($productModelData as $key => $value) {
             $productImg = [];
             if (!empty($value->productImages)) {
                 foreach ($value->productImages as $keys => $productImageRow) {
-                    if (!empty($productImageRow) && $productImageRow instanceof ProductImage && !empty($productImageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $productImageRow->name)) {
+                    if (!empty($productImageRow) && $productImageRow instanceof ProductImage && !empty($productImageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $productImageRow->name)) {
 
-                        $productImg[] = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $productImageRow->name;
+                        $productImg[] = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageAbsolutePath') . '/' . $productImageRow->name;
                     }
 
                 }
             }
         }
+
         //$productModelData = $productData;
         $activeDataProvider->setModels($productModelData);
         return $activeDataProvider;
