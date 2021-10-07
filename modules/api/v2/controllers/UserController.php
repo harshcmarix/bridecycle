@@ -409,11 +409,11 @@ class UserController extends ActiveController
             throw new NotFoundHttpException('User doesn\'t exist.');
         }
 
-        $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@profilePictureRelativePath');
         $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
         $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
-            $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+            $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $model->profile_picture;
         }
         $model->profile_picture = $showProfilePicture;
 

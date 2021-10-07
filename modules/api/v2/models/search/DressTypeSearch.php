@@ -133,8 +133,8 @@ class DressTypeSearch extends DressType
 
         foreach ($dressTypeModelData as $key => $value) {
             $dressTypeImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($value) && $value instanceof DressType && !empty($value->image) && file_exists(Yii::getAlias('@dressTypeImageThumbRelativePath') . '/' . $value->image)) {
-                $dressTypeImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@dressTypeImageThumbAbsolutePath') . '/' . $value->image;
+            if (!empty($value) && $value instanceof DressType && !empty($value->image) && file_exists(Yii::getAlias('@dressTypeImageRelativePath') . '/' . $value->image)) {
+                $dressTypeImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@dressTypeImageAbsolutePath') . '/' . $value->image;
             }
             $dressTypeModelData[$key]['image'] = $dressTypeImage;
         }

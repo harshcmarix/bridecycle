@@ -149,8 +149,8 @@ class BrandSearch extends Brand
 
         foreach ($brandModelData as $key => $value) {
             $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($brandModelData[$key]['image']) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $value->image)) {
-                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $value->image;
+            if (!empty($brandModelData[$key]['image']) && file_exists(Yii::getAlias('@brandImageRelativePath') . '/' . $value->image)) {
+                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageAbsolutePath') . '/' . $value->image;
             }
             $brandModelData[$key]['image'] = $brandImage;
         }

@@ -168,11 +168,11 @@ class TailorSearch extends Tailor
             $voucherPicture = null;
 
             if (!empty($tailorModels[$key]['shop_image']) && file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $value->shop_image)) {
-                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorShopImageThumbAbsolutePath') . '/' . $value->shop_image;
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorShopImageAbsolutePath') . '/' . $value->shop_image;
             }
 
             if (!empty($tailorModels[$key]['voucher']) && file_exists(Yii::getAlias('@tailorVoucherImageRelativePath') . '/' . $value->voucher)) {
-                $voucherPicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorVoucherImageThumbAbsolutePath') . '/' . $value->voucher;
+                $voucherPicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorVoucherImageAbsolutePath') . '/' . $value->voucher;
             }
 
 

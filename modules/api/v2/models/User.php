@@ -193,7 +193,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['password_hash', 'temporary_password', 'access_token', 'password_reset_token', 'website'], 'string', 'max' => 255],
             [['website'], 'url', 'defaultScheme' => ''],
             [['temporary_password'], 'string', 'max' => 8],
-            [['shop_logo', 'profile_picture', 'shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
+            [['shop_logo', 'profile_picture', 'shop_cover_picture'], 'file'],
+            // [['shop_logo', 'profile_picture', 'shop_cover_picture'], 'file', 'extensions' => 'png, jpg, jpeg'],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
             [['profile_picture'], 'required', 'on' => [self::PROFILE_PICTURE_UPDATE]],
             [['shop_name', 'shop_email', 'shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
@@ -286,12 +287,12 @@ class User extends ActiveRecord implements IdentityInterface
             foreach ($data as $key => $value) {
                 $shopLogo = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 $shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                if (!empty($value->shop_logo) && file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . '/' . $value->shop_logo)) {
-                    $shopLogo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $value->shop_logo;
+                if (!empty($value->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $value->shop_logo)) {
+                    $shopLogo = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopLogoAbsolutePath') . '/' . $value->shop_logo;
                 }
                 $value->shop_logo = $shopLogo;
-                if (!empty($value->shop_cover_picture) && file_exists(Yii::getAlias('@shopCoverPictureThumbRelativePath') . '/' . $value->shop_cover_picture)) {
-                    $shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureThumbAbsolutePath') . '/' . $value->shop_cover_picture;
+                if (!empty($value->shop_cover_picture) && file_exists(Yii::getAlias('@shopCoverPictureRelativePath') . '/' . $value->shop_cover_picture)) {
+                    $shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureAbsolutePath') . '/' . $value->shop_cover_picture;
                 }
                 $value->shop_cover_picture = $shop_cover_picture;
 

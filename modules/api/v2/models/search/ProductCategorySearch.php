@@ -135,8 +135,8 @@ class ProductCategorySearch extends ProductCategory
 
         foreach ($productModelData as $key => $value) {
             $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($value->image) && file_exists(Yii::getAlias('@productCategoryImageThumbRelativePath') . '/' . $value->image)) {
-                $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageThumbAbsolutePath') . '/' . $value->image;
+            if (!empty($value->image) && file_exists(Yii::getAlias('@productCategoryImageRelativePath') . '/' . $value->image)) {
+                $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageAbsolutePath') . '/' . $value->image;
             }
             $value->image = $categoryImage;
         }

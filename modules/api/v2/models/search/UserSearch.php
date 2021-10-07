@@ -135,8 +135,8 @@ class UserSearch extends User
 
         foreach ($userModelData as $key => $value) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($userModelData[$key]['profile_picture']) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $value->profile_picture)) {
-                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $value->profile_picture;
+            if (!empty($userModelData[$key]['profile_picture']) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $value->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $value->profile_picture;
             }
             $userModelData[$key]['profile_picture'] = $profilePicture;
 
