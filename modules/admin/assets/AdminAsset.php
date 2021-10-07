@@ -13,7 +13,7 @@ class AdminAsset extends AssetBundle
         //'theme/admin/css/bootstrap3-wysihtml5.min.css',
         //'theme/admin/css/addbtn.css',
         //'theme/admin/css/custom.css',
-        '../theme/admin/css/devloper_style.css',
+        'theme/admin/css/devloper_style.css',
     ];
     public $js = [
         //'theme/admin/js/bootstrap3-wysihtml5.all.min.js',

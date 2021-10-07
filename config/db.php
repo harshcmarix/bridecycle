@@ -29,13 +29,13 @@ $config = [
 //    $config['password'] = 'admin';
 //}
 
-// $config['dsn'] = 'mysql:host=203.109.113.157;dbname=bridecycle';
-// $config['username'] = 'bridecycle';
-// $config['password'] = 'bridecycle@#!2021';
+ $config['dsn'] = 'mysql:host=203.109.113.157;dbname=bridecycle';
+ $config['username'] = 'bridecycle';
+ $config['password'] = 'bridecycle@#!2021';
 
-$config['dsn'] = 'mysql:host=127.0.0.1;dbname=bridecycle';
-$config['username'] = 'root';
-$config['password'] = 'root';
+//$config['dsn'] = 'mysql:host=localhost;dbname=bridecycle';
+//$config['username'] = 'root';
+//$config['password'] = 'admin';
 
 
 return $config;

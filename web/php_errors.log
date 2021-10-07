@@ -1,0 +1,53 @@
+[07-Oct-2021 05:54:57 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:54:57 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:54:57 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8bb198adc.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:56:08 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:56:08 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:56:08 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8bf81a16e.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:56:23 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:56:23 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:56:23 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c07ec788.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:56 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:56 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:56 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c6445b8d.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:57 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:57 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:57 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c65393fe.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:57 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:57 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:57 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c65c79c6.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c6600584.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c66232bf.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c664d6ef.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c667511c.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:58 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c669455a.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c673dd96.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c676db14.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c6792027.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c67b7aee.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:57:59 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c67e5d17.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 05:58:00 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:58:00 UTC] PHP Warning:  mkdir(): Permission denied in /var/www/html/bridecycle/vendor/yiisoft/yii2/helpers/BaseFileHelper.php on line 637
+[07-Oct-2021 05:58:00 UTC] PHP Warning:  file_put_contents(/var/www/html/bridecycle/runtime/debug/615e8c6819da4.data): failed to open stream: No such file or directory in /var/www/html/bridecycle/vendor/yiisoft/yii2-debug/src/LogTarget.php on line 74
+[07-Oct-2021 11:42:09 Asia/Calcutta] PHP Warning:  require(/var/www/html/bridecycle/web/../vendor/autoload.php): failed to open stream: No such file or directory in /var/www/html/bridecycle/web/index.php on line 30
+[07-Oct-2021 11:42:09 Asia/Calcutta] PHP Fatal error:  require(): Failed opening required '/var/www/html/bridecycle/web/../vendor/autoload.php' (include_path='.:/usr/share/php') in /var/www/html/bridecycle/web/index.php on line 30
