@@ -181,7 +181,7 @@ class UserController extends ActiveController
             }
             $model->google_id = $postData['google_id'];
         }
-     
+        
         $model->profile_picture = UploadedFile::getInstanceByName('profile_picture');
         $model->shop_logo = UploadedFile::getInstanceByName('shop_logo');
         $model->shop_cover_picture = UploadedFile::getInstanceByName('shop_cover_picture');
@@ -305,10 +305,10 @@ class UserController extends ActiveController
 
                 if (empty($postData['is_login_from'])) {
                     Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $model])
-                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                        ->setTo($model->email)
-                        ->setSubject('Profile verification code!')
-                        ->send();
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($model->email)
+                    ->setSubject('Profile verification code!')
+                    ->send();
                 }
 
                 // shop owner detail end
@@ -610,10 +610,10 @@ class UserController extends ActiveController
 
                 if (!empty($modelUser->email)) {
                     Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
-                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                        ->setTo($modelUser->email)
-                        ->setSubject('Profile verification code!')
-                        ->send();
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($modelUser->email)
+                    ->setSubject('Profile verification code!')
+                    ->send();
                 }
             }
             $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user]);
@@ -685,10 +685,10 @@ class UserController extends ActiveController
 
                 if (!empty($model->email)) {
                     $mail = \Yii::$app->mailer->compose('api/forgot_password', ['model' => $model, 'user' => $userModel, 'appname' => Yii::$app->name])
-                        ->setFrom([\Yii::$app->params['from_email'] => \Yii::$app->name])
-                        ->setTo($model->email)
-                        ->setSubject('Forgot your password')
-                        ->send();
+                    ->setFrom([\Yii::$app->params['from_email'] => \Yii::$app->name])
+                    ->setTo($model->email)
+                    ->setSubject('Forgot your password')
+                    ->send();
                     if (!$mail) {
                         throw new ServerErrorHttpException("Unable to send an email. Please try again later");
                     }
@@ -835,10 +835,10 @@ class UserController extends ActiveController
 
         if (!empty($modelUser->email)) {
             Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
-                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                ->setTo($modelUser->email)
-                ->setSubject('Profile verification code!')
-                ->send();
+            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+            ->setTo($modelUser->email)
+            ->setSubject('Profile verification code!')
+            ->send();
         }
     }
 

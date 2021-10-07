@@ -67,8 +67,8 @@ echo Dialog::widget(
                     <?php
                     if (!empty($model->profile_picture)) {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                        if (file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $model->profile_picture)) {
-                            $image_path = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                        if (file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $model->profile_picture)) {
+                            $image_path = Yii::getAlias('@profilePictureAbsolutePath') . '/' . $model->profile_picture;
                         }
                         Modal::begin([
                             'id' => 'profilemodal_' . $model->id,
@@ -128,8 +128,8 @@ echo Dialog::widget(
                         <?php
                         if (!empty($model->shop_logo)) {
                             $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                            if (file_exists(Yii::getAlias('@shopLogoThumbRelativePath') . '/' . $model->shop_logo)) {
-                                $image_path = Yii::getAlias('@shopLogoThumbAbsolutePath') . '/' . $model->shop_logo;
+                            if (file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $model->shop_logo)) {
+                                $image_path = Yii::getAlias('@shopLogoAbsolutePath') . '/' . $model->shop_logo;
                             }
                             Modal::begin([
                                 'id' => 'shoplogomodal_' . $model->id,

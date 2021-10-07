@@ -58,8 +58,8 @@ echo Dialog::widget(
                     <?php
                     if (!empty($model->image)) {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                        if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)) {
-                            $image_path = Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
+                        if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageRelativePath') . '/' . $model->image)) {
+                            $image_path = Yii::getAlias('@brandImageAbsolutePath') . '/' . $model->image;
                         }
                         Modal::begin([
                             'id' => 'brandmodal_' . $model->id,

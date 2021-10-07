@@ -29,7 +29,7 @@ class BrandController extends Controller
     public function behaviors()
     {
         return [
-         'access' => [
+           'access' => [
             'class' => AccessControl::className(),
             'only' => ['index', 'create', 'update','view','delete','update-top-brand'],
             'rules' => [
@@ -279,9 +279,9 @@ class BrandController extends Controller
         }
         $model->image = null;
         if($model->save()){
-         return Json::encode(['success'=>'image successfully deleted']);
-     }
- }
+           return Json::encode(['success'=>'image successfully deleted']);
+       }
+   }
       /**
      * @return bool[]|false[]
      * @throws NotFoundHttpException

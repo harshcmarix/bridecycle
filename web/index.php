@@ -15,10 +15,6 @@ function p($value, $exit = 1)
     }
 }
 
-//if (empty(getenv('ENVIRONMENT'))) {
-//    exit('Undefined environment');
-//}
-
 defined('YII_ENV') or define('YII_ENV', getenv('ENVIRONMENT'));
 
 //if (YII_ENV == 'dev') {
@@ -33,3 +29,4 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 $config = require __DIR__ . '/../config/web.php';
 
 (new yii\web\Application($config))->run();
+?>

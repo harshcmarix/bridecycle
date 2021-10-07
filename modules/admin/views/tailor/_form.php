@@ -75,8 +75,8 @@ echo Dialog::widget(
                     <?php
                     if (!empty($model->shop_image)) {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                        if (file_exists(Yii::getAlias('@tailorShopImageThumbRelativePath') . '/' . $model->shop_image)) {
-                            $image_path = Yii::getAlias('@tailorShopImageThumbAbsolutePath') . '/' . $model->shop_image;
+                        if (file_exists(Yii::getAlias('@tailorShopImageRelativePath') . '/' . $model->shop_image)) {
+                            $image_path = Yii::getAlias('@tailorShopImageAbsolutePath') . '/' . $model->shop_image;
                         }
                         Modal::begin([
                             'id' => 'tailorimagemodal_' . $model->id,
@@ -118,8 +118,8 @@ echo Dialog::widget(
                     <?php
                     if (!empty($model->voucher)) {
                         $image_pathvoucher = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                        if (file_exists(Yii::getAlias('@tailorVoucherImageThumbRelativePath') . '/' . $model->voucher)) {
-                            $image_pathvoucher = Yii::getAlias('@tailorVoucherImageThumbAbsolutePath') . '/' . $model->voucher;
+                        if (file_exists(Yii::getAlias('@tailorVoucherImageRelativePath') . '/' . $model->voucher)) {
+                            $image_pathvoucher = Yii::getAlias('@tailorVoucherImageAbsolutePath') . '/' . $model->voucher;
                         }
                         Modal::begin([
                             'id' => 'tailorimagevouchermodal_' . $model->id,

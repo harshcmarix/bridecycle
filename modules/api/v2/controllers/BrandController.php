@@ -194,13 +194,13 @@ class BrandController extends ActiveController
     {
         $model = Brand::findOne($id);
         if(!$model instanceof Brand){
-         throw new NotFoundHttpException('Brand doesn\'t exist.');
-     }
-     $postData = \Yii::$app->request->post();
+           throw new NotFoundHttpException('Brand doesn\'t exist.');
+       }
+       $postData = \Yii::$app->request->post();
 
-     $brandData['Brand'] = $postData;
+       $brandData['Brand'] = $postData;
 
-     if ($model->load($brandData) && $model->validate()) {
+       if ($model->load($brandData) && $model->validate()) {
         if($model->save(false)){
             $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if(!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)){
@@ -221,18 +221,18 @@ class BrandController extends ActiveController
     {
         $model = Brand::findOne($id);
         if(!$model instanceof Brand){
-         throw new NotFoundHttpException('Brand doesn\'t exist.');
-     }
-     $postData = \Yii::$app->request->post();
+           throw new NotFoundHttpException('Brand doesn\'t exist.');
+       }
+       $postData = \Yii::$app->request->post();
 
-     $brandData['Brand'] = $postData;
-     $model->scenario = Brand::SCENARIO_CREATE_API;
-     $oldFile = $model->image;
+       $brandData['Brand'] = $postData;
+       $model->scenario = Brand::SCENARIO_CREATE_API;
+       $oldFile = $model->image;
 
-     $image = UploadedFile::getInstanceByName('image');
-     $model->image = $image;
-     if ($model->load($brandData) && $model->validate()) {
-         
+       $image = UploadedFile::getInstanceByName('image');
+       $model->image = $image;
+       if ($model->load($brandData) && $model->validate()) {
+           
         if (!empty($image)) {
             $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
             $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
@@ -288,12 +288,12 @@ class BrandController extends ActiveController
     {
         $model = Brand::findOne($id);
         if(!$model instanceof Brand){
-         throw new NotFoundHttpException('Brand doesn\'t exist.');
-     }
-     $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
-     $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+           throw new NotFoundHttpException('Brand doesn\'t exist.');
+       }
+       $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+       $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
 
-     if (!empty($model->image) && file_exists($uploadDirPath . "/" . $model->image)) {
+       if (!empty($model->image) && file_exists($uploadDirPath . "/" . $model->image)) {
         unlink($uploadDirPath . "/" . $model->image);
     }
 

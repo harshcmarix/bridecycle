@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             $dataImages = [];
                                             foreach ($images as $imageRow) {
 
-                                                if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
+                                                if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
                                                     $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
                                                 } else {
                                                     $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

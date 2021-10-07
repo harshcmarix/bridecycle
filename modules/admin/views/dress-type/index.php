@@ -42,8 +42,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'image',
                     'value' => function ($model) {
                         $image_path = "";
-                        if (!empty($model->image) && file_exists(Yii::getAlias('@dressTypeImageThumbRelativePath') . '/' . $model->image)) {
-                            $image_path = Yii::getAlias('@dressTypeImageThumbAbsolutePath') . '/' . $model->image;
+                        if (!empty($model->image) && file_exists(Yii::getAlias('@dressTypeImageRelativePath') . '/' . $model->image)) {
+                            $image_path = Yii::getAlias('@dressTypeImageAbsolutePath') . '/' . $model->image;
                         } else {
                             $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                         }

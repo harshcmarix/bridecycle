@@ -2,33 +2,16 @@
 
 namespace app\modules\admin\controllers;
 
-use app\models\{
-    Order,
-    Product
-};
-
-
-use yii\filters\{
-    VerbFilter,
-    AccessControl
-};
-use app\modules\admin\models\{
-    LoginForm,
-    ForgotPasswordForm,
-    ResetPasswordForm,
-    User
-};
-use yii\web\{
-    Response,
-    BadRequestHttpException,
-    Controller
-};
-use Yii;
-use yii\base\InvalidParamException;
-use kartik\growl\Growl;
+use app\models\{Order, Product};
 use app\models\Ads;
 use app\models\Brand;
 use app\models\Tailor;
+use app\modules\admin\models\{ForgotPasswordForm, LoginForm, ResetPasswordForm, User};
+use Yii;
+use yii\base\InvalidParamException;
+use yii\filters\{AccessControl, VerbFilter};
+use yii\web\{BadRequestHttpException, Controller, Response};
+
 
 /**
  * Class SiteController
@@ -84,6 +67,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+
         $modelTotalCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '0'])->count();
         $totalShopOwnerCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->count();
         $totSubAdmin = User::find()->where(['user_type' => User::USER_TYPE_SUB_ADMIN])->count();
@@ -282,7 +266,8 @@ class SiteController extends Controller
         return $result;
     }
 
-    public function actionCurrentYearOrders () {
+    public function actionCurrentYearOrders()
+    {
         $isLeapYear = $this->yearCheckIsLeap(date('Y'));
         $thirtyOneDays = [0, 2, 4, 6, 7, 9, 11];
         $thirtyDays = [3, 5, 8, 10];
@@ -344,11 +329,12 @@ class SiteController extends Controller
         /* Year, Month, Week, Day wise data end */
     }
 
-    public function actionCurrentMonthOrders () {
+    public function actionCurrentMonthOrders()
+    {
         $currentMonthOrders = [];
         for ($i = 1; $i <= 31; $i++) {
-            $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
-            $endDate = date('Y').'-'.date('m').'-' .$i. ' 23:23:59';
+            $startDate = date('Y') . '-' . date('m') . '-' . $i . ' 00:00:01';
+            $endDate = date('Y') . '-' . date('m') . '-' . $i . ' 23:23:59';
             $tmparr = [
                 'name' => (string)$i,
                 'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count()
@@ -359,14 +345,15 @@ class SiteController extends Controller
         return json_encode($currentMonthOrders);
     }
 
-    public function actionCurrentWeekOrders () {
+    public function actionCurrentWeekOrders()
+    {
         $currentWeekOrders = [];
-        $weekStart = date( 'd', strtotime( 'monday this week' ));
-        $weekEnd = date( 'd', strtotime( 'sunday this week' ));
+        $weekStart = date('d', strtotime('monday this week'));
+        $weekEnd = date('d', strtotime('sunday this week'));
         for ($i = $weekStart; $i <= $weekEnd; $i++) {
-            $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
-            $endDate = date('Y').'-'.date('m').'-' .$i. ' 23:23:59';
-            $datetime = \DateTime::createFromFormat('Ymd', date('Y').date('m').$i);
+            $startDate = date('Y') . '-' . date('m') . '-' . $i . ' 00:00:01';
+            $endDate = date('Y') . '-' . date('m') . '-' . $i . ' 23:23:59';
+            $datetime = \DateTime::createFromFormat('Ymd', date('Y') . date('m') . $i);
             $dayName = $datetime->format('D');
             $tmparr = [
                 'name' => $dayName,
@@ -377,7 +364,8 @@ class SiteController extends Controller
         return json_encode($currentWeekOrders);
     }
 
-    public function actionCurrentDayOrders () {
+    public function actionCurrentDayOrders()
+    {
         $todayOrders = [];
         $tmparr = [
             'name' => 'Today',
@@ -388,7 +376,8 @@ class SiteController extends Controller
     }
 
 
-    public function actionCurrentYearIncome () {
+    public function actionCurrentYearIncome()
+    {
         $isLeapYear = $this->yearCheckIsLeap(date('Y'));
         $thirtyOneDays = [0, 2, 4, 6, 7, 9, 11];
         $thirtyDays = [3, 5, 8, 10];
@@ -431,11 +420,12 @@ class SiteController extends Controller
         return json_encode((array)$monthWiseIncome);
     }
 
-    public function actionCurrentMonthIncome () {
+    public function actionCurrentMonthIncome()
+    {
         $currentMonthIncome = [];
         for ($i = 1; $i <= 31; $i++) {
-            $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
-            $endDate = date('Y').'-'.date('m').'-' .$i. ' 23:23:59';
+            $startDate = date('Y') . '-' . date('m') . '-' . $i . ' 00:00:01';
+            $endDate = date('Y') . '-' . date('m') . '-' . $i . ' 23:23:59';
             $tmparr = [
                 'name' => (string)$i,
                 'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount')
@@ -446,14 +436,15 @@ class SiteController extends Controller
         return json_encode($currentMonthIncome);
     }
 
-    public function actionCurrentWeekIncome () {
+    public function actionCurrentWeekIncome()
+    {
         $currentWeekIncome = [];
-        $weekStart = date( 'd', strtotime( 'monday this week' ));
-        $weekEnd = date( 'd', strtotime( 'sunday this week' ));
+        $weekStart = date('d', strtotime('monday this week'));
+        $weekEnd = date('d', strtotime('sunday this week'));
         for ($i = $weekStart; $i <= $weekEnd; $i++) {
-            $startDate = date('Y').'-'.date('m').'-' .$i. ' 00:00:01';
-            $endDate = date('Y').'-'.date('m').'-' .$i. ' 23:23:59';
-            $datetime = \DateTime::createFromFormat('Ymd', date('Y').date('m').$i);
+            $startDate = date('Y') . '-' . date('m') . '-' . $i . ' 00:00:01';
+            $endDate = date('Y') . '-' . date('m') . '-' . $i . ' 23:23:59';
+            $datetime = \DateTime::createFromFormat('Ymd', date('Y') . date('m') . $i);
             $dayName = $datetime->format('D');
             $tmparr = [
                 'name' => $dayName,
@@ -464,7 +455,8 @@ class SiteController extends Controller
         return json_encode($currentWeekIncome);
     }
 
-    public function actionCurrentDayIncome () {
+    public function actionCurrentDayIncome()
+    {
         $todayIncome = [];
         $tmparr = [
             'name' => 'Today',

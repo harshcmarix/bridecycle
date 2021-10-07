@@ -62,8 +62,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'profile_picture',
                 'value' => function ($model) {
                     $image_path = "";
-                    if (!empty($model->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $model->profile_picture)) {
-                        $image_path = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                    if (!empty($model->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $model->profile_picture)) {
+                        $image_path = Yii::getAlias('@profilePictureAbsolutePath') . '/' . $model->profile_picture;
                     } else {
                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                     }

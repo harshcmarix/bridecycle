@@ -47,8 +47,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     $dataImages = [];
                     foreach ($images as $imageRow) {
 
-                        if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . '/' . $imageRow->name)) {
-                            $image_path = Yii::getAlias('@productImageThumbAbsolutePath') . '/' . $imageRow->name;
+                        if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
+                            $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
                         } else {
                             $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                         }

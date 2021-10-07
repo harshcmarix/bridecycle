@@ -700,7 +700,7 @@ class CartItemController extends ActiveController
         {
             $transactionFeesAmount = $transactionFees->option_value;
         }
-
+        
         $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail , 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser , 'buyerUserAddress' => $buyerUserAddress, 'transactionFeesAmount' => $transactionFeesAmount]);
 
         $options = new Options();
