@@ -55,7 +55,7 @@ class FavouriteProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'delete'],
+            'only' => ['index-list', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -98,6 +98,17 @@ class FavouriteProductController extends ActiveController
      * @return mixed
      */
     public function actionIndex()
+    {
+        $model = new $this->searchModelClass;
+        $requestParams = Yii::$app->getRequest()->getBodyParams();
+
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }
+        return $model->search($requestParams);
+    }    
+
+    public function actionIndexList()
     {
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();

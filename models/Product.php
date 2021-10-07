@@ -4,8 +4,6 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-
-// use app\modules\admin\models\User;
 use app\modules\api\v2\models\User;
 
 /**
@@ -158,7 +156,7 @@ class Product extends \yii\db\ActiveRecord
         return [
             [['name', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'status_id', 'option_color'], 'required'], //'is_top_selling', 'is_top_trending', 'number'
             [['category_id', 'sub_category_id', 'available_quantity', 'brand_id', 'status_id', 'user_id', 'address_id', 'dress_type_id', 'product_tracking_id'], 'integer'],
-            [['price', 'height', 'weight', 'width'], 'number' , 'on' => self::SCENARIO_CREATE],
+            [['price', 'height', 'weight', 'width'], 'number', 'on' => self::SCENARIO_CREATE],
             [['price', 'height', 'weight', 'width'], 'number'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
@@ -169,7 +167,7 @@ class Product extends \yii\db\ActiveRecord
             [['is_receipt', 'is_admin_favourite'], 'safe'],
             [['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images', 'receipt'], 'file', 'maxFiles' => 5],
-            // [['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
+            // [['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png, jpeg'],
             // [['option_color'], 'string', 'max' => 255],
             [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
             [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::className(), 'targetAttribute' => ['dress_type_id' => 'id']],
@@ -179,24 +177,28 @@ class Product extends \yii\db\ActiveRecord
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductStatus::className(), 'targetAttribute' => ['status_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
-            [['images'], 'required', 'when' => function ($model) {
-            },
-            'whenClient' => "function (attribute, value) {
-                if ($('#product-is_product_images_empty').val() == 1) {            
-                    return $('#product-images').val() == '';                                    
-                }
-            }",],
-            [['images'], 'file', 'extensions' => 'jpg, png'],
+            [
+                ['images'], 'required', 'when' => function ($model) {
+                },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#product-is_product_images_empty').val() == 1) {            
+                        return $('#product-images').val() == '';                                    
+                    }
+                }",
+            ],
+            [['images'], 'file', 'extensions' => 'jpg, png, jpeg'],
 
-            [['receipt'], 'required', 'when' => function ($model) {
-                return $model->is_cleaned == '1';
-            },
-            'whenClient' => "function (attribute, value) {
-                if ($('#product-is_cleaned').val() == 1 && $('#product-is_product_receipt_images_empty').val() ==1) {            
-                    return $('#product-receipt').val() == '';                                    
-                }
-            }",],
-            [['receipt'], 'file', 'extensions' => 'jpg, png'],
+            [
+                ['receipt'], 'required', 'when' => function ($model) {
+                    return $model->is_cleaned == '1';
+                },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#product-is_cleaned').val() == 1 && $('#product-is_product_receipt_images_empty').val() ==1) {            
+                        return $('#product-receipt').val() == '';                                    
+                    }
+                }",
+            ],
+            [['receipt'], 'file', 'extensions' => 'jpg, png, jpeg',
         ];
     }
 
@@ -542,10 +544,17 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getFavouriteProduct()
     {
-        $data = null;
+        $data = [];
         if (!empty(Yii::$app->user->identity) && Yii::$app->user->identity->id) {
             $data = FavouriteProduct::find()->where(['product_id' => $this->id, 'user_id' => Yii::$app->user->identity->id])->one();
         }
+
+        if ($data == '' || $data == null) {
+            $data = [];
+        }else{
+            $data = array($data);
+        }
+
         return $data;
     }
 
@@ -575,7 +584,7 @@ class Product extends \yii\db\ActiveRecord
     {
 
         $modelRate['total_rated_count'] = (int)number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
-        $modelRate['over_all_rate'] = number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rating'),2);
+        $modelRate['over_all_rate'] = number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rating'), 2);
         $modelRate['one_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
         $modelRate['two_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::TWO_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
         $modelRate['three_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::THREE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
@@ -653,5 +662,4 @@ class Product extends \yii\db\ActiveRecord
         $modelProductTracking = ProductTracking::find()->where(['id' => $this->product_tracking_id])->Orwhere(['parent_id' => $this->product_tracking_id])->orderBy(['id' => SORT_ASC])->all();
         return $modelProductTracking;
     }
-
 }
