@@ -61,6 +61,7 @@ class Product extends \yii\db\ActiveRecord
     /**
      * used to check image empty or not
      */
+
     const IMAGE_EMPTY = 1;
     const IMAGE_NOT_EMPTY = 0;
     public $is_product_images_empty;
@@ -166,8 +167,8 @@ class Product extends \yii\db\ActiveRecord
             [['option_show_only'], 'string', 'max' => 20],
             [['is_receipt', 'is_admin_favourite'], 'safe'],
             [['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['images', 'receipt'], 'file', 'maxFiles' => 5],
-            // [['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png, jpeg'],
+            //[['images', 'receipt'], 'file', 'maxFiles' => 5],
+             [['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png, jpeg'],
             // [['option_color'], 'string', 'max' => 255],
             [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
             [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::className(), 'targetAttribute' => ['dress_type_id' => 'id']],
@@ -177,6 +178,7 @@ class Product extends \yii\db\ActiveRecord
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductStatus::className(), 'targetAttribute' => ['status_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
+
             [
                 ['images'], 'required', 'when' => function ($model) {
                 },
@@ -186,7 +188,7 @@ class Product extends \yii\db\ActiveRecord
                     }
                 }",
             ],
-            [['images'], 'file', 'extensions' => 'jpg, png, jpeg'],
+            //[['images'], 'file', 'extensions' => 'jpg, png, jpeg'],
 
             [
                 ['receipt'], 'required', 'when' => function ($model) {
@@ -198,7 +200,7 @@ class Product extends \yii\db\ActiveRecord
                     }
                 }",
             ],
-            [['receipt'], 'file', 'extensions' => 'jpg, png, jpeg'],
+            //[['receipt'], 'file', 'extensions' => 'jpg, png, jpeg'],
         ];
     }
 

@@ -190,7 +190,6 @@ class ProductController extends ActiveController
     public function actionCreate()
     {
         $model = new Product();
-
         $postData = \Yii::$app->request->post();
         $productData['Product'] = $postData;
 
@@ -198,11 +197,17 @@ class ProductController extends ActiveController
         $model->status_id = ProductStatus::STATUS_PENDING_APPROVAL;
 
         $images = UploadedFile::getInstancesByName('images');
+
         $ReceiptImages = UploadedFile::getInstancesByName('receipt');
 
         $model->images = $images;
         $model->receipt = $ReceiptImages;
+
         $productData['Product']['user_id'] = Yii::$app->user->identity->id;
+
+        $productData['Product']['images'] = $images;
+        $productData['Product']['receipt'] = $ReceiptImages;
+
         if ($model->load($productData) && $model->validate()) {
 
             if (!empty($postData['option_show_only'])) {
@@ -219,7 +224,7 @@ class ProductController extends ActiveController
             if (!empty($model->option_size)) {
                 $model->option_size = strtolower($model->option_size);
             }
-            if ($model->save()) {
+            if ($model->save(false)) {
 
                 /* Product Image */
                 if (!empty($images)) {
@@ -331,7 +336,6 @@ class ProductController extends ActiveController
                 }
 
                 // Send Push Notification start
-
                 $brandName = (!empty($model->brand) && !empty($model->brand->name)) ? $model->brand->name : "";
                 $categoryName = (!empty($model->category) && !empty($model->category->name)) ? $model->category->name : "";
 
