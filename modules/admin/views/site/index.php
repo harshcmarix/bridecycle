@@ -165,7 +165,7 @@ $this->title = 'Dashboard';
         <a href="<?php echo Yii::$app->request->baseUrl. '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box bg-blue">
                 <div class="inner">
-                    <h3><?php echo $totalIncome; ?></h3>
+                    <h3><?php echo Yii::$app->formatter->asCurrency($totalIncome); ?></h3>
                     <p>Total income</p>
                 </div>
                 <div class="icon">

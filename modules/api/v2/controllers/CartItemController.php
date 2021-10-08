@@ -254,11 +254,8 @@ class CartItemController extends ActiveController
         $modelOrderPayment = new OrderPayment();
         $postOrderPayment['OrderPayment'] = $post;
         if ($modelAddress->load($postAddress) && $modelAddress->validate()) {
-
             if ($modelOrderPayment->load($postOrderPayment) && $modelOrderPayment->validate()) {
-
                 $modelAddressFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::SHIPPING, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
-
                 if (!empty($modelAddressFind) && $modelAddressFind instanceof UserAddress) {
                     $modelOrder->user_address_id = $modelAddressFind->id;
                 } else {
@@ -391,10 +388,8 @@ class CartItemController extends ActiveController
                                 }
                                 $orderItemRow->product->save(false);
 
-
                                 // Need setting for generate pdf on server
                                 $generateInvoice = $this->generateInvoice($orderItemRow->id);
-
 
                                 // Send Push notification start
                                 $getUsers[] = $orderItemRow->product->user;
