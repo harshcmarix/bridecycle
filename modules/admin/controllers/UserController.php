@@ -4,21 +4,19 @@ namespace app\modules\admin\controllers;
 
 use app\models\ShopDetail;
 use app\models\UserAddress;
+use app\modules\admin\models\search\UserSearch;
 use app\modules\admin\models\User;
 use Imagine\Image\Box;
 use kartik\growl\Growl;
 use Yii;
-use app\modules\admin\models\search\UserSearch;
-use yii\base\BaseObject;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
+use yii\imagine\Image;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
-use yii\imagine\Image;
-use \yii\helpers\Json;
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -33,11 +31,11 @@ class UserController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update','view','delete'],
+                'only' => ['index', 'create', 'update', 'view', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update','view','delete'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -53,10 +51,13 @@ class UserController extends Controller
     {
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $userTypes = [User::USER_TYPE_ADMIN => 'Admin', User::USER_TYPE_SUB_ADMIN => 'Sub Admin', User::USER_TYPE_NORMAL_USER => "Normal User"];
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'userTypes' => $userTypes,
+            'isShopOwner' => $searchModel->isShopOwner
         ]);
     }
 
@@ -90,7 +91,7 @@ class UserController extends Controller
             return \yii\widgets\ActiveForm::validate($model);
         }
 
-       // $model->password_hash = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
+        // $model->password_hash = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
 
         if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
 
@@ -169,10 +170,10 @@ class UserController extends Controller
                 \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'User created successfully.');
 
                 Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
-                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                ->setTo($model->email)
-                ->setSubject('Thank you for Registration!')
-                ->send();
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($model->email)
+                    ->setSubject('Thank you for Registration!')
+                    ->send();
 
                 //return $this->redirect(['view', 'id' => $model->id]);
                 return $this->redirect(['index']);
@@ -237,7 +238,6 @@ class UserController extends Controller
             }
 
 
-
             $newProfilePictureFile = UploadedFile::getInstance($model, 'profile_picture');
             if (isset($newProfilePictureFile)) {
 
@@ -260,7 +260,6 @@ class UserController extends Controller
             } else {
                 $model->profile_picture = '';
             }
-
 
 
             if (empty($modelShopDetail)) {
@@ -414,45 +413,48 @@ class UserController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-     /**
+
+    /**
      * Deletes an existing image from perticular field.
      * If deletion is successful, success message will get in update page result.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-     public function actionShopLogoDelete($id){
+    public function actionShopLogoDelete($id)
+    {
         $model = ShopDetail::findOne($id);
         $uploadDirPath = Yii::getAlias('@shopLogoRelativePath');
         $uploadThumbDirPath = Yii::getAlias('@shopLogoThumbRelativePath');
-         // unlink images with thumb
-        if(file_exists($uploadDirPath.'/'.$model->shop_logo) && !empty($model->shop_logo)){
-            unlink($uploadDirPath.'/'.$model->shop_logo);
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $model->shop_logo) && !empty($model->shop_logo)) {
+            unlink($uploadDirPath . '/' . $model->shop_logo);
         }
-        if(file_exists($uploadThumbDirPath.'/'.$model->shop_logo) && !empty($model->shop_logo)){
-            unlink($uploadThumbDirPath.'/'.$model->shop_logo);
+        if (file_exists($uploadThumbDirPath . '/' . $model->shop_logo) && !empty($model->shop_logo)) {
+            unlink($uploadThumbDirPath . '/' . $model->shop_logo);
         }
         $model->shop_logo = '';
-        if($model->save(false)){
-           return Json::encode(['success'=>'image successfully deleted']);
-       }
-   }
+        if ($model->save(false)) {
+            return Json::encode(['success' => 'image successfully deleted']);
+        }
+    }
 
-   public function actionProfileDelete($id){
-    $model = User::findOne($id);
-    $uploadDirPath = Yii::getAlias('@profilePictureRelativePath');
-    $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
-    
-    // unlink images with thumb
-    if(file_exists($uploadDirPath.'/'.$model->profile_picture) && !empty($model->profile_picture)){
-        unlink($uploadDirPath.'/'.$model->profile_picture);
+    public function actionProfileDelete($id)
+    {
+        $model = User::findOne($id);
+        $uploadDirPath = Yii::getAlias('@profilePictureRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $model->profile_picture) && !empty($model->profile_picture)) {
+            unlink($uploadDirPath . '/' . $model->profile_picture);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $model->profile_picture) && !empty($model->profile_picture)) {
+            unlink($uploadThumbDirPath . '/' . $model->profile_picture);
+        }
+        $model->profile_picture = '';
+        if ($model->save(false)) {
+            return Json::encode(['success' => 'Profile image successfully deleted']);
+        }
     }
-    if(file_exists($uploadThumbDirPath.'/'.$model->profile_picture) && !empty($model->profile_picture)){
-        unlink($uploadThumbDirPath.'/'.$model->profile_picture);
-    }
-    $model->profile_picture = '';
-    if($model->save(false)){
-        return Json::encode(['success'=>'Profile image successfully deleted']);
-    }
-}
 }

@@ -1,15 +1,12 @@
 <?php
 
-use \app\modules\admin\widgets\GridView;
+use app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
-use kartik\select2\Select2;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 //use yii\grid\GridView;
-
-use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\search\UserSearch */
@@ -101,11 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return 'normal user';
                     }
                 },
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            ],
-            [
-                'attribute' => 'is_shop_owner',
-                'filter' => $searchModel->isShopOwner,
+                'filter' => $userTypes,
                 'filterType' => GridView::FILTER_SELECT2,
                 'filterWidgetOptions' => [
                     'options' => ['prompt' => 'Select'],
@@ -113,10 +106,23 @@ $this->params['breadcrumbs'][] = $this->title;
                         'allowClear' => true,
                     ],
                 ],
+                'header' => 'User Type',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
+            [
+                'attribute' => 'is_shop_owner',
                 'value' => function ($data) {
                     return isset($data->isShopOwner[$data['is_shop_owner']]) ? $data->isShopOwner[$data['is_shop_owner']] : '-';
                 },
-                'header' => '',
+                'filter' => $isShopOwner,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => 'Is Shop Owner',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
@@ -129,27 +135,27 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
-            'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
-            'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-            'filterRowOptions' => ['class' => 'kartik-sheet-style'],
+//            'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
+//            'headerRowOptions' => ['class' => 'kartik-sheet-style'],
+//            'filterRowOptions' => ['class' => 'kartik-sheet-style'],
             'pjax' => true, // pjax is set to always true for this demo
             'toolbar' => [
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-plus-circle"> Add User </i>', [
-                        'class' => 'btn btn-success',
-                        'title' => 'Add User',
-                        'onclick' => "window.location.href = '" . Url::to(['user/create']) . "';",
-                    ]),
+                        Html::button('<i class="fa fa-plus-circle"> Add User </i>', [
+                            'class' => 'btn btn-success',
+                            'title' => 'Add User',
+                            'onclick' => "window.location.href = '" . Url::to(['user/create']) . "';",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Reset Filter',
-                        'onclick' => "window.location.href = '" . Url::to(['user/index']) . "';",
-                    ]),
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . Url::to(['user/index']) . "';",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 '{toggleData}',
@@ -184,37 +190,37 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function(){
+    $('document').ready(function () {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;
         var submit_form = false;
         var filter_selector = '#user-grid-filters input';
 
-        $("body").on('beforeFilter', "#user-grid" , function(event) {
+        $("body").on('beforeFilter', "#user-grid", function (event) {
             return submit_form;
         });
 
-        $("body").on('afterFilter', "#user-grid" , function(event) {
+        $("body").on('afterFilter', "#user-grid", function (event) {
             submit_form = false;
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-        .on('keyup', filter_selector, function(e) {
-            input = $(this).attr('name');
-            var keyCode = e.keyCode ? e.keyCode : e.which;
-            if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
-                if (submit_form === false) {
-                    submit_form = true;
-                    $("#user-grid").yiiGridView("applyFilter");
+            .off('keydown.yiiGridView change.yiiGridView', filter_selector)
+            .on('keyup', filter_selector, function (e) {
+                input = $(this).attr('name');
+                var keyCode = e.keyCode ? e.keyCode : e.which;
+                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
+                    if (submit_form === false) {
+                        submit_form = true;
+                        $("#user-grid").yiiGridView("applyFilter");
+                    }
                 }
-            }
-        })
-        .on('pjax:success', function() {
-            var i = $("[name='"+input+"']");
-            var val = i.val();
-            i.focus().val(val);
+            })
+            .on('pjax:success', function () {
+                var i = $("[name='" + input + "']");
+                var val = i.val();
+                i.focus().val(val);
 
                 var searchInput = $(i);
                 if (searchInput.length > 0) {
@@ -232,7 +238,64 @@ $this->params['breadcrumbs'][] = $this->title;
                     }, 200);
                 })
             });
+
+        //select box filter
+        var select;
+        //var submit_form = false;
+        var select_filter_selector = '#user-grid-filters select';
+        var isSelect = true;
+
+        $('select').on('change', function () {
+            isSelect = true;
+        });
+        $('input').on('keypress', function () {
+            isSelect = false;
+        });
+        $("body").on('beforeFilter', "#user-grid", function (event) {
+            if (isSelect) {
+                return submit_form;
+            }
+        });
+        $("body").on('afterFilter', "#user-grid", function (event) {
+            if (isSelect) {
+                submit_form = false;
+            }
+        });
+
+        $(document)
+            .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
+            .on('change', select_filter_selector, function (e) {
+                select = $(this).attr('name');
+                if (submit_form === false) {
+                    submit_form = true;
+                    $("user-grid").yiiGridView("applyFilter");
+                }
+            })
+            .on('pjax:success', function () {
+                var i = $("[name='" + input + "']");
+                var val = i.val();
+                i.focus().val(val);
+
+                var searchInput = $(i);
+                if (searchInput.length > 0) {
+                    var strLength = searchInput.val().length * 2;
+                    searchInput[0].setSelectionRange(strLength, strLength);
+                }
+
+                if (isSelect) {
+                    if ($('thead td i').length == 0) {
+                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                    }
+
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
+                            $(document).scrollTop($(document).innerHeight());
+                        }, 200);
+                    })
+                }
+            });
     });
+
     $('.pagination').find('li a').on('click', function () {
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
