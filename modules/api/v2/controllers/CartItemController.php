@@ -3,55 +3,23 @@
 namespace app\modules\api\v2\controllers;
 
 
+use app\models\{CartItem, Notification, Order, OrderItem, OrderPayment, Product, ProductStatus};
 use app\models\ProductTracking;
-use app\modules\api\v2\models\{
-    User,
-    UserAddress
-};
-
-use kartik\mpdf\Pdf;
-use PayPal\Api\{
-    Address,
-    Amount,
-    CreditCard,
-    Details,
-    FundingInstrument,
-    Payer,
-    Payment,
-    RedirectUrls
-};
-use PayPal\Common\PayPalModel;
-use PayPal\Exception\PayPalConnectionException;
-use Yii;
-use app\models\{
-    CartItem,
-    Product,
-    Notification,
-    Order,
-    OrderItem,
-    OrderPayment,
-    ProductStatus
-};
+use app\models\Setting;
+use app\modules\api\v2\models\{User, UserAddress};
 use app\modules\api\v2\models\search\CartItemSearch;
-use yii\base\BaseObject;
-use PayPal\Api\Transaction;
-use yii\helpers\Url;
-use yii\web\{
-    BadRequestHttpException,
-    NotFoundHttpException
-};
-
-use yii\rest\ActiveController;
-use yii\filters\auth\{
-    HttpBasicAuth,
-    CompositeAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
-use yii\filters\Cors;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use app\models\Setting;
+use kartik\mpdf\Pdf;
+use PayPal\Api\{Address, Amount, CreditCard, Details, FundingInstrument, Payer, Payment, RedirectUrls};
+use PayPal\Api\Transaction;
+use PayPal\Exception\PayPalConnectionException;
+use Yii;
+use yii\filters\auth\{CompositeAuth, HttpBasicAuth, HttpBearerAuth, QueryParamAuth};
+use yii\filters\Cors;
+use yii\helpers\Url;
+use yii\rest\ActiveController;
+use yii\web\{BadRequestHttpException, NotFoundHttpException};
 
 // CartItemController implements the CRUD actions for CartItem model.
 class CartItemController extends ActiveController
@@ -317,7 +285,7 @@ class CartItemController extends ActiveController
         $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
 
         $cartTotalShipping = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('shipping_cost');
-        
+
 
         if (empty($cartTotal) && empty($cartTotalShipping)) {
             //$cartTotal = OrderItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->sum('price');
@@ -459,11 +427,11 @@ class CartItemController extends ActiveController
                                                     $message = Yii::$app->fcm->createMessage();
                                                     $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
                                                     $message->setNotification($note)
-                                                    ->setData([
-                                                        'id' => $modelNotification->ref_id,
-                                                        'type' => $modelNotification->ref_type,
-                                                        'message' => $notificationText,
-                                                    ]);
+                                                        ->setData([
+                                                            'id' => $modelNotification->ref_id,
+                                                            'type' => $modelNotification->ref_type,
+                                                            'message' => $notificationText,
+                                                        ]);
                                                     $notificationResponse = Yii::$app->fcm->send($message);
                                                 }
                                             }
@@ -673,22 +641,27 @@ class CartItemController extends ActiveController
         $modelseller = '';
         $modelsellerDetail = '';
         $modelOrder = $modelOrderItem->order;
+
         if (!empty($modelOrderItem) && $modelOrderItem instanceof OrderItem) {
             $modelProduct = $modelOrderItem->product;
             $modelseller = $modelOrderItem->product->user;
-            $modelsellerDetail = (!empty($modelOrderItem->product->user) && !empty($modelOrderItem->product->user->ShopDetails)) ? $modelOrderItem->product->user->ShopDetails : "";
+            if ((!empty($modelOrderItem->product->user) && $modelOrderItem->product->user->is_shop_owner == '1' && $modelOrderItem->product->type == 'n' && !empty($modelOrderItem->product->user->ShopDetails))){
+                $modelsellerDetail = $modelOrderItem->product->user->ShopDetails;
+            }else{
+                $modelsellerDetail = $modelOrderItem->product->user;
+            }
         }
 
         $buyerUser = User::findOne($modelOrder->user_id);
-        $buyerUserAddress = UserAddress::find()->where(['user_id' => $modelOrder->user_id ])->one();
-        $modelsellerDetail = $modelsellerDetail[0];
-        $sellerAddress = UserAddress::find()->where(['user_id' => $modelseller->id ])->one();
+        $buyerUserAddress = UserAddress::find()->where(['user_id' => $modelOrder->user_id])->one();
+        //$modelsellerDetail = $modelsellerDetail;
+        $sellerAddress = UserAddress::find()->where(['user_id' => $modelseller->id])->one();
         $currentDate = date('d-m-Y H:i');
 
         // Start - Generate Ordre Tracking Number
         $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
         $existTrackingId = OrderItem::find()->where(['order_tracking_id' => $uniqueNumber])->one();
-        if($existTrackingId instanceof OrderItem){
+        if ($existTrackingId instanceof OrderItem) {
             $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
         }
         $modelOrderItem->order_tracking_id = $uniqueNumber;
@@ -696,12 +669,11 @@ class CartItemController extends ActiveController
 
         $transactionFees = Setting::find()->where(['option_key' => 'transaction_fees'])->one();
         $transactionFeesAmount = 0;
-        if($transactionFees instanceof Setting)
-        {
+        if ($transactionFees instanceof Setting) {
             $transactionFeesAmount = $transactionFees->option_value;
         }
-        
-        $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail , 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser , 'buyerUserAddress' => $buyerUserAddress, 'transactionFeesAmount' => $transactionFeesAmount]);
+
+        $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail, 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser, 'buyerUserAddress' => $buyerUserAddress, 'transactionFeesAmount' => $transactionFeesAmount]);
 
         $options = new Options();
         $options->set('isRemoteEnabled', true);
@@ -712,10 +684,10 @@ class CartItemController extends ActiveController
         $output = $dompdf->output();
         $fileName = "order-" . time() . "-" . $modelOrder->id . ".pdf";
 
-        file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName , $output);
+        file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName, $output);
         $file1 = Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName . ".pdf";
         $modelOrderItem->invoice = $fileName;
-        
+
         $modelOrderItem->save(false);
 
         return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;
