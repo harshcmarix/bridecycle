@@ -2,11 +2,11 @@
 
 namespace app\modules\api\v2\models\search;
 
-use yii\base\Model;
-use yii\data\ActiveDataProvider;
 use app\models\SearchHistory;
-use yii\data\ActiveDataFilter;
 use Yii;
+use yii\base\Model;
+use yii\data\ActiveDataFilter;
+use yii\data\ActiveDataProvider;
 
 
 /**
@@ -118,6 +118,8 @@ class SearchHistorySearch extends SearchHistory
             $query->andWhere(['search_histories.user_id' => $requestParams['user_id']]);
         }
 
+
+        $query->orderBy(['search_histories.created_at' => SORT_DESC]);
         $query->groupBy(['search_histories.search_text']);
 
         $activeDataProvider = Yii::createObject([
@@ -132,7 +134,6 @@ class SearchHistorySearch extends SearchHistory
             ],
         ]);
         $searchHistoryModelData = $activeDataProvider->getModels();
-
         $activeDataProvider->setModels($searchHistoryModelData);
         return $activeDataProvider;
     }

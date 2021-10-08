@@ -301,7 +301,7 @@ class ProductSearch extends Product
             if (!empty($data)) {
                 foreach ($data as $dataRow) {
                     if (!empty($dataRow) && $dataRow instanceof SearchHistory) {
-                        $query->andFilterWhere([
+                        $query->orFilterWhere([
                             'or',
                             ['like', 'products.name', $dataRow->search_text],
                             ['like', 'category.name', $dataRow->search_text],
@@ -309,7 +309,6 @@ class ProductSearch extends Product
                             ['like', 'brand.name', $dataRow->search_text],
                         ]);
                     }
-
                 }
             }
         }
@@ -317,7 +316,7 @@ class ProductSearch extends Product
         // For sale product listing screen
         if (!empty($requestParams['user_id']) && !empty($requestParams['is_from_sell_screen']) && $requestParams['is_from_sell_screen'] == 1) {
             $query->andWhere(['user_id' => $requestParams['user_id']]);
-            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
+            $query->andWhere(['in', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
         }
 
         /** End for search screen */
