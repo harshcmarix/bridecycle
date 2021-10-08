@@ -323,13 +323,11 @@ class ProductSearch extends Product
         /** End for search screen */
 
         /** Start for Block user */
-
         if (!empty($userId)) {
             $modelUser = User::find()->where(['id' => $userId])->one();
             $query->andWhere(['NOT IN', 'user_id', $modelUser->blockUsersId]);
 
         }
-
         /** End for Block user */
 
         if (!empty($requestParams['sort_by'])) {
