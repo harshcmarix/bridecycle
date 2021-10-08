@@ -24,19 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'value' => function ($model) {
-                //         $id = '';
-                //         if ($model instanceof PromoCode) {
-                //             $id = $model->id;
-                //         }
-                //         return $id;
-                //     },
-                //     'width' => '8%',
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 ['class' => 'kartik\grid\SerialColumn','width' => '5%',],
                 [
                     'attribute' => 'code',
@@ -116,25 +103,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         return $status;
                     },
+//                    'filter' => ArrayHelper::map($parent_category, 'id', 'name'),
+//                    'filterType' => GridView::FILTER_SELECT2,
+//                    'filterWidgetOptions' => [
+//                        'options' => ['prompt' => 'Select'],
+//                        'pluginOptions' => [
+//                            'allowClear' => true,
+//                        ],
+//                    ],
                     'width' => '10%',
                     'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-                //  [
-                //     'attribute' => 'created_at',
-                //     'value' => function ($model) {
-                //         $created_at = '';
-                //         if ($model instanceof PromoCode) {
-                //             $created_at = $model->created_at;
-                //         }
-                //         return $created_at;
-                //     },
-
-                //     'filter'=>false,
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style']
-                // ],
-
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'width' => '12%'

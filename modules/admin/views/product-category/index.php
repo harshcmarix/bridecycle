@@ -1,14 +1,10 @@
 <?php
 
-use \app\modules\admin\widgets\GridView;
-use yii\helpers\{
-    Html,
-    ArrayHelper,
-    Url
-};
-use yii\bootstrap\Modal;
-use kartik\editable\Editable;
 use app\models\ProductCategory;
+use app\modules\admin\widgets\GridView;
+use kartik\editable\Editable;
+use yii\bootstrap\Modal;
+use yii\helpers\{ArrayHelper, Html, Url};
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\BrandSearch */
@@ -28,19 +24,19 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-            // [
-            //     'attribute' => 'id',
-            //     'value' => function ($model) {
-            //         $id = '';
-            //         if ($model instanceof ProductCategory) {
-            //             $id = $model->id;
-            //         }
-            //         return $id;
-            //     },
-            //     'width' => '8%',
-            //     'header' => '',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            // ],
+                // [
+                //     'attribute' => 'id',
+                //     'value' => function ($model) {
+                //         $id = '';
+                //         if ($model instanceof ProductCategory) {
+                //             $id = $model->id;
+                //         }
+                //         return $id;
+                //     },
+                //     'width' => '8%',
+                //     'header' => '',
+                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'format' => ['raw'],
@@ -90,14 +86,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         return $parent_name;
                     },
-
                     'filter' => ArrayHelper::map($parent_category, 'id', 'name'),
                     'filterType' => GridView::FILTER_SELECT2,
                     'filterWidgetOptions' => [
-                        'options' => ['prompt' => ''],
+                        'options' => ['prompt' => 'Select'],
                         'pluginOptions' => [
                             'allowClear' => true,
-                        // 'width'=>'20px'
                         ],
                     ],
                     'header' => '',
@@ -106,13 +100,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'status',
                     'value' => function ($model) {
-                        $status = "";
                         if ($model->status == ProductCategory::STATUS_PENDING_APPROVAL) {
                             $status = "Pending Approval";
                         } elseif ($model->status == ProductCategory::STATUS_APPROVE) {
                             $status = "Approved";
                         } elseif ($model->status == ProductCategory::STATUS_DECLINE) {
                             $status = "Decline";
+                        } else {
+                            $status = "";
                         }
                         return $status;
                     },
@@ -127,65 +122,52 @@ $this->params['breadcrumbs'][] = $this->title;
                     'header' => 'Status',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-            // [
-            //     'attribute' => 'created_at',
-            //     'value' => function ($model) {
-            //         $created_at = '';
-            //         if ($model instanceof ProductCategory) {
-            //             $created_at = $model->created_at;
-            //         }
-            //         return $created_at;
-            //     },
-            //     'filter' => false,
-            //     'header' => '',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style']
-            // ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'width' => '12%'
                 ],
             ],
-        'pjax' => true, // pjax is set to always true for this demo
-        // set your toolbar
-        'toolbar' => [
-            [
-                'content' =>
-                Html::button('<i class="fa fa-plus-circle"> Add Category</i>', [
-                    'class' => 'btn btn-success',
-                    'title' => \Yii::t('kvgrid', 'Add Category'),
-                    'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/product-category/create']) . "';",
-                ]),
-                'options' => ['class' => 'btn-group mr-2']
+            'pjax' => true, // pjax is set to always true for this demo
+            // set your toolbar
+            'toolbar' => [
+                [
+                    'content' =>
+                        Html::button('<i class="fa fa-plus-circle"> Add Category</i>', [
+                            'class' => 'btn btn-success',
+                            'title' => \Yii::t('kvgrid', 'Add Category'),
+                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/product-category/create']) . "';",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                [
+                    'content' =>
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . Url::to(['product-category/index']) . "';",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                '{toggleData}',
             ],
-            [
-                'content' =>
-                Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                    'class' => 'btn btn-basic',
-                    'title' => 'Reset Filter',
-                    'onclick' => "window.location.href = '" . Url::to(['product-category/index']) . "';",
-                ]),
-                'options' => ['class' => 'btn-group mr-2']
-            ],
-            '{toggleData}',
-        ],
-        'toggleDataContainer' => ['class' => 'btn-group mr-2'],
+            'toggleDataContainer' => ['class' => 'btn-group mr-2'],
 
-        // parameters from the demo form
-        'bordered' => true,
-        'striped' => true,
-        'condensed' => true,
-        'responsive' => false,
-        'panel' => [
-            'type' => GridView::TYPE_DEFAULT,
-            //'heading' => 'Product Categories',
-        ],
-        'persistResize' => false,
-        'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'product category',
-        'itemLabelPlural' => 'Product Categories'
-    ]);
-    ?>
-</div>
+            // parameters from the demo form
+            'bordered' => true,
+            'striped' => true,
+            'condensed' => true,
+            'responsive' => false,
+            'panel' => [
+                'type' => GridView::TYPE_DEFAULT,
+                //'heading' => 'Product Categories',
+            ],
+            'persistResize' => false,
+            'toggleDataOptions' => ['minCount' => 10],
+            'itemLabelSingle' => 'product category',
+            'itemLabelPlural' => 'Product Categories'
+        ]);
+        ?>
+    </div>
 </div>
 <script type="text/javascript">
     function productcategorymodal(id) {
@@ -199,7 +181,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function(){
+    $('document').ready(function () {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;
@@ -215,53 +197,53 @@ $this->params['breadcrumbs'][] = $this->title;
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#product-category-grid" , function(event) {
+        $("body").on('beforeFilter', "#product-category-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#product-category-grid" , function(event) {
+        $("body").on('afterFilter', "#product-category-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-        .on('keyup', filter_selector, function(e) {
-            input = $(this).attr('name');
-            var keyCode = e.keyCode ? e.keyCode : e.which;
-            if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
-                if (submit_form === false) {
-                    submit_form = true;
-                    $("#product-category-grid").yiiGridView("applyFilter");
+            .off('keydown.yiiGridView change.yiiGridView', filter_selector)
+            .on('keyup', filter_selector, function (e) {
+                input = $(this).attr('name');
+                var keyCode = e.keyCode ? e.keyCode : e.which;
+                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
+                    if (submit_form === false) {
+                        submit_form = true;
+                        $("#product-category-grid").yiiGridView("applyFilter");
+                    }
                 }
-            }
-        })
-        .on('pjax:success', function() {
-            if (isInput) {
-                var i = $("[name='" + input + "']");
-                var val = i.val();
-                i.focus().val(val);
+            })
+            .on('pjax:success', function () {
+                if (isInput) {
+                    var i = $("[name='" + input + "']");
+                    var val = i.val();
+                    i.focus().val(val);
 
-                var searchInput = $(i);
-                if (searchInput.length > 0) {
-                    var strLength = searchInput.val().length * 2;
-                    searchInput[0].setSelectionRange(strLength, strLength);
+                    var searchInput = $(i);
+                    if (searchInput.length > 0) {
+                        var strLength = searchInput.val().length * 2;
+                        searchInput[0].setSelectionRange(strLength, strLength);
+                    }
+
+                    if ($('thead td i').length == 0) {
+                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                    }
+
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
+                            $(document).scrollTop($(document).innerHeight());
+                        }, 200);
+                    })
                 }
-
-                if ($('thead td i').length == 0) {
-                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
-                }
-
-                $('.pagination').find('li a').on('click', function () {
-                    setTimeout(function () {
-                        $(document).scrollTop($(document).innerHeight());
-                    }, 200);
-                })
-            }
-        });
+            });
 
         //select box filter
         var select;
@@ -275,49 +257,49 @@ $this->params['breadcrumbs'][] = $this->title;
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#product-category-grid" , function(event) {
+        $("body").on('beforeFilter', "#product-category-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#product-category-grid" , function(event) {
+        $("body").on('afterFilter', "#product-category-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
-        .on('change', select_filter_selector, function(e) {
-            select = $(this).attr('name');
-            if (submit_form === false) {
-                submit_form = true;
-                $("#product-category-grid").yiiGridView("applyFilter");
-            }
-        })
-        .on('pjax:success', function() {
-            var i = $("[name='" + input + "']");
-            var val = i.val();
-            i.focus().val(val);
+            .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
+            .on('change', select_filter_selector, function (e) {
+                select = $(this).attr('name');
+                if (submit_form === false) {
+                    submit_form = true;
+                    $("#product-category-grid").yiiGridView("applyFilter");
+                }
+            })
+            .on('pjax:success', function () {
+                var i = $("[name='" + input + "']");
+                var val = i.val();
+                i.focus().val(val);
 
-            var searchInput = $(i);
-            if (searchInput.length > 0) {
-                var strLength = searchInput.val().length * 2;
-                searchInput[0].setSelectionRange(strLength, strLength);
-            }
-
-            if (isSelect) {
-                if ($('thead td i').length == 0) {
-                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                var searchInput = $(i);
+                if (searchInput.length > 0) {
+                    var strLength = searchInput.val().length * 2;
+                    searchInput[0].setSelectionRange(strLength, strLength);
                 }
 
-                $('.pagination').find('li a').on('click', function () {
-                    setTimeout(function () {
-                        $(document).scrollTop($(document).innerHeight());
-                    }, 200);
-                })
-            }
-        });
+                if (isSelect) {
+                    if ($('thead td i').length == 0) {
+                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                    }
+
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
+                            $(document).scrollTop($(document).innerHeight());
+                        }, 200);
+                    })
+                }
+            });
     });
 
     $('.pagination').find('li a').on('click', function () {
