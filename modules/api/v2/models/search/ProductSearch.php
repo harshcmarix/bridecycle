@@ -231,7 +231,8 @@ class ProductSearch extends Product
                 foreach ($sizes as $keySize => $sizeRow) {
                     $query->andFilterWhere([
                         'or',
-                        ['like', 'products.option_size', strtolower($sizeRow) . "%", false],
+                        //['like', 'products.option_size', strtolower($sizeRow) . "%", false],
+                        ['like', 'products.option_size', strtolower($sizeRow)],
                     ]);
                 }
             }
