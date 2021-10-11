@@ -20,6 +20,7 @@ use yii\filters\Cors;
 use yii\helpers\Url;
 use yii\rest\ActiveController;
 use yii\web\{BadRequestHttpException, NotFoundHttpException};
+use yii\web\HttpException;
 
 // CartItemController implements the CRUD actions for CartItem model.
 class CartItemController extends ActiveController
@@ -211,9 +212,7 @@ class CartItemController extends ActiveController
                 if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
                     $product = $modelCartItemRow->product;
                     if (!empty($product) && $product instanceof Product && $product->available_quantity > 0) {
-
                         if ($modelCartItemRow->quantity > $product->available_quantity) {
-
                             $result[] = 1;
                         } elseif ($modelCartItemRow->quantity <= $product->available_quantity) {
                             $result[] = 0;
@@ -221,7 +220,6 @@ class CartItemController extends ActiveController
                     } else {
                         $result[] = 1;
                     }
-
                 }
             }
         }
@@ -641,9 +639,9 @@ class CartItemController extends ActiveController
         if (!empty($modelOrderItem) && $modelOrderItem instanceof OrderItem) {
             $modelProduct = $modelOrderItem->product;
             $modelseller = $modelOrderItem->product->user;
-            if ((!empty($modelOrderItem->product->user) && $modelOrderItem->product->user->is_shop_owner == '1' && $modelOrderItem->product->type == 'n' && !empty($modelOrderItem->product->user->ShopDetails))){
+            if ((!empty($modelOrderItem->product->user) && $modelOrderItem->product->user->is_shop_owner == '1' && $modelOrderItem->product->type == 'n' && !empty($modelOrderItem->product->user->ShopDetails))) {
                 $modelsellerDetail = $modelOrderItem->product->user->ShopDetails;
-            }else{
+            } else {
                 $modelsellerDetail = $modelOrderItem->product->user;
             }
         }
@@ -702,6 +700,30 @@ class CartItemController extends ActiveController
 
         $productIds = explode(",", $post['product_id']);
         $user_id = Yii::$app->user->identity->id;
+        $readyToCheckout = 1;
+        $notReadyToCheckoutProducts = "";
+        if (!empty($productIds)) {
+            $modelsProduct = Product::find()->where(['IN', 'id', $productIds])->all();
+            if (!empty($modelsProduct)) {
+                foreach ($modelsProduct as $keyStud => $modelProduct) {
+                    if (!empty($modelProduct) && $modelProduct instanceof Product) {
+                        if (empty($modelProduct->available_quantity) || $modelProduct->available_quantity == '0' && $keyStud == 0) {
+                            $readyToCheckout = 0;
+                            $notReadyToCheckoutProducts .= $modelProduct->name;
+                        } elseif (empty($modelProduct->available_quantity) || $modelProduct->available_quantity == '0' && $keyStud > 0) {
+                            $readyToCheckout = 0;
+                            $notReadyToCheckoutProducts .= ", " . $modelProduct->name;
+                        }
+                    }
+                }
+            } else {
+                throw new HttpException(404, Yii::t('app', "Data not found!"));
+            }
+        }
+        if ($readyToCheckout != 1) {
+            throw new HttpException(403, Yii::t('app', $notReadyToCheckoutProducts . " are sold!"));
+        }
+
         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_NO])->all();
         if (!empty($modelCartItems)) {
             foreach ($modelCartItems as $key => $modelCartItemRow) {
