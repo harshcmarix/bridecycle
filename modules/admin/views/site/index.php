@@ -1,13 +1,11 @@
 <?php
 
-use yii\helpers\Html;
-use miloschuman\highcharts\Highcharts;
 $this->title = 'Dashboard';
 ?>
 
 <div class="row">
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/user/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/user/index' ?>" class="small-box-footer">
             <div class="small-box bg-aqua">
                 <div class="inner">
                     <h3><?php echo $totalCustomer ?></h3>
@@ -18,10 +16,10 @@ $this->title = 'Dashboard';
                 </div>
             </div>
         </a>
-    </div> 
+    </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/user/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/user/index' ?>" class="small-box-footer">
             <div class="small-box bg-yellow">
                 <div class="inner">
                     <h3><?php echo $totalShopOwnerCustomer ?></h3>
@@ -35,7 +33,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/sub-admin/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/sub-admin/index' ?>" class="small-box-footer">
             <div class="small-box bg-teal">
                 <div class="inner">
                     <h3><?php echo $totSubAdmin ?></h3>
@@ -49,7 +47,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/user/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/user/index' ?>" class="small-box-footer">
             <div class="small-box bg-orange">
                 <div class="inner">
                     <h3><?php echo $totalCustomerToday ?></h3>
@@ -63,7 +61,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/ads/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/ads/index' ?>" class="small-box-footer">
             <div class="small-box bg-maroon">
                 <div class="inner">
                     <h3><?php echo $totalActiveAds ?></h3>
@@ -77,7 +75,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/brand/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/brand/index' ?>" class="small-box-footer">
             <div class="small-box bg-purple">
                 <div class="inner">
                     <h3><?php echo $totalBrand ?></h3>
@@ -91,7 +89,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/product/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/product/index' ?>" class="small-box-footer">
             <div class="small-box bg-fuchsia">
                 <div class="inner">
                     <h3><?php echo $totalProduct ?></h3>
@@ -105,7 +103,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/tailor/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/tailor/index' ?>" class="small-box-footer">
             <div class="small-box bg-red">
                 <div class="inner">
                     <h3><?php echo $totalTailor; ?></h3>
@@ -119,7 +117,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/order/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box bg-lime">
                 <div class="inner">
                     <h3><?php echo $totalOrder ?></h3>
@@ -134,7 +132,7 @@ $this->title = 'Dashboard';
 
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/order/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box bg-lime">
                 <div class="inner">
                     <h3><?php echo $totalOrderDeliveredAndCompleted ?></h3>
@@ -148,7 +146,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/order/index' ?>" class="small-box-footer">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box bg-lime">
                 <div class="inner">
                     <h3><?php echo $totalOrderPending ?></h3>
@@ -162,8 +160,8 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl. '/admin/order/index' ?>" class="small-box-footer">
-            <div class="small-box bg-blue">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
+            <div class="small-box bg-blue" id="tot_income_box">
                 <div class="inner">
                     <h3><?php echo Yii::$app->formatter->asCurrency($totalIncome); ?></h3>
                     <p>Total income</p>
@@ -198,10 +196,10 @@ $this->title = 'Dashboard';
                         var action = this.value;
                         renderGraph(action);
                     })
-                    
+
                     function renderGraph(action) {
                         $.ajax({
-                            url: '<?php echo Yii::$app->request->baseUrl. '/admin/site/' ?>'+action,
+                            url: '<?php echo Yii::$app->request->baseUrl . '/admin/site/' ?>' + action,
                             type: 'get',
                             success: function (data) {
                                 var graphData = JSON.parse(data);
@@ -226,11 +224,11 @@ $this->title = 'Dashboard';
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
                                     series: [
-                                    {
-                                        name: "Orders",
-                                        colorByPoint: false,
-                                        data: graphData
-                                    }
+                                        {
+                                            name: "Orders",
+                                            colorByPoint: false,
+                                            data: graphData
+                                        }
                                     ]
                                 });
                             }
@@ -263,7 +261,7 @@ $this->title = 'Dashboard';
 
                     function renderIncomeGraph(action) {
                         $.ajax({
-                            url: '<?php echo Yii::$app->request->baseUrl. '/admin/site/' ?>'+action,
+                            url: '<?php echo Yii::$app->request->baseUrl . '/admin/site/' ?>' + action,
                             type: 'get',
                             success: function (data) {
                                 var incomeGraphData = JSON.parse(data);
@@ -288,11 +286,11 @@ $this->title = 'Dashboard';
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
                                     series: [
-                                    {
-                                        name: "Income",
-                                        colorByPoint: false,
-                                        data: incomeGraphData
-                                    }
+                                        {
+                                            name: "Income",
+                                            colorByPoint: false,
+                                            data: incomeGraphData
+                                        }
                                     ]
                                 });
                             }

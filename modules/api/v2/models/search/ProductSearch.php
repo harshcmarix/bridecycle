@@ -217,7 +217,7 @@ class ProductSearch extends Product
             $colors = explode(",", $requestParams['color']);
             if (!empty($colors)) {
                 foreach ($colors as $keyColor => $colorRow) {
-                    $query->orFilterWhere([
+                    $query->andFilterWhere([
                         'or',
                         ['like', 'products.option_color', $colorRow],
                     ]);
@@ -229,7 +229,7 @@ class ProductSearch extends Product
             $sizes = explode(",", $requestParams['size']);
             if (!empty($sizes)) {
                 foreach ($sizes as $keySize => $sizeRow) {
-                    $query->orFilterWhere([
+                    $query->andFilterWhere([
                         'or',
                         ['like', 'products.option_size', strtolower($sizeRow) . "%", false],
                     ]);

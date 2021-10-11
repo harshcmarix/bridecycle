@@ -197,13 +197,13 @@ $this->params['breadcrumbs'][] = $this->title;
         var submit_form = false;
         var filter_selector = '#user-grid-filters input';
 
-        $("body").on('beforeFilter', "#user-grid", function (event) {
-            return submit_form;
-        });
-
-        $("body").on('afterFilter', "#user-grid", function (event) {
-            submit_form = false;
-        });
+        // $("body").on('beforeFilter', "#user-grid", function (event) {
+        //
+        // });
+        //
+        // $("body").on('afterFilter', "#user-grid", function (event) {
+        //
+        // });
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', filter_selector)
@@ -255,11 +255,13 @@ $this->params['breadcrumbs'][] = $this->title;
             if (isSelect) {
                 return submit_form;
             }
+            return submit_form;
         });
         $("body").on('afterFilter', "#user-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
+            submit_form = false;
         });
 
         $(document)
@@ -275,13 +277,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);
-
                 var searchInput = $(i);
                 if (searchInput.length > 0) {
                     var strLength = searchInput.val().length * 2;
                     searchInput[0].setSelectionRange(strLength, strLength);
                 }
-
                 if (isSelect) {
                     if ($('thead td i').length == 0) {
                         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
