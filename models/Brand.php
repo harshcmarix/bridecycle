@@ -89,7 +89,7 @@ class Brand extends ActiveRecord
             [['name'], 'string', 'max' => 50],
             [['name'], 'unique'],
             // [['image'], 'string', 'max' => 250],
-            [['image'], 'file', 'extensions' => 'png, jpg'],
+           // [['image'], 'file', 'extensions' => 'png, jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
             //[['image'], 'required', 'on' => self::SCENARIO_CREATE_API],
             [['image'], 'required', 'when' => function ($model) {
@@ -100,7 +100,7 @@ class Brand extends ActiveRecord
                                     return $('#brand-image').val() == '';                                    
                                     }
             }",],
-            [['image'], 'file', 'extensions' => 'jpg, png'],
+            //[['image'], 'file', 'extensions' => 'jpg, png'],
         ];
     }
 

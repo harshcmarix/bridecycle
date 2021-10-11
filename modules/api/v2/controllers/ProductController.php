@@ -189,6 +189,7 @@ class ProductController extends ActiveController
      */
     public function actionCreate()
     {
+        ini_set('max_execution_time', 300);
         $model = new Product();
         $postData = \Yii::$app->request->post();
         $productData['Product'] = $postData;
@@ -321,7 +322,6 @@ class ProductController extends ActiveController
                     $model->save(false);
                 }
 
-
                 //  shipping cost
                 if (!empty($model->shipping_country_id) && !empty($model->shipping_country_price)) {
                     $shippingCosts = explode(",", $model->shipping_country_price);
@@ -414,7 +414,6 @@ class ProductController extends ActiveController
                         }
                     }
                 }
-
                 // Send Push Notification end
             }
         }
@@ -495,7 +494,6 @@ class ProductController extends ActiveController
                             }
                         }
                     }
-
                 } elseif (!empty($modelAddress) && !empty($productData['Product']['is_profile_address']) && ($productData['Product']['is_profile_address'] == 1 || $productData['Product']['is_profile_address'] == "1")) {
                     $modelAddress = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
                     $model->address_id = $modelAddress->id;
@@ -511,7 +509,6 @@ class ProductController extends ActiveController
                         }
                     }
                 }
-
                 //  shipping cost
                 if (!empty($model->shipping_country_id) && !empty($model->shipping_country_price)) {
                     $shippingCosts = explode(",", $model->shipping_country_price);
@@ -523,7 +520,6 @@ class ProductController extends ActiveController
                             $modelShippingPrice->delete();
                         }
                     }
-
                     foreach ($shippingCountries as $key => $shippingCountry) {
                         $shippingPrice = new ShippingPrice();
                         $shippingPrice->product_id = $model->id;

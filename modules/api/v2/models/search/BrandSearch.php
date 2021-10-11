@@ -49,7 +49,7 @@ class BrandSearch extends Brand
      */
     public function search($requestParams)
     {
-//p($requestParams);
+
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
             foreach ($requestParams['filter'] as $key => $val) {
@@ -109,7 +109,6 @@ class BrandSearch extends Brand
 
             $query->where(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_COMPLETED]);
         }
-
 
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
