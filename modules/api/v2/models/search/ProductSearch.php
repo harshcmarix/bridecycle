@@ -220,12 +220,12 @@ class ProductSearch extends Product
                     if ($keyColor > 0) {
                         $query->orFilterWhere([
                             'or',
-                            ['OR LIKE', 'products.option_color', $colorRow],
+                            ['OR LIKE', 'products.option_color', $colorRow, false],
                         ]);
                     } else {
                         $query->andFilterWhere([
                             'or',
-                            ['LIKE', 'products.option_color', $colorRow],
+                            ['LIKE', 'products.option_color', $colorRow, false],
                         ]);
                     }
                 }
@@ -239,13 +239,13 @@ class ProductSearch extends Product
                     if ($keySize > 0) {
                         $query->orFilterWhere([
                             'or',
-                            ['OR LIKE', 'products.option_size', strtolower($sizeRow)]
+                            ['OR LIKE', 'products.option_size', strtolower($sizeRow), false]
                         ]);
                     } else {
                         $query->andFilterWhere([
                             'or',
                             //['like', 'products.option_size', strtolower($sizeRow) . "%", false],
-                            ['LIKE', 'products.option_size', strtolower($sizeRow)]
+                            ['LIKE', 'products.option_size', strtolower($sizeRow), false]
                         ]);
                     }
                 }
@@ -257,7 +257,7 @@ class ProductSearch extends Product
             if (!empty($prices)) {
                 $query->andFilterWhere([
                     'or',
-                    ['between', 'products.price', $prices[0], $prices[1]],
+                    ['BETWEEN', 'products.price', $prices[0], $prices[1]],
                 ]);
             }
         }
@@ -268,7 +268,7 @@ class ProductSearch extends Product
                 foreach ($conditions as $keyCondition => $conditionRow) {
                     $query->orFilterWhere([
                         'or',
-                        ['like', 'products.option_conditions', $conditionRow],
+                        ['LIKE', 'products.option_conditions', $conditionRow],
                     ]);
                 }
             }
@@ -280,7 +280,7 @@ class ProductSearch extends Product
                 foreach ($showonlies as $keyShowonly => $showonlyRow) {
                     $query->orFilterWhere([
                         'or',
-                        ['like', 'products.option_show_only', $showonlyRow],
+                        ['LIKE', 'products.option_show_only', $showonlyRow],
                     ]);
                 }
             }
@@ -303,10 +303,10 @@ class ProductSearch extends Product
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1 && !empty($requestParams['search_keyword'])) {
             $query->orFilterWhere([
                 'or',
-                ['like', 'products.name', $requestParams['search_keyword']],
-                ['like', 'category.name', $requestParams['search_keyword']],
-                ['like', 'subCategory.name', $requestParams['search_keyword']],
-                ['like', 'brand.name', $requestParams['search_keyword']],
+                ['LIKE', 'products.name', $requestParams['search_keyword']],
+                ['LIKE', 'category.name', $requestParams['search_keyword'] . "%", false],
+                ['LIKE', 'subCategory.name', $requestParams['search_keyword'] . "%", false],
+                ['LIKE', 'brand.name', $requestParams['search_keyword'] . "%", false],
             ]);
         }
 
@@ -317,10 +317,10 @@ class ProductSearch extends Product
                     if (!empty($dataRow) && $dataRow instanceof SearchHistory) {
                         $query->orFilterWhere([
                             'or',
-                            ['like', 'products.name', $dataRow->search_text],
-                            ['like', 'category.name', $dataRow->search_text],
-                            ['like', 'subCategory.name', $dataRow->search_text],
-                            ['like', 'brand.name', $dataRow->search_text],
+                            ['LIKE', 'products.name', $dataRow->search_text],
+                            ['LIKE', 'category.name', $dataRow->search_text . "%", false],
+                            ['LIKE', 'subCategory.name', $dataRow->search_text . "%", false],
+                            ['LIKE', 'brand.name', $dataRow->search_text . "%", false],
                         ]);
                     }
                 }
@@ -330,7 +330,7 @@ class ProductSearch extends Product
         // For sale product listing screen
         if (!empty($requestParams['user_id']) && !empty($requestParams['is_from_sell_screen']) && $requestParams['is_from_sell_screen'] == 1) {
             $query->andWhere(['user_id' => $requestParams['user_id']]);
-            $query->andWhere(['in', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
+            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
         }
 
         /** End for search screen */
@@ -377,10 +377,8 @@ class ProductSearch extends Product
             if (!empty($value->productImages)) {
                 foreach ($value->productImages as $keys => $productImageRow) {
                     if (!empty($productImageRow) && $productImageRow instanceof ProductImage && !empty($productImageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $productImageRow->name)) {
-
                         $productImg[] = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageAbsolutePath') . '/' . $productImageRow->name;
                     }
-
                 }
             }
         }
