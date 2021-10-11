@@ -183,7 +183,7 @@ class ProductSearch extends Product
         if (!empty($requestParams['name'])) {
             $query->andFilterWhere([
                 'and',
-                ['like', 'products.name', $requestParams['name']],
+                ['LIKE', 'products.name', $requestParams['name']],
             ]);
         }
 
@@ -191,7 +191,7 @@ class ProductSearch extends Product
             $brandIDs = explode(",", $requestParams['brand_id']);
             $query->andFilterWhere([
                 'and',
-                ['in', 'products.brand_id', $brandIDs],
+                ['IN', 'products.brand_id', $brandIDs],
             ]);
         }
 
@@ -199,7 +199,7 @@ class ProductSearch extends Product
             $dressTypeIDs = explode(",", $requestParams['dress_type_id']);
             $query->andFilterWhere([
                 'and',
-                ['in', 'products.dress_type_id', $dressTypeIDs],
+                ['IN', 'products.dress_type_id', $dressTypeIDs],
             ]);
         }
 
@@ -217,10 +217,17 @@ class ProductSearch extends Product
             $colors = explode(",", $requestParams['color']);
             if (!empty($colors)) {
                 foreach ($colors as $keyColor => $colorRow) {
-                    $query->andFilterWhere([
-                        'or',
-                        ['like', 'products.option_color', $colorRow],
-                    ]);
+                    if ($keyColor > 0) {
+                        $query->orFilterWhere([
+                            'or',
+                            ['OR LIKE', 'products.option_color', $colorRow],
+                        ]);
+                    } else {
+                        $query->andFilterWhere([
+                            'or',
+                            ['LIKE', 'products.option_color', $colorRow],
+                        ]);
+                    }
                 }
             }
         }
@@ -229,11 +236,18 @@ class ProductSearch extends Product
             $sizes = explode(",", $requestParams['size']);
             if (!empty($sizes)) {
                 foreach ($sizes as $keySize => $sizeRow) {
-                    $query->andFilterWhere([
-                        'or',
-                        //['like', 'products.option_size', strtolower($sizeRow) . "%", false],
-                        ['like', 'products.option_size', strtolower($sizeRow)],
-                    ]);
+                    if ($keySize > 0) {
+                        $query->orFilterWhere([
+                            'or',
+                            ['OR LIKE', 'products.option_size', strtolower($sizeRow)]
+                        ]);
+                    } else {
+                        $query->andFilterWhere([
+                            'or',
+                            //['like', 'products.option_size', strtolower($sizeRow) . "%", false],
+                            ['LIKE', 'products.option_size', strtolower($sizeRow)]
+                        ]);
+                    }
                 }
             }
         }
@@ -243,7 +257,6 @@ class ProductSearch extends Product
             if (!empty($prices)) {
                 $query->andFilterWhere([
                     'or',
-                    // ['between', 'products.option_price', $prices[0], $prices[1]],
                     ['between', 'products.price', $prices[0], $prices[1]],
                 ]);
             }
