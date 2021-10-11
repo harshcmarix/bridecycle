@@ -130,7 +130,6 @@ class ProductSearch extends Product
             $query->where(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);
         }
 
-
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1) {
             $query->joinWith('category AS category');
             $query->joinWith('subCategory AS subCategory');
@@ -153,14 +152,6 @@ class ProductSearch extends Product
         /* ########## Prepare Query With Default Filter End ######### */
 
         /* ########## Prepare Query With custom Filter Start ######### */
-
-//        if (!empty(Yii::$app->user->identity) && !empty(Yii::$app->user->identity->id)) {
-//            $modelUser = Yii::$app->user->identity;
-//            if (!empty($modelUser) && $modelUser instanceof User) {
-//                $blockUserIds = $modelUser->BlockUsersId();
-//                p($blockUserIds);
-//            }
-//        }
 
         if (!empty($requestParams['is_top_selling']) && $requestParams['is_top_selling'] == '1') {
             $query->andWhere(['is_top_selling' => Product::IS_TOP_SELLING_YES]);
@@ -332,14 +323,12 @@ class ProductSearch extends Product
             $query->andWhere(['user_id' => $requestParams['user_id']]);
             $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
         }
-
         /** End for search screen */
 
         /** Start for Block user */
         if (!empty($userId)) {
             $modelUser = User::find()->where(['id' => $userId])->one();
             $query->andWhere(['NOT IN', 'user_id', $modelUser->blockUsersId]);
-
         }
         /** End for Block user */
 
@@ -354,7 +343,6 @@ class ProductSearch extends Product
                 $query->orderBy(['products.price' => SORT_ASC, 'products.option_price' => SORT_ASC]);
             }
         }
-
         /* ########## Prepare Query With custom Filter End ######### */
 
         $query->groupBy('products.id');
