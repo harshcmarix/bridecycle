@@ -143,8 +143,8 @@ class CartItem extends \yii\db\ActiveRecord
         $userDetails = User::find()->where(['id' => $this->user_id])->one();
         if ($userDetails instanceof User) {
             $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($userDetails->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $userDetails->profile_picture)) {
-                $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $userDetails->profile_picture;
+            if (!empty($userDetails->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $userDetails->profile_picture)) {
+                $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $userDetails->profile_picture;
             }
             $userDetails->profile_picture = $profilepicture;
         }

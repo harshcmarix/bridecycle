@@ -117,8 +117,8 @@ class AbuseReport extends \yii\db\ActiveRecord
         $user = User::find()->where(['id' => $this->user_id])->one();
         if ($user instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($user->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $user->profile_picture)) {
-                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $user->profile_picture;
+            if (!empty($user->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $user->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $user->profile_picture;
             }
             $user->profile_picture = $profilePicture;
         }
@@ -136,8 +136,8 @@ class AbuseReport extends \yii\db\ActiveRecord
         $seller = User::find()->where(['id' => $this->seller_id])->one();
         if ($seller instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($seller->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $seller->profile_picture)) {
-                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $seller->profile_picture;
+            if (!empty($seller->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $seller->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $seller->profile_picture;
             }
             $seller->profile_picture = $profilePicture;
         }

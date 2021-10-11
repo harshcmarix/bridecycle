@@ -136,8 +136,8 @@ class ProductRating extends ActiveRecord
         $user = User::find()->where(['id' => $this->user_id])->one();
         if ($user instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($user->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $user->profile_picture)) {
-                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $user->profile_picture;
+            if (!empty($user->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $user->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $user->profile_picture;
             }
             $user->profile_picture = $profilePicture;
         }

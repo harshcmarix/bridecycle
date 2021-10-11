@@ -543,17 +543,12 @@ class CartItemController extends ActiveController
         $card->setFirstName($cardFirstname);
         $card->setLastName($cardLastname);
         $card->setBillingAddress($addr);
-        //$card->setShippingAddress($addrShip);
 
         $fi = new FundingInstrument();
         $fi->setCreditCard($card);
 
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
-
-//        $payer = new Payer();
-//        $payer->setPaymentMethod('credit_card');
-//        $payer->setFundingInstruments(array($fi));
 
         // Specify the payment amount.
         $amountDetails = new Details();
@@ -567,7 +562,6 @@ class CartItemController extends ActiveController
         $amount->setDetails($amountDetails);
 
         // ###Transaction
-        // A transaction defines the contract of a
         // payment - what is the payment for and who
         // is fulfilling it. Transaction is created with
         // a `Payee` and `Amount` types
@@ -619,7 +613,6 @@ class CartItemController extends ActiveController
             }
             $order->save(false);
         }
-
         return $is_success;
     }
 
@@ -648,7 +641,6 @@ class CartItemController extends ActiveController
 
         $buyerUser = User::findOne($modelOrder->user_id);
         $buyerUserAddress = UserAddress::find()->where(['user_id' => $modelOrder->user_id])->one();
-        //$modelsellerDetail = $modelsellerDetail;
         $sellerAddress = UserAddress::find()->where(['user_id' => $modelseller->id])->one();
         $currentDate = date('d-m-Y H:i');
 
@@ -681,7 +673,6 @@ class CartItemController extends ActiveController
         file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName, $output);
         $file1 = Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName . ".pdf";
         $modelOrderItem->invoice = $fileName;
-
         $modelOrderItem->save(false);
 
         return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;
@@ -700,9 +691,10 @@ class CartItemController extends ActiveController
 
         $productIds = explode(",", $post['product_id']);
         $user_id = Yii::$app->user->identity->id;
-        $readyToCheckout = 1;
-        $notReadyToCheckoutProducts = "";
         if (!empty($productIds)) {
+            $readyToCheckout = 1;
+            $notReadyToCheckoutProducts = "";
+
             $modelsProduct = Product::find()->where(['IN', 'id', $productIds])->all();
             if (!empty($modelsProduct)) {
                 foreach ($modelsProduct as $keyStud => $modelProduct) {
@@ -719,9 +711,10 @@ class CartItemController extends ActiveController
             } else {
                 throw new HttpException(404, Yii::t('app', "Data not found!"));
             }
-        }
-        if ($readyToCheckout != 1) {
-            throw new HttpException(403, Yii::t('app', $notReadyToCheckoutProducts . " are sold!"));
+
+            if ($readyToCheckout != 1 && $readyToCheckout == 0) {
+                throw new HttpException(403, Yii::t('app', $notReadyToCheckoutProducts . " are sold!"));
+            }
         }
 
         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_NO])->all();
