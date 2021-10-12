@@ -2,13 +2,12 @@
 
 namespace app\modules\api\v2\models\search;
 
+use app\models\Brand;
 use app\models\Order;
 use Yii;
-use yii\base\BaseObject;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
-use app\models\Brand;
 
 /**
  * BrandSearch represents the model behind the search form of `app\models\Brand`.
@@ -47,7 +46,7 @@ class BrandSearch extends Brand
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = null)
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -97,7 +96,7 @@ class BrandSearch extends Brand
         /* ########## Active Data Filter End ######### */
 
         /* ########## Prepare Query With Default Filter Start ######### */
-        $query = self::find();
+        $query = self::find()->where(['IN', 'brands.status', [Brand::STATUS_APPROVE]]);
 
         if (!empty($requestParams) && $requestParams['brand_of_the_week'] == '1') {
             $brandFromDate = date("Y-m-d 00:00:01", strtotime('-1 week'));
