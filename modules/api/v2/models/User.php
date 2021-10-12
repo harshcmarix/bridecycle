@@ -6,17 +6,16 @@ use app\models\BlockUser;
 use app\models\Order;
 use app\models\ProductRating;
 use app\models\SellerRating;
+use app\models\ShopDetail;
 use app\models\UserDevice;
 use app\models\UserSubscription;
+use app\models\UserPurchasedSubscriptions;
+use app\modules\api\v2\models\{UserAddress};
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use yii\web\UnauthorizedHttpException;
-use app\modules\api\v2\models\{
-    UserAddress
-};
-use app\models\ShopDetail;
-use Yii;
 
 /**
  * This is the model class for table "users".
@@ -75,6 +74,7 @@ use Yii;
  *
  * @property string|null $is_verify_user
  * @property string|null $is_newsletter_subscription
+ * @property string|null $is_subscribed_user
  *
  * @property string|null $created_at
  * @property string|null $updated_at
@@ -86,6 +86,7 @@ use Yii;
  * @property UserAddresses[] $userAddresses
  * @property UserSocialIdentities[] $userSocialIdentities
  * @property UserSubscriptions[] $userSubscriptions
+ * @property UserPurchasedSubscriptions[] $userPurchasedSubscriptions
  * @property UserDevices[] $userDevices
  * @property UserDevice $userDevice
  */
@@ -186,8 +187,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email', 'shop_email'], 'email'],
-            [['is_verify_user', 'latitude', 'longitude'], 'safe'],
-            [['email'], 'unique','message'=>'This email is already taken. Please login with this email address.'],
+            [['is_verify_user', 'is_subscribed_user', 'latitude', 'longitude'], 'safe'],
+            [['email'], 'unique', 'message' => 'This email is already taken. Please login with this email address.'],
             [['email'], 'string', 'max' => 60],
             [['verification_code'], 'string', 'max' => 6],
             [['password_hash', 'temporary_password', 'access_token', 'password_reset_token', 'website'], 'string', 'max' => 255],
@@ -363,6 +364,16 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Gets query for [[UserSubscriptions]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserPurchasedSubscriptions()
+    {
+        return $this->hasMany(UserPurchasedSubscriptions::className(), ['user_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[UserDevides]].
      *
      * @return \yii\db\ActiveQuery
@@ -402,7 +413,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function getRating()
     {
         $modelRate['total_rated_count'] = (int)number_format(SellerRating::find()->where(['seller_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
-        $modelRate['over_all_rate'] = (float)number_format(SellerRating::find()->where(['seller_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rate'),2);
+        $modelRate['over_all_rate'] = (float)number_format(SellerRating::find()->where(['seller_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rate'), 2);
         $modelRate['one_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::ONE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
         $modelRate['two_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::TWO_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
         $modelRate['three_star_rate'] = (int)SellerRating::find()->where(['seller_id' => $this->id, 'rate' => SellerRating::THREE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();
