@@ -2,37 +2,20 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\{ShopDetail, UserAddress};
 use app\models\UserDevice;
-use yii\filters\auth\{
-    HttpBasicAuth,
-    CompositeAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
-use yii\web\{
-    UploadedFile,
-    ServerErrorHttpException,
-    NotFoundHttpException,
-    ForbiddenHttpException,
-    BadRequestHttpException
-};
-use app\modules\api\v2\models\{
-    Login,
-    User,
-    ResetPassword,
-    ForgotPassword,
-    ChangePassword
-};
-use app\models\{
-    UserAddress,
-    ShopDetail
-};
+use app\modules\api\v2\models\{ChangePassword, ForgotPassword, Login, ResetPassword, User};
 use Yii;
-use yii\base\BaseObject;
-use yii\helpers\Url;
+use yii\filters\auth\{CompositeAuth, HttpBasicAuth, HttpBearerAuth, QueryParamAuth};
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
+use yii\web\{BadRequestHttpException,
+    ForbiddenHttpException,
+    NotFoundHttpException,
+    ServerErrorHttpException,
+    UploadedFile
+};
 
 /**
  * Class UserController
@@ -147,10 +130,10 @@ class UserController extends ActiveController
         $model = new User();
         $postData = \Yii::$app->request->post();
         $userData['User'] = $postData;
-
+        
         if (empty($postData['is_login_from']) && !empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES) {
             $model->scenario = User::SCENARIO_SHOP_OWNER;
-        } elseif (!empty($postData['is_login_from'])) {
+        } elseif (!empty($postData['is_login_from']) && $postData['is_login_from'] == "") {
             $model->scenario = User::SCENARIO_USER_CREATE_FROM_SOCIAL;
         } else {
             $model->scenario = User::SCENARIO_USER_CREATE;
@@ -181,7 +164,7 @@ class UserController extends ActiveController
             }
             $model->google_id = $postData['google_id'];
         }
-        
+
         $model->profile_picture = UploadedFile::getInstanceByName('profile_picture');
         $model->shop_logo = UploadedFile::getInstanceByName('shop_logo');
         $model->shop_cover_picture = UploadedFile::getInstanceByName('shop_cover_picture');
@@ -305,10 +288,10 @@ class UserController extends ActiveController
 
                 if (empty($postData['is_login_from'])) {
                     Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $model])
-                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                    ->setTo($model->email)
-                    ->setSubject('Profile verification code!')
-                    ->send();
+                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                        ->setTo($model->email)
+                        ->setSubject('Profile verification code!')
+                        ->send();
                 }
 
                 // shop owner detail end
@@ -610,10 +593,10 @@ class UserController extends ActiveController
 
                 if (!empty($modelUser->email)) {
                     Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
-                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                    ->setTo($modelUser->email)
-                    ->setSubject('Profile verification code!')
-                    ->send();
+                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                        ->setTo($modelUser->email)
+                        ->setSubject('Profile verification code!')
+                        ->send();
                 }
             }
             $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user]);
@@ -685,10 +668,10 @@ class UserController extends ActiveController
 
                 if (!empty($model->email)) {
                     $mail = \Yii::$app->mailer->compose('api/forgot_password', ['model' => $model, 'user' => $userModel, 'appname' => Yii::$app->name])
-                    ->setFrom([\Yii::$app->params['from_email'] => \Yii::$app->name])
-                    ->setTo($model->email)
-                    ->setSubject('Forgot your password')
-                    ->send();
+                        ->setFrom([\Yii::$app->params['from_email'] => \Yii::$app->name])
+                        ->setTo($model->email)
+                        ->setSubject('Forgot your password')
+                        ->send();
                     if (!$mail) {
                         throw new ServerErrorHttpException("Unable to send an email. Please try again later");
                     }
@@ -835,10 +818,10 @@ class UserController extends ActiveController
 
         if (!empty($modelUser->email)) {
             Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
-            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-            ->setTo($modelUser->email)
-            ->setSubject('Profile verification code!')
-            ->send();
+                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                ->setTo($modelUser->email)
+                ->setSubject('Profile verification code!')
+                ->send();
         }
     }
 
