@@ -100,7 +100,7 @@ class ProductCategorySearch extends ProductCategory
         /* ########## Active Data Filter End ######### */
 
         /* ########## Prepare Query With Default Filter Start ######### */
-        $query = self::find()->where(['status' => 2]);
+        $query = self::find()->where(['status' => ProductCategory::STATUS_APPROVE]);
 
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
