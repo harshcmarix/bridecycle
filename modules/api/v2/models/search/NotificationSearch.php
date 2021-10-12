@@ -134,7 +134,8 @@ class NotificationSearch extends Notification
             'query' => $query,
             'pagination' => [
                 'params' => $requestParams,
-                'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : Yii::$app->params['default_page_size'], //set page size here
+                //'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : Yii::$app->params['default_page_size'], //set page size here
+                'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : 550, //set page size here
             ],
             'sort' => [
                 'params' => $requestParams,

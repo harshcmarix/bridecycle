@@ -19,14 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
         <?php
         $gridColumns = [
-            // [
-            //     'attribute' => 'id',
-            //     'value' => function ($model) {
-            //         return $model->id;
-            //     },
-            //     'header' => 'User ID',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            // ],
             ['class' => 'kartik\grid\SerialColumn'],
             [
                 'attribute' => 'first_name',
