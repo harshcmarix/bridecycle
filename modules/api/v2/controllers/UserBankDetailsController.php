@@ -168,9 +168,12 @@ class UserBankDetailsController extends ActiveController
     public
     function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model = UserBankDetails::find()->where(['id' => $id])->one();
+        if (!$model instanceof UserBankDetails || $model->user_id != Yii::$app->user->identity->id) {
+            throw new NotFoundHttpException('User bank detail doesn\'t exist.');
+        }
+        
+        $model->delete();
     }
 
     /**
