@@ -181,7 +181,7 @@ class ProductController extends ActiveController
         $productData['Product'] = $postData;
 
         // check for user is subscriber or not
-        if (!empty(Yii::$app->user->identity) && (Yii::$app->user->identity->is_subscribed_user == '0' || Yii::$app->user->identity->is_subscribed_user == "" || empty(Yii::$app->user->identity->is_subscribed_user))) {
+        if (!empty(Yii::$app->user->identity) && (!empty(Yii::$app->user->identity->is_shop_owner) || Yii::$app->user->identity->is_shop_owner == User::SHOP_OWNER_YES) && (Yii::$app->user->identity->is_subscribed_user == '0' || Yii::$app->user->identity->is_subscribed_user == "" || empty(Yii::$app->user->identity->is_subscribed_user))) {
             throw new HttpException(403, Yii::t('app', "Please take first subscription to perform this action!"));
         }
 
