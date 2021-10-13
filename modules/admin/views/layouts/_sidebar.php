@@ -1,8 +1,7 @@
 <?php
 
-use yii\helpers\Url;
-use app\modules\admin\models\Module;
 use app\modules\admin\models\DailyReportType;
+use app\modules\admin\models\Module;
 
 ?>
 
@@ -18,7 +17,7 @@ use app\modules\admin\models\DailyReportType;
                     $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 }
                 ?>
-                
+
                 <img src="<?= $profilePic ?>" alt="User Image" class="sidebar-profile"/>
             </div>
             <?php if (!Yii::$app->user->isGuest) { ?>
@@ -45,7 +44,8 @@ use app\modules\admin\models\DailyReportType;
         $menuList[] = ['label' => 'Product Rating', 'icon' => 'star', 'url' => ['product-rating/index'], 'visible' => $visible, 'active' => ($route === 'admin/product-rating/index' || $route === 'admin/product-rating/update' || $route === 'admin/product-rating/view')];
         $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => $visible, 'active' => ($route === 'admin/promo-code/index' || $route === 'admin/promo-code/create' || $route === 'admin/promo-code/update' || $route === 'admin/promo-code/view')];
         $menuList[] = ['label' => 'Order', 'icon' => 'cart-arrow-down', 'url' => ['order/index'], 'visible' => $visible, 'active' => ($route === 'admin/order/index' || $route === 'admin/order/update' || $route === 'admin/order/view')];
-        $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['subscription/index'], 'visible' => $visible, 'active' => ($route === 'admin/subscription/index' || $route === 'admin/subscription/create' || $route === 'admin/subscription/update' || $route === 'admin/subscription/view')];
+        //$menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['subscription/index'], 'visible' => $visible, 'active' => ($route === 'admin/subscription/index' || $route === 'admin/subscription/create' || $route === 'admin/subscription/update' || $route === 'admin/subscription/view')];
+        $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['user-purchased-subscriptions/index'], 'visible' => $visible, 'active' => ($route === 'admin/user-purchased-subscriptions/index' || $route === 'admin/user-purchased-subscriptions/create' || $route === 'admin/user-purchased-subscriptions/update' || $route === 'admin/user-purchased-subscriptions/view')];
         $menuList[] = ['label' => 'Content', 'icon' => 'file-text-o', 'url' => ['cms-page/index'], 'visible' => $visible, 'active' => ($route === 'admin/cms-page/index' || $route === 'admin/cms-page/create' || $route === 'admin/cms-page/update' || $route === 'admin/cms-page/view')];
         $menuList[] = ['label' => 'Report', 'icon' => 'flag', 'items' => [
             ['label' => 'Sales', 'icon' => 'fas fa-angle-right', 'url' => ['report/sales', 'p' => 'w'], 'visible' => $visible, 'active' => ($route === 'admin/report/sales')],
@@ -58,7 +58,7 @@ use app\modules\admin\models\DailyReportType;
         $menuList[] = ['label' => 'Color', 'icon' => 'paint-brush', 'url' => ['color/index'], 'visible' => $visible, 'active' => ($route === 'admin/color/index' || $route === 'admin/color/create' || $route === 'admin/color/update' || $route === 'admin/color/view')];
         $menuList[] = ['label' => 'Trial', 'icon' => 'ticket', 'url' => ['trial/index'], 'visible' => $visible, 'active' => ($route === 'admin/trial/index')];
 
-        
+
         ?>
         <!-- Sidebar menu start -->
         <div class="left-scroll">
@@ -77,21 +77,21 @@ use app\modules\admin\models\DailyReportType;
 
 
 <style>
-.skin-blue .sidebar-menu > li > a {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
+    .skin-blue .sidebar-menu > li > a {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
 
-.treeview > a {
-    white-space: break-spaces
-}
+    .treeview > a {
+        white-space: break-spaces
+    }
 
-.treeview a span {
-    display: inline-block;
-    width: 140px;
-}
+    .treeview a span {
+        display: inline-block;
+        width: 140px;
+    }
 </style>

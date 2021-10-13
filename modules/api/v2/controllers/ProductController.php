@@ -440,7 +440,6 @@ class ProductController extends ActiveController
 
             $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
 
-
             if (!empty($model->option_size)) {
                 $model->option_size = strtolower($model->option_size);
             }

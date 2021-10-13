@@ -72,7 +72,7 @@ class UserPurchasedSubscriptions extends \yii\db\ActiveRecord
             'transaction_id' => 'Transaction ID',
             'subscription_id' => 'Subscription ID',
             'amount' => 'Amount',
-            'date_time' => 'Date Time',
+            'date_time' => 'Subscription Date-Time',
             'status' => 'Status',
             'subscription_type' => 'Subscription Type',
             'created_at' => 'Created At',

@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Html;
-use \app\modules\admin\widgets\GridView;
-use kartik\editable\Editable;
 use app\models\Order;
 use app\models\ProductImage;
+use app\modules\admin\widgets\GridView;
+use kartik\editable\Editable;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\OrderSearch */
@@ -18,14 +18,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php
         $gridColumns = [
-        // [
-        //     'attribute' => 'id',
-        //     'value' => function ($model) {
-        //         return $model->id;
-        //     },
-        //     'header' => 'Order ID',
-        //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-        // ],
+            // [
+            //     'attribute' => 'id',
+            //     'value' => function ($model) {
+            //         return $model->id;
+            //     },
+            //     'header' => 'Order ID',
+            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            // ],
             ['class' => 'kartik\grid\SerialColumn'],
             [
                 'attribute' => 'created_at',
@@ -59,7 +59,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'value' => function ($model) {
-                    return $model->userAddress->address . ", " . $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
+                    $address = "";
+                    if (!empty($model->userAddress->address)) {
+                        $address = $model->userAddress->address;
+                    } else {
+                        $address = $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
+                    }
+                    return $address;
                 },
                 'header' => 'Customer Address',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
@@ -88,118 +94,118 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
 
                                 $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
-                                // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
-                                'options' => ['interval' => '600']
-                            ];
-                        }
+                                    // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
+                                    'options' => ['interval' => '600']
+                                ];
+                            }
 
-                        $result = "";
-                        if (!empty($dataImages)) {
-                            $result = \yii\bootstrap\Carousel::widget(
-                                ['items' => $dataImages]
-                            );
-                        }
-                        $productPrice = (!empty($orderItem->product->price)) ? Yii::$app->formatter->asCurrency($orderItem->product->price) : '';
+                            $result = "";
+                            if (!empty($dataImages)) {
+                                $result = \yii\bootstrap\Carousel::widget(
+                                    ['items' => $dataImages]
+                                );
+                            }
+                            $productPrice = (!empty($orderItem->product->price)) ? Yii::$app->formatter->asCurrency($orderItem->product->price) : '';
 
-                        $html .= "<tr style='border: solid 1px;'>";
-                        $html .= "<td style='border: solid 1px;'>" . $result . "</td>";
-                        $html .= "<td style='border: solid 1px;'>" . $orderItem->product->name . "</td>";
-                        $html .= "<td style='border: solid 1px;'>" . $orderItem->product->category->name . "</td>";
-                        $html .= "<td style='border: solid 1px;'>" . $productPrice . "</td>";
-                        $html .= "<td style='border: solid 1px;'>" . $orderItem->quantity . "</td>";
-                        $html .= "</tr>";
+                            $html .= "<tr style='border: solid 1px;'>";
+                            $html .= "<td style='border: solid 1px;'>" . $result . "</td>";
+                            $html .= "<td style='border: solid 1px;'>" . $orderItem->product->name . "</td>";
+                            $html .= "<td style='border: solid 1px;'>" . $orderItem->product->category->name . "</td>";
+                            $html .= "<td style='border: solid 1px;'>" . $productPrice . "</td>";
+                            $html .= "<td style='border: solid 1px;'>" . $orderItem->quantity . "</td>";
+                            $html .= "</tr>";
+                        }
+                    } else {
+                        $html .= "<tr><td colspan='5'><p>Product data not found.</p></td></tr>";
+
                     }
-                } else {
-                    $html .= "<tr><td colspan='5'><p>Product data not found.</p></td></tr>";
+                    $html .= "</table>";
 
-                }
-                $html .= "</table>";
-
-                return $html;
-            },
-            'header' => 'Order Products',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-        ],
-        [
-            'attribute' => 'total_amount',
-            'value' => function ($model) {
-                return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
-            },
-            'filter' => '',
-            'header' => 'Total Amount Paid',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-        ],
-        [
-            'attribute' => 'status',
-            'value' => function ($model) {
-                $status = 'Pending';
-                if ($model->status == Order::STATUS_ORDER_INPROGRESS) {
-                    $status = 'In Progress';
-                } elseif ($model->status == Order::STATUS_ORDER_COMPLETED) {
-                    $status = 'Completed';
-                } elseif ($model->status == Order::STATUS_ORDER_CANCELLED) {
-                    $status = 'Cancelled';
-                }
-                return $status;
-            },
-            'filter' => $searchModel->arrOrderStatus,
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
+                    return $html;
+                },
+                'header' => 'Order Products',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
+            [
+                'attribute' => 'total_amount',
+                'value' => function ($model) {
+                    return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
+                },
+                'filter' => '',
+                'header' => 'Total Amount Paid',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
+            [
+                'attribute' => 'status',
+                'value' => function ($model) {
+                    $status = 'Pending';
+                    if ($model->status == Order::STATUS_ORDER_INPROGRESS) {
+                        $status = 'In Progress';
+                    } elseif ($model->status == Order::STATUS_ORDER_COMPLETED) {
+                        $status = 'Completed';
+                    } elseif ($model->status == Order::STATUS_ORDER_CANCELLED) {
+                        $status = 'Cancelled';
+                    }
+                    return $status;
+                },
+                'filter' => $searchModel->arrOrderStatus,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
                 ],
-            ],
-            'header' => 'Order Status',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
-        ],
-        [
-            'class' => 'kartik\grid\ActionColumn',
-            'template' => "{update} {view}"
-        ],
-    ];
-
-    echo GridView::widget([
-        'id' => 'order-grid',
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
-        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
-        'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-        'filterRowOptions' => ['class' => 'kartik-sheet-style'],
-        'pjax' => true, // pjax is set to always true for this demo
-        'toolbar' => [
-            [
-                'options' => ['class' => 'btn-group mr-2']
+                'header' => 'Order Status',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
             ],
             [
-                'content' =>
-                Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                    'class' => 'btn btn-basic',
-                    'title' => 'Reset Filter',
-                    'onclick' => "window.location.href = '" . \yii\helpers\Url::to(['order/index']) . "';",
-                ]),
-                'options' => ['class' => 'btn-group mr-2']
+                'class' => 'kartik\grid\ActionColumn',
+                'template' => "{update} {view}"
             ],
-            '{toggleData}',
-        ],
-        'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-        'bordered' => true,
-        'striped' => true,
-        'condensed' => true,
-        'responsive' => false,
-        'panel' => [
-            'type' => GridView::TYPE_DEFAULT,
-            //'heading' => 'Order',
-        ],
-        'persistResize' => false,
-        'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'order',
-        'itemLabelPlural' => 'Orders',
-    ]);
-    ?>
+        ];
 
-</div>
+        echo GridView::widget([
+            'id' => 'order-grid',
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
+            'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
+            'headerRowOptions' => ['class' => 'kartik-sheet-style'],
+            'filterRowOptions' => ['class' => 'kartik-sheet-style'],
+            'pjax' => true, // pjax is set to always true for this demo
+            'toolbar' => [
+                [
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                [
+                    'content' =>
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . \yii\helpers\Url::to(['order/index']) . "';",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                '{toggleData}',
+            ],
+            'toggleDataContainer' => ['class' => 'btn-group mr-2'],
+            'bordered' => true,
+            'striped' => true,
+            'condensed' => true,
+            'responsive' => false,
+            'panel' => [
+                'type' => GridView::TYPE_DEFAULT,
+                //'heading' => 'Order',
+            ],
+            'persistResize' => false,
+            'toggleDataOptions' => ['minCount' => 10],
+            'itemLabelSingle' => 'order',
+            'itemLabelPlural' => 'Orders',
+        ]);
+        ?>
+
+    </div>
 </div>
 
 <script>
@@ -210,7 +216,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function(){
+    $('document').ready(function () {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;
@@ -226,34 +232,34 @@ $this->params['breadcrumbs'][] = $this->title;
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#order-grid" , function(event) {
+        $("body").on('beforeFilter', "#order-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#order-grid" , function(event) {
+        $("body").on('afterFilter', "#order-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-        .on('keyup', filter_selector, function(e) {
-            input = $(this).attr('name');
-            var keyCode = e.keyCode ? e.keyCode : e.which;
-            if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
-                if (submit_form === false) {
-                    submit_form = true;
-                    $("#order-grid").yiiGridView("applyFilter");
+            .off('keydown.yiiGridView change.yiiGridView', filter_selector)
+            .on('keyup', filter_selector, function (e) {
+                input = $(this).attr('name');
+                var keyCode = e.keyCode ? e.keyCode : e.which;
+                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
+                    if (submit_form === false) {
+                        submit_form = true;
+                        $("#order-grid").yiiGridView("applyFilter");
+                    }
                 }
-            }
-        })
-        .on('pjax:success', function() {
-            var i = $("[name='"+input+"']");
-            var val = i.val();
-            i.focus().val(val);
+            })
+            .on('pjax:success', function () {
+                var i = $("[name='" + input + "']");
+                var val = i.val();
+                i.focus().val(val);
 
                 var searchInput = $(i);
                 if (searchInput.length > 0) {
