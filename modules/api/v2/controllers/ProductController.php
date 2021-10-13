@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\{Product, ProductImage, ProductStatus, UserAddress};
 use app\models\BlockUser;
 use app\models\Notification;
 use app\models\ProductReceipt;
@@ -10,27 +11,12 @@ use app\models\SearchHistory;
 use app\models\ShippingPrice;
 use app\modules\api\v2\models\User;
 use Yii;
-use app\models\{
-    Product,
-    ProductImage,
-    ProductStatus,
-    UserAddress
-};
-
-use yii\web\{
-    NotFoundHttpException,
-    UploadedFile
-};
-use yii\filters\auth\{
-    CompositeAuth,
-    HttpBasicAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
-use yii\base\BaseObject;
+use yii\filters\auth\{CompositeAuth, HttpBasicAuth, HttpBearerAuth, QueryParamAuth};
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
+use yii\web\{NotFoundHttpException, UploadedFile};
+use yii\web\HttpException;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -189,10 +175,15 @@ class ProductController extends ActiveController
      */
     public function actionCreate()
     {
-        ini_set('max_execution_time', 300);
+        //ini_set('max_execution_time', 300);
         $model = new Product();
         $postData = \Yii::$app->request->post();
         $productData['Product'] = $postData;
+
+        // check for user is subscriber or not
+        if (!empty(Yii::$app->user->identity) && (Yii::$app->user->identity->is_subscribed_user == '0' || Yii::$app->user->identity->is_subscribed_user == "" || empty(Yii::$app->user->identity->is_subscribed_user))) {
+            throw new HttpException(403, Yii::t('app', "Please take first subscription to perform this action!"));
+        }
 
         $model->gender = Product::GENDER_FOR_FEMALE;
         $model->status_id = ProductStatus::STATUS_PENDING_APPROVAL;
@@ -213,7 +204,7 @@ class ProductController extends ActiveController
 
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
-            }else{
+            } else {
                 $model->option_show_only = '0';
             }
 
@@ -387,11 +378,11 @@ class ProductController extends ActiveController
                                                 $message = Yii::$app->fcm->createMessage();
                                                 $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
                                                 $message->setNotification($note)
-                                                ->setData([
-                                                    'id' => $modelNotification->ref_id,
-                                                    'type' => $modelNotification->ref_type,
-                                                    'message' => $notificationText,
-                                                ]);
+                                                    ->setData([
+                                                        'id' => $modelNotification->ref_id,
+                                                        'type' => $modelNotification->ref_type,
+                                                        'message' => $notificationText,
+                                                    ]);
                                                 $response = Yii::$app->fcm->send($message);
                                             }
                                         }
@@ -443,7 +434,7 @@ class ProductController extends ActiveController
 
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
-            }else{
+            } else {
                 $model->option_show_only = '0';
             }
 
