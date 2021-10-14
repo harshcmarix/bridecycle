@@ -113,6 +113,7 @@ class TrialSearch extends Trial
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
+        $query->orderBy(['trials.created_at'=>SORT_DESC]);
         $query->groupBy('trials.id');
 
         $activeDataProvider = Yii::createObject([

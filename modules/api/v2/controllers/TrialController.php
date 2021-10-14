@@ -251,7 +251,7 @@ class TrialController extends ActiveController
 
                 if (!empty($getUsers) && !empty($notificationText)) {
                     foreach ($getUsers as $userROW) {
-                        if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id))  {
+                        if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
                             if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                 $userDevice = $userROW->userDevice;
 
@@ -355,7 +355,7 @@ class TrialController extends ActiveController
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "receiver_id"');
         }
 
-        $models = Trial::find()->where(['receiver_id' => $postData['receiver_id']])->all();
+        $models = Trial::find()->where(['receiver_id' => $postData['receiver_id']])->orderBy(['created_at' => SORT_DESC])->all();
         return $models;
     }
 
@@ -371,7 +371,7 @@ class TrialController extends ActiveController
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "sender_id"');
         }
 
-        $models = Trial::find()->where(['sender_id' => $postData['sender_id']])->all();
+        $models = Trial::find()->where(['sender_id' => $postData['sender_id']])->orderBy(['created_at' => SORT_DESC])->all();
         return $models;
     }
 }

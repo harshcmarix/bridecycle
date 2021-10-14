@@ -116,6 +116,7 @@ class OrderSearch extends Order
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
+        $query->orderBy(['orders.created_at'=>SORT_DESC]);
         $query->groupBy('orders.id');
 
         $activeDataProvider = Yii::createObject([
