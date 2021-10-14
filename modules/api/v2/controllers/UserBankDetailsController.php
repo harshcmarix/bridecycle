@@ -82,6 +82,7 @@ class UserBankDetailsController extends ActiveController
         unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);
+        unset($actions['delete']);
         return $actions;
     }
 
@@ -107,12 +108,12 @@ class UserBankDetailsController extends ActiveController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+//    public function actionView($id)
+//    {
+//        return $this->render('view', [
+//            'model' => $this->findModel($id),
+//        ]);
+//    }
 
     /**
      * Creates a new UserBankDetails model.
