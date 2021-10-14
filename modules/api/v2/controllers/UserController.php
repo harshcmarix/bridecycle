@@ -130,7 +130,7 @@ class UserController extends ActiveController
         $model = new User();
         $postData = \Yii::$app->request->post();
         $userData['User'] = $postData;
-        
+
         if (empty($postData['is_login_from']) && !empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES) {
             $model->scenario = User::SCENARIO_SHOP_OWNER;
         } elseif (!empty($postData['is_login_from']) && $postData['is_login_from'] == "") {
@@ -213,6 +213,7 @@ class UserController extends ActiveController
                     $userAddressModel = new UserAddress();
                     $userAddressData['UserAddress'] = $postData;
                     if ($userAddressModel->load($userAddressData)) {
+                        $userAddressModel->address = $postData['street'] . ', ' . $postData['city'] . ', ' . $postData['state'] . ', ' . $postData['country'] . ' ' . $postData['zip_code'];
                         $userAddressModel->user_id = $model->id;
                         $userAddressModel->type = UserAddress::TYPE_SHOP;
                         $userAddressModel->is_primary_address = UserAddress::IS_ADDRESS_PRIMARY_YES;

@@ -3,6 +3,7 @@
 namespace app\modules\api\v2\controllers;
 
 
+use app\models\BridecycleToSellerPayments;
 use app\models\{CartItem, Notification, Order, OrderItem, OrderPayment, Product, ProductStatus};
 use app\models\ProductTracking;
 use app\models\Setting;
@@ -386,8 +387,19 @@ class CartItemController extends ActiveController
                                 }
                                 $orderItemRow->product->save(false);
 
-                                // Need setting for generate pdf on server
+                                // Generate pdf of order invoice
                                 $generateInvoice = $this->generateInvoice($orderItemRow->id);
+
+                                // Track for Pending payment from bridecycle to seller start
+                                $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
+                                $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
+                                $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
+                                $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
+                                $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
+                                $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->price + $orderItemRow->shipping_cost);
+                                $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
+                                $modelBridecycleToSellerPayment->save(false);
+                                // Track for Pending payment from bridecycle to seller end
 
                                 // Send Push notification start
                                 $getUsers[] = $orderItemRow->product->user;

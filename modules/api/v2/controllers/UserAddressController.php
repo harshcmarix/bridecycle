@@ -105,7 +105,7 @@ class UserAddressController extends ActiveController
         $address['UserAddress']['is_primary_address'] = (!empty($address['UserAddress']['is_primary_address'])) ? '1' : '0';
         if ($model->load($address) && $model->validate()) {
             $model->type = UserAddress::TYPE_BILLING;
-            $model->address = $model->street . ' ' . $model->city . ' ' . $model->state . ' ' . $model->country . ' ' . $model->zip_code;
+            $model->address = $model->street . ', ' . $model->city . ', ' . $model->state . ', ' . $model->country . ' ' . $model->zip_code;
             $model->save(false);
         }
 
@@ -155,7 +155,7 @@ class UserAddressController extends ActiveController
             }
 
             $model->type = UserAddress::TYPE_BILLING;
-            $model->address = $model->street . ' ' . $model->city . ' ' . $model->state . ' ' . $model->country . ' ' . $model->zip_code;
+            $model->address = $model->street . ', ' . $model->city . ', ' . $model->state . ', ' . $model->country . ' ' . $model->zip_code;
             $model->save(false);
         }
 

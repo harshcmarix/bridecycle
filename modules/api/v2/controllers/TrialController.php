@@ -320,7 +320,7 @@ class TrialController extends ActiveController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-//    public function actionDelete($id)
+    //    public function actionDelete($id)
 //    {
 //        $this->findModel($id)->delete();
 //
@@ -339,7 +339,6 @@ class TrialController extends ActiveController
         if (($model = Trial::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
@@ -354,7 +353,6 @@ class TrialController extends ActiveController
         if (empty($postData) || empty($postData['receiver_id'])) {
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "receiver_id"');
         }
-
         $models = Trial::find()->where(['receiver_id' => $postData['receiver_id']])->orderBy(['created_at' => SORT_DESC])->all();
         return $models;
     }
@@ -370,7 +368,6 @@ class TrialController extends ActiveController
         if (empty($postData) || empty($postData['sender_id'])) {
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "sender_id"');
         }
-
         $models = Trial::find()->where(['sender_id' => $postData['sender_id']])->orderBy(['created_at' => SORT_DESC])->all();
         return $models;
     }
