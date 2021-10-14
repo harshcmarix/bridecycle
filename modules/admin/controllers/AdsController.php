@@ -200,7 +200,7 @@ class AdsController extends Controller
                 // Create thumb of profile picture
                 $actualImagePath = $uploadDirPath . '/' . $fileName;
                 $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                // p($actualImagePath);
+
 //                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 // Insert profile picture name into database
@@ -240,6 +240,7 @@ class AdsController extends Controller
         $image = $model->image;
         $uploadDirPath = Yii::getAlias('@adsImageRelativePath');
         $uploadThumbDirPath = Yii::getAlias('@adsImageThumbRelativePath');
+
         // unlink images with thumb
         if (file_exists($uploadDirPath . '/' . $image) && !empty($image)) {
             unlink($uploadDirPath . '/' . $image);
@@ -247,6 +248,7 @@ class AdsController extends Controller
         if (file_exists($uploadThumbDirPath . '/' . $image) && !empty($image)) {
             unlink($uploadThumbDirPath . '/' . $image);
         }
+
         if ($model->delete()) {
             Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Ads deleted successfully.");
         } else {

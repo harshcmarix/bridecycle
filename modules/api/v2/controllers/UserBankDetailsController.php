@@ -172,8 +172,9 @@ class UserBankDetailsController extends ActiveController
         if (!$model instanceof UserBankDetails || $model->user_id != Yii::$app->user->identity->id) {
             throw new NotFoundHttpException('User bank detail doesn\'t exist.');
         }
-        
+
         $model->delete();
+        //return $model;
     }
 
     /**

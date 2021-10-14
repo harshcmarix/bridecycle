@@ -73,13 +73,12 @@ return [
     'mobile_api_latest_version' => 'v1',
 
 
-
     // Live // client
     //'google_map_api_key'=>'AIzaSyBuITv7RS9RWyEoZkJ1df6-zrw6ZT_C36Q',
-    'google_map_api_key'=>'AIzaSyAO1tfGWm30RyXQbiaVGvKxo0M5h9-4bP8',
+    'google_map_api_key' => 'AIzaSyAO1tfGWm30RyXQbiaVGvKxo0M5h9-4bP8',
     //'google_map_api_key'=>'AIzaSyB0WhTsW00dL_NTfkIbUgxXc25zUATbhAY',
     // Local // my
     //'google_map_api_key'=>'AIzaSyDTBLZMRefUIIM9f0StWgeQ1lVglay22wk',
 
-
+    'bridecycle_product_sell_charges_percentage' => '5%',
 ];

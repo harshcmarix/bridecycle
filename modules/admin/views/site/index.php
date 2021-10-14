@@ -133,7 +133,7 @@ $this->title = 'Dashboard';
 
     <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
-            <div class="small-box bg-lime">
+            <div class="small-box" style="background-color: #8A9673 !important;">
                 <div class="inner">
                     <h3><?php echo $totalOrderDeliveredAndCompleted ?></h3>
                     <p>Order Delivered and Completed</p>
