@@ -10,6 +10,7 @@ use yii\data\{
     ActiveDataProvider
 };
 use app\models\MakeOffer;
+use yii\db\Query;
 
 /**
  * MakeOfferSearch represents the model behind the search form of `app\models\MakeOffer`.
@@ -21,6 +22,7 @@ class MakeOfferSearch extends MakeOffer
      * @var $hiddenFields Array of hidden fields which not needed in APIs
      */
     protected $hiddenFields = [];
+
 
     /**
      * {@inheritdoc}
@@ -50,7 +52,7 @@ class MakeOfferSearch extends MakeOffer
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = null)
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -102,12 +104,15 @@ class MakeOfferSearch extends MakeOffer
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+        if (!empty($userId)) {
+            $query->where(['sender_id' => $userId]);
+        }
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['make_offer.*',];
+            $select = ['make_offer.*'];
         }
 
         $query->select($select);
@@ -116,14 +121,18 @@ class MakeOfferSearch extends MakeOffer
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-
         /* ########## Prepare Query With Custom Filter Start ######### */
         if (!empty($requestParams['product_id'])) {
-            $query->andWhere(['product_id' => $requestParams['product_id'], 'sender_id' => Yii::$app->user->identity->id]);
+            $query->andWhere(['product_id' => $requestParams['product_id']]);
         }
         /* ########## Prepare Query With Custom Filter End ######### */
 
-        $query->groupBy('make_offer.id');
+        $query->orderBy(['make_offer.created_at' => SORT_DESC]);
+        if (empty($requestParams['product_id'])) {
+            $query->groupBy('make_offer.product_id');
+        } else {
+            $query->groupBy('make_offer.id');
+        }
 
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
@@ -134,6 +143,7 @@ class MakeOfferSearch extends MakeOffer
             ],
             'sort' => [
                 'params' => $requestParams,
+                //'defaultOrder' => ['id' => SORT_DESC],
             ],
         ]);
 

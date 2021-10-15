@@ -52,8 +52,7 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
     }
 
     const STATUS_PENDING = '0';
-    const STATUS_IN_PROGRESS = '1';
-    const STATUS_COMPLETE = '2';
+    const STATUS_COMPLETE = '1';
 
     /**
      * {@inheritdoc}

@@ -2,10 +2,13 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\Notification;
 use app\models\Product;
+use app\modules\api\v2\models\User;
 use Yii;
 use app\models\MakeOffer;
 use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\auth\{
     HttpBasicAuth,
@@ -31,7 +34,6 @@ class MakeOfferController extends ActiveController
      * @var string
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\MakeOfferSearch';
-
 
     /**
      * @return array
@@ -76,7 +78,6 @@ class MakeOfferController extends ActiveController
                 'Access-Control-Expose-Headers' => ['X-Pagination-Per-Page', 'X-Pagination-Current-Page', 'X-Pagination-Total-Count ', 'X-Pagination-Page-Count'],
             ],
         ];
-
         return $behaviors;
     }
 
@@ -90,6 +91,7 @@ class MakeOfferController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
+        unset($actions['delete']);
         return $actions;
     }
 
@@ -105,7 +107,7 @@ class MakeOfferController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        return $model->search($requestParams);
+        return $model->search($requestParams, Yii::$app->user->identity->id);
     }
 
     /**
@@ -140,10 +142,22 @@ class MakeOfferController extends ActiveController
         $postData['MakeOffer']['sender_id'] = Yii::$app->user->identity->id;
         $postData['MakeOffer']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
         $postData['MakeOffer']['status'] = MakeOffer::STATUS_PENDING;
+
+        $createdOffers = 0;
+        if (!empty($modelProduct) && $modelProduct instanceof Product) {
+            $createdOffers = MakeOffer::find()
+                ->where('make_offer.sender_id=' . Yii::$app->user->identity->id)
+                ->andWhere('make_offer.product_id=' . $modelProduct->id)
+                ->count();
+        }
+
+        if ($createdOffers > 0 && $createdOffers >= MakeOffer::USER_ALLOWED_OFFER) {
+            throw new HttpException(403, "Sorry, You have exceeded the maximum limit of making an offer for this product!");
+        }
+
         if ($model->load($postData) && $model->validate()) {
             $model->save();
         }
-
         return $model;
     }
 
@@ -156,15 +170,107 @@ class MakeOfferController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = MakeOffer::findOne($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (!$model instanceof MakeOffer || ($model->receiver_id != Yii::$app->user->identity->id)) {
+            throw new NotFoundHttpException('Offer doesn\'t exist.');
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        $postData = Yii::$app->request->post();
+        $offerData['MakeOffer'] = $postData;
+
+        $modelProduct = Product::findOne($model->product_id);
+
+        if (!$modelProduct instanceof Product) {
+            throw new NotFoundHttpException('Product doesn\'t exist.');
+        }
+
+        if ($model->load($offerData) && $model->validate()) {
+            if (!empty($offerData['MakeOffer']['status']) && $offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {
+                $model->status = MakeOffer::STATUS_ACCEPT;
+            } elseif (!empty($offerData['MakeOffer']['status']) && $offerData['MakeOffer']['status'] == MakeOffer::STATUS_REJECT) {
+                $model->status = MakeOffer::STATUS_REJECT;
+            } else {
+                $model->status = MakeOffer::STATUS_PENDING;
+            }
+
+            // Send Push Notification Start
+            if (!empty($offerData['MakeOffer']['status']) && in_array($offerData['MakeOffer']['status'], [MakeOffer::STATUS_ACCEPT, MakeOffer::STATUS_REJECT])) {
+                $getUsers[] = $model->sender;
+
+                if (!empty($getUsers)) {
+                    foreach ($getUsers as $keys => $userROW) {
+                        if ($userROW instanceof User && ($model->sender_id != $userROW->id)) {
+                            if ($userROW->is_offer_update_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                                $userDevice = $userROW->userDevice;
+
+                                // Insert into notification.
+                                $notificationText = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                $action = "Reject";
+                                if ($offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {
+                                    $notificationText = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $action = "Accept";
+                                }
+                                $modelNotification = new Notification();
+                                $modelNotification->owner_id = $model->receiver_id;
+                                $modelNotification->notification_receiver_id = $userROW->id;
+                                $modelNotification->ref_id = $model->id;
+                                $modelNotification->notification_text = $notificationText;
+                                $modelNotification->action = $action;
+                                $modelNotification->ref_type = "make_offer";
+                                $modelNotification->save(false);
+
+                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                if ($userDevice->device_platform == 'android') {
+                                    $notificationToken = array($userDevice->notification_token);
+                                    $senderName = $model->receiver->first_name . " " . $model->receiver->last_name;
+                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                } else {
+                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                    $note->setBadge($badge);
+                                    $note->setSound('default');
+                                    $message = Yii::$app->fcm->createMessage();
+                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                    $message->setNotification($note)
+                                        ->setData([
+                                            'id' => $modelNotification->ref_id,
+                                            'type' => $modelNotification->ref_type,
+                                            'message' => $notificationText,
+                                        ]);
+                                    $response = Yii::$app->fcm->send($message);
+                                }
+                            }
+
+                            if ($userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                $message = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                $subject = "Your product offer rejected by seller";
+                                if ($offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {
+                                    $message = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $subject = "Your product offer accepted by seller";
+                                }
+
+//                                            if (!empty($userROW->email)) {
+//                                                Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+//                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+//                                                    ->setTo($userROW->email)
+//                                                    ->setSubject($subject)
+//                                                    ->send();
+//                                            }
+
+
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // Send Push Notification End
+
+
+            $model->save(false);
+        }
+        return $model;
     }
 
     /**

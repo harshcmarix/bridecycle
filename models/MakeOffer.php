@@ -32,6 +32,8 @@ class MakeOffer extends \yii\db\ActiveRecord
         return 'make_offer';
     }
 
+    public $offered_count;
+
     /**
      * @return array[]
      */
@@ -49,6 +51,9 @@ class MakeOffer extends \yii\db\ActiveRecord
     const STATUS_ACCEPT = 2;
     const STATUS_REJECT = 3;
 
+    const USER_ALLOWED_OFFER = 3;
+
+
     /**
      * {@inheritdoc}
      */
@@ -58,7 +63,7 @@ class MakeOffer extends \yii\db\ActiveRecord
             [['product_id', 'sender_id', 'receiver_id', 'status'], 'required'],
             [['product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
             [['offer_amount'], 'number'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['offered_count', 'created_at', 'updated_at'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['sender_id' => 'id']],
             [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['receiver_id' => 'id']],
@@ -89,6 +94,7 @@ class MakeOffer extends \yii\db\ActiveRecord
     {
         return [
             'product0' => 'product0',
+            'offerCount' => 'offerCount'
         ];
     }
 
@@ -133,5 +139,16 @@ class MakeOffer extends \yii\db\ActiveRecord
     public function getProduct0()
     {
         return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+
+    /**
+     * @return bool|int|string|null
+     */
+    public function getOfferCount()
+    {
+        return $this->offered_count = MakeOffer::find()
+            ->where('make_offer.sender_id=' . $this->sender_id)
+            ->andWhere('make_offer.product_id=' . $this->product_id)
+            ->count();
     }
 }

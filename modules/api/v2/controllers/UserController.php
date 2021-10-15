@@ -326,9 +326,12 @@ class UserController extends ActiveController
         $data['User'] = $postData;
         $data1['UserAddress'] = $postData;
         $model->scenario = User::SCENARIO_USER_UPDATE;
-
         if ($model->load($data) && $model->validate()) {
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+
+            if (!empty($data['User']['email']) && $data['User']['email'] != $model->email) {
+                $model->email = $data['User']['email'];
+            }
 
             if ($model->save()) {
 
@@ -339,6 +342,8 @@ class UserController extends ActiveController
                     $userAddressData['UserAddress'] = $postData;
                     $userAddressData['UserAddress']['user_id'] = $model->id;
                     $addressModel = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'street' => $userAddressData['UserAddress']['street'], 'city' => $userAddressData['UserAddress']['city'], 'state' => $userAddressData['UserAddress']['state'], 'country' => $userAddressData['UserAddress']['country'], 'zip_code' => $userAddressData['UserAddress']['zip_code']])->one();
+
+                    $userAddressModel->address = $postData['street'] . ', ' . $postData['city'] . ', ' . $postData['state'] . ', ' . $postData['country'] . ' ' . $postData['zip_code'];
 
                     if ($userAddressModel->load($userAddressData) && $userAddressModel->validate()) {
 
