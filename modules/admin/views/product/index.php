@@ -67,24 +67,24 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
                         $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
                             // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
-                        'caption' => '<a href="javascript:void(0);" class="product-index_img_view" onclick="' . $contentmodel . '" ><i class="fa fa-eye"></i></a>',
-                        'options' => ['interval' => '600',]
-                    ];
-                }
+                            'caption' => '<a href="javascript:void(0);" class="product-index_img_view" onclick="' . $contentmodel . '" ><i class="fa fa-eye"></i></a>',
+                            'options' => ['interval' => '600',]
+                        ];
+                    }
 
-                $result = "";
-                if (!empty($dataImages)) {
-                    $result = \yii\bootstrap\Carousel::widget(
-                        ['items' => $dataImages]
-                    );
-                }
+                    $result = "";
+                    if (!empty($dataImages)) {
+                        $result = \yii\bootstrap\Carousel::widget(
+                            ['items' => $dataImages]
+                        );
+                    }
 
-                return $result;
-            },
-            'header' => 'Images',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 100px'],
+                    return $result;
+                },
+                'header' => 'Images',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 100px'],
 
-        ],
+            ],
 //        [
 //            'attribute' => 'number',
 //            'value' => function ($model) {
@@ -93,200 +93,199 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 //            'header' => '',
 //            'headerOptions' => ['class' => 'kartik-sheet-style']
 //        ],
-        [
-            'attribute' => 'category_id',
-            'value' => function ($model) {
-                return (!empty($model->category) && $model->category instanceof ProductCategory && !empty($model->category->name)) ? $model->category->name : "";
-            },
-            'filter' => $categories,
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
+            [
+                'attribute' => 'category_id',
+                'value' => function ($model) {
+                    return (!empty($model->category) && $model->category instanceof ProductCategory && !empty($model->category->name)) ? $model->category->name : "";
+                },
+                'filter' => $categories,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
                 ],
+                'header' => 'Category',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
             ],
-            'header' => 'Category',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
-        ],
-        [
-            'attribute' => 'sub_category_id',
-            'value' => function ($model) {
-                return (!empty($model->subCategory) && $model->subCategory instanceof ProductCategory && !empty($model->subCategory->name)) ? $model->subCategory->name : "";
-            },
-            'filter' => $subCategories,
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
+            [
+                'attribute' => 'sub_category_id',
+                'value' => function ($model) {
+                    return (!empty($model->subCategory) && $model->subCategory instanceof ProductCategory && !empty($model->subCategory->name)) ? $model->subCategory->name : "";
+                },
+                'filter' => $subCategories,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
                 ],
+                'header' => 'Sub Category',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
             ],
-            'header' => 'Sub Category',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
-        ],
-        [
-            'attribute' => 'price',
-            'value' => function ($model) {
-                return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
-            },
-            'header' => '',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
-        ],
+            [
+                'attribute' => 'price',
+                'value' => function ($model) {
+                    return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
+                },
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
+            ],
 
-        [
-            'attribute' => 'option_price',
-            'value' => function ($model) {
-                return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
-            },
-            'header' => 'Tax',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 70px'],
-        ],
-        [
-            'attribute' => 'option_conditions',
-            'value' => function ($model) {
-                if(empty($model->option_conditions)){
-                    return '';    
-                }
-                return $model->option_conditions;
-            },
-            'header' => '',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-        ],
-        [
-            'attribute' => 'option_size',
-            'value' => function ($model) {
-                return $model->option_size;
-            },
-            'header' => '',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-        ],
-        [
-            'attribute' => 'option_show_only',
-            'value' => function ($model) {
-                return ($model->option_show_only == '1') ? "Yes" : "No";
-            },
-            'filter' => $searchModel->arrOptionIsShowOnly,
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                ],
+            [
+                'attribute' => 'option_price',
+                'value' => function ($model) {
+                    return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
+                },
+                'header' => 'Tax',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 70px'],
             ],
-            'header' => '',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-        ],
-        [
-            'attribute' => 'available_quantity',
-            'value' => function ($model) {
-                return (!empty($model) && !empty($model->available_quantity)) ? $model->available_quantity : "-";
-            },
-            'header' => '',
-            'width' => '5%',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-        ],
-        [
-            'attribute' => 'status_id',
-            'value' => function ($model) {
-                return (!empty($model) && !empty($model->status) && $model->status instanceof ProductStatus && !empty($model->status->status)) ? $model->status->status : "";
-            },
-            'filter' => $arrStatus,
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                ],
+            [
+                'attribute' => 'option_conditions',
+                'value' => function ($model) {
+                    if (empty($model->option_conditions)) {
+                        return '';
+                    }
+                    return $model->option_conditions;
+                },
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
-            'header' => 'Status',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-        ],
+            [
+                'attribute' => 'option_size',
+                'value' => function ($model) {
+                    return $model->option_size;
+                },
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+            ],
+            [
+                'attribute' => 'option_show_only',
+                'value' => function ($model) {
+                    return ($model->option_show_only == '1') ? "Yes" : "No";
+                },
+                'filter' => $searchModel->arrOptionIsShowOnly,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+            ],
+            [
+                'attribute' => 'available_quantity',
+                'value' => function ($model) {
+                    return (!empty($model) && !empty($model->available_quantity)) ? $model->available_quantity : "-";
+                },
+                'header' => '',
+                'width' => '5%',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
+            [
+                'attribute' => 'status_id',
+                'value' => function ($model) {
+                    return (!empty($model) && !empty($model->status) && $model->status instanceof ProductStatus && !empty($model->status->status)) ? $model->status->status : "";
+                },
+                'filter' => $arrStatus,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => 'Status',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
 
-        [
-            'format' => ['raw'],
-            'attribute' => 'is_top_selling',
-            'value' => function ($model) {
-                return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            },
-            'filter' => $searchModel->arrIsTopSelling,
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
+            [
+                'format' => ['raw'],
+                'attribute' => 'is_top_selling',
+                'value' => function ($model) {
+                    return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
+                },
+                'filter' => $searchModel->arrIsTopSelling,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
+            [
+                'format' => ['raw'],
+                'attribute' => 'is_top_trending',
+                'value' => function ($model) {
+                    return Html::checkbox("", $model->is_top_trending, ['class' => 'topTrending', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
+                },
+                'filter' => $searchModel->arrIsTopTrending,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
+            [
+                'attribute' => 'type',
+                'value' => function ($model) {
+                    $producttype = "";
+                    if (!empty($model->type) && $model->type == \app\models\Product::PRODUCT_TYPE_NEW) {
+                        $producttype = "New";
+                    } else if (!empty($model->type) && $model->type == \app\models\Product::PRODUCT_TYPE_USED) {
+                        $producttype = "Used";
+                    }
+                    return $producttype;
+                },
+                'filter' => $productType,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => 'Product Type',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
+
+            [
+                'attribute' => 'is_admin_favourite',
+                'header' => 'Admin Favourite',
+                'headerOptions' => ['style' => 'text-align: center !important'],
+                'value' => function ($model) {
+
+                    return (!empty($model->is_admin_favourite) && $model->is_admin_favourite == \app\models\Product::IS_ADMIN_FAVOURITE_YES) ? 'Yes' : "No";
+                },
+                'filter' => ['1' => 'Yes', '0' => 'No'],
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
                 ],
             ],
-            'header' => '',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-        ],
-        [
-            'format' => ['raw'],
-            'attribute' => 'is_top_trending',
-            'value' => function ($model) {
-                return Html::checkbox("", $model->is_top_trending, ['class' => 'topTrending', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
-            },
-            'filter' => $searchModel->arrIsTopTrending,
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                ],
+            [
+                'class' => 'kartik\grid\ActionColumn',
             ],
-            'header' => '',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-        ],
-        [
-            'attribute' => 'type',
-            'value' => function ($model) {
-                $producttype = "";
-                if (!empty($model->type) && $model->type == \app\models\Product::PRODUCT_TYPE_NEW) {
-                    $producttype = "New";
-                } else if (!empty($model->type) && $model->type == \app\models\Product::PRODUCT_TYPE_USED) {
-                    $producttype = "Used";
-                }
-                return $producttype;
-            },
-            'filter' => $productType,
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                ],
-            ],
-            'header' => 'Product Type',
-            'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-        ],
+        ];
 
-        [
-            'attribute' => 'is_admin_favourite',
-            'header' => 'Admin Favourite',
-            'headerOptions' => ['style' => 'text-align: center !important'],
-            'value' => function ($model) {
-
-                return (!empty($model->is_admin_favourite) && $model->is_admin_favourite == \app\models\Product::IS_ADMIN_FAVOURITE_YES) ? 'Yes' : "No";
-            },
-            'filter' => ['1' => 'Yes', '0' => 'No'],
-            'filterType' => GridView::FILTER_SELECT2,
-            'filterWidgetOptions' => [
-                'options' => ['prompt' => 'Select'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                ],
-            ],
-        ],
-
-        [
-            'class' => 'kartik\grid\ActionColumn',
-        ],
-    ];
-
-    echo GridView::widget([
-        'id' => 'product-grid',
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        echo GridView::widget([
+            'id' => 'product-grid',
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
             'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
 //        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
 //        'headerRowOptions' => ['class' => 'kartik-sheet-style'],
@@ -295,30 +294,30 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'toolbar' => [
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-plus-circle"> Add Product </i>', [
-                        'class' => 'btn btn-success',
-                        'title' => 'Add Product',
-                        'onclick' => "window.location.href = '" . Url::to(['product/create']) . "';",
-                    ]),
+                        Html::button('<i class="fa fa-plus-circle"> Add Product </i>', [
+                            'class' => 'btn btn-success',
+                            'title' => 'Add Product',
+                            'onclick' => "window.location.href = '" . Url::to(['product/create']) . "';",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Reset Filter',
-                        'onclick' => "window.location.href = '" . Url::to(['product/index']) . "';",
-                    ]),
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . Url::to(['product/index']) . "';",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-refresh"> Multiple Delete </i>', [
-                        'class' => 'btn btn-danger',
-                        'title' => 'Multiple Delete',
-                        'id' => "btn-delete_all",
+                        Html::button('<i class="fa fa-refresh"> Multiple Delete </i>', [
+                            'class' => 'btn btn-danger',
+                            'title' => 'Multiple Delete',
+                            'id' => "btn-delete_all",
                             //'onclick' => "window.location.href = '" . Url::to(['product/index']) . "';",
-                    ]),
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 '{toggleData}',
@@ -502,7 +501,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function(){
+    $('document').ready(function () {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;
@@ -518,53 +517,53 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#product-grid" , function(event) {
+        $("body").on('beforeFilter', "#product-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#product-grid" , function(event) {
+        $("body").on('afterFilter', "#product-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-        .on('keyup', filter_selector, function(e) {
-            input = $(this).attr('name');
-            var keyCode = e.keyCode ? e.keyCode : e.which;
-            if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
-                if (submit_form === false) {
-                    submit_form = true;
-                    $("#product-grid").yiiGridView("applyFilter");
+            .off('keydown.yiiGridView change.yiiGridView', filter_selector)
+            .on('keyup', filter_selector, function (e) {
+                input = $(this).attr('name');
+                var keyCode = e.keyCode ? e.keyCode : e.which;
+                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
+                    if (submit_form === false) {
+                        submit_form = true;
+                        $("#product-grid").yiiGridView("applyFilter");
+                    }
                 }
-            }
-        })
-        .on('pjax:success', function() {
-            if (isInput) {
-                var i = $("[name='" + input + "']");
-                var val = i.val();
-                i.focus().val(val);
+            })
+            .on('pjax:success', function () {
+                if (isInput) {
+                    var i = $("[name='" + input + "']");
+                    var val = i.val();
+                    i.focus().val(val);
 
-                var searchInput = $(i);
-                if (searchInput.length > 0) {
-                    var strLength = searchInput.val().length * 2;
-                    searchInput[0].setSelectionRange(strLength, strLength);
+                    var searchInput = $(i);
+                    if (searchInput.length > 0) {
+                        var strLength = searchInput.val().length * 2;
+                        searchInput[0].setSelectionRange(strLength, strLength);
+                    }
+
+                    if ($('thead td i').length == 0) {
+                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                    }
+
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
+                            $(document).scrollTop($(document).innerHeight());
+                        }, 200);
+                    })
                 }
-
-                if ($('thead td i').length == 0) {
-                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
-                }
-
-                $('.pagination').find('li a').on('click', function () {
-                    setTimeout(function () {
-                        $(document).scrollTop($(document).innerHeight());
-                    }, 200);
-                })
-            }
-        });
+            });
 
         //select box filter
         var select;
@@ -578,54 +577,54 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#product-grid" , function(event) {
+        $("body").on('beforeFilter', "#product-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#product-grid" , function(event) {
+        $("body").on('afterFilter', "#product-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
-        .on('change', select_filter_selector, function(e) {
-            select = $(this).attr('name');
-            if (submit_form === false) {
-                submit_form = true;
-                $("#product-grid").yiiGridView("applyFilter");
-            }
-        })
-        .on('pjax:success', function() {
-            var i = $("[name='" + input + "']");
-            var val = i.val();
-            i.focus().val(val);
+            .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
+            .on('change', select_filter_selector, function (e) {
+                select = $(this).attr('name');
+                if (submit_form === false) {
+                    submit_form = true;
+                    $("#product-grid").yiiGridView("applyFilter");
+                }
+            })
+            .on('pjax:success', function () {
+                var i = $("[name='" + input + "']");
+                var val = i.val();
+                i.focus().val(val);
 
-            var searchInput = $(i);
-            if (searchInput.length > 0) {
-                var strLength = searchInput.val().length * 2;
-                searchInput[0].setSelectionRange(strLength, strLength);
-            }
-
-            if (isSelect) {
-                if ($('thead td i').length == 0) {
-                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                var searchInput = $(i);
+                if (searchInput.length > 0) {
+                    var strLength = searchInput.val().length * 2;
+                    searchInput[0].setSelectionRange(strLength, strLength);
                 }
 
-                $('.pagination').find('li a').on('click', function () {
-                    setTimeout(function () {
-                        $(document).scrollTop($(document).innerHeight());
-                    }, 200);
-                })
-            }
-        });
+                if (isSelect) {
+                    if ($('thead td i').length == 0) {
+                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                    }
+
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
+                            $(document).scrollTop($(document).innerHeight());
+                        }, 200);
+                    })
+                }
+            });
     });
 
-$('.pagination').find('li a').on('click', function () {
-    setTimeout(function () {
-        $(document).scrollTop($(document).innerHeight());
-    }, 200);
-})
+    $('.pagination').find('li a').on('click', function () {
+        setTimeout(function () {
+            $(document).scrollTop($(document).innerHeight());
+        }, 200);
+    });
 </script>

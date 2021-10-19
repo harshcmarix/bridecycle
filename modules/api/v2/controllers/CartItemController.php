@@ -340,7 +340,7 @@ class CartItemController extends ActiveController
                 'card_exp_month' => $expMontYear[0],
                 'card_exp_year' => $expMontYear[1],
                 'card_first_name' => $cardHoderName[0],
-                'card_last_name' => $cardHoderName[1],
+                'card_last_name' => (!empty($cardHoderName[1])) ? $cardHoderName[1] : "User",
                 'sub_total' => $subTotal,
                 'user' => Yii::$app->user->identity,
                 'user_address' => $modelAddress,

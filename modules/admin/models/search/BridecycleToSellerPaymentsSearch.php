@@ -45,6 +45,10 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
 
         // add conditions that should always apply here
 
+        $query->leftJoin('users As seller', 'bridecycle_to_seller_payments.seller_id=seller.id');
+        $query->leftJoin('order_items', 'bridecycle_to_seller_payments.order_item_id=order_items.id');
+        $query->leftJoin('products', 'order_items.product_id=products.id');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
@@ -61,17 +65,18 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'order_id' => $this->order_id,
-//            'order_item_id' => $this->order_item_id,
-//            'seller_id' => $this->seller_id,
             'amount' => $this->amount,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', '', $this->order_item_id])
-            ->andFilterWhere(['like', 'note_content', $this->seller_id])
+        $query->andFilterWhere(['like', 'bridecycle_to_seller_payments.order_id', $this->order_id])
+            ->andFilterWhere(['or',
+                ['like', 'seller.first_name', $this->seller_id],
+                ['like', 'seller.last_name', $this->seller_id]
+            ])
+            ->andFilterWhere(['like', 'products.name', $this->order_item_id])
             ->andFilterWhere(['like', 'note_content', $this->note_content]);
 
         return $dataProvider;

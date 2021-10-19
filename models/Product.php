@@ -166,9 +166,11 @@ class Product extends \yii\db\ActiveRecord
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
             [['is_receipt', 'is_admin_favourite'], 'safe'],
-            [['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
+            //[['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['images', 'shipping_country_price', 'receipt'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images', 'receipt'], 'file', 'maxFiles' => 5],
-             //[['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png, jpeg'],
+
+            //[['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png, jpeg'],
             // [['option_color'], 'string', 'max' => 255],
             [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
             [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::className(), 'targetAttribute' => ['dress_type_id' => 'id']],
@@ -181,7 +183,7 @@ class Product extends \yii\db\ActiveRecord
 
             [
                 ['images'], 'required', 'when' => function ($model) {
-                },
+            },
                 'whenClient' => "function (attribute, value) {
                     if ($('#product-is_product_images_empty').val() == 1) {            
                         return $('#product-images').val() == '';                                    
@@ -192,8 +194,8 @@ class Product extends \yii\db\ActiveRecord
 
             [
                 ['receipt'], 'required', 'when' => function ($model) {
-                    return $model->is_cleaned == '1';
-                },
+                //return $model->is_cleaned == '1';
+            },
                 'whenClient' => "function (attribute, value) {
                     if ($('#product-is_cleaned').val() == 1 && $('#product-is_product_receipt_images_empty').val() ==1) {            
                         return $('#product-receipt').val() == '';                                    
@@ -553,7 +555,7 @@ class Product extends \yii\db\ActiveRecord
 
         if ($data == '' || $data == null) {
             $data = [];
-        }else{
+        } else {
             $data = array($data);
         }
 

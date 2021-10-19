@@ -438,7 +438,42 @@ class ProductController extends ActiveController
                 $model->option_show_only = '0';
             }
 
-            $model->type = (!empty($productData['Product']['type'])) ? $productData['Product']['type'] : Product::PRODUCT_TYPE_NEW;
+
+            if (!empty($postData['is_top_selling'])) {
+                $model->is_top_selling = $postData['is_top_selling'];
+            }
+
+            if (!empty($postData['option_color'])) {
+                $model->option_color = $postData['option_color'];
+            }
+
+            if (!empty($postData['other_info'])) {
+                $model->other_info = $postData['other_info'];
+            }
+
+            if (!empty($postData['description'])) {
+                $model->description = $postData['description'];
+            }
+
+            if (!empty($postData['available_quantity'])) {
+                $model->available_quantity = $postData['available_quantity'];
+            }
+
+            if (!empty($postData['brand_id'])) {
+                $model->brand_id = $postData['brand_id'];
+            }
+
+            if (!empty($postData['is_cleaned'])) {
+                $model->is_cleaned = $postData['is_cleaned'];
+            }
+
+            if (!empty($postData['height'])) {
+                $model->height = $postData['height'];
+            }
+
+            if (!empty($productData['Product']['type']) && in_array($productData['Product']['type'], ['n', 'u'])) {
+                $model->type = $productData['Product']['type'];
+            }
 
             if (!empty($model->option_size)) {
                 $model->option_size = strtolower($model->option_size);
