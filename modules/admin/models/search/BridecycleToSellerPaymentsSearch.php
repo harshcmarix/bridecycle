@@ -17,9 +17,9 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
     public function rules()
     {
         return [
-            [['id', 'order_id', 'order_item_id', 'seller_id', 'status'], 'integer'],
+            [['id', 'order_id', 'status'], 'integer'],
             [['amount'], 'number'],
-            [['note_content', 'created_at', 'updated_at'], 'safe'],
+            [['order_item_id', 'seller_id', 'note_content', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -47,6 +47,7 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -61,15 +62,17 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
         $query->andFilterWhere([
             'id' => $this->id,
             'order_id' => $this->order_id,
-            'order_item_id' => $this->order_item_id,
-            'seller_id' => $this->seller_id,
+//            'order_item_id' => $this->order_item_id,
+//            'seller_id' => $this->seller_id,
             'amount' => $this->amount,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'note_content', $this->note_content]);
+        $query->andFilterWhere(['like', '', $this->order_item_id])
+            ->andFilterWhere(['like', 'note_content', $this->seller_id])
+            ->andFilterWhere(['like', 'note_content', $this->note_content]);
 
         return $dataProvider;
     }

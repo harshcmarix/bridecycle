@@ -98,7 +98,7 @@ class UserBankDetailsController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        return $model->search($requestParams);
+        return $model->search($requestParams,Yii::$app->user->identity->id);
     }
 
 

@@ -187,7 +187,8 @@ class UserController extends ActiveController
 
                 $ext = $model->profile_picture->extension;
                 $fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
@@ -246,7 +247,8 @@ class UserController extends ActiveController
 
                             $logoExt = $shopDetailModel->shop_logo->extension;
                             $shopLogoFileName = pathinfo($shopDetailModel->shop_logo->name, PATHINFO_FILENAME);
-                            $shopLogoFileName = $shopLogoFileName . '_' . time() . '.' . $logoExt;
+                            //$shopLogoFileName = $shopLogoFileName . '_' . time() . '.' . $logoExt;
+                            $shopLogoFileName = time() . rand(99999, 88888) . '.' . $logoExt;
                             // Upload shop logo
                             $shopDetailModel->shop_logo->saveAs($uploadDirPathLogo . '/' . $shopLogoFileName);
                             // Create thumb of shoplogo
@@ -459,7 +461,8 @@ class UserController extends ActiveController
                 }
                 $ext = $model->profile_picture->extension;
                 $fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
