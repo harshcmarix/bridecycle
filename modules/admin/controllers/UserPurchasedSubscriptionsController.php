@@ -39,6 +39,17 @@ class UserPurchasedSubscriptionsController extends Controller
         ];
     }
 
+    /**
+     * @return array
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
 
     /**
      * Lists all UserPurchasedSubscriptions models.

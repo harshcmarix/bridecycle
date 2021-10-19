@@ -335,7 +335,6 @@ class UserController extends ActiveController
 
             if ($model->save()) {
 
-
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
 
                     $userAddressModel = new UserAddress();

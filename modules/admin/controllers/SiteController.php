@@ -243,7 +243,6 @@ class SiteController extends Controller
 
     public function actionError()
     {
-
         $this->layout = 'error';
         $exception = Yii::$app->errorHandler->exception;
         if ($exception !== null) {

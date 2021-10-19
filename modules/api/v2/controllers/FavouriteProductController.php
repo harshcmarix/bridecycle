@@ -90,6 +90,7 @@ class FavouriteProductController extends ActiveController
         unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);
+        unset($actions['delete']);
         return $actions;
     }
 
@@ -106,8 +107,12 @@ class FavouriteProductController extends ActiveController
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams);
-    }    
+    }
 
+    /**
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionIndexList()
     {
         $model = new $this->searchModelClass;
@@ -140,5 +145,22 @@ class FavouriteProductController extends ActiveController
         }
 
         return $model;
+    }
+
+    /**
+     * @param $id
+     * @return false|int
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDelete($id)
+    {
+        $model = FavouriteProduct::find()->where(['id' => $id])->one();
+
+        if (!$model instanceof FavouriteProduct) {
+            throw new NotFoundHttpException('Favourite Product doesn\'t exist.');
+        }
+        $model->delete();
     }
 }
