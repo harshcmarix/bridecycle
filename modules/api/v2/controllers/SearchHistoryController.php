@@ -31,7 +31,7 @@ class SearchHistoryController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\SearchHistorySearch';
 
-       /**
+    /**
      * @return array
      */
     protected function verbs()
@@ -39,12 +39,13 @@ class SearchHistoryController extends ActiveController
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
-            'create' =>['POST','OPTIONS'],
+            'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
         ];
     }
-     /**
+
+    /**
      * @return array
      */
     public function behaviors()
@@ -52,7 +53,7 @@ class SearchHistoryController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view','create','update','delete'],
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -76,16 +77,18 @@ class SearchHistoryController extends ActiveController
 
         return $behaviors;
     }
+
     /**
      * @return array
      */
-     public function actions()
+    public function actions()
     {
         $actions = parent::actions();
         unset($actions['index']);
         unset($actions['update']);
         unset($actions['view']);
         unset($actions['create']);
+        unset($actions['delete']);
         return $actions;
     }
 
@@ -101,9 +104,10 @@ class SearchHistoryController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        return $model->search($requestParams);
+        return $model->search($requestParams, Yii::$app->user->identity->id);
     }
-     /**
+
+    /**
      * Creates a new SearchHistory model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -117,7 +121,29 @@ class SearchHistoryController extends ActiveController
         if ($model->load($searchHistory) && $model->validate()) {
             $model->save();
         }
+        return $model;
+    }
 
-       return $model;
+    /**
+     * @param $id
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDelete($id)
+    {
+        $model = SearchHistory::find()->where(['id' => $id])->one();
+        if (!$model instanceof SearchHistory) {
+            throw new NotFoundHttpException('Search History doesn\'t exist.');
+        }
+
+        $modelSearchHistories = SearchHistory::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['LIKE', 'search_text', $model->search_text])->all();
+        if (!empty($modelSearchHistories)) {
+            foreach ($modelSearchHistories as $key => $modelSearchHistory) {
+                if (!empty($modelSearchHistory) && $modelSearchHistory instanceof SearchHistory) {
+                    $modelSearchHistory->delete();
+                }
+            }
+        }
     }
 }

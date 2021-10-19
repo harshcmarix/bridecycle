@@ -306,7 +306,7 @@ class ProductSearch extends Product
             if (!empty($data)) {
                 foreach ($data as $dataRow) {
                     if (!empty($dataRow) && $dataRow instanceof SearchHistory) {
-                        $query->orFilterWhere([
+                        $query->andFilterWhere([
                             'or',
                             ['LIKE', 'products.name', $dataRow->search_text],
                             ['LIKE', 'category.name', $dataRow->search_text . "%", false],

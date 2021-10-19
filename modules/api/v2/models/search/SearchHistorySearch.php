@@ -46,7 +46,7 @@ class SearchHistorySearch extends SearchHistory
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = null)
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -114,8 +114,9 @@ class SearchHistorySearch extends SearchHistory
 
         /* ########## Prepare Query With Default Filter End ######### */
 
-        if (!empty($requestParams['user_id'])) {
-            $query->andWhere(['search_histories.user_id' => $requestParams['user_id']]);
+        if (!empty($requestParams['user_id']) || !empty($userId)) {
+            //$query->andWhere(['search_histories.user_id' => $requestParams['user_id']]);
+            $query->andWhere(['search_histories.user_id' => $userId]);
         }
 
 
