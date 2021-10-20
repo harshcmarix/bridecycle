@@ -159,10 +159,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => 'Trial Time',
                         'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
-                    [
-                        'class' => 'kartik\grid\ActionColumn',
-                        'template' => "{delete}"
-                    ],
+//                    [
+//                        'class' => 'kartik\grid\ActionColumn',
+//                        'template' => "{delete}"
+//                    ],
                 ],
                 'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
                 'headerRowOptions' => ['class' => 'kartik-sheet-style'],

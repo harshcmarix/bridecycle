@@ -493,7 +493,8 @@ class ProductController extends ActiveController
                     $modelAddress = new UserAddress();
                     $modelAddress->user_id = Yii::$app->user->identity->id;
                     $addressData['UserAddress'] = $postData;
-                    $modelAddress->type = UserAddress::TYPE_SHOP;
+                    //$modelAddress->type = (!empty($modelAddress->type) && in_array($modelAddress->type, [UserAddress::TYPE_BILLING, UserAddress::TYPE_SHIPPING, UserAddress::TYPE_SHOP])) ? $modelAddress->type : UserAddress::TYPE_SHOP;
+                    $addressData['UserAddress']['type'] = UserAddress::TYPE_SHOP;
                     if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                         $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
                         if ($modelAddress->save(false)) {
@@ -510,7 +511,8 @@ class ProductController extends ActiveController
                         $modelAddress = new UserAddress();
                         $modelAddress->user_id = Yii::$app->user->identity->id;
                         $addressData['UserAddress'] = $postData;
-                        $modelAddress->type = UserAddress::TYPE_SHOP;
+                        $addressData['UserAddress']['type'] = UserAddress::TYPE_SHOP;
+                        //$modelAddress->type = UserAddress::TYPE_SHOP;
                         if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                             $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
                             if ($modelAddress->save(false)) {
@@ -525,6 +527,8 @@ class ProductController extends ActiveController
                     $model->save(false);
                 } elseif (!empty($modelAddress) && empty($productData['Product']['is_profile_address'])) {
                     $addressData['UserAddress'] = $postData;
+                    $addressData['UserAddress']['type'] = UserAddress::TYPE_SHOP;
+                    //$modelAddress->type = UserAddress::TYPE_SHOP;
                     $modelAddress->type = UserAddress::TYPE_SHOP;
                     if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                         $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;

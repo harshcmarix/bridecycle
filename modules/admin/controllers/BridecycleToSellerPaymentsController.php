@@ -2,12 +2,16 @@
 
 namespace app\modules\admin\controllers;
 
+use app\modules\api\v2\models\User;
+use kartik\growl\Growl;
 use Yii;
 use app\models\BridecycleToSellerPayments;
 use app\modules\admin\models\search\BridecycleToSellerPaymentsSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * BridecycleToSellerPaymentsController implements the CRUD actions for BridecycleToSellerPayments model.
@@ -20,10 +24,15 @@ class BridecycleToSellerPaymentsController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -38,9 +47,12 @@ class BridecycleToSellerPaymentsController extends Controller
         $searchModel = new BridecycleToSellerPaymentsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $modelUpdate = new BridecycleToSellerPayments();
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'modelUpdate' => $modelUpdate
         ]);
     }
 
@@ -86,13 +98,33 @@ class BridecycleToSellerPaymentsController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->status = BridecycleToSellerPayments::STATUS_COMPLETE;
+            if ($model->save()) {
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Seller payment updated successfully.');
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+                $sellerModel = $model->seller;
+                $productModel = $model->product;
+
+                if (!empty($sellerModel) && $sellerModel instanceof User && (!empty($sellerModel->is_payment_done_email_notification_on) || $sellerModel->is_payment_done_email_notification_on == User::IS_EMAIL_NOTIFICATION_ON)) {
+                    Yii::$app->mailer->compose('admin/BCtoSellerPaymentDone-html', ['sellerModel' => $sellerModel, 'productModel' => $productModel, 'model' => $model])
+                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                        ->setTo($sellerModel->email)
+                        //->setTo("harshil.cmarix@gmail.com")
+                        ->setSubject('Bride Cycle Payment!')
+                        ->send();
+                }
+                $response = ['success' => true];
+            } else {
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_DANGER, 'Seller payment not updated, Please try again!');
+                $response = ['success' => false];
+            }
+        } else {
+            \Yii::$app->getSession()->setFlash(Growl::TYPE_DANGER, 'Something went wrong, Please try again!');
+            $response = ['success' => false];
+        }
+        return $response;
     }
 
     /**

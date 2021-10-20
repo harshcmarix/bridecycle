@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'transaction_fees')->textInput(['maxlength' => true]) ?>
+<!--    --><?php //echo $form->field($model, 'transaction_fees')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'km_range')->textInput(['maxlength' => true]) ?>
 

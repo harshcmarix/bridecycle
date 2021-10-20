@@ -94,7 +94,9 @@ class MakeOffer extends \yii\db\ActiveRecord
     {
         return [
             'product0' => 'product0',
-            'offerCount' => 'offerCount'
+            'offerCount' => 'offerCount',
+            'sender0' => 'sender0',
+            'receiver0' => 'receiver0'
         ];
     }
 
@@ -150,5 +152,41 @@ class MakeOffer extends \yii\db\ActiveRecord
             ->where('make_offer.sender_id=' . $this->sender_id)
             ->andWhere('make_offer.product_id=' . $this->product_id)
             ->count();
+    }
+
+    /**
+     * Gets query for [[Sender]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSender0()
+    {
+        $data = User::find()->where(['id' => $this->sender_id])->one();
+        if ($data instanceof User) {
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $data->profile_picture;
+            }
+            $data->profile_picture = $profilePicture;
+        }
+        return $data;
+    }
+
+    /**
+     * Gets query for [[Receiver]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReceiver0()
+    {
+        $data = User::find()->where(['id' => $this->receiver_id])->one();
+        if ($data instanceof User) {
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $data->profile_picture;
+            }
+            $data->profile_picture = $profilePicture;
+        }
+        return $data;
     }
 }

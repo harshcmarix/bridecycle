@@ -42,6 +42,7 @@ class MakeOfferController extends ActiveController
     {
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
+            'index-seller' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
             'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
@@ -57,7 +58,7 @@ class MakeOfferController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'delete'],
+            'only' => ['index', 'index-seller', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -88,6 +89,7 @@ class MakeOfferController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
+        unset($actions['index-seller']);
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
@@ -96,7 +98,7 @@ class MakeOfferController extends ActiveController
     }
 
     /**
-     * Lists all Brand models.
+     * Lists all Maked offer models for buyer.
      * @return mixed
      */
     public function actionIndex()
@@ -108,6 +110,22 @@ class MakeOfferController extends ActiveController
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams, Yii::$app->user->identity->id);
+    }
+
+
+    /**
+     * Lists all Maked offer models for seller.
+     * @return mixed
+     */
+    public function actionIndexSeller()
+    {
+        $model = new $this->searchModelClass;
+        $requestParams = Yii::$app->getRequest()->getBodyParams();
+
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }
+        return $model->searchSeller($requestParams, Yii::$app->user->identity->id);
     }
 
     /**

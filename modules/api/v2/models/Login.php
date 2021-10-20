@@ -120,7 +120,9 @@ class Login extends Model
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 } else {
                     $accessToken = $this->_user->access_token;
-                    $accessTokenExpiredAt = $this->_user->access_token_expired_at;
+                    //$accessToken = $this->_user->generateAccessToken();
+                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + (3600 * 24 * 365));
+                    //$accessTokenExpiredAt = $this->_user->access_token_expired_at;
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 }
 

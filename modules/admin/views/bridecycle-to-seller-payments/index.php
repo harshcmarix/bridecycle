@@ -1,93 +1,68 @@
 <?php
 
-use app\models\UserPurchasedSubscriptions;
+use app\models\BridecycleToSellerPayments;
 use app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
 use yii\helpers\{Html, Url};
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\admin\models\search\UserPurchasedSubscriptionsSearch */
+/* @var $searchModel app\modules\admin\models\search\BridecycleToSellerPaymentsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'User Subscriptions';
+
+$this->title = 'Bridecycle To Seller Payments';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
-        <div class="box-header">
-            <div class="row">
-                <div class="col-md-3 col-xs-6 pull-right">
-                    <a href="javascript:void(0);" class="small-box-footer">
-                        <div class="small-box" style="background-color: #8A9673 !important;"
-                             id="tot_income_from_subscription_box">
-                            <div class="inner">
-                                <h3><?php echo Yii::$app->formatter->asCurrency($totalEarn); ?></h3>
-                                <p>Total Subscription Income</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fa fa-money"></i>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
         <?php
 
         $gridColumns = [
-
-
         ];
         echo GridView::widget([
-            'id' => 'user_purchased_subscriptions-grid',
+            'id' => 'bc_to_seller_payments-grid',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'width' => '8%',
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
-                    'attribute' => 'subscription_type',
+                    'attribute' => 'order_id',
                     'value' => function ($model) {
-                        $type = '';
-                        if ($model instanceof UserPurchasedSubscriptions) {
-                            $type = $model->subscription_type;
-                        }
-                        return $type;
+                        return $model->order_id;
                     },
-                    'header' => 'Subscription Type',
+                    'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
-                    'attribute' => 'user_id',
+                    'attribute' => 'order_item_id',
                     'value' => function ($model) {
-                        $user = '';
-                        if ($model instanceof UserPurchasedSubscriptions) {
-                            $user = (!empty($model->user) && !empty($model->user->first_name)) ? $model->user->first_name . " " . $model->user->last_name . " (" . $model->user->email . ")" : "";
+                        $orderItemName = '';
+                        if ($model instanceof BridecycleToSellerPayments && !empty($model->orderItem) && $model->orderItem instanceof \app\models\OrderItem && !empty($model->orderItem->product) && $model->orderItem->product instanceof \app\models\Product) {
+                            $orderItemName = $model->orderItem->product->name;
                         }
-                        return $user;
+                        return $orderItemName;
                     },
-                    'filter' => $users,
-                    'filterType' => GridView::FILTER_SELECT2,
-                    'filterWidgetOptions' => [
-                        'options' => ['prompt' => 'Select'],
-                        'pluginOptions' => [
-                            'allowClear' => true,
-                        ],
-                    ],
-                    'header' => 'User',
+                    'header' => 'Order Item',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'attribute' => 'seller_id',
+                    'value' => function ($model) {
+                        $seller = '-';
+                        if ($model instanceof BridecycleToSellerPayments && !empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User) {
+                            $seller = $model->seller->first_name . " " . $model->seller->last_name;
+                        }
+                        return $seller;
+                    },
+                    'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'amount',
                     'value' => function ($model) {
                         $amount = '';
-                        if ($model instanceof UserPurchasedSubscriptions) {
+                        if ($model instanceof BridecycleToSellerPayments) {
                             $amount = Yii::$app->formatter->asCurrency($model->amount);
                         }
                         return $amount;
@@ -96,44 +71,43 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
-                    'attribute' => 'transaction_id',
+                    'attribute' => 'status',
                     'value' => function ($model) {
-                        $transaction_id = '';
-                        if ($model instanceof UserPurchasedSubscriptions) {
-                            $transaction_id = $model->transaction_id;
+                        $status = "Pending";
+                        if ($model instanceof BridecycleToSellerPayments && $model->status == BridecycleToSellerPayments::STATUS_COMPLETE) {
+                            $status = "Completed";
                         }
-                        return $transaction_id;
+                        return $status;
                     },
-                    'header' => 'Transaction ID',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                ],
-                [
-                    'attribute' => 'subscription_id',
-                    'value' => function ($model) {
-                        $subscription_id = '';
-                        if ($model instanceof UserPurchasedSubscriptions) {
-                            $subscription_id = $model->subscription_id;
-                        }
-                        return $subscription_id;
-                    },
-                    'header' => 'Subscription ID',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                ],
-                [
-                    'attribute' => 'date_time',
-                    'value' => function ($model) {
-                        $subscription_date_time = '';
-                        if ($model instanceof UserPurchasedSubscriptions) {
-                            $subscription_date_time = $model->date_time;
-                        }
-                        return $subscription_date_time;
-                    },
+                    'filter' => [BridecycleToSellerPayments::STATUS_PENDING => 'Pending', BridecycleToSellerPayments::STATUS_COMPLETE => "Completed"],
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filterWidgetOptions' => [
+                        'options' => ['prompt' => 'Select'],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                        ],
+                    ],
                     'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
+                    'format' => ['raw'],
+                    'value' => function ($model) {
+
+                        if ($model instanceof BridecycleToSellerPayments && $model->status == BridecycleToSellerPayments::STATUS_PENDING) {
+                            $isPaymentDone = "<button type='button' title='BrideCycle to seller payment status change if payment done by BrideCycle' class='btn btn-sm bc_to_seller_payment_payment-update' data-key='$model->id'>Payment Done?</button>";
+                        } else {
+                            $isPaymentDone = "<button type='button' title='Seller payment done from BrideCycle' class='btn bc_to_seller_payment_payment-done disabled' data-key='$model->id'><strong>Yes</strong></button>";
+                        }
+                        return $isPaymentDone;
+                    },
+                    'header' => 'Is Payment Done?',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
                     'class' => 'kartik\grid\ActionColumn',
-                    'template' => '{view}', //{delete}
+                    //'template' => '{view}   {delete}',
+                    'template' => '{view}   ',
                     'width' => '12%'
                 ],
             ],
@@ -146,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         Html::button('<i class="fa fa-refresh"> Reset </i>', [
                             'class' => 'btn btn-basic',
                             'title' => 'Reset Filter',
-                            'onclick' => "window.location.href = '" . Url::to(['user-purchased-subscriptions/index']) . "';",
+                            'onclick' => "window.location.href = '" . Url::to(['bridecycle-to-seller-payments/index']) . "';",
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
@@ -159,7 +133,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => false,
+            'responsive' => true,
             // 'hover' => $hover,
             // 'showPageSummary' => $pageSummary,
             'panel' => [
@@ -169,13 +143,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
             //'exportConfig' => $exportConfig,
-            'itemLabelSingle' => 'user subscription',
-            'itemLabelPlural' => 'user subscriptions'
+            'itemLabelSingle' => 'bridecycle to seller payment',
+            'itemLabelPlural' => 'bridecycle to seller payments'
         ]);
         ?>
-
     </div>
 </div>
+
+<!-- include modal popup start -->
+<?php echo $this->render('bc_to_seller_payment_done_modal', ['model' => $modelUpdate]) ?>
+<!-- include modal popup end -->
 
 <script>
     function clearFilter(element) {
@@ -190,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         var input;
         var submit_form = false;
-        var filter_selector = '#user_purchased_subscriptions-grid-filters input';
+        var filter_selector = '#bc_to_seller_payments-grid-filters input';
         var isInput = true;
 
         $('select').on('change', function () {
@@ -201,13 +178,13 @@ $this->params['breadcrumbs'][] = $this->title;
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#user_purchased_subscriptions-grid", function (event) {
+        $("body").on('beforeFilter', "#bc_to_seller_payments-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#user_purchased_subscriptions-grid", function (event) {
+        $("body").on('afterFilter', "#bc_to_seller_payments-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
@@ -221,12 +198,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
                     if (submit_form === false) {
                         submit_form = true;
-                        $("#user_purchased_subscriptions-grid").yiiGridView("applyFilter");
+                        $("#bc_to_seller_payments-grid").yiiGridView("applyFilter");
                     }
                 }
             })
             .on('pjax:success', function () {
-                window.location.reload();
                 if (isInput) {
                     var i = $("[name='" + input + "']");
                     var val = i.val();
@@ -253,7 +229,7 @@ $this->params['breadcrumbs'][] = $this->title;
         //select box filter
         var select;
         var submit_form = false;
-        var select_filter_selector = '#user_purchased_subscriptions-grid-filters select';
+        var select_filter_selector = '#bc_to_seller_payments-grid-filters select';
         var isSelect = true;
 
         $('select').on('change', function () {
@@ -262,12 +238,12 @@ $this->params['breadcrumbs'][] = $this->title;
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#user_purchased_subscriptions-grid", function (event) {
+        $("body").on('beforeFilter', "#bc_to_seller_payments-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#user_purchased_subscriptions-grid", function (event) {
+        $("body").on('afterFilter', "#bc_to_seller_payments-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -279,11 +255,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
-                    $("#user_purchased_subscriptions-grid").yiiGridView("applyFilter");
+                    $("#bc_to_seller_payments-grid").yiiGridView("applyFilter");
                 }
             })
-            .on('pjax:success', function (data) {
-                window.location.reload();
+            .on('pjax:success', function () {
                 var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);
@@ -312,5 +287,47 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
+    });
+
+    $(document).on('click', '.bc_to_seller_payment_payment-update', function (e) {
+        e.preventDefault();
+        var id = $(this).attr('data-key');
+        krajeeDialog.confirm("Are you sure the seller's payment has been done?", function (out) {
+            if (out) {
+                // alert('Yes'); // or do something on confirmation
+                var formAction = "<?php echo Url::to(['bridecycle-to-seller-payments/update', 'id' => ""]) ?>" + id;
+                $('#bc_to_selle_payment_complete_with_comment-Modal').modal('show');
+                var form = $('#bc_to_seller_payment-update-frm');
+                form.attr('action', formAction);
+            }
+        });
+    });
+
+    $(document).on('click', '#btn-bc_to_seller_payment-update-form-submit', function (e) {
+        e.preventDefault();
+        var form = $('#bc_to_seller_payment-update-frm');
+        $(this).attr("disabled", true);
+        $("#btn-bc_to_seller_payment-update-form-cancel").attr("disabled", true);
+        $.ajax({
+            'url': form.attr('action'),
+            "method": "POST",
+            'data': form.serialize(),
+            'dataType': "json",
+            success: function (result) {
+                if (result.success) {
+                    window.location.reload();
+                } else {
+                    alert(result);
+                    $(this).attr("disabled", false);
+                    $("#btn-bc_to_seller_payment-update-form-cancel").attr("disabled", false);
+                }
+            },
+            fail: function (result) {
+                alert(result);
+                $(this).attr("disabled", false);
+                $("#btn-bc_to_seller_payment-update-form-cancel").attr("disabled", false);
+                return false;
+            }
+        });
     })
 </script>

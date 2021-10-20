@@ -597,6 +597,7 @@ class UserController extends ActiveController
 
                 $modelUser = User::findOne($model->user->id);
                 $modelUser->verification_code = $modelUser->getVerificationCode();
+                $modelUser->access_token = $modelUser->generateAccessToken();
                 $modelUser->save(false);
 
                 if (!empty($modelUser->email)) {
