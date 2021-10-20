@@ -277,11 +277,24 @@ class CartItemController extends ActiveController
         }
 
         $productIds = explode(",", $post['product_id']);
-        $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
-        //p($modelCartItems);
-        $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
+        $modelProducts = Product::find()->where(['IN', 'id', $productIds])->all();
+        $productSold = 0;
+        if (!empty($modelProducts)) {
+            foreach ($modelProducts as $prodKey => $modelProductRow) {
+                if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 && in_array($modelProductRow->status_id, [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
+                    $productSold++;
+                }
+            }
+        }
+        if ($productSold > 0) {
+            throw new HttpException(403,$productSold.' product(s) are out of stock from you have selected product.');
+        }
 
-        $cartTotalShipping = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('shipping_cost');
+        $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
+        //p($modelCartItems);
+        $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
+
+        $cartTotalShipping = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('shipping_cost');
 
 
         if (empty($cartTotal) && empty($cartTotalShipping)) {
@@ -702,6 +715,22 @@ class CartItemController extends ActiveController
         }
 
         $productIds = explode(",", $post['product_id']);
+
+
+        $modelProducts = Product::find()->where(['IN', 'id', $productIds])->all();
+        $productSold = 0;
+        if (!empty($modelProducts)) {
+            foreach ($modelProducts as $prodKey => $modelProductRow) {
+                if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 && in_array($modelProductRow->status_id, [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
+                    $productSold++;
+                }
+            }
+        }
+        if ($productSold > 0) {
+            throw new HttpException(403,$productSold.' product(s) are out of stock from you have selected product.');
+        }
+
+
         $user_id = Yii::$app->user->identity->id;
         if (!empty($productIds)) {
             $readyToCheckout = 1;
