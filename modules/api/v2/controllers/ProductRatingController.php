@@ -235,21 +235,18 @@ class ProductRatingController extends ActiveController
 
                         if ($userROW->is_new_message_email_notification_on == User::IS_NOTIFICATION_ON) {
                             $message = $model->user->first_name . " " . $model->user->last_name . " has added rate or review for your product";
-//                            if (!empty($userROW->email)) {
-//                                Yii::$app->mailer->compose('api/addNewProductRateReview', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
-//                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-//                                    ->setTo($userROW->email)
-//                                    ->setSubject('Added rate or review for your product!')
-//                                    ->send();
-//                            }
-
+                            if (!empty($userROW->email)) {
+                                Yii::$app->mailer->compose('api/addNewProductRateReview', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                    ->setTo($userROW->email)
+                                    ->setSubject('Added rate or review for your product!')
+                                    ->send();
+                            }
                         }
                     }
                 }
             }
             // Send Push notification end
-
-
         }
 
         return $model;

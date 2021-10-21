@@ -223,15 +223,13 @@ class MakeOfferController extends ActiveController
                                 if ($userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
                                     $message = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
                                     $subject = "Sent an offer for your product";
-//                                            if (!empty($userROW->email)) {
-//                                                Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
-//                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-//                                                    ->setTo($userROW->email)
-//                                                    ->setSubject($subject)
-//                                                    ->send();
-//                                            }
-
-
+                                    if (!empty($userROW->email)) {
+                                        Yii::$app->mailer->compose('api/addNewMakeOffer', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                            ->setTo($userROW->email)
+                                            ->setSubject($subject)
+                                            ->send();
+                                    }
                                 }
                             }
                         }
@@ -333,15 +331,13 @@ class MakeOfferController extends ActiveController
                                     $subject = "Your product offer accepted by seller";
                                 }
 
-//                                            if (!empty($userROW->email)) {
-//                                                Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
-//                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-//                                                    ->setTo($userROW->email)
-//                                                    ->setSubject($subject)
-//                                                    ->send();
-//                                            }
-
-
+                                if (!empty($userROW->email)) {
+                                    Yii::$app->mailer->compose('api/makeOfferAcceptReject', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                        ->setTo($userROW->email)
+                                        ->setSubject($subject)
+                                        ->send();
+                                }
                             }
                         }
                     }

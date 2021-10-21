@@ -389,13 +389,13 @@ class ProductController extends ActiveController
 
                                         if ($userROW->is_saved_searches_email_notification_on == User::IS_NOTIFICATION_ON) {
                                             $message = "Product is uploaded as per your saved search";
-//                                            if (!empty($userROW->email)) {
-//                                                Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
-//                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-//                                                    ->setTo($userROW->email)
-//                                                    ->setSubject('New product added same as your search!')
-//                                                    ->send();
-//                                            }
+                                            if (!empty($userROW->email)) {
+                                                Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                    ->setTo($userROW->email)
+                                                    ->setSubject('New product added same as your search!')
+                                                    ->send();
+                                            }
 
 
                                         }

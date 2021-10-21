@@ -148,6 +148,7 @@ class TrialController extends ActiveController
             $model->status = Trial::STATUS_PENDING;
             if ($model->save()) {
                 $model->status = $model->arrTrialStatus[$model->status];
+
                 // Send Push notification and email notification start
                 $getUsers[] = $model->receiver;
                 if (!empty($getUsers)) {
@@ -190,22 +191,18 @@ class TrialController extends ActiveController
 
                             if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
                                 $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
-
-//                                if (!empty($userROW->email)) {
-//                                    Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => $userROW, 'receiver' => $model->receiver, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
-//                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-//                                        ->setTo($userROW->email)
-//                                        ->setSubject('Request for trial of your product')
-//                                        ->send();
-//                                }
-
-
+                                if (!empty($userROW->email)) {
+                                    Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => $userROW, 'receiver' => $model->receiver, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                        ->setTo($userROW->email)
+                                        ->setSubject('Request for trial of your product')
+                                        ->send();
+                                }
                             }
                         }
                     }
                 }
-                // Send Push notification and email notification start
-
+                // Send Push notification and email notification end
             }
         }
 
@@ -295,18 +292,18 @@ class TrialController extends ActiveController
                                     $isAccept = 'rejected by seller';
                                 }
 
-//                                if (!empty($userROW->email)) {
-//                                    Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => $userROW, 'receiver' => $model->sender, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
-//                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-//                                        ->setTo($userROW->email)
-//                                        ->setSubject('Request for trial has ' . $isAccept)
-//                                        ->send();
-//                                }
+                                if (!empty($userROW->email)) {
+                                    Yii::$app->mailer->compose('api/trialBookingAcceptReject', ['sender' => $userROW, 'receiver' => $model->sender, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                        ->setTo($userROW->email)
+                                        ->setSubject('Request for trial has ' . $isAccept)
+                                        ->send();
+                                }
                             }
                         }
                     }
                 }
-                // Send Push notification and email notification start
+                // Send Push notification and email notification end
             }
         }
         $model = Trial::findOne($id);
