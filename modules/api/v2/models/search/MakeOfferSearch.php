@@ -129,7 +129,7 @@ class MakeOfferSearch extends MakeOffer
 
         $query->orderBy(['make_offer.created_at' => SORT_DESC]);
         if (empty($requestParams['product_id'])) {
-            $query->groupBy('make_offer.product_id');
+            $query->groupBy(['make_offer.product_id', 'make_offer.id']);
         } else {
             $query->groupBy('make_offer.id');
         }
