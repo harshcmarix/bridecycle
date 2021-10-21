@@ -226,8 +226,7 @@ class MakeOfferController extends ActiveController
                                     if (!empty($userROW->email)) {
                                         Yii::$app->mailer->compose('api/addNewMakeOffer', ['sender' => $sender, 'receiver' => $userROW, 'message' => $message])
                                             ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                            //->setTo($userROW->email)
-                                            ->setTo("harshil.cmarix@gmail.com")
+                                            ->setTo($userROW->email)
                                             ->setSubject($subject)
                                             ->send();
                                     }
