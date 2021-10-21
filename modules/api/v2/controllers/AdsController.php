@@ -77,7 +77,6 @@ class AdsController extends ActiveController
     public function actions()
     {
         $actions = parent::actions();
-        //unset($actions['index']);
         unset($actions['index']);
         return $actions;
     }
@@ -88,7 +87,6 @@ class AdsController extends ActiveController
      */
     public function actionIndex()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 

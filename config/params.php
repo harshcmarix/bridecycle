@@ -70,8 +70,8 @@ return [
     /**
      * Mobile APi current latest version
      */
-    'mobile_api_latest_version' => 'v1',
-
+    //'mobile_api_latest_version' => 'v1',
+    'mobile_api_latest_version' => 'v2',
 
     // Live // client
     //'google_map_api_key'=>'AIzaSyBuITv7RS9RWyEoZkJ1df6-zrw6ZT_C36Q',

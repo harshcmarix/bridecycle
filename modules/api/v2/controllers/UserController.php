@@ -275,7 +275,8 @@ class UserController extends ActiveController
 
                             $shopCoverPictureExt = $shopDetailModel->shop_cover_picture->extension;
                             $shopCoverPictureFileName = pathinfo($shopDetailModel->shop_cover_picture->name, PATHINFO_FILENAME);
-                            $shopCoverPictureFileName = $shopCoverPictureFileName . '_' . time() . '.' . $shopCoverPictureExt;
+                            //$shopCoverPictureFileName = $shopCoverPictureFileName . '_' . time() . '.' . $shopCoverPictureExt;
+                            $shopCoverPictureFileName = time() . rand(99999, 88888) . '.' . $shopCoverPictureExt;
                             // Upload shop cover picture
                             $shopDetailModel->shop_cover_picture->saveAs($uploadDirPathCoverPicture . '/' . $shopCoverPictureFileName);
                             // Create thumb of shoplogo

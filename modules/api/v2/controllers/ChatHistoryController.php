@@ -251,7 +251,8 @@ class ChatHistoryController extends ActiveController
                     }
                     $ext = $imgFile->extension;
                     $fileName = pathinfo(str_replace(" ", "", $imgFile->name), PATHINFO_FILENAME);
-                    $fileName = $fileName . '_' . time() . '.' . $ext;
+                    //$fileName = $fileName . '_' . time() . '.' . $ext;
+                    $fileName = time() . rand(99999, 88888) . '.' . $ext;
 
                     // Upload file
                     $imgFile->saveAs($uploadDirPath . '/' . $fileName);
