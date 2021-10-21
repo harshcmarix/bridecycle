@@ -187,6 +187,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
+                'format' => ['raw'],
                 'attribute' => 'status_id',
                 'value' => function ($model) {
                     return (!empty($model) && !empty($model->status) && $model->status instanceof ProductStatus && !empty($model->status->status)) ? $model->status->status : "";
@@ -199,7 +200,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         'allowClear' => true,
                     ],
                 ],
-                'header' => 'Status',
+                'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
 
@@ -598,6 +599,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 }
             })
             .on('pjax:success', function () {
+                window.location.reload();
                 var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);

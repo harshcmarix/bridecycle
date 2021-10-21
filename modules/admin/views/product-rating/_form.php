@@ -28,6 +28,13 @@ use yii\widgets\ActiveForm;
 
             <?= $form->field($model, 'review')->textarea(['rows' => 6]) ?>
 
+            <?php
+            $disabled = false;
+            if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status) && in_array($model->status, [\app\models\ProductRating::STATUS_APPROVE, \app\models\ProductRating::STATUS_DECLINE])) {
+                $disabled = true;
+            }
+            ?>
+
             <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
                 'data' => \app\models\ProductRating::ARR_PRODUCT_RATING_STATUS,
                 'size' => \kartik\select2\Select2::MEDIUM,
@@ -35,7 +42,8 @@ use yii\widgets\ActiveForm;
                     //'placeholder' => 'Select Parent Category',
                 ],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => true,
+                    'disabled' => $disabled
                 ],
             ]); ?>
 

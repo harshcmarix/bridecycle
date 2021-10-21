@@ -44,7 +44,7 @@ echo Dialog::widget(
                             'showPreview' => false,
                             'showUpload' => false
                         ]
-                    ])->label('Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
+                    ])->label('Image <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
 
                     <!-- image validation -->
                     <?php
@@ -84,18 +84,23 @@ echo Dialog::widget(
 
             <div class="row">
                 <div class="col col-md-6">
+                    <?php
+                    $disabled = false;
+                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status) && in_array($model->status, [Brand::STATUS_APPROVE, Brand::STATUS_DECLINE])) {
+                        $disabled = true;
+                    }
+                    ?>
                     <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
                         'data' => Brand::ARR_BRAND_STATUS,
                         'pluginOptions' => [
-                            'allowClear' => true
+                            'allowClear' => true,
+                            'disabled' => $disabled
                         ],
                     ]); ?>
-
                 </div>
-
                 <div class="col col-md-6">
                     <?php echo $form->field($model, 'is_top_brand')
-                    ->checkBox(['label' => $model->getAttributeLabel('is_top_brand'), 'id' => 'brand-is_top_brand', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No", 'selected' => false]); ?>
+                        ->checkBox(['label' => $model->getAttributeLabel('is_top_brand'), 'id' => 'brand-is_top_brand', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No", 'selected' => false]); ?>
                 </div>
             </div>
 
@@ -126,8 +131,8 @@ echo Dialog::widget(
                 //         alert('There was an error with your request.' + xhr.responseText);
                 //     }
                 // }).done(function (data) {
-                    $('.image-class').hide();
-                    $('#brand-is_brand_image_empty').val(image_empty);
+                $('.image-class').hide();
+                $('#brand-is_brand_image_empty').val(image_empty);
                 // });
             }
         });

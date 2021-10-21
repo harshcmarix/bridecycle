@@ -85,6 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
+                    'format' => ['raw'],
                     'attribute' => 'status',
                     'value' => function ($model) {
                         $status = "";
@@ -100,12 +101,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter' => Brand::ARR_BRAND_STATUS,
                     'filterType' => GridView::FILTER_SELECT2,
                     'filterWidgetOptions' => [
-                        'options' => ['prompt' => 'Select'],
+                        'options' => ['prompt' => ''],
                         'pluginOptions' => [
                             'allowClear' => true,
+                            'width' => '70%'
                         ],
                     ],
-                    'header' => 'Status',
+                    'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
@@ -125,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'options' => ['prompt' => ''],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'width'=>'70%'
+                            'width' => '70%'
                         ],
                     ],
 
@@ -168,20 +170,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'toolbar' => [
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-plus-circle"> Add Brand</i>', [
-                        'class' => 'btn btn-success',
-                        'title' => \Yii::t('kvgrid', 'Add Brand'),
-                        'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/create']) . "';",
-                    ]),
+                        Html::button('<i class="fa fa-plus-circle"> Add Brand</i>', [
+                            'class' => 'btn btn-success',
+                            'title' => \Yii::t('kvgrid', 'Add Brand'),
+                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/create']) . "';",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Reset Filter',
-                        'onclick' => "window.location.href = '" . Url::to(['brand/index']) . "';",
-                    ]),
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . Url::to(['brand/index']) . "';",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 '{toggleData}',
@@ -266,7 +268,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function(){
+    $('document').ready(function () {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;
@@ -282,53 +284,53 @@ $this->params['breadcrumbs'][] = $this->title;
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#brand-grid" , function(event) {
+        $("body").on('beforeFilter', "#brand-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#brand-grid" , function(event) {
+        $("body").on('afterFilter', "#brand-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-        .on('keyup', filter_selector, function(e) {
-            input = $(this).attr('name');
-            var keyCode = e.keyCode ? e.keyCode : e.which;
-            if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
-                if (submit_form === false) {
-                    submit_form = true;
-                    $("#brand-grid").yiiGridView("applyFilter");
+            .off('keydown.yiiGridView change.yiiGridView', filter_selector)
+            .on('keyup', filter_selector, function (e) {
+                input = $(this).attr('name');
+                var keyCode = e.keyCode ? e.keyCode : e.which;
+                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
+                    if (submit_form === false) {
+                        submit_form = true;
+                        $("#brand-grid").yiiGridView("applyFilter");
+                    }
                 }
-            }
-        })
-        .on('pjax:success', function() {
-            if (isInput) {
-                var i = $("[name='" + input + "']");
-                var val = i.val();
-                i.focus().val(val);
+            })
+            .on('pjax:success', function () {
+                if (isInput) {
+                    var i = $("[name='" + input + "']");
+                    var val = i.val();
+                    i.focus().val(val);
 
-                var searchInput = $(i);
-                if (searchInput.length > 0) {
-                    var strLength = searchInput.val().length * 2;
-                    searchInput[0].setSelectionRange(strLength, strLength);
+                    var searchInput = $(i);
+                    if (searchInput.length > 0) {
+                        var strLength = searchInput.val().length * 2;
+                        searchInput[0].setSelectionRange(strLength, strLength);
+                    }
+
+                    if ($('thead td i').length == 0) {
+                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                    }
+
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
+                            $(document).scrollTop($(document).innerHeight());
+                        }, 200);
+                    })
                 }
-
-                if ($('thead td i').length == 0) {
-                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
-                }
-
-                $('.pagination').find('li a').on('click', function () {
-                    setTimeout(function () {
-                        $(document).scrollTop($(document).innerHeight());
-                    }, 200);
-                })
-            }
-        });
+            });
 
         //select box filter
         var select;
@@ -342,54 +344,55 @@ $this->params['breadcrumbs'][] = $this->title;
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#brand-grid" , function(event) {
+        $("body").on('beforeFilter', "#brand-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#brand-grid" , function(event) {
+        $("body").on('afterFilter', "#brand-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
-        .on('change', select_filter_selector, function(e) {
-            select = $(this).attr('name');
-            if (submit_form === false) {
-                submit_form = true;
-                $("#brand-grid").yiiGridView("applyFilter");
-            }
-        })
-        .on('pjax:success', function() {
-            var i = $("[name='" + input + "']");
-            var val = i.val();
-            i.focus().val(val);
+            .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
+            .on('change', select_filter_selector, function (e) {
+                select = $(this).attr('name');
+                if (submit_form === false) {
+                    submit_form = true;
+                    $("#brand-grid").yiiGridView("applyFilter");
+                }
+            })
+            .on('pjax:success', function () {
+                window.location.reload();
+                var i = $("[name='" + input + "']");
+                var val = i.val();
+                i.focus().val(val);
 
-            var searchInput = $(i);
-            if (searchInput.length > 0) {
-                var strLength = searchInput.val().length * 2;
-                searchInput[0].setSelectionRange(strLength, strLength);
-            }
-
-            if (isSelect) {
-                if ($('thead td i').length == 0) {
-                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                var searchInput = $(i);
+                if (searchInput.length > 0) {
+                    var strLength = searchInput.val().length * 2;
+                    searchInput[0].setSelectionRange(strLength, strLength);
                 }
 
-                $('.pagination').find('li a').on('click', function () {
-                    setTimeout(function () {
-                        $(document).scrollTop($(document).innerHeight());
-                    }, 200);
-                })
-            }
-        });
+                if (isSelect) {
+                    if ($('thead td i').length == 0) {
+                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                    }
+
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
+                            $(document).scrollTop($(document).innerHeight());
+                        }, 200);
+                    })
+                }
+            });
     });
 
-$('.pagination').find('li a').on('click', function () {
-    setTimeout(function () {
-        $(document).scrollTop($(document).innerHeight());
-    }, 200);
-})
+    $('.pagination').find('li a').on('click', function () {
+        setTimeout(function () {
+            $(document).scrollTop($(document).innerHeight());
+        }, 200);
+    })
 </script>

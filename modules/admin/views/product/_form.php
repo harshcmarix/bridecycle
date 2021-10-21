@@ -128,237 +128,251 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='{$index}'> {$label}</label></div>";
 
                         }])->label(false) ?>
-                    </div>
+                </div>
 
-                    <div class="col col-md-3">
-                        <label>Shipping Cost</label>
+                <div class="col col-md-3">
+                    <label>Shipping Cost</label>
+                    <?php
+                    if (Yii::$app->controller->action->id == 'create') {
+                        $shippingPrice = $shippingCountry;
+                    }
+                    ?>
+                    <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
+                        <?php $pKey = $key; ?>
+                        <?php echo $form->field($model, 'shipping_country_price[]')->textInput(['value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
+                            'class' => 'shipping_country_cost_' . $pKey,
+
+                        ])->label(false) ?>
+                    <?php } ?>
+                </div>
+
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'images[]')->widget(FileInput::classname(), [
+                        'options' => ['accept' => 'image/*', 'id' => 'product-images', 'multiple' => true],
+                        'pluginOptions' => [
+                            'showPreview' => false,
+                            'showUpload' => false,
+                            'maxFileCount' => 5,
+                        ]
+                    ])->label('Image <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
+                    <!-- </div> -->
+
+                    <?php if (Yii::$app->controller->action->id == 'update') { ?>
                         <?php
-                        if (Yii::$app->controller->action->id == 'create') {
-                            $shippingPrice = $shippingCountry;
-                        }
-                        ?>
-                        <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
-                            <?php $pKey = $key; ?>
-                            <?php echo $form->field($model, 'shipping_country_price[]')->textInput(['value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
-                                'class' => 'shipping_country_cost_' . $pKey,
-
-                            ])->label(false) ?>
-                        <?php } ?>
-                    </div>
-
-                    <div class="col col-md-6">
-                        <?= $form->field($model, 'images[]')->widget(FileInput::classname(), [
-                            'options' => ['accept' => 'image/*', 'id' => 'product-images', 'multiple' => true],
-                            'pluginOptions' => [
-                                'showPreview' => false,
-                                'showUpload' => false,
-                                'maxFileCount' => 5,
-                            ]
-                        ])->label('Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
-                        <!-- </div> -->
-
-                        <?php if (Yii::$app->controller->action->id == 'update') { ?>
-                            <?php
-                            $is_product_images_empty = Product::IMAGE_EMPTY;
-                            if (!empty($model->productImages)) {
-                                $is_product_images_empty = Product::IMAGE_NOT_EMPTY;
-                            } ?>
-
-                            <?= $form->field($model, 'is_product_images_empty')->hiddenInput(['value' => $is_product_images_empty])->label(false) ?>
-                            <div class="col col-md-12 edit-product_images">
-                                <?php if (!empty($model->productImages)) {
-                                    $data = "";
-                                    foreach ($model->productImages as $imageRow) {
-
-                                        if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
-                                            $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
-                                        } else {
-                                            $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                                        }
-
-
-                                        Modal::begin([
-                                            'id' => 'contentmodalProductImgEdit_' . $imageRow->id,
-                                            'header' => '<h4>Product Picture</h4>',
-                                            'size' => Modal::SIZE_DEFAULT
-                                        ]);
-
-                                        echo Html::img($image_path, ['width' => '570']);
-
-                                        Modal::end();
-                                // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
-//                                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_picture' onclick='contentmodelProductImgEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']);
-                                        $productImageModal = 'contentmodelProductImgEdit("' . $imageRow->id . '")';
-                                        $data .= "<div class='product-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productImageModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-image-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
-                                    }
-                                    echo "<div>" . $data . "</div>";
-
-                                    echo \kartik\dialog\Dialog::widget([
-                                        'libName' => 'krajeeDialog',
-                                        'options' => [
-                                    //'class' => 'admin_delete_record',
-                                    //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
-                                ], // default options
-                            ]);
-
+                        $is_product_images_empty = Product::IMAGE_EMPTY;
+                        if (!empty($model->productImages)) {
+                            $is_product_images_empty = Product::IMAGE_NOT_EMPTY;
                         } ?>
-                    </div>
-                <?php } ?>
-            </div>
 
-        </div>
+                        <?= $form->field($model, 'is_product_images_empty')->hiddenInput(['value' => $is_product_images_empty])->label(false) ?>
+                        <div class="col col-md-12 edit-product_images">
+                            <?php if (!empty($model->productImages)) {
+                                $data = "";
+                                foreach ($model->productImages as $imageRow) {
 
-
-        <div class="row">
-            <div class="col col-md-6">
-                <?= $form->field($model, 'option_size')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col col-md-6">
-                <?= $form->field($model, 'option_price')->textInput()->label('Tax') ?>
-            </div>
-        </div>
+                                    if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
+                                        $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
+                                    } else {
+                                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                                    }
 
 
-        <div class="row">
-            <div class="col col-md-6">
-                <?= $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) ?>
-            </div>
-            <div class="col col-md-6">
-                <?= $form->field($model, 'option_show_only')->widget(Select2::classname(), [
-                    'data' => $model->arrOptionIsShowOnly,
-                    'options' => ['placeholder' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ]); ?>
-            </div>
-        </div>
+                                    Modal::begin([
+                                        'id' => 'contentmodalProductImgEdit_' . $imageRow->id,
+                                        'header' => '<h4>Product Picture</h4>',
+                                        'size' => Modal::SIZE_DEFAULT
+                                    ]);
 
-        <div class="row">
-            <div class="col col-md-6">
-                <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
+                                    echo Html::img($image_path, ['width' => '570']);
+
+                                    Modal::end();
+                                    // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
+//                                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_picture' onclick='contentmodelProductImgEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']);
+                                    $productImageModal = 'contentmodelProductImgEdit("' . $imageRow->id . '")';
+                                    $data .= "<div class='product-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productImageModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-image-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
+                                }
+                                echo "<div>" . $data . "</div>";
+
+                                echo \kartik\dialog\Dialog::widget([
+                                    'libName' => 'krajeeDialog',
+                                    'options' => [
+                                        //'class' => 'admin_delete_record',
+                                        //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
+                                    ], // default options
+                                ]);
+
+                            } ?>
+                        </div>
+                    <?php } ?>
+                </div>
+
             </div>
 
-            <div class="col col-md-6">
-                <?= $form->field($model, 'gender')->widget(Select2::classname(), [
-                    'data' => $model->arrGender,
-                    'options' => ['placeholder' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ]); ?>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col col-md-6  mr-top">
-                <?php echo $form->field($model, 'is_top_selling')
-                ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]); ?>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'option_size')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'option_price')->textInput()->label('Tax') ?>
+                </div>
             </div>
-            <div class="col col-md-6  mr-top">
-                <?php echo $form->field($model, 'is_top_trending')
-                ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-                ?>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col col-md-6">
-                <?= $form->field($model, 'is_admin_favourite')->widget(Select2::classname(), [
-                    'data' => ['0' => 'No', '1' => 'Yes'],
+
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'option_show_only')->widget(Select2::classname(), [
+                        'data' => $model->arrOptionIsShowOnly,
+                        'options' => ['placeholder' => 'Select'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
+                </div>
+
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'gender')->widget(Select2::classname(), [
+                        'data' => $model->arrGender,
+                        'options' => ['placeholder' => 'Select'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-6  mr-top">
+                    <?php echo $form->field($model, 'is_top_selling')
+                        ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]); ?>
+                </div>
+                <div class="col col-md-6  mr-top">
+                    <?php echo $form->field($model, 'is_top_trending')
+                        ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
+                    ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'is_admin_favourite')->widget(Select2::classname(), [
+                        'data' => ['0' => 'No', '1' => 'Yes'],
                         //'options' => ['placeholder' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ]); ?>
-            </div>
-            <div class="col col-md-6">
-                <?= $form->field($model, 'type')->widget(Select2::classname(), [
-                    'data' => ['n' => 'New', 'u' => 'Used'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+                </div>
+                <div class="col col-md-6">
+                    <?php
+                    $disabledProductType = false;
+                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
+                        $disabledProductType = true;
+                    }
+                    ?>
+                    <?= $form->field($model, 'type')->widget(Select2::classname(), [
+                        'data' => ['n' => 'New', 'u' => 'Used'],
                         //'options' => ['placeholder' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ])->label('Product Type'); ?>
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            'disabled' => $disabledProductType
+                        ],
+                    ])->label('Product Type'); ?>
+                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col col-md-6">
-                <?= $form->field($model, 'is_cleaned')->widget(Select2::classname(), [
-                    'data' => $model->arrIsCleaned,
-                    'options' => ['placeholder' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ]); ?>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'is_cleaned')->widget(Select2::classname(), [
+                        'data' => $model->arrIsCleaned,
+                        'options' => ['placeholder' => 'Select'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+                </div>
+                <div class="col col-md-6">
+                    <?php
+                    $disabled = false;
+                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status_id) && in_array($model->status_id, [\app\models\ProductStatus::STATUS_APPROVED, \app\models\ProductStatus::STATUS_IN_STOCK])) {
+                        $disabled = true;
+                    }
+                    ?>
+                    <?= $form->field($model, 'status_id')->widget(Select2::classname(), [
+                        'data' => $status,
+                        //'options' => ['placeholder' => 'Select'],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            'disabled' => $disabled
+                        ],
+                    ]); ?>
+                </div>
             </div>
-            <div class="col col-md-6">
-                <?= $form->field($model, 'status_id')->widget(Select2::classname(), [
-                    'data' => $status,
-                    //'options' => ['placeholder' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ],
-                ]); ?>
+
+            <div class="row">
+                <div class="col col-md-6 receiptUpload"
+                     style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
+                    <?php
+                    $is_product_receipt_images_empty = Product::IMAGE_EMPTY;
+                    if (Yii::$app->controller->action->id == 'update') {
+                        if (!empty($model->productReceipt)) {
+                            $is_product_receipt_images_empty = Product::IMAGE_NOT_EMPTY;
+                        }
+                    }
+                    ?>
+                    <?= $form->field($model, 'is_product_receipt_images_empty')->hiddenInput(['value' => $is_product_receipt_images_empty])->label(false) ?>
+
+                    <?= $form->field($model, 'receipt[]')->widget(FileInput::classname(), [
+                        'options' => ['accept' => 'image/*', 'id' => 'product-receipt', 'multiple' => true],
+                        'pluginOptions' => [
+                            'showPreview' => false,
+                            'showUpload' => false,
+                            'maxFileCount' => 5,
+                        ]
+                    ])->label('Receipt <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
+
+                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col col-md-6 receiptUpload"
-            style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
-            <?php
-            $is_product_receipt_images_empty = Product::IMAGE_EMPTY;
-            if (Yii::$app->controller->action->id == 'update') {
-                if (!empty($model->productReceipt)) {
-                    $is_product_receipt_images_empty = Product::IMAGE_NOT_EMPTY;
-                }
-            }
-            ?>
-            <?= $form->field($model, 'is_product_receipt_images_empty')->hiddenInput(['value' => $is_product_receipt_images_empty])->label(false) ?>
+            <div class="row">
+                <?php if ((Yii::$app->controller->action->id == 'update') && !empty($model->productReceipt)) {
+                    $data = "";
+                    foreach ($model->productReceipt as $imageRow) {
 
-            <?= $form->field($model, 'receipt[]')->widget(FileInput::classname(), [
-                'options' => ['accept' => 'image/*', 'id' => 'product-receipt', 'multiple' => true],
-                'pluginOptions' => [
-                    'showPreview' => false,
-                    'showUpload' => false,
-                    'maxFileCount' => 5,
-                ]
-            ])->label('Receipt <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
-
-        </div>
-    </div>
-
-    <div class="row">
-        <?php if ((Yii::$app->controller->action->id == 'update') && !empty($model->productReceipt)) {
-            $data = "";
-            foreach ($model->productReceipt as $imageRow) {
-
-                if (!empty($imageRow) && $imageRow instanceof \app\models\ProductReceipt && !empty($imageRow->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . '/' . $imageRow->file)) {
-                    $image_path = Yii::getAlias('@productReceiptImageAbsolutePath') . '/' . $imageRow->file;
-                } else {
-                    $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                }
+                        if (!empty($imageRow) && $imageRow instanceof \app\models\ProductReceipt && !empty($imageRow->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . '/' . $imageRow->file)) {
+                            $image_path = Yii::getAlias('@productReceiptImageAbsolutePath') . '/' . $imageRow->file;
+                        } else {
+                            $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        }
 
 
-                Modal::begin([
-                    'id' => 'contentmodalProductImgReceiptEdit_' . $imageRow->id,
-                    'header' => '<h4>Receipt Picture</h4>',
-                    'size' => Modal::SIZE_DEFAULT
-                ]);
+                        Modal::begin([
+                            'id' => 'contentmodalProductImgReceiptEdit_' . $imageRow->id,
+                            'header' => '<h4>Receipt Picture</h4>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
 
-                echo Html::img($image_path, ['width' => '570']);
+                        echo Html::img($image_path, ['width' => '570']);
 
-                Modal::end();
+                        Modal::end();
                         // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
-                $productReceiptModal = 'contentmodelProductImgReceiptEdit("' . $imageRow->id . '")';
-                $data .= "<div class='product-receipt-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productReceiptModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-receipt-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-receipt-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
-            }
-            echo "<div class='product-receipt-preview'>" . $data . "</div>";
+                        $productReceiptModal = 'contentmodelProductImgReceiptEdit("' . $imageRow->id . '")';
+                        $data .= "<div class='product-receipt-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productReceiptModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-receipt-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-receipt-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
+                    }
+                    echo "<div class='product-receipt-preview'>" . $data . "</div>";
 
-            echo \kartik\dialog\Dialog::widget([
-                'libName' => 'krajeeDialog',
-                'options' => [
+                    echo \kartik\dialog\Dialog::widget([
+                        'libName' => 'krajeeDialog',
+                        'options' => [
                             //'class' => 'admin_delete_record',
                             //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
                         ], // default options

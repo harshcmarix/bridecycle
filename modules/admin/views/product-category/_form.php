@@ -45,7 +45,7 @@ echo Dialog::widget(
                             'showPreview' => false,
                             'showUpload' => false
                         ]
-                    ])->label('Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
+                    ])->label('Image <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
 
                     <!-- image display and image popup -->
                     <?php
@@ -88,14 +88,20 @@ echo Dialog::widget(
                 </div>
 
                 <div class="col col-md-6">
-
+                    <?php
+                    $disabled = false;
+                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status) && in_array($model->status, [ProductCategory::STATUS_APPROVE, ProductCategory::STATUS_DECLINE])) {
+                        $disabled = true;
+                    }
+                    ?>
                     <?= $form->field($model, 'status')->widget(Select2::classname(), [
                         'data' => ProductCategory::ARR_CATEGORY_STATUS,
                         'size' => Select2::MEDIUM,
                         'options' => [
                         ],
                         'pluginOptions' => [
-                            'allowClear' => true
+                            'allowClear' => true,
+                            'disabled' => $disabled
                         ],
                     ]); ?>
 
@@ -111,7 +117,6 @@ echo Dialog::widget(
             ?>
             <?= $form->field($model, 'is_image_empty')->hiddenInput(['value' => $is_image_empty])->label(false) ?>
 
-            
 
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
@@ -139,8 +144,8 @@ echo Dialog::widget(
                 //         alert('There was an error with your request.' + xhr.responseText);
                 //     }
                 // }).done(function (data) {
-                    $('.image-class').hide();
-                    $('#productcategory-is_image_empty').val('1');
+                $('.image-class').hide();
+                $('#productcategory-is_image_empty').val('1');
                 // });
             }
         });

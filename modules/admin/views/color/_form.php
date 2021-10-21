@@ -18,11 +18,19 @@ use yii\widgets\ActiveForm;
 
             <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
 
+            <?php
+            $disabled = false;
+            if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status) && in_array($model->status, [\app\models\Color::STATUS_APPROVE, \app\models\Color::STATUS_DECLINE])) {
+                $disabled = true;
+            }
+            ?>
+
             <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
                 'data' => $model->arrStatus,
                 //'options' => ['placeholder' => 'Select'],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => true,
+                    'disabled' => $disabled
                 ],
             ]); ?>
 
