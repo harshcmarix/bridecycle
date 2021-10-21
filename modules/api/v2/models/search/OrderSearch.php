@@ -15,10 +15,11 @@ use Yii;
  */
 class OrderSearch extends Order
 {
-     /**
+    /**
      * @var $hiddenFields Array of hidden fields which not needed in APIs
      */
     protected $hiddenFields = [];
+
     /**
      * {@inheritdoc}
      */
@@ -46,9 +47,9 @@ class OrderSearch extends Order
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = null)
     {
-      
+
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
             foreach ($requestParams['filter'] as $key => $val) {
@@ -98,12 +99,17 @@ class OrderSearch extends Order
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+
+        if (!empty($userId)) {
+            $query->where(['user_id' => $userId]);
+        }
+
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id','user_id','user_address_id','total_amount','status','created_at' ];
+            $select = ['id', 'user_id', 'user_address_id', 'total_amount', 'status', 'created_at'];
         }
 
         $query->select($select);
@@ -116,7 +122,7 @@ class OrderSearch extends Order
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->orderBy(['orders.created_at'=>SORT_DESC]);
+        $query->orderBy(['orders.created_at' => SORT_DESC]);
         $query->groupBy('orders.id');
 
         $activeDataProvider = Yii::createObject([
@@ -131,16 +137,16 @@ class OrderSearch extends Order
             ],
         ]);
 
-         $orderModels = $activeDataProvider->getModels();
+        $orderModels = $activeDataProvider->getModels();
         /**
          * get and set order status name
          */
         $getStatusArray = new Order();
         $arrOrderStatus = $getStatusArray->arrOrderStatus;
 
-        foreach($orderModels as $key=>$value){
-            if(!empty($value->status) && array_key_exists($value->status,$arrOrderStatus)){
-              $value->status = $arrOrderStatus[$value->status];
+        foreach ($orderModels as $key => $value) {
+            if (!empty($value->status) && array_key_exists($value->status, $arrOrderStatus)) {
+                $value->status = $arrOrderStatus[$value->status];
             }
         }
         $activeDataProvider->setModels($orderModels);

@@ -20,7 +20,7 @@ use yii\filters\Cors;
  */
 class OrderController extends ActiveController
 {
-     /**
+    /**
      * @var string
      */
     public $modelClass = 'app\models\Order';
@@ -30,7 +30,7 @@ class OrderController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\OrderSearch';
 
-       /**
+    /**
      * @return array
      */
     protected function verbs()
@@ -38,12 +38,13 @@ class OrderController extends ActiveController
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
-            'create' =>['POST','OPTIONS'],
+            'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
         ];
     }
-     /**
+
+    /**
      * @return array
      */
     public function behaviors()
@@ -51,7 +52,7 @@ class OrderController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view','create','update','delete'],
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -75,16 +76,17 @@ class OrderController extends ActiveController
 
         return $behaviors;
     }
+
     /**
      * @return array
      */
-     public function actions()
+    public function actions()
     {
         $actions = parent::actions();
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
-       
+
         return $actions;
     }
 
@@ -100,7 +102,7 @@ class OrderController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        return $model->search($requestParams);
+        return $model->search($requestParams, Yii::$app->user->identity->id);
     }
 
     /**
