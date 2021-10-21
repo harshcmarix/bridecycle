@@ -192,7 +192,7 @@ class TrialController extends ActiveController
                             if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
                                 $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
                                 if (!empty($userROW->email)) {
-                                    Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => $userROW, 'receiver' => $model->receiver, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                    Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
                                         ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
                                         ->setTo($userROW->email)
                                         ->setSubject('Request for trial of your product')
@@ -293,7 +293,7 @@ class TrialController extends ActiveController
                                 }
 
                                 if (!empty($userROW->email)) {
-                                    Yii::$app->mailer->compose('api/trialBookingAcceptReject', ['sender' => $userROW, 'receiver' => $model->sender, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                    Yii::$app->mailer->compose('api/trialBookingAcceptReject', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
                                         ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
                                         ->setTo($userROW->email)
                                         ->setSubject('Request for trial has ' . $isAccept)

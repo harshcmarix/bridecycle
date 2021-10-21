@@ -224,9 +224,10 @@ class MakeOfferController extends ActiveController
                                     $message = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
                                     $subject = "Sent an offer for your product";
                                     if (!empty($userROW->email)) {
-                                        Yii::$app->mailer->compose('api/addNewMakeOffer', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+                                        Yii::$app->mailer->compose('api/addNewMakeOffer', ['sender' => $sender, 'receiver' => $userROW, 'message' => $message])
                                             ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                            ->setTo($userROW->email)
+                                            //->setTo($userROW->email)
+                                            ->setTo("harshil.cmarix@gmail.com")
                                             ->setSubject($subject)
                                             ->send();
                                     }
@@ -332,7 +333,7 @@ class MakeOfferController extends ActiveController
                                 }
 
                                 if (!empty($userROW->email)) {
-                                    Yii::$app->mailer->compose('api/makeOfferAcceptReject', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+                                    Yii::$app->mailer->compose('api/makeOfferAcceptReject', ['sender' => $model->receiver, 'receiver' => $userROW, 'message' => $message])
                                         ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
                                         ->setTo($userROW->email)
                                         ->setSubject($subject)
