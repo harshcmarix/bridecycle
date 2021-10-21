@@ -98,7 +98,7 @@ class BrandSearch extends Brand
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find()->where(['IN', 'brands.status', [Brand::STATUS_APPROVE]]);
 
-        if (!empty($requestParams) && $requestParams['brand_of_the_week'] == '1') {
+        if (!empty($requestParams['brand_of_the_week']) && $requestParams['brand_of_the_week'] == '1') {
             $brandFromDate = date("Y-m-d 00:00:01", strtotime('-1 week'));
             $brandToDate = date("Y-m-d 23:59:59");
 
@@ -113,7 +113,7 @@ class BrandSearch extends Brand
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
-        } else if (!empty($requestParams) && $requestParams['brand_of_the_week'] == '1') {
+        } else if (!empty($requestParams) && !empty($requestParams['brand_of_the_week']) && $requestParams['brand_of_the_week'] == '1') {
             $select = ['brands.*', 'sum(order_items.quantity) As total_sold_product'];
         } else {
             $select = ['brands.*'];
@@ -125,7 +125,7 @@ class BrandSearch extends Brand
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        if (!empty($requestParams) && $requestParams['brand_of_the_week'] == '1') {
+        if (!empty($requestParams) && !empty($requestParams['brand_of_the_week']) && $requestParams['brand_of_the_week'] == '1') {
             $query->groupBy('products.id')->orderBy(['total_sold_product' => SORT_DESC]);
         } else {
             $query->groupBy('brands.id');

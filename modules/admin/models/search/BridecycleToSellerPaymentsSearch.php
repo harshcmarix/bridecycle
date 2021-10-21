@@ -65,7 +65,6 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'amount' => $this->amount,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -77,6 +76,7 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
                 ['like', 'seller.last_name', $this->seller_id]
             ])
             ->andFilterWhere(['like', 'products.name', $this->order_item_id])
+            ->andFilterWhere(['like', 'amount', $this->amount . "%", false])
             ->andFilterWhere(['like', 'note_content', $this->note_content]);
 
         return $dataProvider;

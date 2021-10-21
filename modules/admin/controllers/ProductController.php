@@ -239,7 +239,6 @@ class ProductController extends Controller
                         $modelImageReceipt->save(false);
                     }
                 }
-
             }
 
             \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'Product created successfully.');

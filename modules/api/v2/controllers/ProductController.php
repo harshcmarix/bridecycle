@@ -431,7 +431,7 @@ class ProductController extends ActiveController
         $model->gender = Product::GENDER_FOR_FEMALE;
 
         if ($model->load($productData) && $model->validate()) {
-
+            $model->user_id = Yii::$app->user->identity->id;
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
             } else {

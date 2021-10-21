@@ -98,7 +98,8 @@ class BannerController extends Controller
 
                 $ext = $banner_image->extension;
                 $fileName = pathinfo($banner_image->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $banner_image->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
@@ -164,7 +165,8 @@ class BannerController extends Controller
 
                 $ext = $new_image->extension;
                 $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $new_image->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture

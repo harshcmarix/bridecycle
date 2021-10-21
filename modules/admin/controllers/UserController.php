@@ -119,7 +119,8 @@ class UserController extends Controller
 
                 $ext = $profilePicture->extension;
                 $fileName = pathinfo($profilePicture->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $profilePicture->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
@@ -260,7 +261,6 @@ class UserController extends Controller
             } else {
                 $model->profile_picture = '';
             }
-
 
             if (empty($modelShopDetail)) {
                 $modelShopDetail = new ShopDetail();

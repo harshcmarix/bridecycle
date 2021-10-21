@@ -105,7 +105,8 @@ class TailorController extends Controller
 
                 $ext = $shop_image->extension;
                 $fileName = pathinfo($shop_image->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $shop_image->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
@@ -135,7 +136,8 @@ class TailorController extends Controller
 
                 $ext = $shop_image_voucher->extension;
                 $fileName = pathinfo($shop_image_voucher->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $shop_image_voucher->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
@@ -208,7 +210,8 @@ class TailorController extends Controller
 
                 $ext = $new_image->extension;
                 $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload tailor shop image
                 $new_image->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of tailor shop image
@@ -248,7 +251,8 @@ class TailorController extends Controller
 
                 $ext = $new_image_voucher->extension;
                 $fileName = pathinfo($new_image_voucher->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload tailor shop image
                 $new_image_voucher->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of tailor shop image

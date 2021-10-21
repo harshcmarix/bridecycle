@@ -116,7 +116,8 @@ class AdsController extends Controller
 
                 $ext = $ad_image->extension;
                 $fileName = pathinfo($ad_image->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $ad_image->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
@@ -194,7 +195,8 @@ class AdsController extends Controller
 
                 $ext = $new_image->extension;
                 $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-                $fileName = $fileName . '_' . time() . '.' . $ext;
+                //$fileName = $fileName . '_' . time() . '.' . $ext;
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $new_image->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
