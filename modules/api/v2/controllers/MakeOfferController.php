@@ -174,7 +174,73 @@ class MakeOfferController extends ActiveController
         }
 
         if ($model->load($postData) && $model->validate()) {
-            $model->save();
+
+            if ($model->save()) {
+                // Send Push Notification Start
+                if (!empty($postData['MakeOffer']['status']) && in_array($postData['MakeOffer']['status'], [MakeOffer::STATUS_PENDING])) {
+                    $getUsers[] = User::findOne($modelProduct->user_id);
+                    $sender = User::findOne(Yii::$app->user->identity->id);
+
+                    if (!empty($getUsers)) {
+                        foreach ($getUsers as $keys => $userROW) {
+                            if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
+                                if ($userROW->is_offer_update_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                                    $userDevice = $userROW->userDevice;
+
+                                    // Insert into notification.
+                                    $notificationText = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $action = "Add";
+                                    $modelNotification = new Notification();
+                                    $modelNotification->owner_id = $sender->id;
+                                    $modelNotification->notification_receiver_id = $userROW->id;
+                                    $modelNotification->ref_id = $model->id;
+                                    $modelNotification->notification_text = $notificationText;
+                                    $modelNotification->action = $action;
+                                    $modelNotification->ref_type = "make_offer";
+                                    $modelNotification->save(false);
+
+                                    $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                    if ($userDevice->device_platform == 'android') {
+                                        $notificationToken = array($userDevice->notification_token);
+                                        $senderName = $sender->first_name . " " . $sender->last_name;
+                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                    } else {
+                                        $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                        $note->setBadge($badge);
+                                        $note->setSound('default');
+                                        $message = Yii::$app->fcm->createMessage();
+                                        $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                        $message->setNotification($note)
+                                            ->setData([
+                                                'id' => $modelNotification->ref_id,
+                                                'type' => $modelNotification->ref_type,
+                                                'message' => $notificationText,
+                                            ]);
+                                        $response = Yii::$app->fcm->send($message);
+                                    }
+                                }
+
+                                if ($userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                    $message = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $subject = "Sent an offer for your product";
+//                                            if (!empty($userROW->email)) {
+//                                                Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+//                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+//                                                    ->setTo($userROW->email)
+//                                                    ->setSubject($subject)
+//                                                    ->send();
+//                                            }
+
+
+                                }
+                            }
+                        }
+                    }
+                }
+                // Send Push Notification End
+
+            }
+            $model->save(false);
         }
         return $model;
     }
@@ -281,10 +347,7 @@ class MakeOfferController extends ActiveController
                     }
                 }
             }
-
-
             // Send Push Notification End
-
 
             $model->save(false);
         }

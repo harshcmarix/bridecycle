@@ -30,10 +30,8 @@ return [
         'option_key' => 'km_range'
     ],
 
-
     //'mail_image_base_path' => Yii::$app->request->baseUrl . '/web',
     'mail_image_base_path' => 'http://203.109.113.157/bridecycle/web',
-
 
     // Recent time for general uses in system
     'recent_time' => '1 week',
@@ -49,8 +47,8 @@ return [
     /**
      * Paypal (CTPL) sendbox account credential.
      *
-     * Username: paypaltest.ctpl@gmail.com
-     * Password: ctpl@dev
+     * //Username: paypaltest.ctpl@gmail.com
+     * //Password: ctpl@dev
      *
      * Username: buyertest.gwm@gmail.com
      * Password: ctpl@dev
@@ -58,8 +56,8 @@ return [
      * Username: merchant.gwm@gmail.com
      * Password: ctpl@dev
      *
-     * Username : harshil.cmarix-facilitator@gmail.com
-     * Password: ctpl@dev
+     * //Username : harshil.cmarix-facilitator@gmail.com
+     * //Password: ctpl@dev
      *
      * @Note : CTPL Testing Account
      */
@@ -76,7 +74,6 @@ return [
     // Live // client
     //'google_map_api_key'=>'AIzaSyBuITv7RS9RWyEoZkJ1df6-zrw6ZT_C36Q',
     'google_map_api_key' => 'AIzaSyAO1tfGWm30RyXQbiaVGvKxo0M5h9-4bP8',
-    //'google_map_api_key'=>'AIzaSyB0WhTsW00dL_NTfkIbUgxXc25zUATbhAY',
     // Local // my
     //'google_map_api_key'=>'AIzaSyDTBLZMRefUIIM9f0StWgeQ1lVglay22wk',
 

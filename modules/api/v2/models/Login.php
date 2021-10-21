@@ -120,9 +120,11 @@ class Login extends Model
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 } else {
                     $accessToken = $this->_user->access_token;
-                    //$accessToken = $this->_user->generateAccessToken();
-                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + (3600 * 24 * 365));
+                    if (empty($this->_user->access_token) || is_null($this->_user->access_token)) {
+                        $accessToken = $this->_user->generateAccessToken();
+                    }
                     //$accessTokenExpiredAt = $this->_user->access_token_expired_at;
+                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + (3600 * 24 * 365));
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 }
 
@@ -154,7 +156,7 @@ class Login extends Model
             $this->_user = User::find()->where(['facebook_id' => Yii::$app->request->post('facebook_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
         } elseif ($this->_user === false && !empty($loginFrom) && $loginFrom == 'apple') {
             $this->_user = User::find()->where(['apple_id' => Yii::$app->request->post('apple_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
-        }elseif ($this->_user === false && !empty($loginFrom) && $loginFrom == 'google') {
+        } elseif ($this->_user === false && !empty($loginFrom) && $loginFrom == 'google') {
             $this->_user = User::find()->where(['google_id' => Yii::$app->request->post('google_id'), 'user_type' => User::USER_TYPE_NORMAL])->one();
         }
         return $this->_user;
