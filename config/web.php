@@ -49,7 +49,7 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-         'view' => [
+        'view' => [
             'theme' => [
                 'pathMap' => [
                     '@app/views' => '@vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-app'
@@ -139,14 +139,28 @@ $config = [
 
         'fcm' => [
             'class' => 'understeam\fcm\Client',
-            'apiKey' => 'AAAApcG5M1M:APA91bFB1x-W2c0hTxn1HpQH9U1ROkK9-3-ieG-NlBm852LIn0pGiaFi0FUsZM09GzbbQCCq3vGCXB8lHEjW0x-jh-pSEMnThSuXMpszfBoX52zoIVJ6LOQFy6RxwHS3n56wfXYhf87w', // Get it from https://console.firebase.google.com/project/bridecycle-test/settings/cloudmessaging
+            //'apiKey' => 'AAAApcG5M1M:APA91bFB1x-W2c0hTxn1HpQH9U1ROkK9-3-ieG-NlBm852LIn0pGiaFi0FUsZM09GzbbQCCq3vGCXB8lHEjW0x-jh-pSEMnThSuXMpszfBoX52zoIVJ6LOQFy6RxwHS3n56wfXYhf87w', // Get it from https://console.firebase.google.com/project/bridecycle-test/settings/cloudmessaging
+            'apiKey' => 'AAAApcG5M1M:APA91bFB1x-W2c0hTxn1HpQH9U1ROkK9-3-ieG-NlBm852LIn0pGiaFi0FUsZM09GzbbQCCq3vGCXB8lHEjW0x-jh-pSEMnThSuXMpszfBoX52zoIVJ6LOQFy6RxwHS3n56wfXYhf87w', // Get it from https://console.firebase.google.com/project/bride-cycle-cf380/settings/cloudmessaging/ios:com.bridecycle.ios
         ],
+//        'log' => [
+//            'traceLevel' => YII_DEBUG ? 3 : 0,
+//            'targets' => [
+//                [
+//                    'class' => 'yii\log\FileTarget',
+//                    'levels' => ['error', 'warning'],
+//                ],
+//            ],
+//        ],
+        // Logging
         'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
+                // writes to php-fpm output stream
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'levels' => ['info', 'trace', 'error', 'warning'],
+                    'categories' => ['notifyUserBasedOnsaveSearch'],
+                    'logVars' => [],
+                    'logFile' => '@runtime/logs/addproductnotification/' . date('d-m-Y') . 'addProductTonotifyUserBasedOnsaveSearch.log',
                 ],
             ],
         ],

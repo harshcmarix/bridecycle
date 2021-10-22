@@ -116,14 +116,14 @@ class Notification extends \yii\db\ActiveRecord
                 'id' => $id,
                 'title' => (!empty($type) && $type == 'chat_history') ? "New message from " . Yii::$app->name : Yii::$app->name,
                 'body' => (!empty($type) && $type == 'chat_history') ? 'sender' . ' : ' . $messageString : $messageString,
-                'type' => $type, //emergency, post
+                'type' => $type, // Notification ref type
                 'message' => $messageString
             ),
             'notification' => array(
                 'id' => $id,
                 'title' => (!empty($type) && $type == 'chat_history') ? "New message from " . Yii::$app->name : Yii::$app->name,
                 'body' => (!empty($type) && $type == 'chat_history') ? 'sender' . ' : ' . $messageString : $messageString,
-                'type' => $type, //emergency, post
+                'type' => $type, // Notification ref type
                 'message' => $messageString
             ),
         );
@@ -139,15 +139,14 @@ class Notification extends \yii\db\ActiveRecord
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        //curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
-        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 
         $result = curl_exec($ch);
-        if ($result === false)
+        if ($result === false){
             //die('Curl failed ' . curl_error());
-            die('Curl failed.');
+            //die('Curl failed.');
+            return curl_error();
+        }
 
         curl_close($ch);
         //p($result);

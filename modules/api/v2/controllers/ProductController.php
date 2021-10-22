@@ -326,7 +326,7 @@ class ProductController extends ActiveController
                     }
                 }
 
-                // Send Push Notification start
+                // Send Push Notification and Email notification start
                 $brandName = (!empty($model->brand) && !empty($model->brand->name)) ? $model->brand->name : "";
                 $categoryName = (!empty($model->category) && !empty($model->category->name)) ? $model->category->name : "";
 
@@ -340,7 +340,9 @@ class ProductController extends ActiveController
                         ['like', 'search_text', $categoryName],
                     ]);
                 }
-                $modelsSearch = $query->all();
+                $modelsSearch = $query->groupBy(['search_text', 'user_id'])->all();
+                //$modelsSearch = $query->all();
+                //p(count($modelsSearch));
 
                 if (!empty($modelsSearch)) {
                     foreach ($modelsSearch as $key => $modelSearchRow) {
@@ -354,36 +356,40 @@ class ProductController extends ActiveController
                                         if ($userROW->is_saved_searches_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                             $userDevice = $userROW->userDevice;
 
-                                            // Insert into notification.
-                                            $notificationText = "Product is uploaded as per your saved search";
-                                            $modelNotification = new Notification();
-                                            $modelNotification->owner_id = $model->user_id;
-                                            $modelNotification->notification_receiver_id = $userROW->id;
-                                            $modelNotification->ref_id = $model->id;
-                                            $modelNotification->notification_text = $notificationText;
-                                            $modelNotification->action = "Add";
-                                            $modelNotification->ref_type = "products"; // For seller rate review
-                                            //$modelNotification->created_at = time();
-                                            $modelNotification->save(false);
+                                            if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                                // Insert into notification.
+                                                $notificationText = "Product is uploaded as per your saved search";
+                                                $modelNotification = new Notification();
+                                                $modelNotification->owner_id = $model->user_id;
+                                                $modelNotification->notification_receiver_id = $userROW->id;
+                                                $modelNotification->ref_id = $model->id;
+                                                $modelNotification->notification_text = $notificationText;
+                                                $modelNotification->action = "Add";
+                                                $modelNotification->ref_type = "products"; // For add new product
+                                                $modelNotification->save(false);
 
-                                            $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
-                                            if ($userDevice->device_platform == 'android') {
-                                                $notificationToken = array($userDevice->notification_token);
-                                                $senderName = $model->user->first_name . " " . $model->user->last_name;
-                                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
-                                            } else {
-                                                $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
-                                                $note->setBadge($badge);
-                                                $note->setSound('default');
-                                                $message = Yii::$app->fcm->createMessage();
-                                                $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
-                                                $message->setNotification($note)
-                                                    ->setData([
-                                                        'id' => $modelNotification->ref_id,
-                                                        'type' => $modelNotification->ref_type,
-                                                        'message' => $notificationText,
-                                                    ]);
-                                                $response = Yii::$app->fcm->send($message);
+                                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                                if ($userDevice->device_platform == 'android') {
+                                                    $notificationToken = array($userDevice->notification_token);
+                                                    $senderName = $model->user->first_name . " " . $model->user->last_name;
+                                                    $notification = $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                    \Yii::info("\n------------android notification ----------------\n" . "userId:" . $userROW->id . "\n" . $notification, 'notifyUserBasedOnsaveSearch');
+                                                } else {
+                                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                    $note->setBadge($badge);
+                                                    $note->setSound('default');
+                                                    $message = Yii::$app->fcm->createMessage();
+                                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                    $message->setNotification($note)
+                                                        ->setData([
+                                                            'id' => $modelNotification->ref_id,
+                                                            'type' => $modelNotification->ref_type,
+                                                            'message' => $notificationText,
+                                                        ]);
+                                                    $response = Yii::$app->fcm->send($message);
+                                                    $result = $response->getStatusCode();
+                                                    \Yii::info("\n------------ios notification ----------------\n" . "userId:" . $userROW->id . "\n" . $result, 'notifyUserBasedOnsaveSearch');
+                                                }
                                             }
                                         }
 
@@ -396,8 +402,6 @@ class ProductController extends ActiveController
                                                     ->setSubject('New product added same as your search!')
                                                     ->send();
                                             }
-
-
                                         }
                                     }
                                 }
@@ -405,7 +409,7 @@ class ProductController extends ActiveController
                         }
                     }
                 }
-                // Send Push Notification end
+                // Send Push Notification and Email notification end
             }
         }
 
