@@ -6,12 +6,11 @@ return [
     'token_type' => 'bearer',
     //'token_expire_time' => 86400,// 1 day
     'token_expire_time' => (86400 * 365),// 365 day
-    //'token_expire_time' => 3.154e+7,// 365 day
     'token_segment' => 1,
     //'default_page_size' => 10,
     'default_page_size' => 10000,
     // Used in reset password expire token
-    'password_reset_token_expire_time' => 3600,
+    'password_reset_token_expire_time' => 3600, // in seconds
     'support_email' => 'robot@devreadwrite.com',
     /**
      * Used for profile picture thumb
@@ -29,7 +28,6 @@ return [
     'km_range' => [
         'option_key' => 'km_range'
     ],
-
     //'mail_image_base_path' => Yii::$app->request->baseUrl . '/web',
     'mail_image_base_path' => 'http://203.109.113.157/bridecycle/web',
 
@@ -39,25 +37,16 @@ return [
     /**
      * Use for payment gateway (paypal)
      */
-//    'paypal_Client_ID'=>'',
-//    'paypal_Client_Secret'=>'',
-//    'paypal_mode'=>'',
     'paypal_payment_currency' => 'USD',
 
     /**
      * Paypal (CTPL) sendbox account credential.
-     *
-     * //Username: paypaltest.ctpl@gmail.com
-     * //Password: ctpl@dev
      *
      * Username: buyertest.gwm@gmail.com
      * Password: ctpl@dev
      *
      * Username: merchant.gwm@gmail.com
      * Password: ctpl@dev
-     *
-     * //Username : harshil.cmarix-facilitator@gmail.com
-     * //Password: ctpl@dev
      *
      * @Note : CTPL Testing Account
      */
@@ -66,7 +55,7 @@ return [
     'paypal_mode' => 'sandbox',
 
     /**
-     * Mobile APi current latest version
+     * Mobile API current latest version
      */
     //'mobile_api_latest_version' => 'v1',
     'mobile_api_latest_version' => 'v2',

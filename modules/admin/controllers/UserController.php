@@ -91,11 +91,8 @@ class UserController extends Controller
             return \yii\widgets\ActiveForm::validate($model);
         }
 
-        // $model->password_hash = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
-
         if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
 
-            //$password = $model->password_hash;
             $password = $model->password;
             $model->password_hash = password_hash($model->password, PASSWORD_DEFAULT);
 
@@ -119,14 +116,13 @@ class UserController extends Controller
 
                 $ext = $profilePicture->extension;
                 $fileName = pathinfo($profilePicture->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $profilePicture->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
                 $actualImagePath = $uploadDirPath . '/' . $fileName;
                 $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-//                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+
                 Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 // Insert profile picture name into database
                 $model->profile_picture = $fileName;
@@ -154,18 +150,16 @@ class UserController extends Controller
                     $modelUserShopDetail->shop_email = $postData['shop_email'];
                     $modelUserShopDetail->shop_phone_number = $postData['shop_phone_number'];
 
-
                     $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
                     if (isset($newShopLogoFile) && isset($model->is_shop_owner)) {
                         $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
                         $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
-//                        Image::thumbnail(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+
                         Image::getImagine()->open(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
 
                         $modelUserShopDetail->shop_logo = $shop_logo_picture;
                     }
                     $modelUserShopDetail->save(false);
-
                 }
 
                 \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'User created successfully.');
@@ -176,7 +170,6 @@ class UserController extends Controller
                     ->setSubject('Thank you for Registration!')
                     ->send();
 
-                //return $this->redirect(['view', 'id' => $model->id]);
                 return $this->redirect(['index']);
             }
         }
@@ -205,12 +198,10 @@ class UserController extends Controller
         $oldShopLogoFile = (!empty($modelShopDetail->shop_logo)) ? $modelShopDetail->shop_logo : "";
         $oldpwd = $model->password_hash;
 
-
         $model->shop_name = (!empty($modelShopDetail->shop_name)) ? $modelShopDetail->shop_name : "";
         $model->shop_email = (!empty($modelShopDetail->shop_email)) ? $modelShopDetail->shop_email : "";
         $model->shop_phone_number = (!empty($modelShopDetail->shop_phone_number)) ? $modelShopDetail->shop_phone_number : "";
         $model->shop_logo = (!empty($modelShopDetail->shop_logo)) ? $modelShopDetail->shop_logo : "";
-
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -238,7 +229,6 @@ class UserController extends Controller
                 $model->password_hash = Yii::$app->getSecurity()->generatePasswordHash($new_password);
             }
 
-
             $newProfilePictureFile = UploadedFile::getInstance($model, 'profile_picture');
             if (isset($newProfilePictureFile)) {
 
@@ -252,7 +242,6 @@ class UserController extends Controller
 
                 $newProfilePictureFile->saveAs(Yii::getAlias('@profilePictureRelativePath') . "/" . $profilePicture);
 
-//                Image::thumbnail(Yii::getAlias('@profilePictureRelativePath') . "/" . $profilePicture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save(Yii::getAlias('@profilePictureThumbRelativePath') . "/" . $profilePicture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 Image::getImagine()->open(Yii::getAlias('@profilePictureRelativePath') . "/" . $profilePicture)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save(Yii::getAlias('@profilePictureThumbRelativePath') . "/" . $profilePicture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
 
                 $model->profile_picture = $profilePicture;
@@ -280,8 +269,7 @@ class UserController extends Controller
                     }
 
                     $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
-                    // $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture);
-//                    Image::thumbnail(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+
                     Image::getImagine()->open(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
 
                     $modelShopDetail->shop_logo = $shop_logo_picture;
@@ -292,10 +280,8 @@ class UserController extends Controller
                 }
             }
 
-
             if (isset($postData['is_shop_owner']) && $postData['is_shop_owner'] == '1') {
                 $model->is_shop_owner = User::IS_SHOP_OWNER_YES;
-
 
                 $modelShopDetail->shop_name = $postData['shop_name'];
                 $modelShopDetail->shop_email = $postData['shop_email'];
@@ -330,7 +316,6 @@ class UserController extends Controller
                         unlink(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $modelShopDetail->shop_logo);
                     }
                     $modelShopDetail->delete();
-
                 }
                 if (!empty($modelShopAddress)) {
                     $modelShopAddress->delete();
@@ -346,7 +331,6 @@ class UserController extends Controller
 
             if ($model->save()) {
                 \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'User updated successfully.');
-                //return $this->redirect(['view', 'id' => $model->id]);
                 return $this->redirect(['index']);
             }
         }

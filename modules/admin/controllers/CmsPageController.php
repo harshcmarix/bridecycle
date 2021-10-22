@@ -21,13 +21,13 @@ class CmsPageController extends Controller
     public function behaviors()
     {
         return [
-           'access' => [
+            'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update','view','delete'],
+                'only' => ['index', 'create', 'update', 'view', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update','view','delete'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -141,9 +141,9 @@ class CmsPageController extends Controller
         if (($model = CmsPage::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
     public function actionCkeditorImageUpload()
     {
         $funcNum = $_REQUEST['CKEditorFuncNum'];
@@ -155,8 +155,8 @@ class CmsPageController extends Controller
             } elseif ($_FILES['upload']["size"] == 0 or $_FILES['upload']["size"] > 510241024) {
                 $message = Yii::t('app', "The image should not exceed 5MB.");
             } elseif (($_FILES['upload']["type"] != "image/jpg")
-        and ($_FILES['upload']["type"] != "image/jpeg")
-        and ($_FILES['upload']["type"] != "image/png")) {
+                and ($_FILES['upload']["type"] != "image/jpeg")
+                and ($_FILES['upload']["type"] != "image/png")) {
                 $message = Yii::t('app', "The file type should be JPG , JPEG , PNG.");
             } elseif (!is_uploaded_file($_FILES['upload']["tmp_name"])) {
                 $message = Yii::t('app', "Upload Error, Please try again.");
@@ -182,8 +182,8 @@ class CmsPageController extends Controller
                 move_uploaded_file($_FILES['upload']['tmp_name'], $folder . $name);
             }
 
-            echo '<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction("'
-        . $funcNum . '", "' . $url . '", "' . $message . '" );</script>';
+            echo '<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction("' . $funcNum . '", "' . $url . '", "' . $message . '" );</script>';
+
         }
     }
 }

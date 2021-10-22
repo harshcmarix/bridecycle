@@ -3,10 +3,8 @@
 namespace app\modules\api\v2\controllers;
 
 use app\models\{Product, ProductImage, ProductStatus, UserAddress};
-use app\models\BlockUser;
 use app\models\Notification;
 use app\models\ProductReceipt;
-use app\models\ProductTracking;
 use app\models\SearchHistory;
 use app\models\ShippingPrice;
 use app\modules\api\v2\models\User;
@@ -90,7 +88,6 @@ class ProductController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
-        //unset($actions['index-list']);
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['delete']);
@@ -143,13 +140,7 @@ class ProductController extends ActiveController
         if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }
-        // $model['productTracking'] = [];
-        // if ($model->type == Product::PRODUCT_TYPE_USED) {
-        //     if (!empty($model->productTracking)) {
-        //         $modelProductTracking = ProductTracking::find()->where(['parent_id' => $model->product_tracking_id])->orderBy('created_at')->all();
-        //         $model['productTracking'] = array_merge($model->productTracking->toArray(), $modelProductTracking->toArray());
-        //     }
-        // }
+
         return $model;
     }
 
@@ -342,7 +333,6 @@ class ProductController extends ActiveController
                 }
                 $modelsSearch = $query->groupBy(['search_text', 'user_id'])->all();
                 //$modelsSearch = $query->all();
-                //p(count($modelsSearch));
 
                 if (!empty($modelsSearch)) {
                     foreach ($modelsSearch as $key => $modelSearchRow) {
@@ -442,7 +432,6 @@ class ProductController extends ActiveController
                 $model->option_show_only = '0';
             }
 
-
             if (!empty($postData['is_top_selling'])) {
                 $model->is_top_selling = $postData['is_top_selling'];
             }
@@ -497,7 +486,6 @@ class ProductController extends ActiveController
                     $modelAddress = new UserAddress();
                     $modelAddress->user_id = Yii::$app->user->identity->id;
                     $addressData['UserAddress'] = $postData;
-                    //$modelAddress->type = (!empty($modelAddress->type) && in_array($modelAddress->type, [UserAddress::TYPE_BILLING, UserAddress::TYPE_SHIPPING, UserAddress::TYPE_SHOP])) ? $modelAddress->type : UserAddress::TYPE_SHOP;
                     $addressData['UserAddress']['type'] = UserAddress::TYPE_SHOP;
                     if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                         $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
@@ -516,7 +504,6 @@ class ProductController extends ActiveController
                         $modelAddress->user_id = Yii::$app->user->identity->id;
                         $addressData['UserAddress'] = $postData;
                         $addressData['UserAddress']['type'] = UserAddress::TYPE_SHOP;
-                        //$modelAddress->type = UserAddress::TYPE_SHOP;
                         if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                             $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
                             if ($modelAddress->save(false)) {
@@ -531,9 +518,8 @@ class ProductController extends ActiveController
                     $model->save(false);
                 } elseif (!empty($modelAddress) && empty($productData['Product']['is_profile_address'])) {
                     $addressData['UserAddress'] = $postData;
-                    $addressData['UserAddress']['type'] = UserAddress::TYPE_SHOP;
-                    //$modelAddress->type = UserAddress::TYPE_SHOP;
                     $modelAddress->type = UserAddress::TYPE_SHOP;
+                    $addressData['UserAddress']['type'] = UserAddress::TYPE_SHOP;
                     if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                         $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
                         if ($modelAddress->save(false)) {
@@ -626,24 +612,6 @@ class ProductController extends ActiveController
         $arrayImage = [];
         if ($model->load($productImage) && $model->validate()) {
             if (!empty($images)) {
-//                $deleteImages = ProductReceipt::find()->where(['product_id' => $productImage['ProductReceipt']['product_id']]);
-//                $modelsOldImg = $deleteImages->all();
-//                if (!empty($modelsOldImg)) {
-//                    foreach ($modelsOldImg as $key => $modelOldImgRow) {
-//                        if (!empty($modelOldImgRow) && $modelOldImgRow instanceof ProductReceipt) {
-//
-//                            if (!empty($modelOldImgRow->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $modelOldImgRow->file)) {
-//                                unlink(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $modelOldImgRow->file);
-//                            }
-//
-//                            if (!empty($modelOldImgRow->file) && file_exists(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $modelOldImgRow->file)) {
-//                                unlink(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $modelOldImgRow->file);
-//                            }
-//                        }
-//                    }
-//                    ProductReceipt::deleteAll(['product_id' => $productImage['ProductReceipt']['product_id']]);
-//                }
-
                 foreach ($images as $img) {
                     $modelImage = new ProductReceipt();
                     $uploadDirPath = Yii::getAlias('@productReceiptImageRelativePath');

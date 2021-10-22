@@ -107,15 +107,13 @@ class ProductCategoryController extends Controller
 
                 $ext = $img->extension;
                 $fileName = pathinfo($img->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $img->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
                 $actualImagePath = $uploadDirPath . '/' . $fileName;
                 $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                // p($actualImagePath);
-//                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+
                 Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 // Insert profile picture name into database
                 $model->image = $fileName;
@@ -179,19 +177,16 @@ class ProductCategoryController extends Controller
 
             $ext = $new_image->extension;
             $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-            //$fileName = $fileName . '_' . time() . '.' . $ext;
             $fileName = time() . rand(99999, 88888) . '.' . $ext;
             // Upload profile picture
             $new_image->saveAs($uploadDirPath . '/' . $fileName);
             // Create thumb of profile picture
             $actualImagePath = $uploadDirPath . '/' . $fileName;
             $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-            // p($actualImagePath);
-//            Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+
             Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
             // Insert profile picture name into database
             $model->image = $fileName;
-
         } else {
             $model->image = $old_image;
         }

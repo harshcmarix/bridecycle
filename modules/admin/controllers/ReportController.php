@@ -109,7 +109,6 @@ class ReportController extends Controller
             $rangeEndDate = $range[1];
         }
 
-        //
         if ($periodType == 'w' || $periodType == 'm') {
 
             $period = new \DatePeriod(new \DateTime($rangeStartDate), new \DateInterval('P1D'), new \DateTime($rangeEndDate));
@@ -197,7 +196,7 @@ class ReportController extends Controller
             $rangeStartDate = $range[0];
             $rangeEndDate = $range[1];
         }
-        //
+
         if ($periodType == 'w' || $periodType == 'm') {
             $period = new \DatePeriod(new \DateTime($rangeStartDate), new \DateInterval('P1D'), new \DateTime($rangeEndDate));
             $dates = [];
@@ -324,7 +323,7 @@ class ReportController extends Controller
             $rangeStartDate = $range[0];
             $rangeEndDate = $range[1];
         }
-        //
+
         if ($periodType == 'w' || $periodType == 'm') {
             $period = new \DatePeriod(new \DateTime($rangeStartDate), new \DateInterval('P1D'), new \DateTime($rangeEndDate));
             $dates = [];
@@ -445,7 +444,7 @@ class ReportController extends Controller
             $rangeStartDate = $range[0];
             $rangeEndDate = $range[1];
         }
-        //
+
         if ($periodType == 'w' || $periodType == 'm') {
             $period = new \DatePeriod(new \DateTime($rangeStartDate), new \DateInterval('P1D'), new \DateTime($rangeEndDate));
             $dates = [];
@@ -456,7 +455,6 @@ class ReportController extends Controller
                 $dates[] = $rangeEndDate;
             }
             foreach ($dates as $key => $date) {
-                //$sales[] = Order::find()->where(['between', 'updated_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
                 $customerCount = User::find()->where(['between', 'created_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['user_type' => User::USER_TYPE_NORMAL])->count();;
                 $customers[$date] = $customerCount;
                 $totalCustomers += $customerCount;
@@ -527,7 +525,7 @@ class ReportController extends Controller
             $rangeStartDate = $range[0];
             $rangeEndDate = $range[1];
         }
-        //
+
         if ($periodType == 'w' || $periodType == 'm') {
             $period = new \DatePeriod(new \DateTime($rangeStartDate), new \DateInterval('P1D'), new \DateTime($rangeEndDate));
             $dates = [];
@@ -537,9 +535,9 @@ class ReportController extends Controller
             if ($periodType == 'w') {
                 $dates[] = $rangeEndDate;
             }
-            // p($dates);
+
             foreach ($dates as $key => $date) {
-                //$sales[] = Order::find()->where(['between', 'updated_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
+
                 $customerCount = User::find()->where(['between', 'created_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['user_type' => User::USER_TYPE_NORMAL])->count();;
                 $customers[$date] = $customerCount;
                 $totalCustomers += $customerCount;

@@ -46,9 +46,6 @@ class ChatHistoryController extends ActiveController
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'create' => ['POST', 'OPTIONS'],
             'chat-detail' => ['POST', 'OPTIONS'],
-//            'delete' => ['POST', 'DELETE'],
-//            'update' => ['PUT', 'PATCH'],
-            //'view' => ['GET', 'HEAD', 'OPTIONS'],
         ];
     }
 
@@ -60,7 +57,6 @@ class ChatHistoryController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            //'only' => ['index', 'view', 'create', 'update', 'delete',],
             'only' => ['index', 'chat-detail', 'create',],
             'authMethods' => [
                 HttpBasicAuth::class,
@@ -94,10 +90,6 @@ class ChatHistoryController extends ActiveController
         $actions = parent::actions();
         unset($actions['index']);
         unset($actions['create']);
-//        unset($actions['update']);
-        //       unset($actions['view']);
-        //unset($actions['delete']);
-
         return $actions;
     }
 
@@ -116,6 +108,10 @@ class ChatHistoryController extends ActiveController
         return $model->search($requestParams);
     }
 
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     * @throws BadRequestHttpException
+     */
     public function actionChatDetail()
     {
         $post = Yii::$app->request->post();
@@ -160,10 +156,8 @@ class ChatHistoryController extends ActiveController
 
             // Messages mark as read
             $modelChatHistory = new ChatHistory();
-            //$unreadMessages = ChatReadUnreadMessage::find()->where(['from_id' => $fromOtherUserId, 'to_id' => $userModel->id, 'chat_type' => ChatReadUnreadMessage::CHAT_TYPE_SINGLE, 'is_read' => ChatReadUnreadMessage::IS_UNREAD])->all();
-            $unreadMessages = $modelChatHistory->getOneToOneUnreadNotificationRecord($fromOtherUserId, $userModel->id);
 
-            //$unreadMessageCount = ChatReadUnreadMessage::find()->where(['from_id' => $fromOtherUserId, 'to_id' => $userModel->id, 'chat_type' => ChatReadUnreadMessage::CHAT_TYPE_SINGLE, 'is_read' => ChatReadUnreadMessage::IS_UNREAD])->count();
+            $unreadMessages = $modelChatHistory->getOneToOneUnreadNotificationRecord($fromOtherUserId, $userModel->id);
             $unreadMessageCount = $modelChatHistory->getOneToOneUnreadNotificationCount($fromOtherUserId, $userModel->id);
 
             if (!empty($unreadMessages) && !empty($unreadMessageCount)) {
@@ -206,19 +200,6 @@ class ChatHistoryController extends ActiveController
     }
 
     /**
-     * Displays a single ChatHistory model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-//    public function actionView($id)
-//    {
-//        return $this->render('view', [
-//            'model' => $this->findModel($id),
-//        ]);
-//    }
-
-    /**
      * Creates a new ChatHistory model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -251,17 +232,16 @@ class ChatHistoryController extends ActiveController
                     }
                     $ext = $imgFile->extension;
                     $fileName = pathinfo(str_replace(" ", "", $imgFile->name), PATHINFO_FILENAME);
-                    //$fileName = $fileName . '_' . time() . '.' . $ext;
                     $fileName = time() . rand(99999, 88888) . '.' . $ext;
 
                     // Upload file
                     $imgFile->saveAs($uploadDirPath . '/' . $fileName);
-                    //chmod($uploadDirPath . '/' . $fileName, 0777);
+
                     // Create thumb of file
                     $actualImagePath = $uploadDirPath . '/' . $fileName;
                     $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
                     Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-                    //chmod($thumbImagePath, 0777);
+
                     // Insert file name into database
                     $model->message = $fileName;
                 }
@@ -278,7 +258,6 @@ class ChatHistoryController extends ActiveController
                             $userDevice = $userROW->userDevice;
 
                             // Insert into notification.
-                            //$notificationText = $userROW->first_name . " " . $userROW->last_name . " has sent new message";
                             $notificationText = $model->message;
                             $modelNotification = new Notification();
                             $modelNotification->owner_id = $model->from_user_id;
@@ -287,7 +266,6 @@ class ChatHistoryController extends ActiveController
                             $modelNotification->notification_text = $notificationText;
                             $modelNotification->action = "Add";
                             $modelNotification->ref_type = "chat_history";
-                            //$modelNotification->created_at = time();
                             $modelNotification->save(false);
 
                             $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -323,7 +301,6 @@ class ChatHistoryController extends ActiveController
 //                                    ->send();
 //                            }
 
-
                         }
                     }
                 }
@@ -344,40 +321,6 @@ class ChatHistoryController extends ActiveController
 
         return $model;
     }
-
-    /**
-     * Updates an existing ChatHistory model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-//    public function actionUpdate($id)
-//    {
-//        $model = $this->findModel($id);
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('update', [
-//            'model' => $model,
-//        ]);
-//    }
-
-    /**
-     * Deletes an existing ChatHistory model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-//    public function actionDelete($id)
-//    {
-//        $this->findModel($id)->delete();
-//
-//        return $this->redirect(['index']);
-//    }
 
     /**
      * Finds the ChatHistory model based on its primary key value.

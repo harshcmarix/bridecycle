@@ -54,7 +54,7 @@ class BlockUserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view', 'create', 'update', 'delete'],
+            'only' => ['index','view', 'create', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -87,7 +87,6 @@ class BlockUserController extends ActiveController
         $actions = parent::actions();
         unset($actions['index']);
         unset($actions['create']);
-        unset($actions['update']);
         unset($actions['view']);
         return $actions;
     }
@@ -137,26 +136,6 @@ class BlockUserController extends ActiveController
 
         return $model;
     }
-
-    /**
-     * Updates an existing BlockUser model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-//    public function actionUpdate($id)
-//    {
-//        $model = $this->findModel($id);
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('update', [
-//            'model' => $model,
-//        ]);
-//    }
 
     /**
      * Deletes an existing BlockUser model.

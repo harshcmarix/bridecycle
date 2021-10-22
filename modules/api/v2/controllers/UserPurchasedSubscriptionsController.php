@@ -78,7 +78,6 @@ class UserPurchasedSubscriptionsController extends ActiveController
     public function actions()
     {
         $actions = parent::actions();
-        //unset($actions['index']);
         unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);

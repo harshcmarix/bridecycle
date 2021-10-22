@@ -86,7 +86,6 @@ class UserAddressController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
-        //unset($actions['view']);
         return $actions;
     }
 
@@ -170,7 +169,6 @@ class UserAddressController extends ActiveController
                 }
             }
         }
-
         return $model;
     }
 
@@ -209,13 +207,12 @@ class UserAddressController extends ActiveController
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "user_id"');
         }
 
-        //$profileAddress = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
         $profileAddress = UserAddress::find()->where(['user_id' => $postData['user_id'], 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
         if (!$profileAddress instanceof UserAddress) {
             throw new NotFoundHttpException('Primary address doesn\'t exist.');
         }
         $profileAddress->is_primary_address = (string)$profileAddress->is_primary_address;
         return $profileAddress;
-
     }
+
 }

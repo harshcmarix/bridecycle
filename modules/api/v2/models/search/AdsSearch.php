@@ -112,6 +112,7 @@ class AdsSearch extends Ads
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
+        $query->orderBy(['ads.created_at' => SORT_DESC]);
         $query->groupBy('ads.id');
 
         $activeDataProvider = Yii::createObject([
@@ -128,7 +129,6 @@ class AdsSearch extends Ads
 
         $adsModelData = $activeDataProvider->getModels();
 
-        
 
         foreach ($adsModelData as $key => $value) {
             $adsImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

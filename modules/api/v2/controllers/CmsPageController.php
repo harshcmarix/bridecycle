@@ -21,7 +21,7 @@ use yii\filters\Cors;
  */
 class CmsPageController extends ActiveController
 {
-   /**
+    /**
      * @var string
      */
     public $modelClass = 'app\models\CmsPage';
@@ -31,7 +31,7 @@ class CmsPageController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\CmsPageSearch';
 
-       /**
+    /**
      * @return array
      */
     protected function verbs()
@@ -39,12 +39,13 @@ class CmsPageController extends ActiveController
         return [
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
-            'create' =>['POST','OPTIONS'],
+            'create' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
         ];
     }
-     /**
+
+    /**
      * @return array
      */
     public function behaviors()
@@ -52,7 +53,7 @@ class CmsPageController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view','create','update','delete'],
+            'only' => ['index', 'view', 'create', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -76,10 +77,11 @@ class CmsPageController extends ActiveController
 
         return $behaviors;
     }
-     /**
+
+    /**
      * @return array
      */
-     public function actions()
+    public function actions()
     {
         $actions = parent::actions();
         unset($actions['index']);
@@ -87,7 +89,7 @@ class CmsPageController extends ActiveController
         unset($actions['view']);
         unset($actions['create']);
         unset($actions['delete']);
-         
+
         return $actions;
     }
 
@@ -136,40 +138,6 @@ class CmsPageController extends ActiveController
             'model' => $model,
         ]);
     }
-
-    /**
-     * Updates an existing CmsPage model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    // public function actionUpdate($id)
-    // {
-    //     $model = $this->findModel($id);
-
-    //     if ($model->load(Yii::$app->request->post()) && $model->save()) {
-    //         return $this->redirect(['view', 'id' => $model->id]);
-    //     }
-
-    //     return $this->render('update', [
-    //         'model' => $model,
-    //     ]);
-    // }
-
-    /**
-     * Deletes an existing CmsPage model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    // public function actionDelete($id)
-    // {
-    //     $this->findModel($id)->delete();
-
-    //     return $this->redirect(['index']);
-    // }
 
     /**
      * Finds the CmsPage model based on its primary key value.

@@ -165,7 +165,7 @@ class SellerRatingController extends ActiveController
             $rating = $sumRatings / $totalRatings;
         }
         $ratings['averageRatings'] = number_format((float)$rating, 1, '.', '');
-        // $ratings['averageRatings'] = (int)$rating;
+
         return $ratings;
     }
 
@@ -179,21 +179,19 @@ class SellerRatingController extends ActiveController
         $model = new SellerRating();
         $postData = Yii::$app->request->post();
 
-
         if (empty($postData) || empty($postData['seller_id'])) {
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "seller_id"');
         }
 
         $sellerRating['SellerRating'] = $postData;
         $sellerRating['SellerRating']['user_id'] = Yii::$app->user->identity->id;
-        //$sellerRating['SellerRating']['status'] = ProductRating::STATUS_PENDING;
+
         $alreadyExist = SellerRating::find()->where(['seller_id' => $sellerRating['SellerRating']['seller_id'], 'user_id' => $sellerRating['SellerRating']['user_id']])->all();
         if (!empty($alreadyExist)) {
             throw new ForbiddenHttpException('You have already reviewed this seller');
         }
         if ($model->load($sellerRating) && $model->validate()) {
             $model->save();
-
 
             // Send Push notification start
             $getUsers[] = $model->seller;
@@ -213,7 +211,6 @@ class SellerRatingController extends ActiveController
                             $modelNotification->notification_text = $notificationText;
                             $modelNotification->action = "Add";
                             $modelNotification->ref_type = "seller_ratings"; // For seller rate review
-                            //$modelNotification->created_at = time();
                             $modelNotification->save(false);
 
                             $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -305,4 +302,5 @@ class SellerRatingController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

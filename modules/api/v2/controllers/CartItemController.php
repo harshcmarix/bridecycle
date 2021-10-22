@@ -50,7 +50,6 @@ class CartItemController extends ActiveController
             'check-quantity-for-checkout' => ['POST', 'OPTIONS'],
             'checkout' => ['POST', 'OPTIONS'],
             'add-product-to-checkout' => ['POST', 'OPTIONS'],
-
         ];
     }
 
@@ -141,7 +140,6 @@ class CartItemController extends ActiveController
         $cartIteam['CartItem'] = $postData;
         $cartIteam['CartItem']['user_id'] = Yii::$app->user->identity->id;
 
-
         if ($model->load($cartIteam) && $model->validate()) {
 
             $cartIteamAlreadyAdded = CartItem::find()->where(['product_id' => $model->product_id, 'user_id' => $model->user_id, 'is_checkout' => CartItem::IS_CHECKOUT_NO, 'color' => $model->color, 'size' => $model->size])->one();
@@ -185,14 +183,6 @@ class CartItemController extends ActiveController
         return $model;
     }
 
-//    public function actionDelete($id)
-//    {
-//        $model = CartItem::findOne($id);
-//        if (!$model instanceof CartItem) {
-//            throw new NotFoundHttpException('Cart item doesn\'t exist.');
-//        }
-//    }
-
     /**
      * @return array
      * @throws BadRequestHttpException
@@ -233,6 +223,14 @@ class CartItemController extends ActiveController
         return $data;
     }
 
+    /**
+     * @return Order|OrderPayment|UserAddress
+     * @throws BadRequestHttpException
+     * @throws HttpException
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionCheckout()
     {
         $post = Yii::$app->request->post();
@@ -291,14 +289,12 @@ class CartItemController extends ActiveController
         }
 
         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
-        //p($modelCartItems);
+
         $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
 
         $cartTotalShipping = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('shipping_cost');
 
-
         if (empty($cartTotal) && empty($cartTotalShipping)) {
-            //$cartTotal = OrderItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->sum('price');
             $cartTotal = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('price');
             $cartTotalShipping = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('shipping_cost');
         }
@@ -322,10 +318,6 @@ class CartItemController extends ActiveController
                     $modelOrderItem->price = $modelCartItemRow->price;
                     $modelOrderItem->shipping_cost = $modelCartItemRow->shipping_cost;
                     $modelOrderItem->save(false);
-                    // if ($modelOrderItem->save(false)) {
-                    //     // Delete from cart
-                    //     $modelCartItemRow->delete();
-                    // }
                 }
             }
 
@@ -431,7 +423,6 @@ class CartItemController extends ActiveController
                                                 $modelNotification->notification_text = $notificationText;
                                                 $modelNotification->action = "Add";
                                                 $modelNotification->ref_type = "Order";
-                                                //$modelNotification->created_at = time();
                                                 $modelNotification->save(false);
 
                                                 $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -614,7 +605,6 @@ class CartItemController extends ActiveController
         } catch (PayPalConnectionException $pce) {
 //            // Don't spit out errors or use "exit" like this in production code
 //            return json_decode($pce->getData());
-
             //echo $pce->getCode();
             //echo $pce->getData();
             //die($pce);
@@ -696,7 +686,6 @@ class CartItemController extends ActiveController
         $fileName = "order-" . time() . "-" . $modelOrder->id . ".pdf";
 
         file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName, $output);
-        $file1 = Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName . ".pdf";
         $modelOrderItem->invoice = $fileName;
         $modelOrderItem->save(false);
 
@@ -716,7 +705,6 @@ class CartItemController extends ActiveController
 
         $productIds = explode(",", $post['product_id']);
 
-
         $modelProducts = Product::find()->where(['IN', 'id', $productIds])->all();
         $productSold = 0;
         if (!empty($modelProducts)) {
@@ -729,7 +717,6 @@ class CartItemController extends ActiveController
         if ($productSold > 0) {
             throw new HttpException(403,$productSold.' product(s) are out of stock from you have selected product.');
         }
-
 
         $user_id = Yii::$app->user->identity->id;
         if (!empty($productIds)) {
@@ -769,4 +756,5 @@ class CartItemController extends ActiveController
         }
         return $modelCartItems;
     }
+
 }

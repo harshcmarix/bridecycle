@@ -241,6 +241,9 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * @return string|void
+     */
     public function actionError()
     {
         $this->layout = 'error';
@@ -250,6 +253,10 @@ class SiteController extends Controller
         }
     }
 
+    /**
+     * @param $my_year
+     * @return bool
+     */
     public function yearCheckIsLeap($my_year)
     {
         $result = false;
@@ -265,6 +272,9 @@ class SiteController extends Controller
         return $result;
     }
 
+    /**
+     * @return false|string
+     */
     public function actionCurrentYearOrders()
     {
         $isLeapYear = $this->yearCheckIsLeap(date('Y'));
@@ -307,27 +317,11 @@ class SiteController extends Controller
         ];
 
         return json_encode((array)$monthWiseOrders);
-        /* Year, Month, Week, Day wise data start */
-//        $currentYearOrders = Order::find()->where('YEAR(created_at) = YEAR(NOW())')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
-//        $currentMonthOrders = Order::find()->where('MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
-//        $currentWeekOrders = Order::find()->where('WEEK(created_at) = WEEK(NOW())')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
-//        $currentDayOrders = Order::find()->where('DATE(created_at) = CURDATE()')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
-//
-//        $minCurrentYearOrders = 0;
-//        $maxCurrentYearOrders = $currentYearOrders;
-//
-//        $currentYearIncome = Order::find()->where('YEAR(created_at) = YEAR(NOW())')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
-//        $currentMonthIncome = Order::find()->where('MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
-//        $currentWeekIncome = Order::find()->where('WEEK(created_at) = WEEK(NOW())')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
-//        $currentDayIncome = Order::find()->where('DATE(created_at) = CURDATE()')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
-//
-//        $data = [
-//            'currentYearOrders' => $currentYearOrders
-//        ];
-//        return $this->render('index', $data);
-        /* Year, Month, Week, Day wise data end */
     }
 
+    /**
+     * @return false|string
+     */
     public function actionCurrentMonthOrders()
     {
         $currentMonthOrders = [];
@@ -344,6 +338,9 @@ class SiteController extends Controller
         return json_encode($currentMonthOrders);
     }
 
+    /**
+     * @return false|string
+     */
     public function actionCurrentWeekOrders()
     {
         $currentWeekOrders = [];
@@ -363,6 +360,9 @@ class SiteController extends Controller
         return json_encode($currentWeekOrders);
     }
 
+    /**
+     * @return false|string
+     */
     public function actionCurrentDayOrders()
     {
         $todayOrders = [];
@@ -374,7 +374,9 @@ class SiteController extends Controller
         return json_encode($todayOrders);
     }
 
-
+    /**
+     * @return false|string
+     */
     public function actionCurrentYearIncome()
     {
         $isLeapYear = $this->yearCheckIsLeap(date('Y'));
@@ -419,6 +421,9 @@ class SiteController extends Controller
         return json_encode((array)$monthWiseIncome);
     }
 
+    /**
+     * @return false|string
+     */
     public function actionCurrentMonthIncome()
     {
         $currentMonthIncome = [];
@@ -435,6 +440,9 @@ class SiteController extends Controller
         return json_encode($currentMonthIncome);
     }
 
+    /**
+     * @return false|string
+     */
     public function actionCurrentWeekIncome()
     {
         $currentWeekIncome = [];
@@ -454,6 +462,9 @@ class SiteController extends Controller
         return json_encode($currentWeekIncome);
     }
 
+    /**
+     * @return false|string
+     */
     public function actionCurrentDayIncome()
     {
         $todayIncome = [];

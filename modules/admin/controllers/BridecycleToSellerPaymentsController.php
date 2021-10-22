@@ -111,7 +111,6 @@ class BridecycleToSellerPaymentsController extends Controller
                     Yii::$app->mailer->compose('admin/BCtoSellerPaymentDone-html', ['sellerModel' => $sellerModel, 'productModel' => $productModel, 'model' => $model])
                         ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
                         ->setTo($sellerModel->email)
-                        //->setTo("harshil.cmarix@gmail.com")
                         ->setSubject('Bride Cycle Payment!')
                         ->send();
                 }

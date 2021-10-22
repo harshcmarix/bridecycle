@@ -44,5 +44,4 @@ if (YII_ENV_DEV) {
         'class' => 'yii\gii\Module',
     ];
 }
-
 return $config;

@@ -146,4 +146,5 @@ class SearchHistoryController extends ActiveController
             }
         }
     }
+
 }

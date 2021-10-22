@@ -65,7 +65,6 @@ class UserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            //'only' => ['index', 'view', 'update', 'logout', 'change-password', 'update-profile-picture', 'delete-user-address', 'enter-size-information'],
             'only' => ['index', 'view', 'update', 'change-password', 'update-profile-picture', 'delete-user-address', 'enter-size-information'],
             'authMethods' => [
                 HttpBasicAuth::class,
@@ -187,7 +186,6 @@ class UserController extends ActiveController
 
                 $ext = $model->profile_picture->extension;
                 $fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);
@@ -247,7 +245,6 @@ class UserController extends ActiveController
 
                             $logoExt = $shopDetailModel->shop_logo->extension;
                             $shopLogoFileName = pathinfo($shopDetailModel->shop_logo->name, PATHINFO_FILENAME);
-                            //$shopLogoFileName = $shopLogoFileName . '_' . time() . '.' . $logoExt;
                             $shopLogoFileName = time() . rand(99999, 88888) . '.' . $logoExt;
                             // Upload shop logo
                             $shopDetailModel->shop_logo->saveAs($uploadDirPathLogo . '/' . $shopLogoFileName);
@@ -275,7 +272,6 @@ class UserController extends ActiveController
 
                             $shopCoverPictureExt = $shopDetailModel->shop_cover_picture->extension;
                             $shopCoverPictureFileName = pathinfo($shopDetailModel->shop_cover_picture->name, PATHINFO_FILENAME);
-                            //$shopCoverPictureFileName = $shopCoverPictureFileName . '_' . time() . '.' . $shopCoverPictureExt;
                             $shopCoverPictureFileName = time() . rand(99999, 88888) . '.' . $shopCoverPictureExt;
                             // Upload shop cover picture
                             $shopDetailModel->shop_cover_picture->saveAs($uploadDirPathCoverPicture . '/' . $shopCoverPictureFileName);
@@ -306,7 +302,6 @@ class UserController extends ActiveController
                 }
                 $model->profile_picture = $showProfilePicture;
             }
-
         }
 
         return $model;
@@ -320,14 +315,12 @@ class UserController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        //$model = User::find()->where(['id' => $id, 'is_shop_owner' => User::SHOP_OWNER_NO])->one();
         $model = User::find()->where(['id' => $id])->one();
         if (!$model instanceof User) {
             throw new NotFoundHttpException('User doesn\'t exist.');
         }
         $postData = \Yii::$app->request->post();
         $data['User'] = $postData;
-        $data1['UserAddress'] = $postData;
         $model->scenario = User::SCENARIO_USER_UPDATE;
         if ($model->load($data) && $model->validate()) {
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
@@ -462,7 +455,6 @@ class UserController extends ActiveController
                 }
                 $ext = $model->profile_picture->extension;
                 $fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);
@@ -532,9 +524,7 @@ class UserController extends ActiveController
             $modelPostData = User::find()->where(['facebook_id' => $postData['facebook_id']])->one();
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;
-                //$data['Login']['password'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
-                //$model->password = $modelPostData->password_hash;
             } else {
                 throw new NotFoundHttpException('User doesn\'t exist.');
             }
@@ -548,9 +538,7 @@ class UserController extends ActiveController
             //p($modelPostData);
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;
-                //$data['Login']['password'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
-                // $model->password = $modelPostData->password_hash;
             } else {
                 throw new NotFoundHttpException('User doesn\'t exist.');
             }
@@ -561,12 +549,9 @@ class UserController extends ActiveController
                 throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "google_id"');
             }
             $modelPostData = User::find()->where(['google_id' => $postData['google_id']])->one();
-            //p($modelPostData);
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;
-                //$data['Login']['password'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
-                // $model->password = $modelPostData->password_hash;
             } else {
                 throw new NotFoundHttpException('User doesn\'t exist.');
             }
@@ -703,7 +688,7 @@ class UserController extends ActiveController
         if (empty($postData) || empty($postData['tmp_password'])) {
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "tmp_password"');
         }
-        // $model = User::find()->where(['temporary_password' => $postData['tmp_password']])->one();
+
         $model = User::find()->where(['temporary_password' => $postData['tmp_password'], 'user_type' => User::USER_TYPE_NORMAL])->one();
         if (!empty($model)) {
             $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
@@ -769,7 +754,6 @@ class UserController extends ActiveController
      */
     public function actionVerifyProfileVerificationCode()
     {
-        // p('jhgjhgg');
         $postData = \Yii::$app->request->post();
         if (empty($postData) || empty($postData['verification_code'])) {
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "verification_code"');
@@ -782,7 +766,6 @@ class UserController extends ActiveController
         }
 
         if (!empty($model) && $model instanceof User) {
-            // $model->verification_code = "";
             $model->is_verify_user = User::IS_VERIFY_USER_YES;
             if ($model->is_shop_owner == 1 || $model->is_shop_owner == '1') {
                 $addedAddress = UserAddress::find()->where(['is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_NO, 'user_id' => $model->id])->all();
@@ -855,7 +838,6 @@ class UserController extends ActiveController
         $model->scenario = User::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER;
         $dataPost['User'] = $postData;
 
-
         if ($model->load($dataPost) && $model->validate()) {
             if ($model->save()) {
                 $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
@@ -903,4 +885,5 @@ class UserController extends ActiveController
         }
         return $model;
     }
+
 }

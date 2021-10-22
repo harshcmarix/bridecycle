@@ -10,11 +10,9 @@ class AdminAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        //'theme/admin/css/custom.css',
         '../theme/admin/css/devloper_style.css',
     ];
     public $js = [
-        //'theme/admin/js/custom.js',
     ];
     public $depends = [
         'rmrevin\yii\fontawesome\AssetBundle',
@@ -24,7 +22,6 @@ class AdminAsset extends AssetBundle
     ];
 
     public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
-
 
     public function init()
     {

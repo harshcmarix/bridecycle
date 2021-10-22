@@ -65,24 +65,6 @@ class ProductRatingController extends Controller
     }
 
     /**
-     * Creates a new ProductRating model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-//    public function actionCreate()
-//    {
-//        $model = new ProductRating();
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('create', [
-//            'model' => $model,
-//        ]);
-//    }
-
-    /**
      * Updates an existing ProductRating model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id

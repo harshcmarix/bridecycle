@@ -111,7 +111,6 @@ class ProductRatingController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        //p($requestParams);
         return $model->search($requestParams);
     }
 
@@ -167,7 +166,7 @@ class ProductRatingController extends ActiveController
             $rating = $sumRatings / $totalRatings;
         }
         $ratings['averageRatings'] = number_format((float)$rating, 1, '.', '');
-        // $ratings['averageRatings'] = (int)$rating;
+
         return $ratings;
     }
 
@@ -209,7 +208,6 @@ class ProductRatingController extends ActiveController
                             $modelNotification->notification_text = $notificationText;
                             $modelNotification->action = "Add";
                             $modelNotification->ref_type = "product_ratings"; // For Product rate review
-                            //$modelNotification->created_at = time();
                             $modelNotification->save(false);
 
                             $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -251,6 +249,5 @@ class ProductRatingController extends ActiveController
 
         return $model;
     }
-
 
 }

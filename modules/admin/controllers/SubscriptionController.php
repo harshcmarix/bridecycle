@@ -96,7 +96,6 @@ class SubscriptionController extends Controller
      */
     public function actionUpdate($id)
     {
-        // p(Yii::$app->request->post());
         $model = $this->findModel($id);
         $subscription_status = Subscription::SUBSCRIPTION_STATUS_ARRAY;
         if ($model->load(Yii::$app->request->post())) {

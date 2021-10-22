@@ -101,20 +101,6 @@ class UserBankDetailsController extends ActiveController
         return $model->search($requestParams,Yii::$app->user->identity->id);
     }
 
-
-    /**
-     * Displays a single UserBankDetails model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-//    public function actionView($id)
-//    {
-//        return $this->render('view', [
-//            'model' => $this->findModel($id),
-//        ]);
-//    }
-
     /**
      * Creates a new UserBankDetails model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -183,7 +169,6 @@ class UserBankDetailsController extends ActiveController
         }
 
         $model->delete();
-        //return $model;
     }
 
     /**
@@ -202,4 +187,5 @@ class UserBankDetailsController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

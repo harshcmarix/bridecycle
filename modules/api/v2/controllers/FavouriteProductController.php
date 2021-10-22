@@ -87,6 +87,7 @@ class FavouriteProductController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
+        //unset($actions['index-list']);
         unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);
@@ -121,7 +122,7 @@ class FavouriteProductController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        return $model->search($requestParams);
+        return $model->search($requestParams, Yii::$app->user->identity->id);
     }
 
     /**

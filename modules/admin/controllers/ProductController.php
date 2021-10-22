@@ -128,7 +128,6 @@ class ProductController extends Controller
         if (!empty($postData['is_admin_favourite'])) {
             $model->is_admin_favourite = $postData['is_admin_favourite'];
         }
-        
 
         $model->user_id = Yii::$app->user->identity->id;
 
@@ -160,7 +159,6 @@ class ProductController extends Controller
                                 $modelPrice->product_id = $model->id;
                                 $modelPrice->save(false);
                             }
-
                         }
                     }
                 }
@@ -190,7 +188,6 @@ class ProductController extends Controller
                         $actualImagePath = $uploadDirPath . '/' . $fileName;
                         $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
 
-//                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         // Insert product picture name into database
 
@@ -268,7 +265,6 @@ class ProductController extends Controller
     {
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
-        //$model->receipt = $model->productReceipt;
 
         $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
@@ -284,9 +280,6 @@ class ProductController extends Controller
 
         $postData = Yii::$app->request->post('Product');
 
-//        if (!empty($postData['option_color'])) {
-//            $postData['option_color'] = implode(",", $postData['option_color']);
-//        }
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
             if (!empty($postData['option_show_only'])) {
@@ -342,11 +335,9 @@ class ProductController extends Controller
                                 $modelPrice->product_id = $model->id;
                                 $modelPrice->save(false);
                             }
-
                         }
                     }
                 }
-
 
                 if (!empty($images)) {
 
@@ -363,7 +354,6 @@ class ProductController extends Controller
                                 if (!empty($oldImageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $oldImageRow->name)) {
                                     unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $oldImageRow->name);
                                 }
-
                                 $oldImageRow->delete();
                             }
                         }
@@ -393,7 +383,6 @@ class ProductController extends Controller
                         $actualImagePath = $uploadDirPath . '/' . $fileName;
                         $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
 
-//                        Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         // Insert product picture name into database
 
@@ -431,7 +420,6 @@ class ProductController extends Controller
 
                         chmod($actualImagePathReceipt, 0777);
 
-//                        Image::thumbnail($actualImagePathReceipt, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         Image::getImagine()->open($actualImagePathReceipt)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                         chmod($thumbImagePathReceipt, 0777);
 
@@ -444,7 +432,6 @@ class ProductController extends Controller
             }
 
             \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'Product updated successfully.');
-            //return $this->redirect(['view', 'id' => $model->id]);
             return $this->redirect(['index']);
         }
 
@@ -521,7 +508,6 @@ class ProductController extends Controller
             }
         }
         return ['success' => true, 'dataList' => $subCategoryList];
-
     }
 
     /**
@@ -635,7 +621,6 @@ class ProductController extends Controller
 
         if (!empty($models)) {
             foreach ($models as $model) {
-                // $model->delete();
                 if (!empty($model) && $model instanceof Product) {
                     if (!empty($model->productImages)) {
                         foreach ($model->productImages as $key => $imageRow) {
@@ -667,9 +652,7 @@ class ProductController extends Controller
                                 }
                             }
                         }
-
                     }
-
                     $model->delete();
                 }
             }
@@ -677,11 +660,7 @@ class ProductController extends Controller
         } else {
             \Yii::$app->session->setFlash(\kartik\growl\Growl::TYPE_DANGER, 'Please try again!');
         }
-
         $respondse = ['success' => true];
         return json_encode($respondse);
-
     }
-
-
 }

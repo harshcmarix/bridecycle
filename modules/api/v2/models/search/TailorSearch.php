@@ -113,7 +113,6 @@ class TailorSearch extends Tailor
             if (!empty($requestParams['latitude']) && !empty($requestParams['longitude'])) {
                 $lat = $requestParams['latitude'];
                 $long = $requestParams['longitude'];
-                //$SelectString = "(3956 * 2 * ASIN(SQRT( POWER(SIN(( $lat - latitude) *  pi()/180 / 2), 2) +COS( $lat * pi()/180) * COS(latitude * pi()/180) * POWER(SIN(( $long - longitude) * pi()/180 / 2), 2) ))) as distance";
             } else if (!empty($requestParams['address'])) {
                 $modelTailor = Tailor::find()->where('address LIKE "%' . $requestParams['address'] . '%"')->one();
                 $lat = !empty($modelTailor->latitude) ? $modelTailor->latitude : Yii::$app->user->identity->latitude;
@@ -174,7 +173,6 @@ class TailorSearch extends Tailor
             if (!empty($tailorModels[$key]['voucher']) && file_exists(Yii::getAlias('@tailorVoucherImageRelativePath') . '/' . $value->voucher)) {
                 $voucherPicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@tailorVoucherImageAbsolutePath') . '/' . $value->voucher;
             }
-
 
             $tailorModels[$key]['zip_code'] = (string)$value->zip_code;
             $tailorModels[$key]['shop_image'] = $profilePicture;

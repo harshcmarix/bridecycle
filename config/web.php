@@ -91,40 +91,14 @@ $config = [
                 ],
             ],
         ],
-
-//        'mailer' => [
-//            'class' => 'yii\swiftmailer\Mailer',
-//            'useFileTransport' => false,
-//            'transport' => [
-//                'class' => 'Swift_SmtpTransport',
-//                'host' => 'smtp.gmail.com',
-//                'username' => 'harshil.cmarix@gmail.com', // Harshil account
-//                'password' => 'harshil#8989#?',
-//
-//                'port' => 587,
-//                'encryption' => 'tls',
-//                'streamOptions' => [
-//                    'ssl' => [
-//                        'allow_self_signed' => true,
-//                        'verify_peer' => false,
-//                        'verify_peer_name' => false,
-//                    ],
-//                ]
-//            ],
-//        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => false,
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.gmail.com',
-//                'username' => 'smtp.ctpl@gmail.com',
                 'username' => 'sugney.cmarix@gmail.com',
-//                'password' => 'ctpl@dev',
-//                'password' => 'awqowsukxhhsncep',
                 'password' => 'sugneygmail%%3838?',
-
-
                 'port' => '587',
                 'encryption' => 'tls',
                 'streamOptions' => [
@@ -142,17 +116,9 @@ $config = [
             //'apiKey' => 'AAAApcG5M1M:APA91bFB1x-W2c0hTxn1HpQH9U1ROkK9-3-ieG-NlBm852LIn0pGiaFi0FUsZM09GzbbQCCq3vGCXB8lHEjW0x-jh-pSEMnThSuXMpszfBoX52zoIVJ6LOQFy6RxwHS3n56wfXYhf87w', // Get it from https://console.firebase.google.com/project/bridecycle-test/settings/cloudmessaging
             'apiKey' => 'AAAApcG5M1M:APA91bFB1x-W2c0hTxn1HpQH9U1ROkK9-3-ieG-NlBm852LIn0pGiaFi0FUsZM09GzbbQCCq3vGCXB8lHEjW0x-jh-pSEMnThSuXMpszfBoX52zoIVJ6LOQFy6RxwHS3n56wfXYhf87w', // Get it from https://console.firebase.google.com/project/bride-cycle-cf380/settings/cloudmessaging/ios:com.bridecycle.ios
         ],
-//        'log' => [
-//            'traceLevel' => YII_DEBUG ? 3 : 0,
-//            'targets' => [
-//                [
-//                    'class' => 'yii\log\FileTarget',
-//                    'levels' => ['error', 'warning'],
-//                ],
-//            ],
-//        ],
         // Logging
         'log' => [
+            //'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 // writes to php-fpm output stream
                 [

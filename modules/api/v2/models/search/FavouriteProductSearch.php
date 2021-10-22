@@ -19,6 +19,7 @@ class FavouriteProductSearch extends FavouriteProduct
      * @var $hiddenFields Array of hidden fields which not needed in APIs
      */
     protected $hiddenFields = [];
+
     /**
      * {@inheritdoc}
      */
@@ -46,9 +47,9 @@ class FavouriteProductSearch extends FavouriteProduct
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = null)
     {
-      
+
         /* ########## Prepare Request Filter Start ######### */
         if (!empty($requestParams['filter'])) {
             foreach ($requestParams['filter'] as $key => $val) {
@@ -98,12 +99,15 @@ class FavouriteProductSearch extends FavouriteProduct
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+        if (!empty($userId)) {
+            $query->where(['user_id' => $userId]);
+        }
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id','user_id','product_id' ];
+            $select = ['id', 'user_id', 'product_id'];
         }
 
         $query->select($select);
@@ -112,8 +116,9 @@ class FavouriteProductSearch extends FavouriteProduct
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
+        $query->orderBy(['favourite_products.id' => SORT_DESC]);
         $query->groupBy('favourite_products.id');
-        
+
         return Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,

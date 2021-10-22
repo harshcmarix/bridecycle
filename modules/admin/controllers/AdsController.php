@@ -116,14 +116,12 @@ class AdsController extends Controller
 
                 $ext = $ad_image->extension;
                 $fileName = pathinfo($ad_image->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $ad_image->saveAs($uploadDirPath . '/' . $fileName);
                 // Create thumb of profile picture
                 $actualImagePath = $uploadDirPath . '/' . $fileName;
                 $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-//                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 // Insert profile picture name into database
                 $model->image = $fileName;
@@ -195,7 +193,6 @@ class AdsController extends Controller
 
                 $ext = $new_image->extension;
                 $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $new_image->saveAs($uploadDirPath . '/' . $fileName);
@@ -203,11 +200,9 @@ class AdsController extends Controller
                 $actualImagePath = $uploadDirPath . '/' . $fileName;
                 $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
 
-//                Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 // Insert profile picture name into database
                 $model->image = $fileName;
-
             } else {
                 $model->image = $old_image;
             }
@@ -298,7 +293,6 @@ class AdsController extends Controller
             return Json::encode(['success' => 'image successfully deleted']);
         }
     }
-
 
 //
 //

@@ -48,7 +48,6 @@ class UserSubscriptionController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\UserSubscriptionSearch';
 
-
     /**
      * @return \string[][]
      */
@@ -104,7 +103,6 @@ class UserSubscriptionController extends ActiveController
     public function actions()
     {
         $actions = parent::actions();
-        //unset($actions['index']);
         unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);
@@ -152,10 +150,9 @@ class UserSubscriptionController extends ActiveController
 
         if ($model->load($userSubscriptionData) && $model->validate()) {
 
-
             $model->user_id = Yii::$app->user->identity->id;
             $modelAddress = (!empty($model->user) && !empty($model->user->userAddresses) && !empty($model->user->userAddresses[0])) ? $model->user->userAddresses[0] : '';
-            // p($modelAddress);
+
             if ($model->save()) {
                 // Paypal payment
                 $subscription_package_id = $model->subscription_id;
@@ -206,7 +203,6 @@ class UserSubscriptionController extends ActiveController
                     $model->save(false);
                 }
             }
-
         }
 
         return $model;
@@ -247,13 +243,21 @@ class UserSubscriptionController extends ActiveController
         return $this->redirect(['index']);
     }
 
-
+    /**
+     * @param null $is_success
+     * @param null $subscription_package_id
+     * @param null $owner_id
+     * @param null $user_subdcription_id
+     */
     public function actionPaypalPaymentResponse($is_success = null, $subscription_package_id = null, $owner_id = null, $user_subdcription_id = null)
     {
         p($is_success);
     }
 
-
+    /**
+     * @param $request
+     * @return \Exception|Payment|PayPalConnectionException
+     */
     public function makeSubscriptionPayment($request)
     {
         $apiContext = new \PayPal\Rest\ApiContext(
@@ -324,10 +328,6 @@ class UserSubscriptionController extends ActiveController
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
 
-//        $payer = new Payer();
-//        $payer->setPaymentMethod('credit_card');
-//        $payer->setFundingInstruments(array($fi));
-
         // Specify the payment amount.
         $amountDetails = new Details();
         $amountDetails->setSubtotal($subTotal);
@@ -375,8 +375,6 @@ class UserSubscriptionController extends ActiveController
             //die($pce);
             return $pce;
         }
-
-
     }
 
     /**

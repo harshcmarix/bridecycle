@@ -140,7 +140,6 @@ class BrandController extends ActiveController
 
         $brand_image = UploadedFile::getInstanceByName('image');
         $model->image = $brand_image;
-        //$model->scenario = Brand::SCENARIO_CREATE_API;
         if ($model->load($brandData) && $model->validate()) {
 
             if (!empty($brand_image)) {
@@ -160,7 +159,6 @@ class BrandController extends ActiveController
 
                 $ext = $brand_image->extension;
                 $fileName = pathinfo($brand_image->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
 
                 // Upload profile picture
@@ -168,7 +166,7 @@ class BrandController extends ActiveController
                 // Create thumb of profile picture
                 $actualImagePath = $uploadDirPath . '/' . $fileName;
                 $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-                // p($actualImagePath);
+
                 Image::thumbnail($actualImagePath, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
                 // Insert profile picture name into database
                 $model->image = $fileName;
@@ -252,7 +250,6 @@ class BrandController extends ActiveController
 
             $ext = $image->extension;
             $fileName = pathinfo($image->name, PATHINFO_FILENAME);
-            //$fileName = $fileName . '_' . time() . '.' . $ext;
             $fileName = time() . rand(99999, 88888) . '.' . $ext;
             $image->saveAs($uploadDirPath . '/' . $fileName);
             $actualImagePath = $uploadDirPath . '/' . $fileName;

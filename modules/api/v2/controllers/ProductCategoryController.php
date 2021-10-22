@@ -129,12 +129,12 @@ class ProductCategoryController extends ActiveController
             $moldelsSubcategory = $model->children;
             if (!empty($moldelsSubcategory)) {
                 foreach ($moldelsSubcategory as $key => $modelRow) {
-                    if($modelRow->status == 2){
-                    if (!empty($modelRow) && $modelRow instanceof ProductCategory && !empty($modelRow->image) && file_exists(Yii::getAlias('@productCategoryImageRelativePath') . '/' . $modelRow->image)) {
-                        $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageAbsolutePath') . '/' . $modelRow->image;
-                    } else {
-                        $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                    }                    
+                    if ($modelRow->status == 2) {
+                        if (!empty($modelRow) && $modelRow instanceof ProductCategory && !empty($modelRow->image) && file_exists(Yii::getAlias('@productCategoryImageRelativePath') . '/' . $modelRow->image)) {
+                            $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageAbsolutePath') . '/' . $modelRow->image;
+                        } else {
+                            $modelRow->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        }
                     }
                 }
             }
@@ -193,7 +193,6 @@ class ProductCategoryController extends ActiveController
 
                 $ext = $image->extension;
                 $fileName = pathinfo($image->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $image->saveAs($uploadDirPath . '/' . $fileName);
@@ -232,7 +231,6 @@ class ProductCategoryController extends ActiveController
 
         $postData = Yii::$app->request->post();
         $productCategoryData['ProductCategory'] = $postData;
-        // $model->scenario = ProductCategory::SCENARIO_CREATE;
 
         if ($model->load($productCategoryData) && $model->validate()) {
             $model->save();
@@ -286,7 +284,6 @@ class ProductCategoryController extends ActiveController
 
                 $ext = $image->extension;
                 $fileName = pathinfo($image->name, PATHINFO_FILENAME);
-                //$fileName = $fileName . '_' . time() . '.' . $ext;
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $image->saveAs($uploadDirPath . '/' . $fileName);
@@ -330,7 +327,6 @@ class ProductCategoryController extends ActiveController
      */
     public function actionDelete($id)
     {
-
         $model = ProductCategory::findOne($id);
         if (!$model instanceof ProductCategory) {
             throw new NotFoundHttpException('Product category doesn\'t exist.');

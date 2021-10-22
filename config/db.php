@@ -33,5 +33,4 @@ $config['dsn'] = 'mysql:host=203.109.113.157;dbname=bridecycle';
 $config['username'] = 'bridecycle';
 $config['password'] = 'bridecycle@#!2021';
 
-
 return $config;

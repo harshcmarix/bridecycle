@@ -75,7 +75,6 @@ class AbuseReportController extends ActiveController
                 'Access-Control-Expose-Headers' => ['X-Pagination-Per-Page', 'X-Pagination-Current-Page', 'X-Pagination-Total-Count ', 'X-Pagination-Page-Count'],
             ],
         ];
-
         return $behaviors;
     }
 
@@ -140,26 +139,6 @@ class AbuseReportController extends ActiveController
         return $model;
     }
 
-//    /**
-//     * Updates an existing AbuseReport model.
-//     * If update is successful, the browser will be redirected to the 'view' page.
-//     * @param integer $id
-//     * @return mixed
-//     * @throws NotFoundHttpException if the model cannot be found
-//     */
-//    public function actionUpdate($id)
-//    {
-//        $model = $this->findModel($id);
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('update', [
-//            'model' => $model,
-//        ]);
-//    }
-
     /**
      * Deletes an existing AbuseReport model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -188,7 +167,6 @@ class AbuseReportController extends ActiveController
         if (($model = AbuseReport::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
