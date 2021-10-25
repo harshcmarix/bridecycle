@@ -84,6 +84,18 @@ $this->params['breadcrumbs'][] = 'View User';
                         }
                     ],
                     [
+                        'attribute' => "user_status",
+                        'value' => function ($model) {
+                            $userStatus = "-";
+                            if ($model->user_status == \app\modules\admin\models\User::USER_STATUS_ACTIVE) {
+                                $userStatus = 'Active';
+                            } elseif ($model->user_status == \app\modules\admin\models\User::USER_STATUS_IN_ACTIVE) {
+                                $userStatus = 'In-Active';
+                            }
+                            return $userStatus;
+                        }
+                    ],
+                    [
                         'attribute' => "is_shop_owner",
                         'value' => function ($model) {
                             return ($model->is_shop_owner == 1) ? "Yes" : "No";

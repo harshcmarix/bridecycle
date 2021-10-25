@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v2\models;
 
+use app\models\AbuseReport;
 use app\models\BlockUser;
 use app\models\Order;
 use app\models\ProductRating;
@@ -75,6 +76,7 @@ use yii\web\UnauthorizedHttpException;
  * @property string|null $is_verify_user
  * @property string|null $is_newsletter_subscription
  * @property string|null $is_subscribed_user
+ * @property string|null $user_status
  *
  * @property string|null $created_at
  * @property string|null $updated_at
@@ -148,6 +150,9 @@ class User extends ActiveRecord implements IdentityInterface
     const IS_LOGIN_FROM_APPLE = "apple";
     const IS_LOGIN_FROM_GOOGLE = "google";
 
+    const USER_STATUS_ACTIVE = '1';
+    const USER_STATUS_IN_ACTIVE = '0';
+
     /**
      * @return string
      */
@@ -187,7 +192,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email', 'shop_email'], 'email'],
-            [['is_verify_user', 'is_subscribed_user', 'latitude', 'longitude'], 'safe'],
+            [['user_status', 'is_verify_user', 'is_subscribed_user', 'latitude', 'longitude'], 'safe'],
             [['email'], 'unique', 'message' => 'This email is already taken. Please login with this email address.', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE]],
             [['email'], 'string', 'max' => 60],
             [['verification_code'], 'string', 'max' => 6],
@@ -430,6 +435,21 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $sellerIds = [];
         $models = BlockUser::find()->select(['seller_id'])->where(['user_id' => $this->id])->indexBy('seller_id')->all();
+        if (!empty($models)) {
+            foreach ($models as $key => $model) {
+                $sellerIds[] = $model->seller_id;
+            }
+        }
+        return $sellerIds;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAbuseUsersId()
+    {
+        $sellerIds = [];
+        $models = AbuseReport::find()->select(['seller_id'])->where(['user_id' => $this->id])->indexBy('seller_id')->all();
         if (!empty($models)) {
             foreach ($models as $key => $model) {
                 $sellerIds[] = $model->seller_id;

@@ -126,8 +126,12 @@ class ProductSearch extends Product
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+
+        $query->joinWith('user AS user');
+        $query->where(['user.user_status' => User::USER_STATUS_ACTIVE]);
+
         if (empty($requestParams['user_id']) && empty($requestParams['is_from_sell_screen']) || $requestParams['is_from_sell_screen'] == 0) {
-            $query->where(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);
+            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);
         }
 
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1) {
@@ -329,6 +333,7 @@ class ProductSearch extends Product
         if (!empty($userId)) {
             $modelUser = User::find()->where(['id' => $userId])->one();
             $query->andWhere(['NOT IN', 'user_id', $modelUser->blockUsersId]);
+            $query->andWhere(['NOT IN', 'user_id', $modelUser->abuseUsersId]);
         }
         /** End for Block user */
 

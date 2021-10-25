@@ -218,8 +218,16 @@ class UserController extends Controller
         }
 
         $postData = Yii::$app->request->post('User');
+        //p($postData);
 
         if ($model->load(Yii::$app->request->post())) { // && $model->save()
+
+            // Update user status
+            if ($postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
+                $model->user_status = User::USER_STATUS_IN_ACTIVE;
+            } else {
+                $model->user_status = User::USER_STATUS_ACTIVE;
+            }
 
             // Update new password
             $new_password = $model->password;

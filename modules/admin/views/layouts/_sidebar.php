@@ -51,6 +51,7 @@ use app\modules\admin\models\Module;
             ['label' => 'Sales', 'icon' => 'fas fa-angle-right', 'url' => ['report/sales', 'p' => 'w'], 'visible' => $visible, 'active' => ($route === 'admin/report/sales')],
             ['label' => "Customers", 'icon' => 'fas fa-angle-right', 'url' => ['report/customers', 'p' => 'w'], 'visible' => $visible, 'active' => ($route === 'admin/report/customers')],
         ],];
+        $menuList[] = ['label' => 'Abuse Reports', 'icon' => 'ban', 'url' => ['abuse-report/index'], 'visible' => false, 'active' => ($route === 'admin/abuse-report/index' || $route === 'admin/abuse-report/view')];
         $menuList[] = ['label' => 'Dress Type', 'icon' => 'female', 'url' => ['dress-type/index'], 'visible' => $visible, 'active' => ($route === 'admin/dress-type/index' || $route === 'admin/dress-type/view')];
         $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => $visible, 'active' => ($route === 'admin/setting/index')];
         $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => $visible, 'active' => ($route === 'admin/banner/index' || $route === 'admin/banner/create' || $route === 'admin/banner/update' || $route === 'admin/banner/view')];

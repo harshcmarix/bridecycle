@@ -53,7 +53,7 @@ echo Dialog::widget(
                             'showPreview' => false,
                             'showUpload' => false
                         ]
-                    ])->label('Profile Picture <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
+                    ])->label('Profile Picture <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
 
                     <!-- image validation code -->
                     <?php
@@ -90,9 +90,22 @@ echo Dialog::widget(
                     <!-- image code end -->
                 </div>
 
-                <div class="col col-md-6">
+                <div class="col col-md-2">
                     <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
                 </div>
+
+                <?php if (Yii::$app->controller->action->id == 'update') { ?>
+                    <div class="col col-md-4">
+                        <?= $form->field($model, 'user_status')->widget(\kartik\select2\Select2::classname(), [
+                            'data' => [\app\modules\admin\models\User::USER_STATUS_ACTIVE => 'Active', \app\modules\admin\models\User::USER_STATUS_IN_ACTIVE => 'Inactive'],
+                            'options' => ['placeholder' => 'Select User status'],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]); ?>
+                    </div>
+                <?php } ?>
+
             </div>
 
             <div id="shop-details" class="shop-personal-details">
@@ -160,7 +173,7 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_address_street')->textInput()->label('Shop Address Street <spna class="red">*</span>'); ?>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col col-md-6">
                         <?= $form->field($model, 'shop_address_city')->textInput()->label('Shop Address City <spna class="red">*</span>'); ?>
@@ -231,8 +244,8 @@ echo Dialog::widget(
                 //         alert('There was an error with your request.' + xhr.responseText);
                 //     }
                 // }).done(function (data) {
-                    $('.shop-image-class').hide();
-                    $('#user-is_shop_logo_empty').val('1');
+                $('.shop-image-class').hide();
+                $('#user-is_shop_logo_empty').val('1');
                 // });
             }
         });
@@ -251,8 +264,8 @@ echo Dialog::widget(
                 //         alert('There was an error with your request.' + xhr.responseText);
                 //     }
                 // }).done(function (data) {
-                    $('.image-class').hide();
-                    $('#user-is_profile_picture_empty').val('1');
+                $('.image-class').hide();
+                $('#user-is_profile_picture_empty').val('1');
                 // });
             }
         });
@@ -260,7 +273,7 @@ echo Dialog::widget(
 
     function shoplogomodal(id) {
         $('#shoplogomodal_' + id).modal('show');
-    } 
+    }
 
     function profilePicturemodal(id) {
         $('#profilemodal_' + id).modal('show');

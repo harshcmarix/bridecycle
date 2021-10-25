@@ -3,9 +3,11 @@
 namespace app\modules\api\v2\controllers;
 
 use app\models\UserPurchasedSubscriptions;
-use app\modules\api\v2\models\search\UserPurchasedSubscriptionsSearch;
 use Yii;
-use yii\filters\auth\{CompositeAuth, HttpBasicAuth, HttpBearerAuth, QueryParamAuth};
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\web\NotFoundHttpException;

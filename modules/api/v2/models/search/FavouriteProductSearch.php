@@ -3,10 +3,8 @@
 namespace app\modules\api\v2\models\search;
 
 use yii\base\Model;
-use yii\data\{
-    ActiveDataFilter,
-    ActiveDataProvider
-};
+use yii\data\ActiveDataFilter;
+use yii\data\ActiveDataProvider;
 use app\models\FavouriteProduct;
 use Yii;
 
@@ -119,7 +117,7 @@ class FavouriteProductSearch extends FavouriteProduct
         $query->orderBy(['favourite_products.id' => SORT_DESC]);
         $query->groupBy('favourite_products.id');
 
-        return Yii::createObject([
+        $result = Yii::createObject([
             'class' => ActiveDataProvider::class,
             'query' => $query,
             'pagination' => [
@@ -130,5 +128,6 @@ class FavouriteProductSearch extends FavouriteProduct
                 'params' => $requestParams,
             ],
         ]);
+        return $result;
     }
 }

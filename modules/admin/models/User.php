@@ -32,6 +32,7 @@ use yii\web\IdentityInterface;
  * @property string|null $shop_name
  * @property string|null $shop_email
  * @property int|null $shop_phone_number
+ * @property string|null $user_status
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -69,6 +70,9 @@ class User extends ActiveRecord implements IdentityInterface
     const USER_TYPE_ADMIN = '1';
     const USER_TYPE_SUB_ADMIN = '2';
     const USER_TYPE_NORMAL_USER = '3';
+
+    const USER_STATUS_ACTIVE = '1';
+    const USER_STATUS_IN_ACTIVE = '0';
 
     public $confirm_password;
     public $password;
@@ -133,7 +137,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['email', 'shop_email'], 'email'],
 
-            [['access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
+            [['user_status', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
 
             // [['mobile', 'shop_phone_number'], 'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
             // [['mobile', 'shop_phone_number'], 'is13NumbersOnly'],
