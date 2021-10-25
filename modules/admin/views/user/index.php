@@ -6,8 +6,6 @@ use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-//use yii\grid\GridView;
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\search\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
