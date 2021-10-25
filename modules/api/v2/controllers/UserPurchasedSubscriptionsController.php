@@ -3,6 +3,7 @@
 namespace app\modules\api\v2\controllers;
 
 use app\models\UserPurchasedSubscriptions;
+use app\modules\api\v2\models\User;
 use Yii;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
@@ -36,6 +37,7 @@ class UserPurchasedSubscriptionsController extends ActiveController
             'index' => ['GET', 'HEAD', 'OPTIONS'],
             'view' => ['GET', 'HEAD', 'OPTIONS'],
             'create' => ['POST', 'OPTIONS'],
+            'fail-subscription' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
             'delete' => ['POST', 'DELETE'],
         ];
@@ -49,7 +51,7 @@ class UserPurchasedSubscriptionsController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'delete'],
+            'only' => ['index', 'view', 'create', 'fail-subscription', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -82,6 +84,7 @@ class UserPurchasedSubscriptionsController extends ActiveController
         $actions = parent::actions();
         unset($actions['update']);
         unset($actions['create']);
+        unset($actions['fail-subscription']);
         unset($actions['view']);
         return $actions;
     }
@@ -122,16 +125,39 @@ class UserPurchasedSubscriptionsController extends ActiveController
     public function actionCreate()
     {
         $model = new UserPurchasedSubscriptions();
+        $model->scenario = 'create_api';
         $postData = \Yii::$app->request->post();
         $userPurchaseSubscriptionData['UserPurchasedSubscriptions'] = $postData;
         $model->user_id = Yii::$app->user->identity->id;
         if ($model->load($userPurchaseSubscriptionData) && $model->validate()) {
             $model->date_time = date('Y-m-d H:i:s', strtotime($postData['date_time']));
-            if($model->save()){
-                //
+            if ($model->save()) {
+                $modelUser = $model->user;
+                if (!empty($modelUser) && $modelUser instanceof User) {
+                    $modelUser->is_subscribed_user = User::USER_STATUS_ACTIVE;
+                    $modelUser->save();
+                }
             }
         }
         return $model;
+    }
+
+    public function actionFailSubscription()
+    {
+        $model = new UserPurchasedSubscriptions();
+        $model->scenario = 'cancel_fail_api';
+        $postData = \Yii::$app->request->post();
+        $userPurchaseSubscriptionData['UserPurchasedSubscriptions'] = $postData;
+        $model->user_id = Yii::$app->user->identity->id;
+        $modelUser = "";
+        if ($model->load($userPurchaseSubscriptionData) && $model->validate()) {
+            $modelUser = $model->user;
+            if (!empty($modelUser) && $modelUser instanceof User) {
+                $modelUser->is_subscribed_user = User::USER_STATUS_IN_ACTIVE;
+                $modelUser->save();
+            }
+        }
+        return $modelUser;
     }
 
     /**

@@ -149,51 +149,54 @@ class TrialController extends ActiveController
                 if (!empty($getUsers)) {
                     foreach ($getUsers as $userROW) {
                         if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
+                            $notificationText = "";
                             if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                 $userDevice = $userROW->userDevice;
 
-                                // Insert into notification.
-                                $notificationText = $model->name . " has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
-                                $modelNotification = new Notification();
-                                $modelNotification->owner_id = Yii::$app->user->identity->id;
-                                $modelNotification->notification_receiver_id = $userROW->id;
-                                $modelNotification->ref_id = $model->id;
-                                $modelNotification->notification_text = $notificationText;
-                                $modelNotification->action = "Add";
-                                $modelNotification->ref_type = "trial_book";
-                                $modelNotification->save(false);
+                                if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                    // Insert into notification.
+                                    $notificationText = $model->name . " has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                                    $modelNotification = new Notification();
+                                    $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                    $modelNotification->notification_receiver_id = $userROW->id;
+                                    $modelNotification->ref_id = $model->id;
+                                    $modelNotification->notification_text = $notificationText;
+                                    $modelNotification->action = "Add";
+                                    $modelNotification->ref_type = "trial_book";
+                                    $modelNotification->save(false);
 
-                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
-                                if ($userDevice->device_platform == 'android') {
-                                    $notificationToken = array($userDevice->notification_token);
-                                    $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
-                                } else {
-                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
-                                    $note->setBadge($badge);
-                                    $note->setSound('default');
-                                    $message = Yii::$app->fcm->createMessage();
-                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
-                                    $message->setNotification($note)
-                                        ->setData([
-                                            'id' => $modelNotification->ref_id,
-                                            'type' => $modelNotification->ref_type,
-                                            'message' => $notificationText,
-                                        ]);
-                                    $response = Yii::$app->fcm->send($message);
+                                    $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                    if ($userDevice->device_platform == 'android') {
+                                        $notificationToken = array($userDevice->notification_token);
+                                        $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
+                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                    } else {
+                                        $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                        $note->setBadge($badge);
+                                        $note->setSound('default');
+                                        $message = Yii::$app->fcm->createMessage();
+                                        $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                        $message->setNotification($note)
+                                            ->setData([
+                                                'id' => $modelNotification->ref_id,
+                                                'type' => $modelNotification->ref_type,
+                                                'message' => $notificationText,
+                                            ]);
+                                        $response = Yii::$app->fcm->send($message);
+                                    }
                                 }
                             }
 
-                            if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
-                                if (!empty($userROW->email)) {
-                                    Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
-                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                        ->setTo($userROW->email)
-                                        ->setSubject('Request for trial of your product')
-                                        ->send();
-                                }
-                            }
+//                            if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
+//                                $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+//                                if (!empty($userROW->email)) {
+//                                    Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+//                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+//                                        ->setTo($userROW->email)
+//                                        ->setSubject('Request for trial of your product')
+//                                        ->send();
+//                                }
+//                            }
                         }
                     }
                 }
@@ -247,34 +250,36 @@ class TrialController extends ActiveController
                             if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                 $userDevice = $userROW->userDevice;
 
-                                // Insert into notification.
-                                $modelNotification = new Notification();
-                                $modelNotification->owner_id = Yii::$app->user->identity->id;
-                                $modelNotification->notification_receiver_id = $userROW->id;
-                                $modelNotification->ref_id = $model->id;
-                                $modelNotification->notification_text = $notificationText;
-                                $modelNotification->action = $action;
-                                $modelNotification->ref_type = "trial_book";
-                                $modelNotification->save(false);
+                                if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                    // Insert into notification.
+                                    $modelNotification = new Notification();
+                                    $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                    $modelNotification->notification_receiver_id = $userROW->id;
+                                    $modelNotification->ref_id = $model->id;
+                                    $modelNotification->notification_text = $notificationText;
+                                    $modelNotification->action = $action;
+                                    $modelNotification->ref_type = "trial_book";
+                                    $modelNotification->save(false);
 
-                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
-                                if ($userDevice->device_platform == 'android') {
-                                    $notificationToken = array($userDevice->notification_token);
-                                    $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
-                                } else {
-                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
-                                    $note->setBadge($badge);
-                                    $note->setSound('default');
-                                    $message = Yii::$app->fcm->createMessage();
-                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
-                                    $message->setNotification($note)
-                                        ->setData([
-                                            'id' => $modelNotification->ref_id,
-                                            'type' => $modelNotification->ref_type,
-                                            'message' => $notificationText,
-                                        ]);
-                                    $response = Yii::$app->fcm->send($message);
+                                    $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                    if ($userDevice->device_platform == 'android') {
+                                        $notificationToken = array($userDevice->notification_token);
+                                        $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
+                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                    } else {
+                                        $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                        $note->setBadge($badge);
+                                        $note->setSound('default');
+                                        $message = Yii::$app->fcm->createMessage();
+                                        $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                        $message->setNotification($note)
+                                            ->setData([
+                                                'id' => $modelNotification->ref_id,
+                                                'type' => $modelNotification->ref_type,
+                                                'message' => $notificationText,
+                                            ]);
+                                        $response = Yii::$app->fcm->send($message);
+                                    }
                                 }
                             }
 
