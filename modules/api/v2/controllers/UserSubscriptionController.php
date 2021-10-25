@@ -204,9 +204,7 @@ class UserSubscriptionController extends ActiveController
                 }
             }
         }
-
         return $model;
-
     }
 
     /**
@@ -243,16 +241,20 @@ class UserSubscriptionController extends ActiveController
         return $this->redirect(['index']);
     }
 
-    /**
-     * @param null $is_success
-     * @param null $subscription_package_id
-     * @param null $owner_id
-     * @param null $user_subdcription_id
-     */
-    public function actionPaypalPaymentResponse($is_success = null, $subscription_package_id = null, $owner_id = null, $user_subdcription_id = null)
-    {
-        p($is_success);
-    }
+//    /**
+//     * @param null $is_success
+//     * @param null $subscription_package_id
+//     * @param null $owner_id
+//     * @param null $user_subdcription_id
+//     */
+//    public function actionPaypalPaymentResponse($is_success = null, $subscription_package_id = null, $owner_id = null, $user_subdcription_id = null)
+//    {
+//        if (!empty($is_success) && $is_success == true || $is_success == '1') {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
     /**
      * @param $request
@@ -266,7 +268,6 @@ class UserSubscriptionController extends ActiveController
                 Yii::$app->params['paypal_client_secret'] // ClientSecret
             )
         );
-
 
         // or whatever yours is called
 
@@ -338,7 +339,6 @@ class UserSubscriptionController extends ActiveController
         $amount->setCurrency(Yii::$app->params['paypal_payment_currency']);
         $amount->setTotal($total);
         $amount->setDetails($amountDetails);
-
 
         // ###Transaction
         // A transaction defines the contract of a
