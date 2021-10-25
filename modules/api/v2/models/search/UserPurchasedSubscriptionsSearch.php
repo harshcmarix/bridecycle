@@ -5,7 +5,8 @@ namespace app\modules\api\v2\models\search;
 use app\models\UserPurchasedSubscriptions;
 use Yii;
 use yii\base\Model;
-use yii\data\{ActiveDataFilter, ActiveDataProvider};
+use yii\data\ActiveDataFilter;
+use yii\data\ActiveDataProvider;
 
 /**
  * UserPurchasedSubscriptionsSearch represents the model behind the search form of `app\models\UserPurchasedSubscriptions`.
