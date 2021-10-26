@@ -2,18 +2,25 @@
 
 namespace app\modules\api\v2\controllers;
 
-use app\models\{Product, ProductImage, ProductStatus, UserAddress};
+use app\models\Product;
+use app\models\ProductImage;
+use app\models\ProductStatus;
+use app\models\UserAddress;
 use app\models\Notification;
 use app\models\ProductReceipt;
 use app\models\SearchHistory;
 use app\models\ShippingPrice;
 use app\modules\api\v2\models\User;
 use Yii;
-use yii\filters\auth\{CompositeAuth, HttpBasicAuth, HttpBearerAuth, QueryParamAuth};
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
-use yii\web\{NotFoundHttpException, UploadedFile};
+use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 use yii\web\HttpException;
 
 /**

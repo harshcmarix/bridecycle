@@ -4,23 +4,40 @@ namespace app\modules\api\v2\controllers;
 
 
 use app\models\BridecycleToSellerPayments;
-use app\models\{CartItem, Notification, Order, OrderItem, OrderPayment, Product, ProductStatus};
+use app\models\CartItem;
+use app\models\Notification;
+use app\models\Order;
+use app\models\OrderItem;
+use app\models\OrderPayment;
+use app\models\Product;
+use app\models\ProductStatus;
 use app\models\ProductTracking;
 use app\models\Setting;
-use app\modules\api\v2\models\{User, UserAddress};
-use app\modules\api\v2\models\search\CartItemSearch;
+use app\modules\api\v2\models\User;
+use app\modules\api\v2\models\UserAddress;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use kartik\mpdf\Pdf;
-use PayPal\Api\{Address, Amount, CreditCard, Details, FundingInstrument, Payer, Payment, RedirectUrls};
+use PayPal\Api\Address;
+use PayPal\Api\Amount;
+use PayPal\Api\CreditCard;
+use PayPal\Api\Details;
+use PayPal\Api\FundingInstrument;
+use PayPal\Api\Payer;
+use PayPal\Api\Payment;
+use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
 use PayPal\Exception\PayPalConnectionException;
 use Yii;
-use yii\filters\auth\{CompositeAuth, HttpBasicAuth, HttpBearerAuth, QueryParamAuth};
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\helpers\Url;
 use yii\rest\ActiveController;
-use yii\web\{BadRequestHttpException, NotFoundHttpException};
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\HttpException;
 
 // CartItemController implements the CRUD actions for CartItem model.

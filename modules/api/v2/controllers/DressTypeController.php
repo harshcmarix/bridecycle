@@ -5,12 +5,10 @@ namespace app\modules\api\v2\controllers;
 use Yii;
 use app\models\DressType;
 use yii\web\NotFoundHttpException;
-use yii\filters\auth\{
-    HttpBasicAuth,
-    CompositeAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 

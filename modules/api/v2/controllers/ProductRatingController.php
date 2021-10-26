@@ -7,20 +7,13 @@ use app\models\Product;
 use app\modules\api\v2\models\User;
 use Yii;
 use app\models\ProductRating;
-use app\modules\api\v2\models\search\ProductRatingSearch;
-use yii\web\{
-    NotFoundHttpException,
-    ForbiddenHttpException
-};
-use yii\base\BaseObject;
-use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\rest\ActiveController;
-use yii\filters\auth\{
-    HttpBasicAuth,
-    CompositeAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 
 /**

@@ -7,15 +7,12 @@ use app\models\Product;
 use app\modules\api\v2\models\User;
 use Yii;
 use app\models\Trial;
-use yii\base\BaseObject;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
-use yii\filters\auth\{
-    HttpBasicAuth,
-    CompositeAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 

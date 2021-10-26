@@ -2,20 +2,27 @@
 
 namespace app\modules\api\v2\controllers;
 
-use app\models\{ShopDetail, UserAddress};
+use app\models\ShopDetail;
+use app\models\UserAddress;
 use app\models\UserDevice;
-use app\modules\api\v2\models\{ChangePassword, ForgotPassword, Login, ResetPassword, User};
+use app\modules\api\v2\models\ChangePassword;
+use app\modules\api\v2\models\ForgotPassword;
+use app\modules\api\v2\models\Login;
+use app\modules\api\v2\models\ResetPassword;
+use app\modules\api\v2\models\User;
 use Yii;
-use yii\filters\auth\{CompositeAuth, HttpBasicAuth, HttpBearerAuth, QueryParamAuth};
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
-use yii\web\{BadRequestHttpException,
-    ForbiddenHttpException,
-    NotFoundHttpException,
-    ServerErrorHttpException,
-    UploadedFile
-};
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
+use yii\web\UploadedFile;
 
 /**
  * Class UserController
@@ -185,7 +192,7 @@ class UserController extends ActiveController
                 }
 
                 $ext = $model->profile_picture->extension;
-                $fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
+                //$fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);
@@ -244,7 +251,7 @@ class UserController extends ActiveController
                             }
 
                             $logoExt = $shopDetailModel->shop_logo->extension;
-                            $shopLogoFileName = pathinfo($shopDetailModel->shop_logo->name, PATHINFO_FILENAME);
+                            //$shopLogoFileName = pathinfo($shopDetailModel->shop_logo->name, PATHINFO_FILENAME);
                             $shopLogoFileName = time() . rand(99999, 88888) . '.' . $logoExt;
                             // Upload shop logo
                             $shopDetailModel->shop_logo->saveAs($uploadDirPathLogo . '/' . $shopLogoFileName);
@@ -271,7 +278,7 @@ class UserController extends ActiveController
                             }
 
                             $shopCoverPictureExt = $shopDetailModel->shop_cover_picture->extension;
-                            $shopCoverPictureFileName = pathinfo($shopDetailModel->shop_cover_picture->name, PATHINFO_FILENAME);
+                            //$shopCoverPictureFileName = pathinfo($shopDetailModel->shop_cover_picture->name, PATHINFO_FILENAME);
                             $shopCoverPictureFileName = time() . rand(99999, 88888) . '.' . $shopCoverPictureExt;
                             // Upload shop cover picture
                             $shopDetailModel->shop_cover_picture->saveAs($uploadDirPathCoverPicture . '/' . $shopCoverPictureFileName);
@@ -454,7 +461,7 @@ class UserController extends ActiveController
                     unlink($uploadThumbDirPath . '/' . $old_image);
                 }
                 $ext = $model->profile_picture->extension;
-                $fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
+                //$fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);

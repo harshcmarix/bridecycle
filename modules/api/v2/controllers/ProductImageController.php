@@ -4,16 +4,12 @@ namespace app\modules\api\v2\controllers;
 
 use Yii;
 use app\models\ProductImage;
-use yii\web\{
-    NotFoundHttpException,
-    UploadedFile
-};
-use yii\filters\auth\{
-    CompositeAuth,
-    HttpBasicAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
+use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;

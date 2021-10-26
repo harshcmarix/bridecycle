@@ -2,36 +2,27 @@
 
 namespace app\modules\api\v2\controllers;
 
-use app\components\PaypalPayment;
 use app\modules\api\v2\models\UserAddress;
 use PayPal\Api\Address;
 use PayPal\Api\Amount;
-use PayPal\Api\Authorization;
 use PayPal\Api\CreditCard;
 use PayPal\Api\Details;
 use PayPal\Api\FundingInstrument;
 use PayPal\Api\Payer;
 use PayPal\Api\Payment;
-use PayPal\Api\PaymentExecution;
 use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
-use PayPal\Common\PayPalModel;
 use PayPal\Exception\PayPalConnectionException;
 use Yii;
 use app\models\UserSubscription;
-
-use yii\filters\auth\{
-    CompositeAuth,
-    HttpBasicAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
-use yii\base\BaseObject;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\helpers\Url;
 use yii\rest\ActiveController;
 use yii\web\NotFoundHttpException;
-
 
 /**
  * UserSubscriptionController implements the CRUD actions for UserSubscription model.

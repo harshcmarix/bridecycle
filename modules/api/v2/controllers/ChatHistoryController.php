@@ -6,13 +6,10 @@ use app\models\Notification;
 use app\modules\api\v2\models\User;
 use Yii;
 use app\models\ChatHistory;
-use yii\filters\auth\{
-    CompositeAuth,
-    HttpBasicAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
-
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\base\BaseObject;
 use yii\filters\Cors;
 use yii\imagine\Image;

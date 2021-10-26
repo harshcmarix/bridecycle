@@ -142,6 +142,9 @@ class UserPurchasedSubscriptionsController extends ActiveController
         return $model;
     }
 
+    /**
+     * @return User|mixed|string
+     */
     public function actionFailSubscription()
     {
         $model = new UserPurchasedSubscriptions();

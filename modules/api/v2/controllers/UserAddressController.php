@@ -4,18 +4,12 @@ namespace app\modules\api\v2\controllers;
 
 use Yii;
 use app\models\UserAddress;
-use app\modules\api\v2\models\search\UserAddressSearch;
-use yii\base\BaseObject;
 use yii\web\BadRequestHttpException;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\filters\auth\{
-    HttpBasicAuth,
-    CompositeAuth,
-    HttpBearerAuth,
-    QueryParamAuth
-};
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 
