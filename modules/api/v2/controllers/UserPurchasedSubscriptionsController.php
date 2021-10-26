@@ -130,7 +130,7 @@ class UserPurchasedSubscriptionsController extends ActiveController
         $userPurchaseSubscriptionData['UserPurchasedSubscriptions'] = $postData;
         $model->user_id = Yii::$app->user->identity->id;
         if ($model->load($userPurchaseSubscriptionData) && $model->validate()) {
-            $model->date_time = date('Y-m-d H:i:s', strtotime($postData['date_time']));
+            $model->date_time = date('Y-m-d H:i:s', $postData['date_time']);
             if ($model->save()) {
                 $modelUser = $model->user;
                 if (!empty($modelUser) && $modelUser instanceof User) {

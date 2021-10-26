@@ -529,7 +529,6 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getUser0()
     {
-        //return $this->hasOne(User::className(), ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->user_id])->one();
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -550,7 +549,8 @@ class Product extends \yii\db\ActiveRecord
     {
         $data = [];
         if (!empty(Yii::$app->user->identity) && Yii::$app->user->identity->id) {
-            $data = FavouriteProduct::find()->where(['product_id' => $this->id, 'user_id' => Yii::$app->user->identity->id])->one();
+            $modelUser = User::findOne(Yii::$app->user->identity->id);
+            $data = FavouriteProduct::find()->joinWith('product AS product')->joinWith('product.user AS productUser')->where(['favourite_products.product_id' => $this->id, 'favourite_products.user_id' => Yii::$app->user->identity->id])->andWhere(['NOT IN', 'productUser.id', $modelUser->blockUsersId])->andWhere(['NOT IN', 'productUser.id', $modelUser->abuseUsersId])->one();
         }
 
         if ($data == '' || $data == null) {
@@ -606,7 +606,6 @@ class Product extends \yii\db\ActiveRecord
     public function getProductReceipt0()
     {
         //return $this->hasMany(ProductReceipt::className(), ['product_id' => 'id']);
-
         $productReceipts = ProductReceipt::find()->where(['product_id' => $this->id])->all();
         if (!empty($productReceipts)) {
             foreach ($productReceipts as $key => $value) {
@@ -663,7 +662,7 @@ class Product extends \yii\db\ActiveRecord
         //$result->joinWith('productTrackingChild As child');
         //return $result;
 
-        $modelProductTracking = ProductTracking::find()->where(['id' => $this->product_tracking_id])->Orwhere(['parent_id' => $this->product_tracking_id])->orderBy(['id' => SORT_ASC])->all();
+        $modelProductTracking = ProductTracking::find()->where(['id' => $this->product_tracking_id])->orWhere(['parent_id' => $this->product_tracking_id])->orderBy(['id' => SORT_ASC])->all();
         return $modelProductTracking;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v2\models\search;
 
+use app\modules\api\v2\models\User;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
@@ -97,15 +98,20 @@ class FavouriteProductSearch extends FavouriteProduct
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+        $query->joinWith('product AS product');
+        $query->joinWith('product.user AS productUser');
         if (!empty($userId)) {
+            $modelUser = User::findOne($userId);
             $query->where(['user_id' => $userId]);
+            $query->andWhere(['NOT IN', 'productUser.id', $modelUser->blockUsersId]);
+            $query->andWhere(['NOT IN', 'productUser.id', $modelUser->abuseUsersId]);
         }
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id', 'user_id', 'product_id'];
+            $select = ['favourite_products.id', 'favourite_products.user_id', 'product_id'];
         }
 
         $query->select($select);
