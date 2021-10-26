@@ -115,6 +115,7 @@ class UserPurchasedSubscriptionsSearch extends UserPurchasedSubscriptions
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
+        $query->orderBy(['created_at' => SORT_DESC]);
         $query->groupBy('user_purchased_subscriptions.id');
 
         $activeDataProvider = Yii::createObject([
