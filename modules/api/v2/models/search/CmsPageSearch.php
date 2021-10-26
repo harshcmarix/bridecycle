@@ -4,10 +4,8 @@ namespace app\modules\api\v2\models\search;
 
 use yii\base\Model;
 use app\models\CmsPage;
-use yii\data\{
-    ActiveDataFilter,
-    ActiveDataProvider
-};
+use yii\data\ActiveDataFilter;
+use yii\data\ActiveDataProvider;
 use Yii;
 
 /**

@@ -3,12 +3,9 @@
 namespace app\modules\api\v2\models\search;
 
 use Yii;
-use yii\base\BaseObject;
 use yii\base\Model;
-use yii\data\{
-    ActiveDataFilter,
-    ActiveDataProvider
-};
+use yii\data\ActiveDataFilter;
+use yii\data\ActiveDataProvider;
 use app\models\Notification;
 
 /**

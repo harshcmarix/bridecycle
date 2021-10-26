@@ -3,6 +3,7 @@
 namespace app\modules\api\v2\models\search;
 
 use yii\base\Model;
+use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
 use app\models\UserAddress;
 

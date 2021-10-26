@@ -11,7 +11,7 @@ use app\models\ShopDetail;
 use app\models\UserDevice;
 use app\models\UserSubscription;
 use app\models\UserPurchasedSubscriptions;
-use app\modules\api\v2\models\{UserAddress};
+use app\modules\api\v2\models\UserAddress;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;

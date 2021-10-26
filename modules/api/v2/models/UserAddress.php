@@ -2,10 +2,9 @@
 
 namespace app\modules\api\v2\models;
 
+use app\models\Order;
 use Yii;
-use app\modules\api\v2\models\{
-    User
-};
+use app\modules\api\v2\models\User;
 use \yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
@@ -25,7 +24,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Orders[] $orders
+ * @property Order[] $orders
  * @property User $user
  */
 class UserAddress extends ActiveRecord
@@ -101,7 +100,7 @@ class UserAddress extends ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Orders::className(), ['user_address_id' => 'id']);
+        return $this->hasMany(Order::className(), ['user_address_id' => 'id']);
     }
 
     /**
