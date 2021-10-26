@@ -96,7 +96,6 @@ class UserPurchasedSubscriptionsController extends ActiveController
      */
     public function actionIndex()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
