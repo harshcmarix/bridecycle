@@ -51,7 +51,7 @@ class NotificationController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view', 'create', 'update', 'delete'],
+            'only' => ['index', 'view', 'update', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -86,6 +86,7 @@ class NotificationController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
+        unset($actions['delete']);
         return $actions;
     }
 

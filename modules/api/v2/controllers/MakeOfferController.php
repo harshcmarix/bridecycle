@@ -284,40 +284,42 @@ class MakeOfferController extends ActiveController
                             if ($userROW->is_offer_update_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                 $userDevice = $userROW->userDevice;
 
-                                // Insert into notification.
-                                $notificationText = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
-                                $action = "Reject";
-                                if ($offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {
-                                    $notificationText = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
-                                    $action = "Accept";
-                                }
-                                $modelNotification = new Notification();
-                                $modelNotification->owner_id = $model->receiver_id;
-                                $modelNotification->notification_receiver_id = $userROW->id;
-                                $modelNotification->ref_id = $model->id;
-                                $modelNotification->notification_text = $notificationText;
-                                $modelNotification->action = $action;
-                                $modelNotification->ref_type = "make_offer";
-                                $modelNotification->save(false);
+                                if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                    // Insert into notification.
+                                    $notificationText = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $action = "Reject";
+                                    if ($offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {
+                                        $notificationText = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                        $action = "Accept";
+                                    }
+                                    $modelNotification = new Notification();
+                                    $modelNotification->owner_id = $model->receiver_id;
+                                    $modelNotification->notification_receiver_id = $userROW->id;
+                                    $modelNotification->ref_id = $model->id;
+                                    $modelNotification->notification_text = $notificationText;
+                                    $modelNotification->action = $action;
+                                    $modelNotification->ref_type = "make_offer";
+                                    $modelNotification->save(false);
 
-                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
-                                if ($userDevice->device_platform == 'android') {
-                                    $notificationToken = array($userDevice->notification_token);
-                                    $senderName = $model->receiver->first_name . " " . $model->receiver->last_name;
-                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
-                                } else {
-                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
-                                    $note->setBadge($badge);
-                                    $note->setSound('default');
-                                    $message = Yii::$app->fcm->createMessage();
-                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
-                                    $message->setNotification($note)
-                                        ->setData([
-                                            'id' => $modelNotification->ref_id,
-                                            'type' => $modelNotification->ref_type,
-                                            'message' => $notificationText,
-                                        ]);
-                                    $response = Yii::$app->fcm->send($message);
+                                    $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                    if ($userDevice->device_platform == 'android') {
+                                        $notificationToken = array($userDevice->notification_token);
+                                        $senderName = $model->receiver->first_name . " " . $model->receiver->last_name;
+                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                    } else {
+                                        $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                        $note->setBadge($badge);
+                                        $note->setSound('default');
+                                        $message = Yii::$app->fcm->createMessage();
+                                        $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                        $message->setNotification($note)
+                                            ->setData([
+                                                'id' => $modelNotification->ref_id,
+                                                'type' => $modelNotification->ref_type,
+                                                'message' => $notificationText,
+                                            ]);
+                                        $response = Yii::$app->fcm->send($message);
+                                    }
                                 }
                             }
 
