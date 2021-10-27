@@ -20,6 +20,7 @@ use app\modules\api\v2\models\User;
  *
  * @property User $owner
  * @property User $notificationReceiver
+ * @property Product $product
  */
 class Notification extends \yii\db\ActiveRecord
 {
@@ -74,6 +75,7 @@ class Notification extends \yii\db\ActiveRecord
         return [
             'owner0' => 'owner0',
             'notificationReceiver0' => 'notificationReceiver0',
+            'product0' => 'product0',
         ];
     }
 
@@ -95,6 +97,14 @@ class Notification extends \yii\db\ActiveRecord
     public function getNotificationReceiver()
     {
         return $this->hasOne(User::className(), ['id' => 'notification_receiver_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProduct()
+    {
+        return $this->hasOne(Product::class, ['id' => 'ref_id']);
     }
 
     //////////////////////////////// For API use only //////////////////////////////////////
@@ -142,7 +152,7 @@ class Notification extends \yii\db\ActiveRecord
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 
         $result = curl_exec($ch);
-        if ($result === false){
+        if ($result === false) {
             //die('Curl failed ' . curl_error());
             //die('Curl failed.');
             return curl_error();
@@ -190,5 +200,13 @@ class Notification extends \yii\db\ActiveRecord
             $data->profile_picture = $profilePicture;
         }
         return $data;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProduct0()
+    {
+        return $this->hasOne(Product::class, ['id' => 'ref_id']);
     }
 }

@@ -62,13 +62,14 @@ class UserPurchasedSubscriptionsSearch extends UserPurchasedSubscriptions
         $query->andFilterWhere([
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'amount' => $this->amount,
+            //'amount' => $this->amount,
             //'date_time' => $this->date_time,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'transaction_id', $this->transaction_id])
+            ->andFilterWhere(['like', 'amount', $this->amount])
             ->andFilterWhere(['like', 'subscription_id', $this->subscription_id])
             ->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['like', 'date_time', $this->date_time])
