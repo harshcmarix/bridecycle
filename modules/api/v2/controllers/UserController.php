@@ -336,6 +336,10 @@ class UserController extends ActiveController
                 $model->email = $data['User']['email'];
             }
 
+            if (!empty($data['User']['country_code'])) {
+                $model->country_code = $data['User']['country_code'];
+            }
+
             if ($model->save()) {
 
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
@@ -876,6 +880,7 @@ class UserController extends ActiveController
         if (!$model instanceof User) {
             throw new NotFoundHttpException('User doesn\'t exist.');
         }
+
         $dataPost['User'] = $postData;
         $model->scenario = User::SCENARIO_API_NOTIFICATION_SETTING;
 
@@ -892,5 +897,4 @@ class UserController extends ActiveController
         }
         return $model;
     }
-
 }

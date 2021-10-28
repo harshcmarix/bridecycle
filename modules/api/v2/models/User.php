@@ -31,6 +31,7 @@ use yii\web\UnauthorizedHttpException;
  * @property string|null $access_token
  * @property string|null $access_token_expired_at
  * @property string|null $password_reset_token
+ * @property string|null $country_code
  * @property string|null $mobile
  * @property float|null $weight
  * @property string|null $height
@@ -189,6 +190,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['facebook_id', 'apple_id', 'google_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
             [['mobile', 'shop_phone_number'], 'integer'],
             //[['mobile', 'shop_phone_number'], 'string'],
+            [['country_code'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email', 'shop_email'], 'email'],
@@ -241,6 +243,7 @@ class User extends ActiveRecord implements IdentityInterface
             'access_token' => 'Access Token',
             'access_token_expired_at' => 'Access Token Expired At',
             'password_reset_token' => 'Password Reset Token',
+            'country_code' => 'Country Code',
             'mobile' => 'Mobile',
             'weight' => 'Weight',
             'height' => 'Height',

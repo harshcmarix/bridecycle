@@ -32,7 +32,7 @@ class UserSearch extends User
 
         return [
             [['id'], 'integer'],
-            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'mobile', 'personal_information', 'user_type', 'is_shop_owner', 'shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website', 'shop_address', 'is_newsletter_subscription', 'created_at', 'updated_at'], 'safe'],
+            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'country_code', 'mobile', 'personal_information', 'user_type', 'is_shop_owner', 'shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website', 'shop_address', 'is_newsletter_subscription', 'created_at', 'updated_at'], 'safe'],
             [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
         ];
     }
@@ -108,7 +108,7 @@ class UserSearch extends User
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
             //$select = ['id', 'email', 'first_name', 'last_name', 'mobile', 'user_type', 'is_shop_owner','profile_picture',];
-            $select = ['users.*',];
+            $select = ['users.*'];
 
         }
 

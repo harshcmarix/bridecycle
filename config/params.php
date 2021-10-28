@@ -34,6 +34,8 @@ return [
     // Recent time for general uses in system
     'recent_time' => '1 week',
 
+    // Recent search product list default limit (use for API)
+    'recent_search_product_list_default_limit' => 20,
     /**
      * Use for payment gateway (paypal)
      */

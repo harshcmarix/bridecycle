@@ -6,13 +6,12 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
-use app\models\Banner;
+use app\models\RecentSearchProducts;
 
 /**
- * Class BannerSearch
- * @package app\modules\api\v2\models\search
+ * RecentSearchProductsSearch represents the model behind the search form of `app\models\RecentSearchProducts`.
  */
-class BannerSearch extends Banner
+class RecentSearchProductsSearch extends RecentSearchProducts
 {
     /**
      * @var $hiddenFields Array of hidden fields which not needed in APIs
@@ -25,29 +24,10 @@ class BannerSearch extends Banner
     public function rules()
     {
         return [
-            [['id', 'brand_id'], 'integer'],
-            [['image', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'user_id', 'product_id'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
         ];
     }
-
-    /**
-     * @return array|false
-     */
-//    public function extraFields()
-//    {
-//        return [
-//            'productImages0' => 'productImages0',
-//            'category0' => 'category0',
-//            'brand0' => 'brand0',
-//            'color' => 'color',
-//            'user0' => 'user0',
-//            'subCategory0' => 'subCategory0',
-//            'status' => 'status',
-//            'address' => 'address',
-//            'favouriteProduct' => 'favouriteProduct',
-//            'shippingCountry0' => 'shippingCountry0',
-//        ];
-//    }
 
     /**
      * {@inheritdoc}
@@ -65,7 +45,7 @@ class BannerSearch extends Banner
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = null)
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -117,12 +97,15 @@ class BannerSearch extends Banner
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+        if (!empty($userId)) {
+            $query->where(['user_id' => $userId]);
+        }
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['banners.*'];
+            $select = ['recent_search_products.*',];
         }
 
         $query->select($select);
@@ -131,8 +114,9 @@ class BannerSearch extends Banner
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->orderBy(['banners.created_at' => SORT_DESC]);
-        $query->groupBy('banners.id');
+        $query->orderBy(['recent_search_products.id' => SORT_DESC]);
+        $query->groupBy('recent_search_products.product_id');
+        $query->limit(Yii::$app->params['recent_search_product_list_default_limit']);
 
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
@@ -146,17 +130,8 @@ class BannerSearch extends Banner
             ],
         ]);
 
-        $bannerModelData = $activeDataProvider->getModels();
-
-        foreach ($bannerModelData as $key => $value) {
-            $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-            if (!empty($bannerModelData[$key]['image']) && file_exists(Yii::getAlias('@bannerImageRelativePath') . '/' . $value->image)) {
-                $bannerImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@bannerImageAbsolutePath') . '/' . $value->image;
-            }
-            $bannerModelData[$key]['image'] = $bannerImage;
-        }
-        $activeDataProvider->setModels($bannerModelData);
+        $modelData = $activeDataProvider->getModels();
+        $activeDataProvider->setModels($modelData);
         return $activeDataProvider;
     }
-
 }
