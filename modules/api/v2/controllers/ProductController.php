@@ -124,7 +124,6 @@ class ProductController extends ActiveController
      */
     public function actionIndexList()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
@@ -147,7 +146,6 @@ class ProductController extends ActiveController
         if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }
-
         return $model;
     }
 

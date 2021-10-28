@@ -140,6 +140,10 @@ class Brand extends ActiveRecord
         return $this->hasMany(Product::className(), ['brand_id' => 'id']);
     }
 
+    /**
+     * @param $brandId
+     * @return array|ActiveRecord|null
+     */
     public function isBrandOfTheWeek ($brandId) {
         $brandFromDate = date("Y-m-d 00:00:01", strtotime('-1 week'));
         $brandToDate = date("Y-m-d 23:59:59");
@@ -150,9 +154,7 @@ class Brand extends ActiveRecord
         $query1->rightjoin('orders', 'orders.id=order_items.order_id');
         $query1->select(['SUM(order_items.quantity) AS total_sold_product', 'products.brand_id']);
         $query1->where(['products.brand_id' => $brandId]);
-//        $subQuery = $query1->where(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_COMPLETED])->sum('order_items.quantity');
         $subQuery = $query1->where(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_COMPLETED])->asArray()->one();
-//p($subQuery, 0);
         return $subQuery;
     }
 }

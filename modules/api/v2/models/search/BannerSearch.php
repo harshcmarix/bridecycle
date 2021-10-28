@@ -25,7 +25,7 @@ class BannerSearch extends Banner
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id', 'brand_id'], 'integer'],
             [['image', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -112,6 +112,7 @@ class BannerSearch extends Banner
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
+        $query->orderBy(['banners.created_at' => SORT_DESC]);
         $query->groupBy('banners.id');
 
         $activeDataProvider = Yii::createObject([

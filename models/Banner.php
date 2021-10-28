@@ -12,8 +12,14 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property string $image
  * @property string $name
+ * @property int|null $brand_id
  * @property string|null $created_at
  * @property string|null $updated_at
+ *
+ * @property Brand $brand
+ * @property Brand $brand0
+ * @property product $product
+ *
  */
 class Banner extends ActiveRecord
 {
@@ -48,8 +54,8 @@ class Banner extends ActiveRecord
     public function rules()
     {
         return [
-            [['name','created_at', 'updated_at'], 'safe'],
-            [['name'], 'required'],
+            [['name', 'brand_id', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'brand_id'], 'required'],
             [['image',], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
@@ -61,6 +67,7 @@ class Banner extends ActiveRecord
                                     }
             }",],
             [['image'], 'file', 'extensions' => 'jpg, png'],
+            [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
         ];
     }
 
@@ -73,8 +80,51 @@ class Banner extends ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'image' => 'Image',
+            'brand_id' => 'Brand',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * @return array|false
+     */
+    public function extraFields()
+    {
+        return [
+            'brand0' => 'brand0',
+            'product0' => 'product0'
+        ];
+    }
+
+
+    /**
+     * Gets query for [[Brand]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBrand()
+    {
+        return $this->hasOne(Brand::class, ['id' => 'brand_id']);
+    }
+
+///////////////////////For api use only /////////////////////////////////////////////
+
+    /**
+     * Gets query for [[Brand]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBrand0()
+    {
+        $brand = Brand::find()->where(['id' => $this->brand_id])->one();
+        if ($brand instanceof Brand) {
+            $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($brand->image) && file_exists(Yii::getAlias('@brandImageRelativePath') . '/' . $brand->image)) {
+                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageAbsolutePath') . '/' . $brand->image;
+            }
+            $brand->image = $brandImage;
+        }
+        return $brand;
     }
 }
