@@ -18,7 +18,7 @@ class BannerSearch extends Banner
     {
         return [
             [['id'], 'integer'],
-            [['image', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'image', 'brand_id', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -60,11 +60,13 @@ class BannerSearch extends Banner
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'brand_id' => $this->brand_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'image', $this->image]);
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'image', $this->image]);
 
         return $dataProvider;
     }

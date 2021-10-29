@@ -1,14 +1,14 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use app\models\Banner;
 use kartik\dialog\Dialog;
 use yii\bootstrap\Modal;
 use kartik\file\FileInput;
+use app\models\Brand;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Banner */
@@ -28,47 +28,59 @@ echo Dialog::widget(
             <?php $form = ActiveForm::begin(); ?>
 
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'image')->widget(FileInput::classname(), [
-                'options' => ['accept' => 'image/*', 'id' => 'banner-image'],
-                'pluginOptions' => [
-                    'showPreview' => false,
-                    'showUpload' => false
-                ]
-            ])->label('Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
-            <!-- image validation -->
-            <?php
-            $is_banner_image_empty = Banner::IMAGE_EMPTY;
-            if (!empty($model->image)) {
-                $is_banner_image_empty = Banner::IMAGE_NOT_EMPTY;
-            }
-            ?>
+            <div class="row">
+                <div class="col col-md-6">
+                    <?= $form->field($model, 'image')->widget(FileInput::classname(), [
+                        'options' => ['accept' => 'image/*', 'id' => 'banner-image'],
+                        'pluginOptions' => [
+                            'showPreview' => false,
+                            'showUpload' => false
+                        ]
+                    ])->label('Image <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
+                    <!-- image validation -->
+                    <?php
+                    $is_banner_image_empty = Banner::IMAGE_EMPTY;
+                    if (!empty($model->image)) {
+                        $is_banner_image_empty = Banner::IMAGE_NOT_EMPTY;
+                    }
+                    ?>
 
-            <?= $form->field($model, 'is_banner_image_empty')->hiddenInput(['value' => $is_banner_image_empty])->label(false) ?>
-            <!-- image display and popup -->
-            <?php
-            if (!empty($model->image)) {
-                $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                if (!empty($model->image) && file_exists(Yii::getAlias('@bannerImageRelativePath') . '/' . $model->image)) {
-                    $image_path = Yii::getAlias('@bannerImageAbsolutePath') . '/' . $model->image;
-                }
-                Modal::begin([
-                    'id' => 'bannermodal_' . $model->id,
-                    'header' => '<h3>Banner Image</h3>',
-                    'size' => Modal::SIZE_DEFAULT
-                ]);
+                    <?= $form->field($model, 'is_banner_image_empty')->hiddenInput(['value' => $is_banner_image_empty])->label(false) ?>
+                    <!-- image display and popup -->
+                    <?php
+                    if (!empty($model->image)) {
+                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                        if (!empty($model->image) && file_exists(Yii::getAlias('@bannerImageRelativePath') . '/' . $model->image)) {
+                            $image_path = Yii::getAlias('@bannerImageAbsolutePath') . '/' . $model->image;
+                        }
+                        Modal::begin([
+                            'id' => 'bannermodal_' . $model->id,
+                            'header' => '<h3>Banner Image</h3>',
+                            'size' => Modal::SIZE_DEFAULT
+                        ]);
 
-                echo Html::img($image_path, ['width' => '570']);
+                        echo Html::img($image_path, ['width' => '570']);
 
-                Modal::end();
-                $bannermodal = "bannermodal('" . $model->id . "');";
-                ?>
-                <div class="form-group image-class product-image-block">
-                    <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $bannermodal]); ?>
-                    <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'banner-delete-link', 'delete-url' => '../banner/image-delete?id=' . $model->id]) ?>
+                        Modal::end();
+                        $bannermodal = "bannermodal('" . $model->id . "');";
+                        ?>
+                        <div class="form-group image-class product-image-block">
+                            <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $bannermodal]); ?>
+                            <?= Html::a('<i class="fa fa-times"> </i>', ['javascript:(0)'], ['class' => 'banner-delete-link', 'delete-url' => '../banner/image-delete?id=' . $model->id]) ?>
+                        </div>
+
+                    <?php } ?>
                 </div>
-
-            <?php } ?>
-
+                <div class="col col-md-6">
+<!--                    --><?php //echo $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::classname(), [
+//                        'data' => ArrayHelper::map(Brand::find()->where(['status' => Brand::STATUS_APPROVE])->all(), 'id', 'name'),
+//                        'options' => ['placeholder' => 'Select Brand', 'value' => $model->brand_id],
+//                        'pluginOptions' => [
+//                            'allowClear' => true
+//                        ],
+//                    ]); ?>
+                </div>
+            </div>
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
@@ -93,8 +105,8 @@ echo Dialog::widget(
                 //         alert('There was an error with your request.' + xhr.responseText);
                 //     }
                 // }).done(function (data) {
-                    $('.image-class').hide();
-                    $('#banner-is_banner_image_empty').val(image_empty);
+                $('.image-class').hide();
+                $('#banner-is_banner_image_empty').val(image_empty);
                 // });
             }
         });

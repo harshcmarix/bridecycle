@@ -50,6 +50,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
 
                 ],
+//                [
+//                    'attribute' => 'brand_id',
+//                    'value' => function ($model) {
+//                        return (!empty($model) && $model instanceof Banner && !empty($model->brand_id) && !empty($model->brand) && $model->brand instanceof \app\models\Brand) ? $model->brand->name : "";
+//                    },
+//                ],
             ],
         ]) ?>
     </div>

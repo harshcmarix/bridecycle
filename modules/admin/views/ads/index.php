@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Product',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;;min-width: 150px']
+                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
                     ],
                     [
                         'attribute' => 'brand_id',
