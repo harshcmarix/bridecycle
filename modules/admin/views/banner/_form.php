@@ -29,7 +29,7 @@ echo Dialog::widget(
 
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
             <div class="row">
-                <div class="col col-md-6">
+                <div class="col col-md-12">
                     <?= $form->field($model, 'image')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'banner-image'],
                         'pluginOptions' => [
@@ -72,13 +72,13 @@ echo Dialog::widget(
                     <?php } ?>
                 </div>
                 <div class="col col-md-6">
-<!--                    --><?php //echo $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::classname(), [
-//                        'data' => ArrayHelper::map(Brand::find()->where(['status' => Brand::STATUS_APPROVE])->all(), 'id', 'name'),
-//                        'options' => ['placeholder' => 'Select Brand', 'value' => $model->brand_id],
-//                        'pluginOptions' => [
-//                            'allowClear' => true
-//                        ],
-//                    ]); ?>
+                    <!--                    --><?php //echo $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::classname(), [
+                    //                        'data' => ArrayHelper::map(Brand::find()->where(['status' => Brand::STATUS_APPROVE])->all(), 'id', 'name'),
+                    //                        'options' => ['placeholder' => 'Select Brand', 'value' => $model->brand_id],
+                    //                        'pluginOptions' => [
+                    //                            'allowClear' => true
+                    //                        ],
+                    //                    ]); ?>
                 </div>
             </div>
             <div class="form-group">

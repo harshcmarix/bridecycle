@@ -45,9 +45,12 @@ use app\modules\api\v2\models\User;
  * @property OrderItem[] $orderItems
  * @property ProductRating[] $productRatings
  * @property ProductImage[] $productImages
+ * @property ProductImage[] $productImages0
  * @property Brand $brand
+ * @property Brand $brand0
  * @property Color $color
  * @property Category $category
+ * @property Category $category0
  * @property SubCategory $subCategory
  * @property UserAddress $address
  * @property ProductReceipt $productReceipt

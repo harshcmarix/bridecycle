@@ -107,6 +107,11 @@ class UserPurchasedSubscriptions extends \yii\db\ActiveRecord
 
     ///////////////////////For api use only /////////////////////////////////////////////
 
+    public function getUserLastSubscription()
+    {
+        return self::find()->where(['user_id' => $this->user_id])->orderBy(['id' => SORT_DESC])->one();
+    }
+
     /**
      * @return User|array|mixed|\yii\db\ActiveRecord|null
      */

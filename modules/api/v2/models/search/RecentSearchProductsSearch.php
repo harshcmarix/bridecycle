@@ -18,6 +18,7 @@ class RecentSearchProductsSearch extends RecentSearchProducts
      */
     protected $hiddenFields = [];
 
+
     /**
      * {@inheritdoc}
      */
@@ -98,7 +99,7 @@ class RecentSearchProductsSearch extends RecentSearchProducts
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
         if (!empty($userId)) {
-            $query->where(['user_id' => $userId]);
+            $query->where(['recent_search_products.user_id' => $userId]);
         }
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
@@ -129,8 +130,28 @@ class RecentSearchProductsSearch extends RecentSearchProducts
                 'params' => $requestParams,
             ],
         ]);
-
         $modelData = $activeDataProvider->getModels();
+
+        if (!empty($modelData)) {
+            foreach ($modelData as $key => $modelDataRow) {
+                if (!empty($modelDataRow)) {
+                    if (!empty($modelDataRow) && $modelDataRow instanceof RecentSearchProducts) {
+                        $data['price'] = (!empty($modelDataRow->product) && !empty($modelDataRow->product->price)) ? (double)$modelDataRow->product->price : null;
+
+                        $data['product'] = (!empty($modelDataRow->product)) ? $modelDataRow->product : null;
+                        $dataProduct['productImages0'] = (!empty($modelDataRow->product) && !empty($modelDataRow->product->productImages0)) ? $modelDataRow->product->productImages0 : [];
+                        $dataProduct['category0'] = (!empty($modelDataRow->product) && !empty($modelDataRow->product->category0)) ? $modelDataRow->product->category0 : "";
+                        $dataProduct['brand0'] = (!empty($modelDataRow->product) && !empty($modelDataRow->product->brand0)) ? $modelDataRow->product->brand0 : "";
+                        $dataProduct['favouriteProduct'] = (!empty($modelDataRow->product) && !empty($modelDataRow->product->favouriteProducts)) ? $modelDataRow->product->favouriteProducts : [];
+
+                        $preResult = array_merge($data['product']->toArray(), $dataProduct);
+                        $result = array_merge($modelData[$key]->toArray(), $preResult);
+                        $modelData[$key] = $result;
+                    }
+                }
+            }
+        }
+
         $activeDataProvider->setModels($modelData);
         return $activeDataProvider;
     }

@@ -15,6 +15,10 @@ function p($value, $exit = 1)
     }
 }
 
+//$configForGoogle = require __DIR__ . '/../web/uploads/google-app-credentials.json';
+//defined('GOOGLE_APPLICATION_CREDENTIALS') or define('GOOGLE_APPLICATION_CREDENTIALS', $configForGoogle);
+defined('GOOGLE_APPLICATION_CREDENTIALS') or define('GOOGLE_APPLICATION_CREDENTIALS', "");
+
 defined('YII_ENV') or define('YII_ENV', getenv('ENVIRONMENT'));
 
 //if (YII_ENV == 'dev') {

@@ -101,6 +101,29 @@ class RecentSearchProductsController extends ActiveController
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams, Yii::$app->user->identity->id);
+
+//        $resultData = $model->search($requestParams, Yii::$app->user->identity->id);
+//
+//        $result = [];
+//        if (!empty($resultData->getModels())) {
+//
+//            foreach ($resultData->getModels() as $keys => $dataRow) {
+//                $data['price'] = null;
+//                $data['product'] = null;
+//                //$data['product']['productImages0'] = null;
+//                if (!empty($dataRow) && !empty($dataRow->product) && !empty($dataRow->product->price)) {
+//                    $data['price'] = $dataRow->product->price;
+//                    $data['product'] = $dataRow->product;
+//                   // $data['product']['productImages'] = $dataRow->product->getProductImages0();
+//                }
+//
+//                $arrayDataRow = $dataRow->toArray();
+//                $dataRow = array_merge($arrayDataRow, $data);
+//                $result[] = $dataRow;
+//            }
+//        }
+//        return $result;
+
     }
 
     /**
