@@ -188,6 +188,7 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
+
         $model = $this->findModel($id);
         $modelShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
         $modelShopDetail = $model->shopDetail;
@@ -202,6 +203,7 @@ class UserController extends Controller
         $model->shop_email = (!empty($modelShopDetail->shop_email)) ? $modelShopDetail->shop_email : "";
         $model->shop_phone_number = (!empty($modelShopDetail->shop_phone_number)) ? $modelShopDetail->shop_phone_number : "";
         $model->shop_logo = (!empty($modelShopDetail->shop_logo)) ? $modelShopDetail->shop_logo : "";
+
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -222,9 +224,12 @@ class UserController extends Controller
 
         if ($model->load(Yii::$app->request->post())) { // && $model->save()
 
+
             // Update user status
-            if ($postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
+            if (!empty($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
                 $model->user_status = User::USER_STATUS_IN_ACTIVE;
+            } else if (!empty(Yii::$app->request->get('f'))) {
+                $model->user_status = User::USER_STATUS_ACTIVE;
             } else {
                 $model->user_status = User::USER_STATUS_ACTIVE;
             }

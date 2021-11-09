@@ -37,7 +37,9 @@
     "understeam/yii2-fcm": "~0.1",
     "rmrevin/yii2-fontawesome": "~2.9",
     "dmstr/yii2-adminlte-asset": "^2.1",
-    "miloschuman/yii2-highcharts-widget": "^9.0"
+    "miloschuman/yii2-highcharts-widget": "^9.0",
+    "imdhemy/google-play-billing": "^0.6.4",
+    "google/apiclient": "^2.11"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

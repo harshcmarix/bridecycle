@@ -50,6 +50,9 @@ RewriteEngine on
   php_value session.cookie_httponly true
 </IfModule>
 
+#RewriteCond %{HTTPS} off
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,NE,R=301]
+
 # if a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

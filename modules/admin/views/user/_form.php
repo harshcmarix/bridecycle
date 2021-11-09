@@ -31,9 +31,11 @@ echo Dialog::widget(
                 <div class="col col-md-6">
                     <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'autocomplete' => "off"]) ?>
                 </div>
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput(['type' => 'number']) ?>
-                </div>
+                <?php if (empty(Yii::$app->request->get('f'))) { ?>
+                    <div class="col col-md-6">
+                        <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput(['type' => 'number']) ?>
+                    </div>
+                <?php } ?>
             </div>
 
             <div class="row">
@@ -90,20 +92,24 @@ echo Dialog::widget(
                     <!-- image code end -->
                 </div>
 
-                <div class="col col-md-2">
-                    <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
-                </div>
+                <?php if (empty(Yii::$app->request->get('f'))) { ?>
+                    <div class="col col-md-2">
+                        <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
+                    </div>
+                <?php } ?>
 
                 <?php if (Yii::$app->controller->action->id == 'update') { ?>
-                    <div class="col col-md-4">
-                        <?= $form->field($model, 'user_status')->widget(\kartik\select2\Select2::classname(), [
-                            'data' => [\app\modules\admin\models\User::USER_STATUS_ACTIVE => 'Active', \app\modules\admin\models\User::USER_STATUS_IN_ACTIVE => 'Inactive'],
-                            'options' => ['placeholder' => 'Select User status'],
-                            'pluginOptions' => [
-                                'allowClear' => true
-                            ],
-                        ]); ?>
-                    </div>
+                    <?php if (empty(Yii::$app->request->get('f'))) { ?>
+                        <div class="col col-md-4">
+                            <?= $form->field($model, 'user_status')->widget(\kartik\select2\Select2::classname(), [
+                                'data' => [\app\modules\admin\models\User::USER_STATUS_ACTIVE => 'Active', \app\modules\admin\models\User::USER_STATUS_IN_ACTIVE => 'Inactive'],
+                                'options' => ['placeholder' => 'Select User status'],
+                                'pluginOptions' => [
+                                    'allowClear' => true
+                                ],
+                            ]); ?>
+                        </div>
+                    <?php } ?>
                 <?php } ?>
 
             </div>

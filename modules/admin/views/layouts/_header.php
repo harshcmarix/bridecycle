@@ -80,7 +80,7 @@ use yii\helpers\Html;
                             <div class="pull-left">
                                 <?= Html::a(
                                     'Profile',
-                                    ['user/update', 'id' => Yii::$app->user->identity->id],
+                                    ['user/update', 'id' => Yii::$app->user->identity->id, 'f' => 'ap'],
                                     ['data-method' => 'post', 'class' => 'btn btn-success ']
                                 ) ?>
                             </div>
