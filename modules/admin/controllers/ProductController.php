@@ -36,11 +36,11 @@ class ProductController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'new-product', 'create', 'update', 'view', 'delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
+                'only' => ['index', 'new-product', 'create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index','new-product', 'create', 'update', 'view', 'delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
+                        'actions' => ['index','new-product', 'create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -115,6 +115,13 @@ class ProductController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    public function actionNewProductView($id)
+    {
+        return $this->render('new-product-view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -471,6 +478,192 @@ class ProductController extends Controller
         ]);
     }
 
+    public function actionNewProductUpdate($id)
+    {
+        $model = $this->findModel($id);
+        $oldUserId = $model->user_id;
+
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
+        $shippingPrice = $model->shippingCost;
+
+        $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
+        $subcategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $model->category_id])->all(), 'id', 'name');;
+        if (empty($subcategory)) {
+            $subcategory = ArrayHelper::map(ProductCategory::find()->where(['IS NOT', 'parent_category_id', null])->all(), 'id', 'name');;
+        }
+        $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
+        $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
+        $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
+
+        $postData = Yii::$app->request->post('Product');
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            if (!empty($postData['option_show_only'])) {
+                $model->option_show_only = $postData['option_show_only'];
+            }else{
+                $model->option_show_only = '0';
+            }
+            
+            $model->option_color = implode(",", $postData['option_color']);
+            if (empty($oldUserId)) {
+                $model->user_id = Yii::$app->user->identity->id;
+            }
+
+            $model->is_top_selling = Product::IS_TOP_SELLING_NO;
+            if (!empty($postData['is_top_selling'])) {
+                $model->is_top_selling = $postData['is_top_selling'];
+            }
+
+            $model->is_top_trending = Product::IS_TOP_TRENDING_NO;
+            if (!empty($postData['is_top_trending'])) {
+                $model->is_top_trending = $postData['is_top_trending'];
+            }
+
+            $images = UploadedFile::getInstances($model, 'images');
+
+            $ReceiptImages = UploadedFile::getInstances($model, 'receipt');
+
+            if (!empty($postData['type'])) {
+                $model->type = $postData['type'];
+            }
+
+            if ($model->save(false)) {
+
+                if (!empty($postData['shipping_country_price'])) {
+
+                    $modelOldPrice = ShippingPrice::find()->where(['product_id' => $model->id])->all();
+                    if (!empty($modelOldPrice)) {
+                        foreach ($modelOldPrice as $oldKey => $modelOldPriceRow) {
+                            if (!empty($modelOldPriceRow) && $modelOldPriceRow instanceof ShippingPrice) {
+                                $modelOldPriceRow->delete();
+                            }
+                        }
+                    }
+
+                    foreach ($postData['shipping_country_price'] as $keyPrice => $countryPrice) {
+                        if (!empty($countryPrice)) {
+                            $countryId = $keyPrice + 1;
+                            $modelCountry = ShippingCost::find()->where(['id' => $countryId])->one();
+                            if (!empty($modelCountry) && $modelCountry instanceof ShippingCost) {
+                                $modelPrice = new ShippingPrice();
+                                $modelPrice->shipping_cost_id = $modelCountry->id;
+                                $modelPrice->price = $countryPrice;
+                                $modelPrice->product_id = $model->id;
+                                $modelPrice->save(false);
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($images)) {
+
+                    $oldImages = $model->productImages;
+                    if (!empty($oldImages)) {
+                        foreach ($oldImages as $oldImageRow) {
+
+                            if (!empty($oldImageRow) && $oldImageRow instanceof ProductImage) {
+
+                                if (!empty($oldImageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $oldImageRow->name)) {
+                                    unlink(Yii::getAlias('@productImageRelativePath') . "/" . $oldImageRow->name);
+                                }
+
+                                if (!empty($oldImageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $oldImageRow->name)) {
+                                    unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $oldImageRow->name);
+                                }
+                                $oldImageRow->delete();
+                            }
+                        }
+                    }
+
+                    foreach ($images as $img) {
+                        $modelImage = new ProductImage();
+
+                        $uploadDirPath = Yii::getAlias('@productImageRelativePath');
+                        $uploadThumbDirPath = Yii::getAlias('@productImageThumbRelativePath');
+                        $thumbImagePath = '';
+
+                        // Create product upload directory if not exist
+                        if (!is_dir($uploadDirPath)) {
+                            mkdir($uploadDirPath, 0777);
+                        }
+
+                        // Create product thumb upload directory if not exist
+                        if (!is_dir($uploadThumbDirPath)) {
+                            mkdir($uploadThumbDirPath, 0777);
+                        }
+
+                        $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
+                        // Upload product picture
+                        $img->saveAs($uploadDirPath . '/' . $fileName);
+                        // Create thumb of product picture
+                        $actualImagePath = $uploadDirPath . '/' . $fileName;
+                        $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                        Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        // Insert product picture name into database
+
+                        $modelImage->product_id = $model->id;
+                        $modelImage->name = $fileName;
+                        $modelImage->created_at = date('Y-m-d H:i:s');
+                        $modelImage->save(false);
+                    }
+                }
+
+                /* Receipt Image */
+                if (!empty($ReceiptImages)) {
+                    foreach ($ReceiptImages as $imgRow) {
+                        $modelImageReceipt = new ProductReceipt();
+
+                        $uploadDirPathReceipt = Yii::getAlias('@productReceiptImageRelativePath');
+                        $uploadThumbDirPathReceipt = Yii::getAlias('@productReceiptImageThumbRelativePath');
+
+                        // Create product upload directory if not exist
+                        if (!is_dir($uploadDirPathReceipt)) {
+                            mkdir($uploadDirPathReceipt, 0777);
+                        }
+
+                        // Create product thumb upload directory if not exist
+                        if (!is_dir($uploadThumbDirPathReceipt)) {
+                            mkdir($uploadThumbDirPathReceipt, 0777);
+                        }
+
+                        $fileNameReceipt = time() . rand(99999, 88888) . '.' . $imgRow->extension;
+                        // Upload product picture
+                        $imgRow->saveAs($uploadDirPathReceipt . '/' . $fileNameReceipt);
+                        // Create thumb of product picture
+                        $actualImagePathReceipt = $uploadDirPathReceipt . '/' . $fileNameReceipt;
+                        $thumbImagePathReceipt = $uploadThumbDirPathReceipt . '/' . $fileNameReceipt;
+
+                        chmod($actualImagePathReceipt, 0777);
+
+                        Image::getImagine()->open($actualImagePathReceipt)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        chmod($thumbImagePathReceipt, 0777);
+
+                        // Insert product picture name into database
+                        $modelImageReceipt->product_id = $model->id;
+                        $modelImageReceipt->file = $fileNameReceipt;
+                        $modelImageReceipt->save(false);
+                    }
+                }
+            }
+
+            \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'New Product updated successfully.');
+            return $this->redirect(['new-product']);
+        }
+
+        return $this->render('new-product-update', [
+            'model' => $model,
+            'category' => $category,
+            'subcategory' => $subcategory,
+            'brand' => $brand,
+            'color' => $color,
+            'status' => $status,
+            'shippingCountry' => $shippingCountry,
+            'shippingPrice' => $shippingPrice
+        ]);
+    }
+
     /**
      * Deletes an existing Products model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -498,6 +691,28 @@ class ProductController extends Controller
         $this->findModel($id)->delete();
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Product deleted successfully.');
         return $this->redirect(['index']);
+    }
+
+    public function actionNewProductDelete($id)
+    {
+        $model = $this->findModel($id);
+        if (!empty($model->productImages)) {
+            foreach ($model->productImages as $key => $imageRow) {
+                if ($imageRow instanceof ProductImage) {
+                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
+                        unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
+                    }
+
+                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
+                        unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
+                    }
+                    $imageRow->delete();
+                }
+            }
+        }
+        $this->findModel($id)->delete();
+        \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'New product deleted successfully.');
+        return $this->redirect(['new-product']);
     }
 
     /**
