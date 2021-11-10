@@ -30,7 +30,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-6">
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                 </div>
-
                 <div class="col col-md-6">
                     <?= $form->field($model, 'category_id')->widget(Select2::classname(), [
                         'data' => $category,
@@ -42,7 +41,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 </div>
             </div>
 
-
             <div class="row">
                 <div class="col col-md-6">
                     <?= $form->field($model, 'sub_category_id')->widget(Select2::classname(), [
@@ -53,8 +51,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
-                <div class="col col-md-6">
+                <div class="col col-md-3">
                     <?= $form->field($model, 'price')->textInput() ?>
+                </div>
+                <div class="col col-md-3">
+                    <?= $form->field($model, 'option_price')->textInput()->label('Tax') ?>
                 </div>
             </div>
 
@@ -69,12 +70,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ]); ?>
                 </div>
                 <div class="col col-md-6">
-                    <?php if (Yii::$app->controller->action->id == 'update') {
-//                        if(!is_string($model->option_color)){
-//                            $model->option_color = implode(",", $model->option_color);
-//                        }
+                    <?php if (Yii::$app->controller->action->id == 'update') {//
                         $colorIds = explode(",", $model->option_color);
-                        //$color = ArrayHelper::map(Color::find()->where(['in', 'id', $colorIds])->all(), 'id', 'name');
                         $model->option_color = $colorIds;
                     } ?>
                     <?= $form->field($model, 'option_color')->widget(Select2::classname(), [
@@ -89,14 +86,20 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="row">
-                <div class="col col-md-4">
+                <div class="col col-md-2">
                     <?= $form->field($model, 'height')->textInput() ?>
                 </div>
-                <div class="col col-md-4">
+                <div class="col col-md-2">
                     <?= $form->field($model, 'weight')->textInput() ?>
                 </div>
-                <div class="col col-md-4">
+                <div class="col col-md-2">
                     <?= $form->field($model, 'width')->textInput() ?>
+                </div>
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'option_size')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col col-md-2">
+                    <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
                 </div>
             </div>
 
@@ -118,7 +121,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     echo $form->field($model, 'shipping_country[]')->checkboxList($shippingCountry, [
 
                         'item' => function ($index, $label, $name, $checked, $value) {
-
                             if (Yii::$app->controller->action->id == 'create') {
                                 $checked = "checked";
                             } else {
@@ -126,7 +128,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             }
                             $key = $index + 1;
                             echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='{$index}'> {$label}</label></div>";
-
                         }])->label(false) ?>
                 </div>
 
@@ -208,38 +209,25 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
             </div>
 
+            <!--            <div class="row">-->
+            <!--                <div class="col col-md-6">-->
+            <!--                    --><?php //echo $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) ?>
+            <!--                </div>-->
+            <!--                <div class="col col-md-6">-->
+            <!--                    --><?php //echo $form->field($model, 'option_show_only')->widget(Select2::classname(), [
+            //                        'data' => $model->arrOptionIsShowOnly,
+            //                        'options' => ['placeholder' => 'Select'],
+            //                        'pluginOptions' => [
+            //                            'allowClear' => true
+            //                        ],
+            //                    ]); ?>
+            <!--                </div>-->
+            <!--            </div>-->
 
             <div class="row">
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'option_size')->textInput(['maxlength' => true]) ?>
-                </div>
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'option_price')->textInput()->label('Tax') ?>
-                </div>
-            </div>
 
 
-            <div class="row">
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) ?>
-                </div>
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'option_show_only')->widget(Select2::classname(), [
-                        'data' => $model->arrOptionIsShowOnly,
-                        'options' => ['placeholder' => 'Select'],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]); ?>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
-                </div>
-
-                <div class="col col-md-6">
+                <div class="col col-md-4">
                     <?= $form->field($model, 'gender')->widget(Select2::classname(), [
                         'data' => $model->arrGender,
                         'options' => ['placeholder' => 'Select'],
@@ -248,31 +236,15 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-md-6  mr-top">
-                    <?php echo $form->field($model, 'is_top_selling')
-                        ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]); ?>
-                </div>
-                <div class="col col-md-6  mr-top">
-                    <?php echo $form->field($model, 'is_top_trending')
-                        ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-                    ?>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-md-6">
+                <div class="col col-md-4">
                     <?= $form->field($model, 'is_admin_favourite')->widget(Select2::classname(), [
                         'data' => ['0' => 'No', '1' => 'Yes'],
-                        //'options' => ['placeholder' => 'Select'],
                         'pluginOptions' => [
                             'allowClear' => true
                         ],
                     ]); ?>
                 </div>
-                <div class="col col-md-6">
+                <div class="col col-md-4">
                     <?php
                     $disabledProductType = false;
                     if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
@@ -281,7 +253,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ?>
                     <?= $form->field($model, 'type')->widget(Select2::classname(), [
                         'data' => ['n' => 'New', 'u' => 'Used'],
-                        //'options' => ['placeholder' => 'Select'],
                         'pluginOptions' => [
                             'allowClear' => true,
                             'disabled' => $disabledProductType
@@ -289,6 +260,18 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ])->label('Product Type'); ?>
                 </div>
             </div>
+
+            <!--            <div class="row">-->
+            <!--                <div class="col col-md-6  mr-top">-->
+            <!--                    --><?php //echo $form->field($model, 'is_top_selling')
+            //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]); ?>
+            <!--                </div>-->
+            <!--                <div class="col col-md-6  mr-top">-->
+            <!--                    --><?php //echo $form->field($model, 'is_top_trending')
+            //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
+            //                    ?>
+            <!--                </div>-->
+            <!--            </div>-->
 
             <div class="row">
                 <div class="col col-md-6">
@@ -309,7 +292,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ?>
                     <?= $form->field($model, 'status_id')->widget(Select2::classname(), [
                         'data' => $status,
-                        //'options' => ['placeholder' => 'Select'],
                         'pluginOptions' => [
                             'allowClear' => true,
                             'disabled' => $disabled
@@ -339,7 +321,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             'maxFileCount' => 5,
                         ]
                     ])->label('Receipt <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
-
                 </div>
             </div>
 
@@ -347,24 +328,18 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <?php if ((Yii::$app->controller->action->id == 'update') && !empty($model->productReceipt)) {
                     $data = "";
                     foreach ($model->productReceipt as $imageRow) {
-
                         if (!empty($imageRow) && $imageRow instanceof \app\models\ProductReceipt && !empty($imageRow->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . '/' . $imageRow->file)) {
                             $image_path = Yii::getAlias('@productReceiptImageAbsolutePath') . '/' . $imageRow->file;
                         } else {
                             $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                         }
-
-
                         Modal::begin([
                             'id' => 'contentmodalProductImgReceiptEdit_' . $imageRow->id,
                             'header' => '<h4>Receipt Picture</h4>',
                             'size' => Modal::SIZE_DEFAULT
                         ]);
-
                         echo Html::img($image_path, ['width' => '570']);
-
                         Modal::end();
-                        // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
                         $productReceiptModal = 'contentmodelProductImgReceiptEdit("' . $imageRow->id . '")';
                         $data .= "<div class='product-receipt-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productReceiptModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-receipt-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-receipt-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
                     }
@@ -381,16 +356,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 } ?>
             </div>
 
-
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             </div>
-
             <?php ActiveForm::end(); ?>
-
         </div>
-
     </div>
 </div>
 

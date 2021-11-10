@@ -39,7 +39,7 @@ use app\modules\admin\models\Module;
         //$menuList[] = ['label' => 'Customer', 'icon' => 'users', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')];
         $menuList[] = ['label' => 'Customer', 'icon' => 'users', 'items' => [
             ['label' => 'All Customer', 'icon' => 'fas fa-list', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')],
-            ['label' => "New Customer", 'icon' => 'fas fa-user', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')],
+            ['label' => "New Customer", 'icon' => 'fas fa-user', 'url' => ['user/index-new-customer'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')],
         ],];
 
 

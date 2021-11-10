@@ -165,6 +165,10 @@ class ProductSearch extends Product
             $query->andWhere(['user_id' => $requestParams['user_id']]);
         }
 
+        if (!empty($requestParams['product_type'])) {
+            $query->andWhere(['type' => $requestParams['product_type']]);
+        }
+
         if (!empty($requestParams['is_top_trending']) && $requestParams['is_top_trending'] == '1') {
             $query->andWhere(['is_top_trending' => Product::IS_TOP_TRENDING_YES]);
         }
@@ -204,6 +208,16 @@ class ProductSearch extends Product
             $query->andFilterWhere([
                 'and',
                 ['IN', 'products.category_id', $categoryIDs],
+            ]);
+
+        }
+
+        if (!empty($requestParams['sub_category_id'])) {
+
+            $subCategoryIDs = explode(",", $requestParams['sub_category_id']);
+            $query->andFilterWhere([
+                'and',
+                ['IN', 'products.sub_category_id', $subCategoryIDs],
             ]);
 
         }

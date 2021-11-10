@@ -5,6 +5,7 @@ namespace app\modules\admin\models\search;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\admin\models\User;
+use Yii;
 
 /**
  * Class UserSearch
@@ -39,6 +40,10 @@ class UserSearch extends User
     public function search($params)
     {
         $query = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER]);
+        if (Yii::$app->controller->action->id == 'index-new-customer') {
+            //p($params, 0);
+            $query->andWhere(['is_shop_owner' => '0']);
+        }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],

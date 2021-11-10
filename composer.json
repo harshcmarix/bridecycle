@@ -39,7 +39,8 @@
     "dmstr/yii2-adminlte-asset": "^2.1",
     "miloschuman/yii2-highcharts-widget": "^9.0",
     "imdhemy/google-play-billing": "^0.6.4",
-    "google/apiclient": "^2.11"
+    "google/apiclient": "^2.11",
+    "kartik-v/yii2-date-range": "dev-master"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

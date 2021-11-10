@@ -31,11 +31,11 @@ class UserController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'only' => ['index', 'index-new-customer', 'create', 'update', 'view', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
+                        'actions' => ['index', 'index-new-customer', 'create', 'update', 'view', 'delete'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -54,6 +54,24 @@ class UserController extends Controller
         $userTypes = [User::USER_TYPE_ADMIN => 'Admin', User::USER_TYPE_SUB_ADMIN => 'Sub Admin', User::USER_TYPE_NORMAL_USER => "Normal User"];
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'userTypes' => $userTypes,
+            'isShopOwner' => $searchModel->isShopOwner
+        ]);
+    }
+
+    /**
+     * Lists all Users models.
+     * @return mixed
+     */
+    public function actionIndexNewCustomer()
+    {
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $userTypes = [User::USER_TYPE_ADMIN => 'Admin', User::USER_TYPE_SUB_ADMIN => 'Sub Admin', User::USER_TYPE_NORMAL_USER => "Normal User"];
+
+        return $this->render('index-new-customer', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'userTypes' => $userTypes,
