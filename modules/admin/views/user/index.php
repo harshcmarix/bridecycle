@@ -10,7 +10,7 @@ use yii\helpers\Url;
 /* @var $searchModel app\modules\admin\models\search\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Customers';
+$this->title = 'All Customers';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">
@@ -77,35 +77,37 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
-            [
-                'attribute' => 'user_type',
-                'value' => function ($data) {
-                    if ($data->user_type == \app\modules\admin\models\User::USER_TYPE_ADMIN) {
-                        return 'admin';
-                    } elseif ($data->user_type == \app\modules\admin\models\User::USER_TYPE_SUB_ADMIN) {
-                        return 'sub admin';
-                    } elseif ($data->user_type == \app\modules\admin\models\User::USER_TYPE_NORMAL_USER) {
-                        return 'normal user';
-                    }
-                },
-                'filter' => false,
-//                'filter' => $userTypes,
-//                'filterType' => GridView::FILTER_SELECT2,
-//                'filterWidgetOptions' => [
-//                    'options' => ['prompt' => 'Select'],
-//                    'pluginOptions' => [
-//                        'allowClear' => true,
-//                    ],
-//                ],
-                'header' => 'User Type',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            ],
+//            [
+//                'attribute' => 'user_type',
+//                'value' => function ($data) {
+//                    $result = "";
+//                    if ($data->user_type == \app\modules\admin\models\User::USER_TYPE_ADMIN) {
+//                        $result = 'admin';
+//                    } elseif ($data->user_type == \app\modules\admin\models\User::USER_TYPE_SUB_ADMIN) {
+//                        $result = 'sub admin';
+//                    } elseif ($data->user_type == \app\modules\admin\models\User::USER_TYPE_NORMAL_USER) {
+//                        $result = 'Normal user';
+//                    }
+//                    return $result;
+//                },
+//                'filter' => false,
+////                'filter' => $userTypes,
+////                'filterType' => GridView::FILTER_SELECT2,
+////                'filterWidgetOptions' => [
+////                    'options' => ['prompt' => 'Select'],
+////                    'pluginOptions' => [
+////                        'allowClear' => true,
+////                    ],
+////                ],
+//                'header' => 'User Type',
+//                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+//            ],
             [
                 'attribute' => 'is_shop_owner',
                 'value' => function ($data) {
                     return (isset($data->isShopOwner[$data['is_shop_owner']])) ? $data->isShopOwner[$data['is_shop_owner']] : '-';
                 },
-                'filter' => $isShopOwner,
+                'filter' => $searchModel->isShopOwner,
                 'filterType' => GridView::FILTER_SELECT2,
                 'filterWidgetOptions' => [
                     'options' => ['prompt' => 'Select'],
@@ -113,7 +115,29 @@ $this->params['breadcrumbs'][] = $this->title;
                         'allowClear' => true,
                     ],
                 ],
-                'header' => 'Is Shop Owner',
+                'header' => '',
+                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            ],
+            [
+                'attribute' => 'is_newsletter_subscription',
+                'value' => function ($data) {
+                    $result = "";
+                    if ($data->is_newsletter_subscription == '1') {
+                        $result = 'Yes';
+                    } else {
+                        $result = 'No';
+                    }
+                    return $result;
+                },
+                'filter' => ['0' => 'No', '1' => "Yes"],
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => 'Is Newsletter',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [

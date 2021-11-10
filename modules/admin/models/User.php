@@ -4,6 +4,7 @@ namespace app\modules\admin\models;
 
 use app\models\Order;
 use app\models\ShopDetail;
+use app\models\UserPurchasedSubscriptions;
 use app\models\UserSubscription;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -29,6 +30,7 @@ use yii\web\IdentityInterface;
  * @property string|null $personal_information
  * @property string|null $user_type 1 => admin, 2 => sub admin, 3 => normal user
  * @property string $is_shop_owner 1 => shop owner
+ * @property string $is_newsletter_subscription 1 => Yes, 0 => No
  * @property string|null $shop_name
  * @property string|null $shop_email
  * @property int|null $shop_phone_number
@@ -43,6 +45,7 @@ use yii\web\IdentityInterface;
  * @property UserSocialIdentities[] $userSocialIdentities
  * @property UserSubscriptions[] $userSubscriptions
  * @property UserSubscription $userSubscription
+ * @property UserPurchasedSubscriptions[] $userPurchasedSubscriptions
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -144,7 +147,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['mobile', 'shop_phone_number'], 'string', 'max' => 13, 'min' => 10],
 
             [['weight', 'height'], 'number'],
-            [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
+            [['personal_information', 'user_type', 'is_shop_owner', 'is_newsletter_subscription'], 'string'],
             [['profile_picture', 'password_hash', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
@@ -280,6 +283,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUserSubscriptions()
     {
         return $this->hasMany(UserSubscription::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[UserSubscriptions]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserPurchasedSubscriptions()
+    {
+        return $this->hasMany(UserPurchasedSubscriptions::class, ['user_id' => 'id']);
     }
 
     /**

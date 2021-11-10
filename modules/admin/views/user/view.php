@@ -7,10 +7,10 @@ use app\models\ShopDetail;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\User */
-//$this->title = $model->first_name . " " . $model->last_name;
+
+
 $this->title = 'View Customer';
-$this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
-// $this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'All Customers', 'url' => ['index']];
 $this->params['breadcrumbs'][] = 'View Customer';
 \yii\web\YiiAsset::register($this);
 ?>
@@ -153,31 +153,41 @@ $this->params['breadcrumbs'][] = 'View Customer';
                         'value' => (!empty($shopAddress) && $shopAddress instanceof \app\models\UserAddress && !empty($shopAddress->address)) ? $shopAddress->address : "",
                     ],
                     [
+                        'label' => 'Is Newsletter',
+                        'attribute' => "is_newsletter_subscription",
+                        'value' => function ($model) {
+                            $result = "-";
+                            if ($model->is_newsletter_subscription == '1') {
+                                $result = 'Yes';
+                            } else {
+                                $result = 'No';
+                            }
+                            return $result;
+                        }
+                    ],
+                    [
                         'label' => 'Subscription Details',
-                        'visible' => ($model->is_shop_owner == 1 && !empty($model->userSubscriptions)) ? true : false,
-                        'format' => 'raw',
+                        'visible' => ($model->is_shop_owner == '1' && !empty($model->userPurchasedSubscriptions)) ? true : false,
+                        'format' => ['raw'],
                         'value' => function ($data) {
-                            $userSubscriptions = $data->userSubscriptions;
+                            $userSubscriptions = $data->userPurchasedSubscriptions;
                             $html = "<table style='border: 1px solid;'>
                                         <thead>
-                                            <th style='text-align: center; border: 1px solid'>Plan</th>
-                                            <th style='text-align: center; border: 1px solid'>Month</th>
+                                            <th style='text-align: center; border: 1px solid'>Plan</th>                                            
                                             <th style='text-align: center; border: 1px solid'>Amount</th>
-                                            <th style='text-align: center; border: 1px solid'>Start date</th>
-                                            <th style='text-align: center; border: 1px solid'>End date</th>
+                                            <th style='text-align: center; border: 1px solid'>Start date</th>                              
                                         </thead>
-                                        <tbody>";
+                                        <tbody>";//<th style='text-align: center; border: 1px solid'>Month</th> //<th style='text-align: center; border: 1px solid'>End date</th>
                             foreach ($userSubscriptions as $subscription) {
-                                if ($subscription instanceof \app\models\UserSubscription) {
-                                    $subscriptionData = $subscription->subscription;
-                                    $endDate = date('Y-m-d h:m:s', strtotime('+3 months', strtotime($subscriptionData->created_at)));
+                                if ($subscription instanceof \app\models\UserPurchasedSubscriptions) {
+                                    $subscriptionData = $subscription;
+                                    //$endDate = date('Y-m-d h:m:s', strtotime('+3 months', strtotime($subscriptionData->created_at)));
                                     $html .= "<tr style='border: 1px solid'>
-                                                    <td style='border: 1px solid'>$subscriptionData->name</td>
-                                                    <td style='border: 1px solid'>$subscriptionData->month</td>
-                                                    <td style='border: 1px solid'>$subscriptionData->amount</td>
-                                                    <td style='border: 1px solid'>$subscriptionData->created_at</td>
-                                                    <td style='border: 1px solid'>$endDate</td>
-                                                </tr>";
+                                                    <td style='text-align: center;border: 1px solid'>$subscriptionData->subscription_type</td>                                                    
+                                                    <td style='text-align: center;border: 1px solid'>".Yii::$app->formatter->asCurrency($subscriptionData->amount)."</td>
+                                                    <td style='text-align: center;border: 1px solid'>$subscriptionData->created_at</td>
+                                                   
+                                                </tr>";// <td style='border: 1px solid'>$subscriptionData->month</td> //  <td style='border: 1px solid'>$endDate</td>
                                 }
                             }
                             $html .= "</tbody>
