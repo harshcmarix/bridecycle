@@ -8,10 +8,10 @@ use app\models\ShopDetail;
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\User */
 //$this->title = $model->first_name . " " . $model->last_name;
-$this->title = 'View User';
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->title = 'View Customer';
+$this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 // $this->params['breadcrumbs'][] = $this->title;
-$this->params['breadcrumbs'][] = 'View User';
+$this->params['breadcrumbs'][] = 'View Customer';
 \yii\web\YiiAsset::register($this);
 ?>
 
@@ -158,7 +158,7 @@ $this->params['breadcrumbs'][] = 'View User';
                         'format' => 'raw',
                         'value' => function ($data) {
                             $userSubscriptions = $data->userSubscriptions;
-                              $html = "<table style='border: 1px solid;'>
+                            $html = "<table style='border: 1px solid;'>
                                         <thead>
                                             <th style='text-align: center; border: 1px solid'>Plan</th>
                                             <th style='text-align: center; border: 1px solid'>Month</th>
@@ -167,22 +167,22 @@ $this->params['breadcrumbs'][] = 'View User';
                                             <th style='text-align: center; border: 1px solid'>End date</th>
                                         </thead>
                                         <tbody>";
-                              foreach ($userSubscriptions as $subscription) {
-                                  if ($subscription instanceof \app\models\UserSubscription) {
-                                      $subscriptionData = $subscription->subscription;
-                                      $endDate = date('Y-m-d h:m:s', strtotime('+3 months', strtotime($subscriptionData->created_at)));
-                                      $html .= "<tr style='border: 1px solid'>
+                            foreach ($userSubscriptions as $subscription) {
+                                if ($subscription instanceof \app\models\UserSubscription) {
+                                    $subscriptionData = $subscription->subscription;
+                                    $endDate = date('Y-m-d h:m:s', strtotime('+3 months', strtotime($subscriptionData->created_at)));
+                                    $html .= "<tr style='border: 1px solid'>
                                                     <td style='border: 1px solid'>$subscriptionData->name</td>
                                                     <td style='border: 1px solid'>$subscriptionData->month</td>
                                                     <td style='border: 1px solid'>$subscriptionData->amount</td>
                                                     <td style='border: 1px solid'>$subscriptionData->created_at</td>
                                                     <td style='border: 1px solid'>$endDate</td>
                                                 </tr>";
-                                  }
-                              }
-                              $html .= "</tbody>
+                                }
+                            }
+                            $html .= "</tbody>
                                     </table>";
-                              return $html;
+                            return $html;
                         }
                     ],
 //            'created_at',

@@ -49,6 +49,9 @@ class ProductSearch extends Product
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+            'pagination' => [
+                'pageSize' => (!empty(\Yii::$app->params['default_page_size_for_backend'])) ? \Yii::$app->params['default_page_size_for_backend'] : 50,
+            ]
         ]);
 
         $this->load($params);
@@ -87,7 +90,7 @@ class ProductSearch extends Product
             ->andFilterWhere(['like', 'is_top_trending', $this->is_top_trending])
             ->andFilterWhere(['like', 'gender', $this->gender])
             ->andFilterWhere(['like', 'is_cleaned', $this->is_cleaned]);
-            //->andFilterWhere(['like', 'receipt', $this->receipt]);
+        //->andFilterWhere(['like', 'receipt', $this->receipt]);
 
         return $dataProvider;
     }

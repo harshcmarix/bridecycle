@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\ProductStatus;
 use app\models\{Order, Product};
 use app\models\Ads;
 use app\models\Brand;
@@ -78,8 +79,15 @@ class SiteController extends Controller
 
         $totalActiveAds = Ads::find()->where(['status' => '2'])->count();
         $totalBrand = Brand::find()->count();
+
         $modelTotalProduct = Product::find()->count();
+        $modelTotalProductPendingApproval = Product::find()->where(['status_id' => ProductStatus::STATUS_PENDING_APPROVAL])->count();
+
         $modelTotalOrder = Order::find()->count();
+        $modelTotalOrderLast30Days = Order::find()->where(['between', 'created_at', date('Y-m-d 23:59:59', strtotime('-30 days')), date('Y-m-d 00:00:01')])->count();
+        $modelTotalOrderLast7Days = Order::find()->where(['between', 'created_at', date('Y-m-d 23:59:59', strtotime('-7 days')), date('Y-m-d 00:00:01')])->count();
+        $modelTotalOrderToday = Order::find()->where(['between', 'created_at', $todayFrom, $todayTo])->count();
+
         $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
         $modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
         $modelTotalIncome = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
@@ -145,7 +153,11 @@ class SiteController extends Controller
             'totalActiveAds' => $totalActiveAds,
             'totalBrand' => $totalBrand,
             'totalProduct' => $modelTotalProduct,
+            'totalProductPendingApproval' => $modelTotalProductPendingApproval,
             'totalOrder' => $modelTotalOrder,
+            'totalOrderLastMonth' => $modelTotalOrderLast30Days,
+            'totalOrderLastWeek' => $modelTotalOrderLast7Days,
+            'totalOrderToday' => $modelTotalOrderToday,
             'totalOrderDeliveredAndCompleted' => $modelTotalOrderDelivered,
             'totalOrderPending' => $modelTotalOrderPending,
             'totalIncome' => (!empty($modelTotalIncome)) ? $modelTotalIncome : 0,

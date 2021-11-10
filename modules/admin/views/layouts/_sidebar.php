@@ -35,7 +35,8 @@ use app\modules\admin\models\Module;
         $route = $this->context->route;
         //$modelsModule = Module::find()->where(['is_show' => 1])->orderBy(['in_order' => SORT_ASC])->all();
         $menuList[] = ['label' => 'Dashboard', 'icon' => 'home', 'url' => ['site/index'], 'visible' => $visible];
-        $menuList[] = ['label' => 'User', 'icon' => 'user', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')];
+        $menuList[] = ['label' => 'Customer', 'icon' => 'users', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')];
+        $menuList[] = ['label' => 'Order', 'icon' => 'cart-arrow-down', 'url' => ['order/index'], 'visible' => $visible, 'active' => ($route === 'admin/order/index' || $route === 'admin/order/update' || $route === 'admin/order/view')];
         $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => false, 'active' => ($route === 'admin/sub-admin/index' || $route === 'admin/sub-admin/create' || $route === 'admin/sub-admin/update' || $route === 'admin/sub-admin/view')];
         $menuList[] = ['label' => 'Ads', 'icon' => 'film', 'url' => ['ads/index'], 'visible' => $visible, 'active' => ($route === 'admin/ads/index' || $route === 'admin/ads/create' || $route === 'admin/ads/update' || $route === 'admin/ads/view')];
         $menuList[] = ['label' => 'Brand', 'icon' => 'tag', 'url' => ['brand/index'], 'visible' => $visible, 'active' => ($route === 'admin/brand/index' || $route === 'admin/brand/create' || $route === 'admin/brand/update' || $route === 'admin/brand/view')];
@@ -43,7 +44,6 @@ use app\modules\admin\models\Module;
         $menuList[] = ['label' => 'Product Category', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => $visible, 'active' => ($route === 'admin/product-category/index' || $route === 'admin/product-category/create' || $route === 'admin/product-category/update' || $route === 'admin/product-category/view')];
         $menuList[] = ['label' => 'Product Rating', 'icon' => 'star', 'url' => ['product-rating/index'], 'visible' => $visible, 'active' => ($route === 'admin/product-rating/index' || $route === 'admin/product-rating/update' || $route === 'admin/product-rating/view')];
         $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => $visible, 'active' => ($route === 'admin/promo-code/index' || $route === 'admin/promo-code/create' || $route === 'admin/promo-code/update' || $route === 'admin/promo-code/view')];
-        $menuList[] = ['label' => 'Order', 'icon' => 'cart-arrow-down', 'url' => ['order/index'], 'visible' => $visible, 'active' => ($route === 'admin/order/index' || $route === 'admin/order/update' || $route === 'admin/order/view')];
         $menuList[] = ['label' => 'Seller Payments', 'icon' => 'eur', 'url' => ['bridecycle-to-seller-payments/index'], 'visible' => $visible, 'active' => ($route === 'admin/bridecycle-to-seller-payments/index' || $route === 'admin/bridecycle-to-seller-payments/create' || $route === 'admin/bridecycle-to-seller-payments/update' || $route === 'admin/bridecycle-to-seller-payments/view')];
         $menuList[] = ['label' => 'Subscription', 'icon' => 'bell', 'url' => ['user-purchased-subscriptions/index'], 'visible' => $visible, 'active' => ($route === 'admin/user-purchased-subscriptions/index' || $route === 'admin/user-purchased-subscriptions/create' || $route === 'admin/user-purchased-subscriptions/update' || $route === 'admin/user-purchased-subscriptions/view')];
         $menuList[] = ['label' => 'Content', 'icon' => 'file-text-o', 'url' => ['cms-page/index'], 'visible' => $visible, 'active' => ($route === 'admin/cms-page/index' || $route === 'admin/cms-page/create' || $route === 'admin/cms-page/update' || $route === 'admin/cms-page/view')];
@@ -52,13 +52,12 @@ use app\modules\admin\models\Module;
             ['label' => "Customers", 'icon' => 'fas fa-angle-right', 'url' => ['report/customers', 'p' => 'w'], 'visible' => $visible, 'active' => ($route === 'admin/report/customers')],
         ],];
         $menuList[] = ['label' => 'Abuse Reports', 'icon' => 'ban', 'url' => ['abuse-report/index'], 'visible' => false, 'active' => ($route === 'admin/abuse-report/index' || $route === 'admin/abuse-report/view')];
-        $menuList[] = ['label' => 'Dress Type', 'icon' => 'female', 'url' => ['dress-type/index'], 'visible' => $visible, 'active' => ($route === 'admin/dress-type/index' || $route === 'admin/dress-type/view')];
+        $menuList[] = ['label' => 'Dress Type', 'icon' => 'female', 'url' => ['dress-type/index'], 'visible' => false, 'active' => ($route === 'admin/dress-type/index' || $route === 'admin/dress-type/view')];
         $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => $visible, 'active' => ($route === 'admin/setting/index')];
         $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => $visible, 'active' => ($route === 'admin/banner/index' || $route === 'admin/banner/create' || $route === 'admin/banner/update' || $route === 'admin/banner/view')];
         $menuList[] = ['label' => 'Tailor', 'icon' => 'cut', 'url' => ['tailor/index'], 'visible' => $visible, 'active' => ($route === 'admin/tailor/index' || $route === 'admin/tailor/create' || $route === 'admin/tailor/update' || $route === 'admin/tailor/view')];
         $menuList[] = ['label' => 'Color', 'icon' => 'paint-brush', 'url' => ['color/index'], 'visible' => $visible, 'active' => ($route === 'admin/color/index' || $route === 'admin/color/create' || $route === 'admin/color/update' || $route === 'admin/color/view')];
         $menuList[] = ['label' => 'Trial', 'icon' => 'ticket', 'url' => ['trial/index'], 'visible' => $visible, 'active' => ($route === 'admin/trial/index')];
-
 
         ?>
         <!-- Sidebar menu start -->

@@ -9,6 +9,7 @@ return [
     'token_segment' => 1,
     //'default_page_size' => 10,
     'default_page_size' => 10000,
+    'default_page_size_for_backend' => 20,
     // Used in reset password expire token
     'password_reset_token_expire_time' => 3600, // in seconds
     'support_email' => 'robot@devreadwrite.com',

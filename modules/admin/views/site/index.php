@@ -61,20 +61,6 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/ads/index' ?>" class="small-box-footer">
-            <div class="small-box bg-maroon">
-                <div class="inner">
-                    <h3><?php echo $totalActiveAds ?></h3>
-                    <p>Active Ads</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-film"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/brand/index' ?>" class="small-box-footer">
             <div class="small-box bg-purple">
                 <div class="inner">
@@ -83,6 +69,21 @@ $this->title = 'Dashboard';
                 </div>
                 <div class="icon">
                     <i class="fa fa-tag"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+        <a href="
+                <?php echo Yii::$app->request->baseUrl . '/admin/product/index' ?>" class="small-box-footer">
+            <div class="small-box bg-gray-light">
+                <div class="inner">
+                    <h3><?php echo $totalProductPendingApproval ?></h3>
+                    <p>Pending Products</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-shopping-bag"></i>
                 </div>
             </div>
         </a>
@@ -121,7 +122,7 @@ $this->title = 'Dashboard';
             <div class="small-box bg-lime">
                 <div class="inner">
                     <h3><?php echo $totalOrder ?></h3>
-                    <p>Total Order Placed</p>
+                    <p>Total Order So Far</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-shopping-cart"></i>
@@ -130,6 +131,48 @@ $this->title = 'Dashboard';
         </a>
     </div>
 
+
+    <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
+            <div class="small-box bg-lime">
+                <div class="inner">
+                    <h3><?php echo $totalOrderLastMonth ?></h3>
+                    <p>Total Order Last 30 Days</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-shopping-cart"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
+            <div class="small-box bg-lime">
+                <div class="inner">
+                    <h3><?php echo $totalOrderLastWeek ?></h3>
+                    <p>Total Order Last 7 Days</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-shopping-cart"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
+            <div class="small-box bg-lime">
+                <div class="inner">
+                    <h3><?php echo $totalOrderToday ?></h3>
+                    <p>Total Order Today</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-shopping-cart"></i>
+                </div>
+            </div>
+        </a>
+    </div>
 
     <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
@@ -147,7 +190,7 @@ $this->title = 'Dashboard';
 
     <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
-            <div class="small-box bg-lime">
+            <div class="small-box bg-aqua">
                 <div class="inner">
                     <h3><?php echo $totalOrderPending ?></h3>
                     <p>Order Pending</p>
@@ -164,10 +207,24 @@ $this->title = 'Dashboard';
             <div class="small-box bg-blue" id="tot_income_box">
                 <div class="inner">
                     <h3><?php echo Yii::$app->formatter->asCurrency($totalIncome); ?></h3>
-                    <p>Total income</p>
+                    <p>Total Sales</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-money"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/ads/index' ?>" class="small-box-footer">
+            <div class="small-box bg-maroon">
+                <div class="inner">
+                    <h3><?php echo $totalActiveAds ?></h3>
+                    <p>Active Ads</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-film"></i>
                 </div>
             </div>
         </a>

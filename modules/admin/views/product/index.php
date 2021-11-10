@@ -142,41 +142,41 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 'header' => 'Tax',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 70px'],
             ],
-            [
-                'attribute' => 'option_conditions',
-                'value' => function ($model) {
-                    if (empty($model->option_conditions)) {
-                        return '';
-                    }
-                    return $model->option_conditions;
-                },
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-            ],
-            [
-                'attribute' => 'option_size',
-                'value' => function ($model) {
-                    return $model->option_size;
-                },
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-            ],
-            [
-                'attribute' => 'option_show_only',
-                'value' => function ($model) {
-                    return ($model->option_show_only == '1') ? "Yes" : "No";
-                },
-                'filter' => $searchModel->arrOptionIsShowOnly,
-                'filterType' => GridView::FILTER_SELECT2,
-                'filterWidgetOptions' => [
-                    'options' => ['prompt' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ],
-                ],
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-            ],
+//            [
+//                'attribute' => 'option_conditions',
+//                'value' => function ($model) {
+//                    if (empty($model->option_conditions)) {
+//                        return '';
+//                    }
+//                    return $model->option_conditions;
+//                },
+//                'header' => '',
+//                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+//            ],
+//            [
+//                'attribute' => 'option_size',
+//                'value' => function ($model) {
+//                    return $model->option_size;
+//                },
+//                'header' => '',
+//                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+//            ],
+//            [
+//                'attribute' => 'option_show_only',
+//                'value' => function ($model) {
+//                    return ($model->option_show_only == '1') ? "Yes" : "No";
+//                },
+//                'filter' => $searchModel->arrOptionIsShowOnly,
+//                'filterType' => GridView::FILTER_SELECT2,
+//                'filterWidgetOptions' => [
+//                    'options' => ['prompt' => 'Select'],
+//                    'pluginOptions' => [
+//                        'allowClear' => true,
+//                    ],
+//                ],
+//                'header' => '',
+//                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+//            ],
             [
                 'attribute' => 'available_quantity',
                 'value' => function ($model) {

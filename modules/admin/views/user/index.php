@@ -10,7 +10,7 @@ use yii\helpers\Url;
 /* @var $searchModel app\modules\admin\models\search\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Users';
+$this->title = 'Customers';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">
@@ -88,21 +88,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         return 'normal user';
                     }
                 },
-                'filter' => $userTypes,
-                'filterType' => GridView::FILTER_SELECT2,
-                'filterWidgetOptions' => [
-                    'options' => ['prompt' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ],
-                ],
+                'filter' => false,
+//                'filter' => $userTypes,
+//                'filterType' => GridView::FILTER_SELECT2,
+//                'filterWidgetOptions' => [
+//                    'options' => ['prompt' => 'Select'],
+//                    'pluginOptions' => [
+//                        'allowClear' => true,
+//                    ],
+//                ],
                 'header' => 'User Type',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'is_shop_owner',
                 'value' => function ($data) {
-                    return isset($data->isShopOwner[$data['is_shop_owner']]) ? $data->isShopOwner[$data['is_shop_owner']] : '-';
+                    return (isset($data->isShopOwner[$data['is_shop_owner']])) ? $data->isShopOwner[$data['is_shop_owner']] : '-';
                 },
                 'filter' => $isShopOwner,
                 'filterType' => GridView::FILTER_SELECT2,
@@ -132,7 +133,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'toolbar' => [
                 [
                     'content' =>
-                        Html::button('<i class="fa fa-plus-circle"> Add User </i>', [
+                        Html::button('<i class="fa fa-plus-circle"> Add Customer </i>', [
                             'class' => 'btn btn-success',
                             'title' => 'Add User',
                             'onclick' => "window.location.href = '" . Url::to(['user/create']) . "';",
@@ -161,8 +162,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            'itemLabelSingle' => 'user',
-            'itemLabelPlural' => 'Users',
+            'itemLabelSingle' => 'customer',
+            'itemLabelPlural' => 'Customers',
         ]);
         ?>
     </div>

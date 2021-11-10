@@ -43,6 +43,10 @@ class UserSearch extends User
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+            'pagination' => [
+                //'pageSize' => (!empty(\Yii::$app->params['default_page_size_for_backend'])) ? \Yii::$app->params['default_page_size_for_backend'] : 50,
+                'pageSize' => 50,
+            ]
         ]);
 
         $this->load($params);
@@ -73,7 +77,7 @@ class UserSearch extends User
             ->andFilterWhere(['like', 'personal_information', $this->personal_information])
             ->andFilterWhere(['like', 'user_type', $this->user_type])
             ->andFilterWhere(['like', 'is_shop_owner', $this->is_shop_owner]);
-           
+
 
         return $dataProvider;
     }
