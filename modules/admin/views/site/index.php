@@ -80,7 +80,7 @@ $this->title = 'Dashboard';
             <div class="small-box bg-gray-light">
                 <div class="inner">
                     <h3><?php echo $totalProductPendingApproval ?></h3>
-                    <p>Pending Products</p>
+                    <p>New Products</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-shopping-bag"></i>
