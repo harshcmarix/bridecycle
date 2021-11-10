@@ -42,7 +42,14 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
+        // p(\Yii::$app->controller->action->id);
+        
         $query = Product::find();
+
+        if((\Yii::$app->controller->action->id == "new-product")){
+            // p('innn');
+            $query->andWhere(['status_id' => 1]);
+        }
 
         // add conditions that should always apply here
 

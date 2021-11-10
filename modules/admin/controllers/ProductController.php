@@ -36,11 +36,11 @@ class ProductController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'view', 'delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
+                'only' => ['index', 'new-product', 'create', 'update', 'view', 'delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
+                        'actions' => ['index','new-product', 'create', 'update', 'view', 'delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -70,6 +70,33 @@ class ProductController extends Controller
         $statuses = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'categories' => $categories,
+            'subCategories' => $subCategories,
+            'productType' => $productType,
+            'arrStatus' => $statuses
+        ]);
+    }
+
+    public function actionNewProduct()
+    {
+        $searchModel = new ProductSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $categories = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', function ($data) {
+            return $data['name'];
+        });
+
+        $subCategories = ArrayHelper::map(ProductCategory::find()->where(['IS NOT', 'parent_category_id', null])->all(), 'id', function ($data) {
+            return $data['name'];
+        });
+
+        $productType = [Product::PRODUCT_TYPE_NEW => 'New', Product::PRODUCT_TYPE_USED => 'Used'];
+
+        $statuses = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
+
+        return $this->render('new-product', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'categories' => $categories,
