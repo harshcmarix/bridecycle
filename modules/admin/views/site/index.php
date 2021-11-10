@@ -76,11 +76,11 @@ $this->title = 'Dashboard';
 
     <div class="col-md-3 col-xs-6">
         <a href="
-                <?php echo Yii::$app->request->baseUrl . '/admin/product/index' ?>" class="small-box-footer">
+                <?php echo Yii::$app->request->baseUrl . '/admin/product/new-product' ?>" class="small-box-footer">
             <div class="small-box bg-gray-light">
                 <div class="inner">
                     <h3><?php echo $totalProductPendingApproval ?></h3>
-                    <p>Pending Products</p>
+                    <p>New Products</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-shopping-bag"></i>
