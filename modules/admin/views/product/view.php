@@ -87,13 +87,13 @@ $this->params['breadcrumbs'][] = 'View Product';
                             return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
                         },
                     ],
-                    'option_conditions',
-                    [
-                        'attribute' => 'option_show_only',
-                        'value' => function ($model) {
-                            return (!empty($model->option_show_only) && $model->option_show_only == 1) ? "Yes" : "No";
-                        },
-                    ],
+                    // 'option_conditions',
+                    // [
+                    //     'attribute' => 'option_show_only',
+                    //     'value' => function ($model) {
+                    //         return (!empty($model->option_show_only) && $model->option_show_only == 1) ? "Yes" : "No";
+                    //     },
+                    // ],
                     'description:ntext',
                     [
                         'attribute' => 'images',
@@ -127,18 +127,18 @@ $this->params['breadcrumbs'][] = 'View Product';
                         },
                     ],
                     'available_quantity',
-                    [
-                        'attribute' => 'is_top_selling',
-                        'value' => function ($model) {
-                            return (!empty($model->is_top_selling) && $model->is_top_selling == '1') ? "Yes" : "No";
-                        },
-                    ],
-                    [
-                        'attribute' => 'is_top_trending',
-                        'value' => function ($model) {
-                            return (!empty($model->is_top_trending) && $model->is_top_trending == '1') ? "Yes" : "No";
-                        },
-                    ],
+                    // [
+                    //     'attribute' => 'is_top_selling',
+                    //     'value' => function ($model) {
+                    //         return (!empty($model->is_top_selling) && $model->is_top_selling == '1') ? "Yes" : "No";
+                    //     },
+                    // ],
+                    // [
+                    //     'attribute' => 'is_top_trending',
+                    //     'value' => function ($model) {
+                    //         return (!empty($model->is_top_trending) && $model->is_top_trending == '1') ? "Yes" : "No";
+                    //     },
+                    // ],
                     [
                         'attribute' => 'brand_id',
                         'value' => function ($model) {
@@ -228,7 +228,7 @@ $this->params['breadcrumbs'][] = 'View Product';
                     ],
                     [
                         'attribute' => 'type',
-                        'label' => 'Product Type',
+                        'label' => 'Conditions',
                         'value' => function ($model) {
                             $producttype = "";
                             if (!empty($model->type) && $model->type == Product::PRODUCT_TYPE_NEW) {

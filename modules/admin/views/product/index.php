@@ -205,40 +205,40 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
 
-            [
-                'format' => ['raw'],
-                'attribute' => 'is_top_selling',
-                'value' => function ($model) {
-                    return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-                },
-                'filter' => $searchModel->arrIsTopSelling,
-                'filterType' => GridView::FILTER_SELECT2,
-                'filterWidgetOptions' => [
-                    'options' => ['prompt' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ],
-                ],
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            ],
-            [
-                'format' => ['raw'],
-                'attribute' => 'is_top_trending',
-                'value' => function ($model) {
-                    return Html::checkbox("", $model->is_top_trending, ['class' => 'topTrending', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
-                },
-                'filter' => $searchModel->arrIsTopTrending,
-                'filterType' => GridView::FILTER_SELECT2,
-                'filterWidgetOptions' => [
-                    'options' => ['prompt' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ],
-                ],
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            ],
+            // [
+            //     'format' => ['raw'],
+            //     'attribute' => 'is_top_selling',
+            //     'value' => function ($model) {
+            //         return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
+            //     },
+            //     'filter' => $searchModel->arrIsTopSelling,
+            //     'filterType' => GridView::FILTER_SELECT2,
+            //     'filterWidgetOptions' => [
+            //         'options' => ['prompt' => 'Select'],
+            //         'pluginOptions' => [
+            //             'allowClear' => true,
+            //         ],
+            //     ],
+            //     'header' => '',
+            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            // ],
+            // [
+            //     'format' => ['raw'],
+            //     'attribute' => 'is_top_trending',
+            //     'value' => function ($model) {
+            //         return Html::checkbox("", $model->is_top_trending, ['class' => 'topTrending', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
+            //     },
+            //     'filter' => $searchModel->arrIsTopTrending,
+            //     'filterType' => GridView::FILTER_SELECT2,
+            //     'filterWidgetOptions' => [
+            //         'options' => ['prompt' => 'Select'],
+            //         'pluginOptions' => [
+            //             'allowClear' => true,
+            //         ],
+            //     ],
+            //     'header' => '',
+            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            // ],
             [
                 'attribute' => 'type',
                 'value' => function ($model) {

@@ -260,7 +260,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             'allowClear' => true,
                             'disabled' => $disabledProductType
                         ],
-                    ])->label('Product Type'); ?>
+                    ])->label('Conditions'); ?>
                 </div>
             </div>
 
