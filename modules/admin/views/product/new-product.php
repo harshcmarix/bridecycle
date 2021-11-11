@@ -258,7 +258,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         'allowClear' => true,
                     ],
                 ],
-                'header' => 'Product Type',
+                'header' => 'Conditions',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
 
@@ -302,7 +302,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     Html::button('<i class="fa fa-plus-circle"> Add Product </i>', [
                         'class' => 'btn btn-success',
                         'title' => 'Add Product',
-                        'onclick' => "window.location.href = '" . Url::to(['product/create']) . "';",
+                        'onclick' => "window.location.href = '" . Url::to(['product/new-product-create']) . "';",
                     ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
