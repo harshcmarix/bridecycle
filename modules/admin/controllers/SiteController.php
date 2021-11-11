@@ -68,20 +68,23 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $todayFrom = date('Y-m-d 00:00:01');
+        $todayTo = date('Y-m-d 23:59:59');
 
         $modelTotalCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '0'])->count();
         $totalShopOwnerCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->count();
+
+        $totalShopOwnerCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
+
         $totSubAdmin = User::find()->where(['user_type' => User::USER_TYPE_SUB_ADMIN])->count();
 
-        $todayFrom = date('Y-m-d 00:00:01');
-        $todayTo = date('Y-m-d 23:59:59');
         $modelTotalCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $totalActiveAds = Ads::find()->where(['status' => '2'])->count();
         $totalBrand = Brand::find()->count();
 
         $modelTotalProduct = Product::find()->count();
-        $modelTotalProductPendingApproval = Product::find()->where(['status_id' => ProductStatus::STATUS_PENDING_APPROVAL])->count();
+        $modelTotalProductPendingApproval = Product::find()->where(['status_id' => ProductStatus::STATUS_PENDING_APPROVAL])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalOrder = Order::find()->count();
         $modelTotalOrderLast30Days = Order::find()->where(['between', 'created_at', date('Y-m-d 23:59:59', strtotime('-30 days')), date('Y-m-d 00:00:01')])->count();
@@ -148,6 +151,7 @@ class SiteController extends Controller
         return $this->render('index', [
             'totalCustomer' => $modelTotalCustomer,
             'totalShopOwnerCustomer' => $totalShopOwnerCustomer,
+            'totalShopOwnerCustomerToday' => $totalShopOwnerCustomerToday,
             'totSubAdmin' => $totSubAdmin,
             'totalCustomerToday' => $modelTotalCustomerToday,
             'totalActiveAds' => $totalActiveAds,

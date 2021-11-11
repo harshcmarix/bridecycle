@@ -40,7 +40,8 @@
     "miloschuman/yii2-highcharts-widget": "^9.0",
     "imdhemy/google-play-billing": "^0.6.4",
     "google/apiclient": "^2.11",
-    "kartik-v/yii2-date-range": "dev-master"
+    "kartik-v/yii2-date-range": "dev-master",
+    "yii2tech/csv-grid": "^1.0"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

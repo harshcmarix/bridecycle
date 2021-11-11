@@ -15,10 +15,10 @@ echo Dialog::widget(
     <div class="box-header"></div>
 
     <div class="box-body">
+
         <?php $form = ActiveForm::begin(['enableAjaxValidation' => false, 'options' => ['autocomplete' => 'off']]); ?>
+
         <div class="users-form">
-
-
             <div class="row">
                 <div class="col col-md-6">
                     <?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?>
@@ -92,11 +92,11 @@ echo Dialog::widget(
                     <!-- image code end -->
                 </div>
 
-                <?php if (empty(Yii::$app->request->get('f'))) { ?>
-                    <div class="col col-md-2">
-                        <?= $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
-                    </div>
-                <?php } ?>
+<!--                --><?php //if (empty(Yii::$app->request->get('f'))) { ?>
+<!--                    <div class="col col-md-2">-->
+<!--                        --><?php //echo $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
+<!--                    </div>-->
+<!--                --><?php //} ?>
 
                 <?php if (Yii::$app->controller->action->id == 'update') { ?>
                     <?php if (empty(Yii::$app->request->get('f'))) { ?>
@@ -201,13 +201,14 @@ echo Dialog::widget(
             </div>
 
         </div>
+
         <div class="form-group ">
-            <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+            <?= Html::a('Back', \yii\helpers\Url::to(['index-new-customer']), ['class' => 'btn btn-default']) ?>
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
         </div>
-    </div>
 
-    <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
+    </div>
 </div>
 
 <script type="text/javascript">

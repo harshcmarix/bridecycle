@@ -62,7 +62,24 @@ class UserSearch extends User
                 $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
                 $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
             } else {
-                $startDate = date('Y-m-d 00:00:01', strtotime('-15 days'));
+                $startDate = date('Y-m-d 00:00:01', strtotime('-35 days'));
+                $endDate = date('Y-m-d 23:59:59');
+                //$this->created_at = date('d-M-Y', strtotime('-3 days')) . " to " . date('d-M-Y');
+            }
+            $query->andWhere(['between', 'created_at', $startDate, $endDate]);
+        }
+
+        if (Yii::$app->controller->action->id == 'index-new-shop-owner-customer') {
+            $query->andWhere(['is_shop_owner' => '1']);
+
+            if (!empty($this->created_at)) {
+                $dateWiseFilter = $this->created_at;
+
+                $dates = explode(" to ", $dateWiseFilter);
+                $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
+                $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
+            } else {
+                $startDate = date('Y-m-d 00:00:01', strtotime('-35 days'));
                 $endDate = date('Y-m-d 23:59:59');
                 //$this->created_at = date('d-M-Y', strtotime('-3 days')) . " to " . date('d-M-Y');
             }

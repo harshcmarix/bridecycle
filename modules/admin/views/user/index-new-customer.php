@@ -2,37 +2,28 @@
 
 use app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
-use GridView\ExportMenu;
 use yii\bootstrap\Modal;
-use yii\data\ArrayDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii2tech\csvgrid\CsvGrid;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\search\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'All Customers';
+$this->title = 'New Customers';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<style>
-    .btn-success-export-csv, .btn-success-export-csv:hover {
-        background-color: #00a65a;
-        border-color: #008d4c;
-        color: white;
-    }
-</style>
-
 <div class="career-index box box-primary">
     <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
         <div class="filter-div " id="filter-div" style="display: none">
+
             <div class="row">
                 <div class="col-md-12">
-                    <?= $this->render('_search_all_customer', ['model' => $searchModel]) ?>
+                    <?= $this->render('_search_new_customer', ['model' => $searchModel]) ?>
                 </div>
             </div>
+
         </div>
 
         <?php
@@ -97,47 +88,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
-//            [
-//                'attribute' => 'user_type',
-//                'value' => function ($data) {
-//                    $result = "";
-//                    if ($data->user_type == \app\modules\admin\models\User::USER_TYPE_ADMIN) {
-//                        $result = 'admin';
-//                    } elseif ($data->user_type == \app\modules\admin\models\User::USER_TYPE_SUB_ADMIN) {
-//                        $result = 'sub admin';
-//                    } elseif ($data->user_type == \app\modules\admin\models\User::USER_TYPE_NORMAL_USER) {
-//                        $result = 'Normal user';
-//                    }
-//                    return $result;
-//                },
-//                'filter' => false,
-////                'filter' => $userTypes,
-////                'filterType' => GridView::FILTER_SELECT2,
-////                'filterWidgetOptions' => [
-////                    'options' => ['prompt' => 'Select'],
-////                    'pluginOptions' => [
-////                        'allowClear' => true,
-////                    ],
-////                ],
-//                'header' => 'User Type',
-//                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-//            ],
-            [
-                'attribute' => 'is_shop_owner',
-                'value' => function ($data) {
-                    return (isset($data->isShopOwner[$data['is_shop_owner']])) ? $data->isShopOwner[$data['is_shop_owner']] : '-';
-                },
-                'filter' => $searchModel->isShopOwner,
-                'filterType' => GridView::FILTER_SELECT2,
-                'filterWidgetOptions' => [
-                    'options' => ['prompt' => 'Select'],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ],
-                ],
-                'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            ],
             [
                 'attribute' => 'is_newsletter_subscription',
                 'value' => function ($data) {
@@ -162,16 +112,23 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
+                'urlCreator' => function ($action, $model, $key, $index) {
+                    return Url::to(['user/new-customer-' . $action . '/', 'id' => $model->id]);
+                }
             ],
         ];
 
         echo GridView::widget([
-            'id' => 'user-grid',
+            'id' => 'new-customer-user-grid',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
+//            'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
+//            'headerRowOptions' => ['class' => 'kartik-sheet-style'],
+//            'filterRowOptions' => ['class' => 'kartik-sheet-style'],
+
             'exportConfig' => [
-                GridView::CSV => ['label' => 'Export as CSV', 'filename' => "all_customers_".date('d_m_Y_His')],
+                GridView::CSV => ['label' => 'Export as CSV', 'filename' => "new_customers_" . date('d_m_Y_His')],
 //                GridView::HTML => ['label' => 'Export as HTML', 'filename' => 'File_Name -' . date('d-M-Y')],
 //                GridView::PDF => ['label' => 'Export as PDF', 'filename' => 'File_Name -' . date('d-M-Y')],
 //                GridView::EXCEL => ['label' => 'Export as EXCEL', 'filename' => 'File_Name -' . date('d-M-Y')],
@@ -190,17 +147,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         Html::button('<i class="fa fa-filter"></i>', [
                             'class' => 'btn btn-basic',
                             'title' => 'Filter',
-                            'onclick' => "applyFilterAllCustomer()",
+                            'onclick' => "applyFilter()",
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 "{export}",
                 [
                     'content' =>
-                        Html::button('<i class="fa fa-plus-circle"> Add Customer </i>', [
+                        Html::button('<i class="fa fa-plus-circle"> Add New Customer </i>', [
                             'class' => 'btn btn-success',
-                            'title' => 'Add User',
-                            'onclick' => "window.location.href = '" . Url::to(['user/create']) . "';",
+                            'title' => 'Add New Customer',
+                            'onclick' => "window.location.href = '" . Url::to(['user/new-customer-create']) . "';",
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
@@ -209,7 +166,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         Html::button('<i class="fa fa-refresh"> Reset </i>', [
                             'class' => 'btn btn-basic',
                             'title' => 'Reset Filter',
-                            'onclick' => "window.location.href = '" . Url::to(['user/index']) . "';",
+                            'onclick' => "window.location.href = '" . Url::to(['user/index-new-customer']) . "';",
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
@@ -226,11 +183,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            'itemLabelSingle' => 'customer',
-            'itemLabelPlural' => 'Customers',
-
+            'itemLabelSingle' => 'new customer',
+            'itemLabelPlural' => 'New Customers',
         ]);
-
         ?>
     </div>
 </div>
@@ -254,7 +209,6 @@ $this->params['breadcrumbs'][] = $this->title;
         filterDiv.next('i').remove();
         filterDiv.css("width", "100% !important");
 
-
         "<?php if(!empty($searchModel->created_at)){ ?>";
         $('#filter-div').show();
         "<?php }else{ ?>";
@@ -263,7 +217,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         var input;
         var submit_form = false;
-        var filter_selector = '#user-grid-filters input';
+        var filter_selector = '#new-customer-user-grid-filters input';
         var isInput = true;
 
         $('select').on('change', function () {
@@ -274,13 +228,13 @@ $this->params['breadcrumbs'][] = $this->title;
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#user-grid", function (event) {
+        $("body").on('beforeFilter', "#new-customer-user-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#user-grid", function (event) {
+        $("body").on('afterFilter', "#new-customer-user-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
@@ -294,7 +248,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
                     if (submit_form === false) {
                         submit_form = true;
-                        $("#user-grid").yiiGridView("applyFilter");
+                        $("#new-customer-user-grid").yiiGridView("applyFilter");
                     }
                 }
             })
@@ -325,7 +279,7 @@ $this->params['breadcrumbs'][] = $this->title;
         //select box filter
         var select;
         var submit_form = false;
-        var select_filter_selector = '#user-grid-filters select';
+        var select_filter_selector = '#new-customer-user-grid-filters select';
         var isSelect = true;
 
         $('select').on('change', function () {
@@ -334,12 +288,12 @@ $this->params['breadcrumbs'][] = $this->title;
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#user-grid", function (event) {
+        $("body").on('beforeFilter', "#new-customer-user-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#user-grid", function (event) {
+        $("body").on('afterFilter', "#new-customer-user-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -351,7 +305,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
-                    $("#user-grid").yiiGridView("applyFilter");
+                    $("#new-customer-user-grid").yiiGridView("applyFilter");
                 }
             })
             .on('pjax:success', function () {
@@ -385,8 +339,7 @@ $this->params['breadcrumbs'][] = $this->title;
         }, 200);
     });
 
-    function applyFilterAllCustomer() {
+    function applyFilter() {
         $('#filter-div').toggle();
     }
-
 </script>

@@ -30,7 +30,7 @@ use yii\web\IdentityInterface;
  * @property string|null $personal_information
  * @property string|null $user_type 1 => admin, 2 => sub admin, 3 => normal user
  * @property string $is_shop_owner 1 => shop owner
- * @property string $is_newsletter_subscription 1 => Yes, 0 => No
+ * @property int $is_newsletter_subscription 1 => Yes, 0 => No
  * @property string|null $shop_name
  * @property string|null $shop_email
  * @property int|null $shop_phone_number
@@ -146,8 +146,8 @@ class User extends ActiveRecord implements IdentityInterface
             // [['mobile', 'shop_phone_number'], 'is13NumbersOnly'],
             [['mobile', 'shop_phone_number'], 'string', 'max' => 13, 'min' => 10],
 
-            [['weight', 'height'], 'number'],
-            [['personal_information', 'user_type', 'is_shop_owner', 'is_newsletter_subscription'], 'string'],
+            [['weight', 'height','is_newsletter_subscription'], 'number'],
+            [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['profile_picture', 'password_hash', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],

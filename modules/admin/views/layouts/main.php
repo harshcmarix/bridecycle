@@ -11,7 +11,7 @@ if (Yii::$app->controller->action->id === 'login') {
     if (class_exists('backend\assets\AppAsset')) {
         backend\assets\AppAsset::register($this);
     } else {
-       // \app\modules\admin\assets\AdminAsset::register($this);
+        // \app\modules\admin\assets\AdminAsset::register($this);
         app\modules\admin\assets\AdminAsset::register($this);
     }
 
@@ -29,7 +29,11 @@ if (Yii::$app->controller->action->id === 'login') {
         <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
             gtag('js', new Date());
 
             gtag('config', 'G-NXLFFXY4HG');
@@ -38,10 +42,12 @@ if (Yii::$app->controller->action->id === 'login') {
 
         <meta charset="<?= Yii::$app->charset ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="<?php echo Yii::$app->request->baseUrl; ?>/theme/admin/images/favicon.jpg" type="image/x-icon" />
+        <link rel="shortcut icon" href="<?php echo Yii::$app->request->baseUrl; ?>/theme/admin/images/favicon.jpg"
+              type="image/x-icon"/>
         <?= Html::csrfMetaTags() ?>
         <title>Admin | <?= Html::encode($this->title) ?></title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.min.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.min.css"
+              crossorigin="anonymous">
         <?php $this->head() ?>
     </head>
     <body class="hold-transition skin-blue sidebar-mini">
@@ -71,9 +77,14 @@ if (Yii::$app->controller->action->id === 'login') {
     </div>
     <?php $this->endBody() ?>
     <script>
+        setTimeout(function () {
+            $('.alert').fadeOut('fast');
+        }, 5000); // time in milliseconds
+
         $('document').ready(function () {
+
             $('.main-sidebar .sidebar .left-scroll ul li').on('click', function () {
-                var url = document.URL.substr(0,document.URL.lastIndexOf('/'));
+                var url = document.URL.substr(0, document.URL.lastIndexOf('/'));
                 var currentFolder = url.slice(url.lastIndexOf('/'));
 
                 localStorage.setItem('sidebarScrollTop', $('.main-sidebar .left-scroll').scrollTop());
@@ -83,7 +94,7 @@ if (Yii::$app->controller->action->id === 'login') {
             if (localStorage.getItem('sidebarScrollTop') && localStorage.getItem('currentFolder')) {
                 $('.main-sidebar .sidebar .left-scroll').scrollTop(localStorage.getItem('sidebarScrollTop'));
                 setTimeout(function () {
-                    var url = document.URL.substr(0,document.URL.lastIndexOf('/'));
+                    var url = document.URL.substr(0, document.URL.lastIndexOf('/'));
                     var currentFolder = url.slice(url.lastIndexOf('/'));
                     if (localStorage.getItem('currentFolder') !== currentFolder) {
                         localStorage.setItem('sidebarScrollTop', $('.main-sidebar .left-scroll').scrollTop());

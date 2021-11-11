@@ -9,10 +9,24 @@ $this->title = 'Dashboard';
             <div class="small-box bg-aqua">
                 <div class="inner">
                     <h3><?php echo $totalCustomer ?></h3>
-                    <p>Customers</p>
+                    <p>Total Customers</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-users"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/user/index-new-customer' ?>" class="small-box-footer">
+            <div class="small-box bg-teal">
+                <div class="inner">
+                    <h3><?php echo $totalCustomerToday ?></h3>
+                    <p>New Customer <?php echo date('j M, Y') ?></p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
                 </div>
             </div>
         </a>
@@ -23,7 +37,7 @@ $this->title = 'Dashboard';
             <div class="small-box bg-yellow">
                 <div class="inner">
                     <h3><?php echo $totalShopOwnerCustomer ?></h3>
-                    <p>Shop Owner Customers</p>
+                    <p>Total Shop Owner Customers</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-users"></i>
@@ -33,28 +47,14 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/sub-admin/index' ?>" class="small-box-footer">
-            <div class="small-box bg-teal">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/user/index-new-shop-owner-customer' ?>" class="small-box-footer">
+            <div class="small-box bg-light-blue-gradient">
                 <div class="inner">
-                    <h3><?php echo $totSubAdmin ?></h3>
-                    <p>Sub Admin</p>
+                    <h3><?php echo $totalShopOwnerCustomerToday ?></h3>
+                    <p>New Shop Owner <?php echo date('j M, Y') ?></p>
                 </div>
                 <div class="icon">
-                    <i class="fa fa-user-circle"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/user/index' ?>" class="small-box-footer">
-            <div class="small-box bg-orange">
-                <div class="inner">
-                    <h3><?php echo $totalCustomerToday ?></h3>
-                    <p>New Customer <?php echo date('M j, Y') ?></p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-user"></i>
+                    <i class="fa fa-users"></i>
                 </div>
             </div>
         </a>
@@ -65,7 +65,7 @@ $this->title = 'Dashboard';
             <div class="small-box bg-purple">
                 <div class="inner">
                     <h3><?php echo $totalBrand ?></h3>
-                    <p>Brand</p>
+                    <p>Total Brand</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-tag"></i>
@@ -75,15 +75,14 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="
-                <?php echo Yii::$app->request->baseUrl . '/admin/product/new-product' ?>" class="small-box-footer">
-            <div class="small-box bg-gray-light">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/tailor/index' ?>" class="small-box-footer">
+            <div class="small-box bg-red">
                 <div class="inner">
-                    <h3><?php echo $totalProductPendingApproval ?></h3>
-                    <p>New Products</p>
+                    <h3><?php echo $totalTailor; ?></h3>
+                    <p>Total Tailor</p>
                 </div>
                 <div class="icon">
-                    <i class="fa fa-shopping-bag"></i>
+                    <i class="fa fa-cut"></i>
                 </div>
             </div>
         </a>
@@ -104,17 +103,19 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/tailor/index' ?>" class="small-box-footer">
-            <div class="small-box bg-red">
+        <a href="
+                <?php echo Yii::$app->request->baseUrl . '/admin/product/new-product' ?>" class="small-box-footer">
+            <div class="small-box bg-gray-light">
                 <div class="inner">
-                    <h3><?php echo $totalTailor; ?></h3>
-                    <p>Tailor</p>
+                    <h3><?php echo $totalProductPendingApproval ?></h3>
+                    <p>New Products <?php echo date('j M, Y') ?></p>
                 </div>
                 <div class="icon">
-                    <i class="fa fa-cut"></i>
+                    <i class="fa fa-shopping-bag"></i>
                 </div>
             </div>
         </a>
+
     </div>
 
     <div class="col-md-3 col-xs-6">

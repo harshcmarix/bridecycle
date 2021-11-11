@@ -83,12 +83,29 @@ class UserController extends Controller
     }
 
     /**
+     * @return string
+     */
+    public function actionIndexNewShopOwnerCustomer()
+    {
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $userTypes = [User::USER_TYPE_ADMIN => 'Admin', User::USER_TYPE_SUB_ADMIN => 'Sub Admin', User::USER_TYPE_NORMAL_USER => "Normal User"];
+
+        return $this->render('index-new-shop-owner-customer', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'userTypes' => $userTypes,
+            'isShopOwner' => $searchModel->isShopOwner
+        ]);
+    }
+
+    /**
      * Displays a single Users model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id,$pageId = '',$pageType='')
+    public function actionView($id, $pageId = '', $pageType = '')
     {
         $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
         $bankDetails = UserBankDetails::find()->where(['user_id' => $id])->one();
@@ -113,6 +130,24 @@ class UserController extends Controller
         return $this->render('view_new_customer', [
             'model' => $this->findModel($id),
             'shopAddress' => $userShopAddress,
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionNewShopOwnerCustomerView($id, $pageId = '', $pageType = '')
+    {
+        $bankDetails = "";
+        $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
+        return $this->render('view_new_shop_owner_customer', [
+            'model' => $this->findModel($id),
+            'shopAddress' => $userShopAddress,
+            'bankDetails' => $bankDetails,
+            'pageId' => $pageId,
+            'pageType' => $pageType,
         ]);
     }
 
@@ -316,6 +351,107 @@ class UserController extends Controller
         }
 
         return $this->render('create_new_customer', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @return array|string|Response
+     */
+    public function actionNewShopOwnerCustomerCreate()
+    {
+        $model = new User();
+        $model->scenario = User::SCENARIO_CREATE_NORMAL_USER;
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
+
+        if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
+
+            $password = $model->password;
+            $model->password_hash = password_hash($model->password, PASSWORD_DEFAULT);
+
+            $model->user_type = User::USER_TYPE_NORMAL_USER;
+
+            $profilePicture = UploadedFile::getInstance($model, 'profile_picture');
+            if (isset($profilePicture)) {
+
+                $uploadDirPath = Yii::getAlias('@profilePictureRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
+                $thumbImagePath = '';
+                // Create profile upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create profile thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
+                $ext = $profilePicture->extension;
+                $fileName = pathinfo($profilePicture->name, PATHINFO_FILENAME);
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
+                // Upload profile picture
+                $profilePicture->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->profile_picture = $fileName;
+            }
+
+            if ($model->save(false)) {
+
+                if (!empty($model->is_shop_owner) || $model->is_shop_owner != '0' || $model->is_shop_owner != '') {
+                    $modelShopAddress = new UserAddress();
+                    $postData = Yii::$app->request->post('User');
+                    $shopFullAddress = $postData['shop_address_street'] . ", " . $postData['shop_address_city'] . ", " . $postData['shop_address_zip_code'];
+                    $modelShopAddress->user_id = $model->id;
+                    $modelShopAddress->type = UserAddress::TYPE_SHOP;
+                    $modelShopAddress->street = $postData['shop_address_street'];
+                    $modelShopAddress->city = $postData['shop_address_city'];
+                    $modelShopAddress->state = $postData['shop_address_state'];
+                    $modelShopAddress->zip_code = $postData['shop_address_zip_code'];
+                    $modelShopAddress->country = $postData['shop_address_country'];
+                    $modelShopAddress->address = $shopFullAddress;
+                    $modelShopAddress->save();
+
+                    $modelUserShopDetail = new ShopDetail();
+                    $modelUserShopDetail->user_id = $model->id;
+                    $modelUserShopDetail->shop_name = $postData['shop_name'];
+                    $modelUserShopDetail->shop_email = $postData['shop_email'];
+                    $modelUserShopDetail->shop_phone_number = $postData['shop_phone_number'];
+
+                    $newShopLogoFile = UploadedFile::getInstance($model, 'shop_logo');
+                    if (isset($newShopLogoFile) && isset($model->is_shop_owner)) {
+                        $shop_logo_picture = time() . rand(99999, 88888) . '.' . $newShopLogoFile->extension;
+                        $newShopLogoFile->saveAs(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture);
+
+                        Image::getImagine()->open(Yii::getAlias('@shopLogoRelativePath') . "/" . $shop_logo_picture)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save(Yii::getAlias('@shopLogoThumbRelativePath') . "/" . $shop_logo_picture, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+
+                        $modelUserShopDetail->shop_logo = $shop_logo_picture;
+                    }
+                    $modelUserShopDetail->save(false);
+                }
+
+                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'New Shop Owner created successfully.');
+
+                Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($model->email)
+                    ->setSubject('Thank you for Registration!')
+                    ->send();
+
+                return $this->redirect(['index-new-shop-owner-customer']);
+            }
+        }
+
+        return $this->render('create_new_shop_owner_customer', [
             'model' => $model,
         ]);
     }
