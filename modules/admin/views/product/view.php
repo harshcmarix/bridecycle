@@ -41,11 +41,12 @@ $this->params['breadcrumbs'][] = 'View Product';
                 'model' => $model,
                 'attributes' => [
                     [
+                        'format' => ['raw'],
                         'attribute' => 'user_id',
                         'label' => 'Seller',
                         'value' => function ($model) {
                             if(!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\api\v2\models\User) {
-                                $sellerName = Html::a($model->user->first_name . " " . $model->user->last_name, \yii\helpers\Url::to(['user/view?id=' . $model->user->id]), ['class' => 'btn btn-default']);
+                                $sellerName = Html::a($model->user->first_name . " " . $model->user->last_name, \yii\helpers\Url::to(['user/view?id=' . $model->user->id . "&pageId=" . $model->id]), ['class' => '']);
                             }else{
                                 $sellerName =  '';
                             }

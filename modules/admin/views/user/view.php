@@ -22,14 +22,16 @@ $this->params['breadcrumbs'][] = 'View Customer';
         <div class="users-view">
 
             <!--    <p>-->
-            <!--        --><?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+            <!--        --><?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) 
+                            ?>
             <!--        --><?php //echo Html::a('Delete', ['delete', 'id' => $model->id], [
-            //            'class' => 'btn btn-danger',
-            //            'data' => [
-            //                'confirm' => 'Are you sure you want to delete this item?',
-            //                'method' => 'post',
-            //            ],
-            //        ]) ?>
+                            //            'class' => 'btn btn-danger',
+                            //            'data' => [
+                            //                'confirm' => 'Are you sure you want to delete this item?',
+                            //                'method' => 'post',
+                            //            ],
+                            //        ]) 
+                            ?>
             <!--    </p>-->
 
             <?= DetailView::widget([
@@ -177,17 +179,17 @@ $this->params['breadcrumbs'][] = 'View Customer';
                                             <th style='text-align: center; border: 1px solid'>Amount</th>
                                             <th style='text-align: center; border: 1px solid'>Start date</th>                              
                                         </thead>
-                                        <tbody>";//<th style='text-align: center; border: 1px solid'>Month</th> //<th style='text-align: center; border: 1px solid'>End date</th>
+                                        <tbody>"; //<th style='text-align: center; border: 1px solid'>Month</th> //<th style='text-align: center; border: 1px solid'>End date</th>
                             foreach ($userSubscriptions as $subscription) {
                                 if ($subscription instanceof \app\models\UserPurchasedSubscriptions) {
                                     $subscriptionData = $subscription;
                                     //$endDate = date('Y-m-d h:m:s', strtotime('+3 months', strtotime($subscriptionData->created_at)));
                                     $html .= "<tr style='border: 1px solid'>
                                                     <td style='text-align: center;border: 1px solid'>$subscriptionData->subscription_type</td>                                                    
-                                                    <td style='text-align: center;border: 1px solid'>".Yii::$app->formatter->asCurrency($subscriptionData->amount)."</td>
+                                                    <td style='text-align: center;border: 1px solid'>" . Yii::$app->formatter->asCurrency($subscriptionData->amount) . "</td>
                                                     <td style='text-align: center;border: 1px solid'>$subscriptionData->created_at</td>
                                                    
-                                                </tr>";// <td style='border: 1px solid'>$subscriptionData->month</td> //  <td style='border: 1px solid'>$endDate</td>
+                                                </tr>"; // <td style='border: 1px solid'>$subscriptionData->month</td> //  <td style='border: 1px solid'>$endDate</td>
                                 }
                             }
                             $html .= "</tbody>
@@ -195,12 +197,17 @@ $this->params['breadcrumbs'][] = 'View Customer';
                             return $html;
                         }
                     ],
-//            'created_at',
-//            'updated_at',
+                    //            'created_at',
+                    //            'updated_at',
                 ],
             ]) ?>
             <p>
-                <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+
+                <?php if ($pageId == '') { ?>
+                    <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+                <?php } else { ?>
+                    <?= Html::a('Back', \yii\helpers\Url::to(['product/new-product-view?id=' . $pageId]), ['class' => 'btn btn-default']) ?>
+                <?php } ?>
             </p>
         </div>
 
