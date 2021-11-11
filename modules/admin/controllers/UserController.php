@@ -85,13 +85,14 @@ class UserController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id,$pageId = '')
+    public function actionView($id,$pageId = '',$pageType='')
     {
         $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
         return $this->render('view', [
             'model' => $this->findModel($id),
             'shopAddress' => $userShopAddress,
             'pageId' => $pageId,
+            'pageType' => $pageType,
         ]);
     }
 

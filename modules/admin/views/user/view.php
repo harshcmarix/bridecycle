@@ -203,11 +203,17 @@ $this->params['breadcrumbs'][] = 'View Customer';
             ]) ?>
             <p>
 
-                <?php if ($pageId == '') { ?>
-                    <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
-                <?php } else { ?>
-                    <?= Html::a('Back', \yii\helpers\Url::to(['product/new-product-view?id=' . $pageId]), ['class' => 'btn btn-default']) ?>
-                <?php } ?>
+                <?php
+                if ($pageId == '') {
+                    echo Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']);
+                } else {
+                    if ($pageType == '') {
+                        echo Html::a('Back', \yii\helpers\Url::to(['product/view?id=' . $pageId]), ['class' => 'btn btn-default']);
+                    } else {
+                        echo Html::a('Back', \yii\helpers\Url::to(['product/new-product-view?id=' . $pageId]), ['class' => 'btn btn-default']);
+                    }
+                }
+                ?>
             </p>
         </div>
 

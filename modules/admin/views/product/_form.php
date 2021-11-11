@@ -260,7 +260,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             'allowClear' => true,
                             'disabled' => $disabledProductType
                         ],
-                    ])->label('Product Type'); ?>
+                    ])->label('Conditions'); ?>
                 </div>
             </div>
 
@@ -360,7 +360,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="form-group">
-                <?= Html::a('Back', Url::to(['new-product']), ['class' => 'btn btn-default']) ?>
+                <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             </div>
             <?php ActiveForm::end(); ?>
