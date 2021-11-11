@@ -95,6 +95,20 @@ class UserController extends Controller
     }
 
     /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionNewCustomerView($id)
+    {
+        $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
+        return $this->render('view_new_customer', [
+            'model' => $this->findModel($id),
+            'shopAddress' => $userShopAddress,
+        ]);
+    }
+
+    /**
      * Creates a new Users model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
