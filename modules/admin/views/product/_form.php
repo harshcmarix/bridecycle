@@ -70,7 +70,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ]); ?>
                 </div>
                 <div class="col col-md-6">
-                    <?php if (Yii::$app->controller->action->id == 'update') {//
+                    <?php if (Yii::$app->controller->action->id == 'update') { //
                         $colorIds = explode(",", $model->option_color);
                         $model->option_color = $colorIds;
                     } ?>
@@ -128,7 +128,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             }
                             $key = $index + 1;
                             echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='{$index}'> {$label}</label></div>";
-                        }])->label(false) ?>
+                        }
+                    ])->label(false) ?>
                 </div>
 
                 <div class="col col-md-3">
@@ -140,7 +141,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ?>
                     <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
                         <?php $pKey = $key; ?>
-                        <?php echo $form->field($model, 'shipping_country_price[]')->textInput(['value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
+                        <?php echo $form->field($model, 'shipping_country_price[]')->textInput([
+                            'value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
                             'class' => 'shipping_country_cost_' . $pKey,
 
                         ])->label(false) ?>
@@ -188,7 +190,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
                                     Modal::end();
                                     // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
-//                                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_picture' onclick='contentmodelProductImgEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']);
+                                    //                                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_picture' onclick='contentmodelProductImgEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']);
                                     $productImageModal = 'contentmodelProductImgEdit("' . $imageRow->id . '")';
                                     $data .= "<div class='product-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productImageModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-image-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
                                 }
@@ -201,7 +203,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                         //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
                                     ], // default options
                                 ]);
-
                             } ?>
                         </div>
                     <?php } ?>
@@ -211,16 +212,18 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
             <!--            <div class="row">-->
             <!--                <div class="col col-md-6">-->
-            <!--                    --><?php //echo $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) ?>
+            <!--                    --><?php //echo $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) 
+                                        ?>
             <!--                </div>-->
             <!--                <div class="col col-md-6">-->
             <!--                    --><?php //echo $form->field($model, 'option_show_only')->widget(Select2::classname(), [
-            //                        'data' => $model->arrOptionIsShowOnly,
-            //                        'options' => ['placeholder' => 'Select'],
-            //                        'pluginOptions' => [
-            //                            'allowClear' => true
-            //                        ],
-            //                    ]); ?>
+                                        //                        'data' => $model->arrOptionIsShowOnly,
+                                        //                        'options' => ['placeholder' => 'Select'],
+                                        //                        'pluginOptions' => [
+                                        //                            'allowClear' => true
+                                        //                        ],
+                                        //                    ]); 
+                                        ?>
             <!--                </div>-->
             <!--            </div>-->
 
@@ -264,12 +267,14 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <!--            <div class="row">-->
             <!--                <div class="col col-md-6  mr-top">-->
             <!--                    --><?php //echo $form->field($model, 'is_top_selling')
-            //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]); ?>
+                                        //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]); 
+                                        ?>
             <!--                </div>-->
             <!--                <div class="col col-md-6  mr-top">-->
             <!--                    --><?php //echo $form->field($model, 'is_top_trending')
-            //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            //                    ?>
+                                        //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
+                                        //                    
+                                        ?>
             <!--                </div>-->
             <!--            </div>-->
 
@@ -301,8 +306,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="row">
-                <div class="col col-md-6 receiptUpload"
-                     style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
+                <div class="col col-md-6 receiptUpload" style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
                     <?php
                     $is_product_receipt_images_empty = Product::IMAGE_EMPTY;
                     if (Yii::$app->controller->action->id == 'update') {
@@ -352,12 +356,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
                         ], // default options
                     ]);
-
                 } ?>
             </div>
 
             <div class="form-group">
-                <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+                <?= Html::a('Back', Url::to(['new-product']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             </div>
             <?php ActiveForm::end(); ?>
@@ -366,19 +369,19 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        $('#product-option_price, #product-price, .shipping_country_cost_1, .shipping_country_cost_2, .shipping_country_cost_3, .shipping_country_cost_4, .shipping_country_cost_5').keypress(function (event) {
+        $('#product-option_price, #product-price, .shipping_country_cost_1, .shipping_country_cost_2, .shipping_country_cost_3, .shipping_country_cost_4, .shipping_country_cost_5').keypress(function(event) {
             if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
                 event.preventDefault();
             }
         });
 
-        "<?php if(Yii::$app->controller->action->id == 'update'){ ?>"
-        "<?php if(!empty($shippingPrice)){ ?>"
-        "<?php foreach($shippingPrice as $key=>$list){ ?>"
-        "<?php if(!empty($list) && $list instanceof \app\models\ShippingPrice){ ?>"
-        "<?php if(!empty($list->id)  ){ ?>"
+        "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
+        "<?php if (!empty($shippingPrice)) { ?>"
+        "<?php foreach ($shippingPrice as $key => $list) { ?>"
+        "<?php if (!empty($list) && $list instanceof \app\models\ShippingPrice) { ?>"
+        "<?php if (!empty($list->id)) { ?>"
         var Id = "<?php echo $key + 1 ?>";
         $('.shipping_country_' + Id).prop("checked", true);
         "<?php } ?>"
@@ -387,13 +390,13 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         "<?php } ?>"
         "<?php } ?>"
 
-        $('#product-category_id').change(function () {
+        $('#product-category_id').change(function() {
             var categoryId = $(this).val();
             $.ajax({
                 type: "POST",
                 url: '<?php echo Url::to(['product/get-sub-category-list', 'category_id' => ""]); ?>' + categoryId,
                 dataType: 'json',
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         $('#product-sub_category_id').html(response.dataList);
                     }
@@ -401,7 +404,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             })
         });
 
-        $('#product-is_cleaned').change(function () {
+        $('#product-is_cleaned').change(function() {
             var valueData = $(this).val();
             if (valueData == 1) {
                 $('.receiptUpload').show();
@@ -428,19 +431,19 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         var errDiv = $('.shipping_country_cost_' + idIndex).parent('.field-product-shipping_country_price').children('.help-block');
         if ($(obj).prop("checked") == true) {
             var html = '';
-            "<?php if (Yii::$app->controller->action->id == 'update')  { ?>"
+            "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
             html += '<div class="form-group field-product-shipping_country_price">';
             html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_"' + idIndex + ' name="Product[shipping_country_price][]" value="">';
             html += '<div class="help-block"></div></div>';
             $('.field-product-shipping_country_price').last().append(html);
-            "<?php }else{ ?>"
+            "<?php } else { ?>"
             $('.shipping_country_cost_' + idIndex).show();
             errDiv.show();
             "<?php } ?>"
         } else if ($(obj).prop("checked") == false) {
-            "<?php if (Yii::$app->controller->action->id == 'update')  { ?>"
+            "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
             $('.field-product-shipping_country_price').last().remove();
-            "<?php }else{ ?>"
+            "<?php } else { ?>"
             $('.shipping_country_cost_' + idIndex).hide();
             $('.shipping_country_cost_' + idIndex).val('');
             errDiv.html("");

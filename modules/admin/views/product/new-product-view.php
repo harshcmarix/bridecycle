@@ -43,9 +43,15 @@ $this->params['breadcrumbs'][] = 'View New Product';
                     //'id',
                     [
                         'attribute' => 'user_id',
-                        'label' => 'User',
+                        'label' => 'Seller',
                         'value' => function ($model) {
-                            return (!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\api\v2\models\User) ? $model->user->first_name . " " . $model->user->last_name : '';
+                            if(!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\api\v2\models\User) {
+                                $sellerName = Html::a($model->user->first_name . " " . $model->user->last_name, \yii\helpers\Url::to(['user/view?id=' . $model->user->id]), ['class' => 'btn btn-default']);
+                            }else{
+                                $sellerName =  '';
+                            }
+                             
+                            return $sellerName;
                         },
                     ],
                     [

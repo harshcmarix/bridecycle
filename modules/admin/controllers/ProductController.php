@@ -36,11 +36,11 @@ class ProductController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'new-product', 'create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
+                'only' => ['index', 'new-product', 'create', 'new-product-create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index','new-product', 'create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
+                        'actions' => ['index','new-product', 'create', 'new-product-create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -282,6 +282,160 @@ class ProductController extends Controller
         }
 
         return $this->render('create', [
+            'model' => $model,
+            'category' => $category,
+            'subcategory' => $subcategory,
+            'brand' => $brand,
+            'color' => $color,
+            'status' => $status,
+            'shippingCountry' => $shippingCountry,
+            'shippingPrice' => $shippingPrice
+        ]);
+    }
+
+    public function actionNewProductCreate()
+    {
+        $model = new Product();
+        $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
+        $subcategory = [];
+        $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
+        $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
+        $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
+        $shippingPrice = $model->shippingCost;
+
+        $postData = Yii::$app->request->post('Product');
+        
+        $model->scenario = Product::SCENARIO_CREATE;
+        $model->is_top_selling = Product::IS_TOP_SELLING_NO;
+        if (!empty($postData['is_top_selling'])) {
+            $model->is_top_selling = $postData['is_top_selling'];
+        }
+
+        $model->is_top_trending = Product::IS_TOP_TRENDING_NO;
+        if (!empty($postData['is_top_trending'])) {
+            $model->is_top_trending = $postData['is_top_trending'];
+        }
+
+        $model->is_admin_favourite = Product::IS_ADMIN_FAVOURITE_NO;
+        if (!empty($postData['is_admin_favourite'])) {
+            $model->is_admin_favourite = $postData['is_admin_favourite'];
+        }
+
+        $model->user_id = Yii::$app->user->identity->id;
+
+        $ReceiptImages = UploadedFile::getInstancesByName('receipt');
+        $model->receipt = $ReceiptImages;
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            
+            if (!empty($postData['option_show_only'])) {
+                $model->option_show_only = $postData['option_show_only'];
+            }else{
+                $model->option_show_only = '0';
+            }
+
+            $images = UploadedFile::getInstances($model, 'images');
+
+            $model->option_color = implode(",", $postData['option_color']);
+            if ($model->save()) {
+
+                if (!empty($postData['shipping_country_price'])) {
+                    foreach ($postData['shipping_country_price'] as $keyPrice => $countryPrice) {
+                        if (!empty($countryPrice)) {
+                            $countryId = $keyPrice + 1;
+                            $modelCountry = ShippingCost::find()->where(['id' => $countryId])->one();
+                            if (!empty($modelCountry) && $modelCountry instanceof ShippingCost) {
+                                $modelPrice = new ShippingPrice();
+                                $modelPrice->shipping_cost_id = $modelCountry->id;
+                                $modelPrice->price = $countryPrice;
+                                $modelPrice->product_id = $model->id;
+                                $modelPrice->save(false);
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($images)) {
+                    foreach ($images as $img) {
+                        $modelImage = new ProductImage();
+
+                        $uploadDirPath = Yii::getAlias('@productImageRelativePath');
+                        $uploadThumbDirPath = Yii::getAlias('@productImageThumbRelativePath');
+                        $thumbImagePath = '';
+
+                        // Create product upload directory if not exist
+                        if (!is_dir($uploadDirPath)) {
+                            mkdir($uploadDirPath, 0777);
+                        }
+
+                        // Create product thumb upload directory if not exist
+                        if (!is_dir($uploadThumbDirPath)) {
+                            mkdir($uploadThumbDirPath, 0777);
+                        }
+
+                        $fileName = time() . rand(99999, 88888) . '.' . $img->extension;
+                        // Upload product picture
+                        $img->saveAs($uploadDirPath . '/' . $fileName);
+                        // Create thumb of product picture
+                        $actualImagePath = $uploadDirPath . '/' . $fileName;
+                        $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                        Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        // Insert product picture name into database
+
+                        $modelImage->product_id = $model->id;
+                        $modelImage->name = $fileName;
+                        $modelImage->name = $fileName;
+                        $modelImage->created_at = date('Y-m-d H:i:s');
+                        $modelImage->save(false);
+                    }
+                }
+
+                /* Receipt Image */
+                if (!empty($ReceiptImages)) {
+                    foreach ($ReceiptImages as $imgRow) {
+                        $modelImageReceipt = new ProductReceipt();
+
+                        $uploadDirPathReceipt = Yii::getAlias('@productReceiptImageRelativePath');
+                        $uploadThumbDirPathReceipt = Yii::getAlias('@productReceiptImageThumbRelativePath');
+
+                        // Create product upload directory if not exist
+                        if (!is_dir($uploadDirPathReceipt)) {
+                            mkdir($uploadDirPathReceipt, 0777);
+                        }
+
+                        // Create product thumb upload directory if not exist
+                        if (!is_dir($uploadThumbDirPathReceipt)) {
+                            mkdir($uploadThumbDirPathReceipt, 0777);
+                        }
+
+                        $fileNameReceipt = time() . rand(99999, 88888) . '.' . $imgRow->extension;
+                        // Upload product picture
+                        $imgRow->saveAs($uploadDirPathReceipt . '/' . $fileNameReceipt);
+                        // Create thumb of product picture
+                        $actualImagePathReceipt = $uploadDirPathReceipt . '/' . $fileNameReceipt;
+                        $thumbImagePathReceipt = $uploadThumbDirPathReceipt . '/' . $fileNameReceipt;
+
+                        chmod($actualImagePathReceipt, 0777);
+
+                        Image::thumbnail($actualImagePathReceipt, Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height'])->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        Image::getImagine()->open($actualImagePathReceipt)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePathReceipt, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                        chmod($thumbImagePathReceipt, 0777);
+
+                        // Insert product picture name into database
+                        $modelImageReceipt->product_id = $model->id;
+                        $modelImageReceipt->file = $fileNameReceipt;
+                        $modelImageReceipt->save(false);
+                    }
+                }
+            }
+
+            \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'New product created successfully.');
+            return $this->redirect(['new-product']);
+        }
+
+        return $this->render('new-product-create', [
             'model' => $model,
             'category' => $category,
             'subcategory' => $subcategory,
