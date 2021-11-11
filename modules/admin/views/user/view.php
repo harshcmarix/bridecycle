@@ -59,6 +59,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     //'personal_information:ntext',
                     [
                         'attribute' => "user_type",
+                        "label"=>'Customer Type',
                         'value' => function ($model) {
                             $userType = "-";
                             if ($model->user_type == 1) {
@@ -73,6 +74,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     ],
                     [
                         'attribute' => "user_status",
+                        "label"=>'Customer Status',
                         'value' => function ($model) {
                             $userStatus = "-";
                             if ($model->user_status == \app\modules\admin\models\User::USER_STATUS_ACTIVE) {
@@ -186,26 +188,30 @@ $this->params['breadcrumbs'][] = 'View Customer';
                 ],
             ]) ?>
 
-            <div class="box box-border">
-                <div class="box-header">
-                    <h3 class="box-title">Bank Details</h3>
-                </div>
-                <div class="box-body table-responsive">
-                    <?= DetailView::widget([
-                        'model' => $bankDetails,
-                        'attributes' => [
-                            'first_name',
-                            'last_name',
-                            'country',
-                            'city',
-                            'billing_address_line_1',
-                            'billing_address_line_2',
-                            'post_code',
+            <?php if ($bankDetails != '') { ?>
+                <div class="box box-border">
+                    <div class="box-header">
+                        <h3 class="box-title">Bank Details</h3>
+                    </div>
+                    <div class="box-body table-responsive">
+                        <?= DetailView::widget([
+                            'model' => $bankDetails,
+                            'attributes' => [
+                                'first_name',
+                                'last_name',
+                                'debit_card',
+                                'iban',
+                                'country',
+                                'city',
+                                'billing_address_line_1',
+                                'billing_address_line_2',
+                                'post_code',
 
-                        ],
-                    ]) ?>
+                            ],
+                        ]) ?>
+                    </div>
                 </div>
-            </div>
+            <?php } ?>
             <p>
 
                 <?php
