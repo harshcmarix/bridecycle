@@ -79,6 +79,9 @@ class ProductController extends Controller
         ]);
     }
 
+    /**
+     * @return string
+     */
     public function actionNewProduct()
     {
         $searchModel = new ProductSearch();
@@ -119,6 +122,11 @@ class ProductController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionNewProductView($id)
     {
         return $this->render('new-product-view', [
@@ -478,6 +486,13 @@ class ProductController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return string|Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionNewProductUpdate($id)
     {
         $model = $this->findModel($id);
@@ -693,6 +708,13 @@ class ProductController extends Controller
         return $this->redirect(['index']);
     }
 
+    /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionNewProductDelete($id)
     {
         $model = $this->findModel($id);

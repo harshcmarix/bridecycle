@@ -39,9 +39,8 @@ use app\modules\admin\models\Module;
         //$menuList[] = ['label' => 'Customer', 'icon' => 'users', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')];
         $menuList[] = ['label' => 'Customer', 'icon' => 'users', 'items' => [
             ['label' => 'All Customer', 'icon' => 'fas fa-list', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')],
-            ['label' => "New Customer", 'icon' => 'fas fa-user', 'url' => ['user/index-new-customer'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')],
+            ['label' => "New Customer", 'icon' => 'fas fa-user', 'url' => ['user/index-new-customer'], 'visible' => $visible, 'active' => ($route === 'admin/user/index-new-customer' || $route === 'admin/user/new-customer-create' || $route === 'admin/user/new-customer-update' || $route === 'admin/user/new-customer-view')],
         ],];
-
 
         $menuList[] = ['label' => 'Order', 'icon' => 'cart-arrow-down', 'url' => ['order/index'], 'visible' => $visible, 'active' => ($route === 'admin/order/index' || $route === 'admin/order/update' || $route === 'admin/order/view')];
         $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => false, 'active' => ($route === 'admin/sub-admin/index' || $route === 'admin/sub-admin/create' || $route === 'admin/sub-admin/update' || $route === 'admin/sub-admin/view')];

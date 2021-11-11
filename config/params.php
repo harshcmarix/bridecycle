@@ -52,7 +52,11 @@ return [
      * Password: ctpl@dev
      *
      * @Note : CTPL Testing Account
+     *
+     * Username: paypaltest.ctpl@gmail.com
+     * Password: ctpl@dev
      */
+
     'paypal_client_id' => 'AcjJ_Ugx14mHKvPuPuCK7Uii8I8SL1yzcW585G9zp6UjCXvVMga7CmBOSMH5HVO8fx4YXtY8LCPULZNm',
     'paypal_client_secret' => 'ELW5y0ZLN58ZkPSDIhDlC6-A6cIZWysgUxtlFq4e5mAAknDeSwtFFOfG4-IRgqE9Pb1w_6wtFFZXeRG4',
     'paypal_mode' => 'sandbox',

@@ -172,8 +172,6 @@ class Product extends \yii\db\ActiveRecord
             [['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images', 'receipt'], 'file', 'maxFiles' => 5],
 
-            //[['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png, jpeg'],
-            // [['option_color'], 'string', 'max' => 255],
             [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
             [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::className(), 'targetAttribute' => ['dress_type_id' => 'id']],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],

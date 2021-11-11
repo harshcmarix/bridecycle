@@ -25,7 +25,7 @@ class UserBankDetailsSearch extends UserBankDetails
     {
         return [
             [['id', 'user_id'], 'integer'],
-            [['bank_name', 'ifsc_code', 'account_holder_name', 'account_number', 'account_type', 'created_at', 'updated_at'], 'safe'],
+            [['debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 

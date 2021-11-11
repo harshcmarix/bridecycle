@@ -15,6 +15,17 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">
     <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
+
+        <div class="filter-div " id="filter-div" style="display: none">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->render('_search_all_customer', ['model' => $searchModel]) ?>
+                </div>
+            </div>
+
+        </div>
+
         <?php
         $gridColumns = [
             ['class' => 'kartik\grid\SerialColumn'],
@@ -157,6 +168,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'toolbar' => [
                 [
                     'content' =>
+                        Html::button('<i class="fa fa-filter"></i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Filter',
+                            'onclick' => "applyFilterAllCustomer()",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                [
+                    'content' =>
                         Html::button('<i class="fa fa-plus-circle"> Add Customer </i>', [
                             'class' => 'btn btn-success',
                             'title' => 'Add User',
@@ -207,6 +227,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
     $('document').ready(function () {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+
+        var filterDiv = $('.range-value');
+        filterDiv.next('i').remove();
+        filterDiv.css("width", "100% !important");
+
+
+        "<?php if(!empty($searchModel->created_at)){ ?>";
+        $('#filter-div').show();
+        "<?php }else{ ?>";
+        $('#filter-div').hide();
+        "<?php } ?>";
 
         var input;
         var submit_form = false;
@@ -331,4 +362,9 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
+    function applyFilterAllCustomer() {
+        $('#filter-div').toggle();
+    }
+
 </script>

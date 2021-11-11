@@ -40,10 +40,7 @@ class UserSearch extends User
     public function search($params)
     {
         $query = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER]);
-        if (Yii::$app->controller->action->id == 'index-new-customer') {
-            //p($params, 0);
-            $query->andWhere(['is_shop_owner' => '0']);
-        }
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
@@ -54,6 +51,33 @@ class UserSearch extends User
         ]);
 
         $this->load($params);
+        $dateWiseFilter = "";
+        if (Yii::$app->controller->action->id == 'index-new-customer') {
+            $query->andWhere(['is_shop_owner' => '0']);
+
+            if (!empty($this->created_at)) {
+                $dateWiseFilter = $this->created_at;
+
+                $dates = explode(" to ", $dateWiseFilter);
+                $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
+                $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
+            } else {
+                $startDate = date('Y-m-d 00:00:01', strtotime('-15 days'));
+                $endDate = date('Y-m-d 23:59:59');
+                //$this->created_at = date('d-M-Y', strtotime('-3 days')) . " to " . date('d-M-Y');
+            }
+            $query->andWhere(['between', 'created_at', $startDate, $endDate]);
+        }
+
+        if (Yii::$app->controller->action->id == 'index') {
+            if (!empty($this->created_at)) {
+                $dateWiseFilter = $this->created_at;
+                $dates = explode(" to ", $dateWiseFilter);
+                $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
+                $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
+                $query->andWhere(['between', 'created_at', $startDate, $endDate]);
+            }
+        }
 
         if (!$this->validate()) {
             return $dataProvider;
@@ -65,7 +89,7 @@ class UserSearch extends User
             'access_token_expired_at' => $this->access_token_expired_at,
             'weight' => $this->weight,
             'height' => $this->height,
-            'created_at' => $this->created_at,
+            //'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 

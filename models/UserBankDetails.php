@@ -11,11 +11,15 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int $id
  * @property int $user_id
- * @property string|null $bank_name
- * @property string|null $ifsc_code
- * @property string|null $account_holder_name
- * @property string $account_number
- * @property string $account_type
+ * @property string $debit_card
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $country
+ * @property string $iban
+ * @property string $billing_address_line_1
+ * @property string|null $billing_address_line_2
+ * @property string $city
+ * @property int $post_code
  * @property string $created_at
  * @property string|null $updated_at
  *
@@ -58,13 +62,13 @@ class UserBankDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'bank_name', 'ifsc_code', 'account_holder_name', 'account_type', 'account_number', 'confirm_account_number'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['user_id', 'bank_name', 'ifsc_code', 'account_holder_name', 'account_type', 'account_number'], 'required', 'on' => self::SCENARIO_UPDATE],
-            [['user_id'], 'integer'],
+            [['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'on' => self::SCENARIO_UPDATE],
+            [['user_id', 'post_code'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['bank_name', 'ifsc_code', 'account_holder_name', 'account_type'], 'string', 'max' => 255],
-            [['account_number'], 'string', 'max' => 25],
-            ['confirm_account_number', 'compare', 'compareAttribute' => 'account_number', 'message' => "Confirm Account Number don't match!"],
+            [['debit_card', 'first_name', 'last_name', 'country', 'billing_address_line_1', 'billing_address_line_2', 'city'], 'string', 'max' => 255],
+            [['iban'], 'string', 'max' => 100],
+            //['confirm_account_number', 'compare', 'compareAttribute' => 'account_number', 'message' => "Confirm Account Number don't match!"],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']]
 
         ];
@@ -78,12 +82,15 @@ class UserBankDetails extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'bank_name' => 'Bank Name',
-            'ifsc_code' => 'Ifsc Code',
-            'account_holder_name' => 'Account Holder Name',
-            'account_number' => 'Account Number',
-            'confirm_account_number' => 'Confirm Account Number',
-            'account_type' => 'Account Type',
+            'debit_card' => 'Debit Card',
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'country' => 'Country',
+            'iban' => 'IBAN',
+            'billing_address_line_1' => 'Billing Address Line 1',
+            'billing_address_line_2' => 'Billing Address Line 2',
+            'city' => 'Town/City',
+            'post_code' => 'Post Code',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
