@@ -169,8 +169,7 @@ class Product extends \yii\db\ActiveRecord
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
             [['is_receipt', 'is_admin_favourite'], 'safe'],
-            //[['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['images', 'shipping_country_price', 'receipt'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
             [['images', 'receipt'], 'file', 'maxFiles' => 5],
 
             //[['images', 'receipt'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png, jpeg'],
