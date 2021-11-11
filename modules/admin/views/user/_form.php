@@ -103,11 +103,12 @@ echo Dialog::widget(
                         <div class="col col-md-4">
                             <?= $form->field($model, 'user_status')->widget(\kartik\select2\Select2::classname(), [
                                 'data' => [\app\modules\admin\models\User::USER_STATUS_ACTIVE => 'Active', \app\modules\admin\models\User::USER_STATUS_IN_ACTIVE => 'Inactive'],
-                                'options' => ['placeholder' => 'Select User status'],
+                                // 'lable' => 'Customer Status',
+                                'options' => ['placeholder' => 'Select customer status'],
                                 'pluginOptions' => [
                                     'allowClear' => true
                                 ],
-                            ]); ?>
+                                ])->label('Customer Status'); ?>
                         </div>
                     <?php } ?>
                 <?php } ?>
