@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\UserBankDetails;
 use app\models\ShopDetail;
 use app\models\UserAddress;
 use app\modules\admin\models\search\UserSearch;
@@ -88,9 +89,12 @@ class UserController extends Controller
     public function actionView($id,$pageId = '',$pageType='')
     {
         $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
+        $bankDetails = UserBankDetails::find()->where(['user_id' => $id])->one();
+        // p($bankDetails->attributes);
         return $this->render('view', [
             'model' => $this->findModel($id),
             'shopAddress' => $userShopAddress,
+            'bankDetails' => $bankDetails,
             'pageId' => $pageId,
             'pageType' => $pageType,
         ]);
