@@ -8,6 +8,7 @@ use app\models\Order;
 use app\models\ProductRating;
 use app\models\SellerRating;
 use app\models\ShopDetail;
+use app\models\UserBankDetails;
 use app\models\UserDevice;
 use app\models\UserSubscription;
 use app\models\UserPurchasedSubscriptions;
@@ -92,6 +93,7 @@ use yii\web\UnauthorizedHttpException;
  * @property UserPurchasedSubscriptions[] $userPurchasedSubscriptions
  * @property UserDevices[] $userDevices
  * @property UserDevice $userDevice
+ * @property UserBankDetails $bankDetail
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -459,6 +461,22 @@ class User extends ActiveRecord implements IdentityInterface
             }
         }
         return $sellerIds;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShopDetail()
+    {
+        return $this->hasOne(ShopDetail::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBankDetail()
+    {
+        return $this->hasOne(UserBankDetails::className(), ['user_id' => 'id']);
     }
 
     /************************************************************************/

@@ -181,31 +181,52 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ],
                                     [
                                         'label' => 'Shop Name',
+                                        'visible' => (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && $model->orderItems[0]->product->user->is_shop_owner == \app\modules\api\v2\models\User::SHOP_OWNER_YES) ? true : false,
                                         'value' => function ($model) {
                                             $shopName = "(not-set)";
                                             if (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product)) {
-                                                if (!empty($model->orderItems[0]->product->user) && $model->orderItems[0]->product->user instanceof \app\modules\api\v2\models\User) {
+                                                if (!empty($model->orderItems[0]->product->user) && $model->orderItems[0]->product->user instanceof app\modules\api\v2\models\User) {
                                                     $sellerUser = $model->orderItems[0]->product->user;
-                                                    // p($sellerUser->ShopDetails);
-
-                                                    if (!empty($sellerUser->ShopDetails) && $sellerUser->ShopDetails instanceof \app\models\ShopDetail && !empty($sellerUser->ShopDetails->shop_name)) {
-
-
-                                                        //   p($sellerUser->ShopDetails->shop_name);
-                                                        $shopName = $sellerUser->ShopDetails->shop_name;
-                                                        // p($shopName);
+                                                    if (!empty($sellerUser->shopDetail) && $sellerUser->shopDetail instanceof app\models\ShopDetail) {
+                                                        $shopName = $sellerUser->shopDetail->shop_name;
                                                     }
                                                 }
                                             }
                                             return $shopName;
                                         },
                                     ],
-//                                    [
-//                                        'label' => 'Seller Address',
-//                                        'value' => function ($model) {
-//                                            return (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->userAddresses) && !empty($model->orderItems[0]->product->user->userAddresses[0]) && !empty($model->orderItems[0]->product->user->userAddresses[0]->address)) ? $model->orderItems[0]->product->user->userAddresses[0]->address : "(not-set)";
-//                                        },
-//                                    ],
+                                    [
+                                        'label' => 'Shop Email',
+                                        'visible' => (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && $model->orderItems[0]->product->user->is_shop_owner == \app\modules\api\v2\models\User::SHOP_OWNER_YES) ? true : false,
+                                        'value' => function ($model) {
+                                            $shopEmail = "(not-set)";
+                                            if (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product)) {
+                                                if (!empty($model->orderItems[0]->product->user) && $model->orderItems[0]->product->user instanceof app\modules\api\v2\models\User) {
+                                                    $sellerUser = $model->orderItems[0]->product->user;
+                                                    if (!empty($sellerUser->shopDetail) && $sellerUser->shopDetail instanceof app\models\ShopDetail) {
+                                                        $shopEmail = $sellerUser->shopDetail->shop_email;
+                                                    }
+                                                }
+                                            }
+                                            return $shopEmail;
+                                        },
+                                    ],
+                                    [
+                                        'label' => 'Shop Phone',
+                                        'visible' => (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && $model->orderItems[0]->product->user->is_shop_owner == \app\modules\api\v2\models\User::SHOP_OWNER_YES) ? true : false,
+                                        'value' => function ($model) {
+                                            $shopContact = "(not-set)";
+                                            if (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product)) {
+                                                if (!empty($model->orderItems[0]->product->user) && $model->orderItems[0]->product->user instanceof app\modules\api\v2\models\User) {
+                                                    $sellerUser = $model->orderItems[0]->product->user;
+                                                    if (!empty($sellerUser->shopDetail) && $sellerUser->shopDetail instanceof app\models\ShopDetail) {
+                                                        $shopContact = $sellerUser->shopDetail->shop_phone_number;
+                                                    }
+                                                }
+                                            }
+                                            return $shopContact;
+                                        },
+                                    ],
                                     [
                                         'label' => 'Seller Address',
                                         'value' => function ($model) {
@@ -241,39 +262,126 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= DetailView::widget([
                                 'model' => $model,
                                 'attributes' => [
-                                    //  'id',
-                                    //'user_id',
                                     [
-                                        'attribute' => 'user_id',
-                                        'label' => 'Seller Name',
+                                        'label' => 'Debit Card',
                                         'value' => function ($model) {
-                                            return $model->user->first_name . " " . $model->user->last_name;
+                                            $debitCard = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->debit_card)) {
+                                                $debitCard = $model->orderItems[0]->product->user->bankDetail->debit_card;
+                                            }
+                                            return $debitCard;
                                         },
                                     ],
                                     [
-                                        'attribute' => 'user_id',
-                                        'label' => 'Seller Email',
+
+                                        'label' => 'First Name',
                                         'value' => function ($model) {
-                                            return $model->user->email;
+                                            $firstName = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->first_name)) {
+                                                $firstName = $model->orderItems[0]->product->user->bankDetail->first_name;
+                                            }
+                                            return $firstName;
                                         },
                                     ],
                                     [
-                                        'attribute' => 'user_id',
-                                        'label' => 'Seller Phone',
+
+                                        'label' => 'Last Name',
                                         'value' => function ($model) {
-                                            return $model->user->mobile;
+                                            $lastName = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->last_name)) {
+                                                $lastName = $model->orderItems[0]->product->user->bankDetail->last_name;
+                                            }
+                                            return $lastName;
                                         },
                                     ],
-                                    //'user_address_id',
                                     [
-                                        'attribute' => 'user_address_id',
-                                        'label' => 'Seller Address',
+
+                                        'label' => 'Country',
                                         'value' => function ($model) {
-                                            return $model->userAddress->address . ", " . $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
+                                            $countryName = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->country)) {
+                                                $countryName = $model->orderItems[0]->product->user->bankDetail->country;
+                                            }
+                                            return $countryName;
                                         },
                                     ],
-//                            'created_at',
-//                            'updated_at',
+                                    [
+
+                                        'label' => 'IBAN',
+                                        'value' => function ($model) {
+                                            $iban = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->iban)) {
+                                                $iban = $model->orderItems[0]->product->user->bankDetail->iban;
+                                            }
+                                            return $iban;
+                                        },
+                                    ],
+                                    [
+
+                                        'label' => 'Billing Address Line 1',
+                                        'value' => function ($model) {
+                                            $billingAddress1 = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->billing_address_line_1)) {
+                                                $billingAddress1 = $model->orderItems[0]->product->user->bankDetail->billing_address_line_1;
+                                            }
+                                            return $billingAddress1;
+                                        },
+                                    ],
+                                    [
+
+                                        'label' => 'Billing Address Line 2',
+                                        'value' => function ($model) {
+                                            $billingAddress2 = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->billing_address_line_2)) {
+                                                $billingAddress2 = $model->orderItems[0]->product->user->bankDetail->billing_address_line_2;
+                                            }
+                                            return $billingAddress2;
+                                        },
+                                    ],
+                                    [
+
+                                        'label' => 'City',
+                                        'value' => function ($model) {
+                                            $cityName = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->city)) {
+                                                $cityName = $model->orderItems[0]->product->user->bankDetail->city;
+                                            }
+                                            return $cityName;
+                                        },
+                                    ],
+                                    [
+
+                                        'label' => 'Post Code',
+                                        'value' => function ($model) {
+                                            $pincode = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->post_code)) {
+                                                $pincode = $model->orderItems[0]->product->user->bankDetail->post_code;
+                                            }
+                                            return $pincode;
+                                        },
+                                    ],
+                                    [
+
+                                        'label' => 'Payment Mode',
+                                        'value' => function ($model) {
+                                            $paymentType = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->payment_type)) {
+                                                $paymentType = $model->orderItems[0]->product->user->bankDetail->payment_type;
+                                            }
+                                            return $paymentType;
+                                        },
+                                    ],
+                                    [
+
+                                        'label' => 'Paypal Email',
+                                        'value' => function ($model) {
+                                            $paypalEmail = "(not-set)";
+                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->paypal_email)) {
+                                                $paypalEmail = $model->orderItems[0]->product->user->bankDetail->paypal_email;
+                                            }
+                                            return $paypalEmail;
+                                        },
+                                    ],
                                 ],
                             ]) ?>
                         </div>
