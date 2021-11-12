@@ -18,7 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
         <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
-            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+            <?php // echo $this->render('_search', ['model' => $searchModel]); 
+            ?>
 
             <?php $trial = new Trial(); ?>
 
@@ -33,8 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value' => function ($model) {
                             return $model->name;
                         },
-//                        'filter' => $searchModel->name,
-                        'header' => 'Name',
+                        'header' => 'Customer',
                         'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
@@ -81,39 +81,39 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $receiverName;
                         },
                         'filter' => '',
-                        'header' => 'Receiver User',
+                        'header' => 'Store',
                         'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
-//                    [
-////                        'format' => ['raw'],
-//                        'attribute' => 'status',
-//                        'value' => function ($model) {
-//                            if ($model instanceof Trial) {
-//                                $trial = new Trial();
-//
-//                                return Html::dropDownList('status', $model->status, [
-//                                    Trial::STATUS_PENDING => $trial->arrTrialStatus[Trial::STATUS_PENDING],
-//                                    Trial::STATUS_ACCEPT => $trial->arrTrialStatus[Trial::STATUS_ACCEPT],
-//                                    Trial::STATUS_REJECT => $trial->arrTrialStatus[Trial::STATUS_REJECT],
-//                                ], ['class' => 'form-control trial-status-control', 'onchange' => 'changeStatus(this)', 'data-key' => $model->id]);
-//                            }
-//                        },
-//                        'format' => ['raw'],
-//                        'filter' => [
-//                            Trial::STATUS_PENDING => $trial->arrTrialStatus[Trial::STATUS_PENDING],
-//                            Trial::STATUS_ACCEPT => $trial->arrTrialStatus[Trial::STATUS_ACCEPT],
-//                            Trial::STATUS_REJECT => $trial->arrTrialStatus[Trial::STATUS_REJECT]
-//                        ],
-//                        'filterType' => GridView::FILTER_SELECT2,
-//                        'filterWidgetOptions' => [
-//                            'options' => ['prompt' => 'Select'],
-//                            'pluginOptions' => [
-//                                'allowClear' => true,
-//                            ],
-//                        ],
-//                        'header' => 'Status',
-//                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-//                    ],
+                    //                    [
+                    ////                        'format' => ['raw'],
+                    //                        'attribute' => 'status',
+                    //                        'value' => function ($model) {
+                    //                            if ($model instanceof Trial) {
+                    //                                $trial = new Trial();
+                    //
+                    //                                return Html::dropDownList('status', $model->status, [
+                    //                                    Trial::STATUS_PENDING => $trial->arrTrialStatus[Trial::STATUS_PENDING],
+                    //                                    Trial::STATUS_ACCEPT => $trial->arrTrialStatus[Trial::STATUS_ACCEPT],
+                    //                                    Trial::STATUS_REJECT => $trial->arrTrialStatus[Trial::STATUS_REJECT],
+                    //                                ], ['class' => 'form-control trial-status-control', 'onchange' => 'changeStatus(this)', 'data-key' => $model->id]);
+                    //                            }
+                    //                        },
+                    //                        'format' => ['raw'],
+                    //                        'filter' => [
+                    //                            Trial::STATUS_PENDING => $trial->arrTrialStatus[Trial::STATUS_PENDING],
+                    //                            Trial::STATUS_ACCEPT => $trial->arrTrialStatus[Trial::STATUS_ACCEPT],
+                    //                            Trial::STATUS_REJECT => $trial->arrTrialStatus[Trial::STATUS_REJECT]
+                    //                        ],
+                    //                        'filterType' => GridView::FILTER_SELECT2,
+                    //                        'filterWidgetOptions' => [
+                    //                            'options' => ['prompt' => 'Select'],
+                    //                            'pluginOptions' => [
+                    //                                'allowClear' => true,
+                    //                            ],
+                    //                        ],
+                    //                        'header' => 'Status',
+                    //                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //                    ],
                     [
                         'attribute' => 'status',
                         'value' => function ($model) {
@@ -159,10 +159,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => 'Trial Time',
                         'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
-//                    [
-//                        'class' => 'kartik\grid\ActionColumn',
-//                        'template' => "{delete}"
-//                    ],
+                    //                    [
+                    //                        'class' => 'kartik\grid\ActionColumn',
+                    //                        'template' => "{delete}"
+                    //                    ],
                 ],
                 'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
                 'headerRowOptions' => ['class' => 'kartik-sheet-style'],
@@ -174,11 +174,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'content' =>
-                            Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                                'class' => 'btn btn-basic',
-                                'title' => 'Reset Filter',
-                                'onclick' => "window.location.href = '" . \yii\helpers\Url::to(['trial/index']) . "';",
-                            ]),
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . \yii\helpers\Url::to(['trial/index']) . "';",
+                        ]),
                         'options' => ['class' => 'btn-group mr-2']
                     ],
                     '{toggleData}',
@@ -205,18 +205,18 @@ $this->params['breadcrumbs'][] = $this->title;
     function changeStatus($this) {
         var id = $this.getAttribute('data-key');
         var status = $($this.selectedOptions).text();
-        krajeeDialog.confirm('Are you sure you want to change the status to ' + status + '?', function (out) {
+        krajeeDialog.confirm('Are you sure you want to change the status to ' + status + '?', function(out) {
             if (out) {
                 $.ajax({
                     url: "<?php echo Url::to(['trial/update-status']); ?>",
                     type: "POST",
                     dataType: 'json',
                     data: {
-                        '_csrf': '<?php echo Yii::$app->request->getCsrfToken()?>',
+                        '_csrf': '<?php echo Yii::$app->request->getCsrfToken() ?>',
                         'id': id,
                         'status': $this.value
                     },
-                    success: function (response) {
+                    success: function(response) {
                         // location.reload(true);
                     }
                 });
@@ -233,7 +233,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function () {
+    $('document').ready(function() {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;
@@ -241,21 +241,21 @@ $this->params['breadcrumbs'][] = $this->title;
         var filter_selector = '#trial-grid-filters input';
         var isInput = true;
 
-        $('select').on('change', function () {
+        $('select').on('change', function() {
             isInput = false;
         });
 
-        $('input').on('keypress', function () {
+        $('input').on('keypress', function() {
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#trial-grid", function (event) {
+        $("body").on('beforeFilter', "#trial-grid", function(event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#trial-grid", function (event) {
+        $("body").on('afterFilter', "#trial-grid", function(event) {
             if (isInput) {
                 submit_form = false;
             }
@@ -263,7 +263,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-            .on('keyup', filter_selector, function (e) {
+            .on('keyup', filter_selector, function(e) {
                 input = $(this).attr('name');
                 var keyCode = e.keyCode ? e.keyCode : e.which;
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
@@ -273,7 +273,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             })
-            .on('pjax:success', function () {
+            .on('pjax:success', function() {
                 if (isInput) {
                     var i = $("[name='" + input + "']");
                     var val = i.val();
@@ -289,8 +289,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
                     }
 
-                    $('.pagination').find('li a').on('click', function () {
-                        setTimeout(function () {
+                    $('.pagination').find('li a').on('click', function() {
+                        setTimeout(function() {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
                     })
@@ -303,18 +303,18 @@ $this->params['breadcrumbs'][] = $this->title;
         var select_filter_selector = '#trial-grid-filters select';
         var isSelect = true;
 
-        $('select').on('change', function () {
+        $('select').on('change', function() {
             isSelect = true;
         });
-        $('input').on('keypress', function () {
+        $('input').on('keypress', function() {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#trial-grid", function (event) {
+        $("body").on('beforeFilter', "#trial-grid", function(event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#trial-grid", function (event) {
+        $("body").on('afterFilter', "#trial-grid", function(event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -322,14 +322,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
-            .on('change', select_filter_selector, function (e) {
+            .on('change', select_filter_selector, function(e) {
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
                     $("#trial-grid").yiiGridView("applyFilter");
                 }
             })
-            .on('pjax:success', function () {
+            .on('pjax:success', function() {
                 var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);
@@ -345,8 +345,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
                     }
 
-                    $('.pagination').find('li a').on('click', function () {
-                        setTimeout(function () {
+                    $('.pagination').find('li a').on('click', function() {
+                        setTimeout(function() {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
                     })
@@ -354,8 +354,8 @@ $this->params['breadcrumbs'][] = $this->title;
             });
     });
 
-    $('.pagination').find('li a').on('click', function () {
-        setTimeout(function () {
+    $('.pagination').find('li a').on('click', function() {
+        setTimeout(function() {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     })
