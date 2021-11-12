@@ -19,7 +19,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property OrderItems[] $orderItems
  * @property UserAddresses $userAddress
- * @property Users $user
+ * @property User $user
  */
 class Order extends \yii\db\ActiveRecord
 {
