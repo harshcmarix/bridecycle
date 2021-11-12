@@ -10,7 +10,7 @@ use yii\helpers\{ArrayHelper, Html, Url};
 /* @var $searchModel app\models\BrandSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Product Category';
+$this->title = 'All Category';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 //     },
                 //     'width' => '8%',
                 //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //     ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
@@ -63,24 +63,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $productcategorymodal, 'height' => '50px', 'width' => '50px']);
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                ],
-                [
-                    'attribute' => 'name',
-                    'value' => function ($model) {
-                        $name = '';
-                        if ($model instanceof ProductCategory) {
-                            $name = $model->name;
-                        }
-                        return $name;
-                    },
-                    'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'parent_category_id',
                     'value' => function ($model) {
-                        $parent_name = '';
+                        $parent_name = '(not-set)';
                         if ($model->parent instanceof ProductCategory) {
                             $parent_name = $model->parent->name;
                         }
@@ -95,7 +83,33 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'attribute' => 'name',
+                    'value' => function ($model) {
+                        $name = '';
+                        if ((!empty($model->parent_category_id) && !empty($model->parent) && !empty($model->parent->name)) && $model instanceof ProductCategory) {
+                            $name = $model->parent->name;
+                        } else {
+                            $name = $model->name;
+                        }
+                        return $name;
+                    },
+                    'header' => 'Parent Category Name',
+                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'attribute' => 'sub_cat_name',
+                    'value' => function ($model) {
+                        $name = '';
+                        if ($model instanceof ProductCategory) {
+                            $name = (!empty($model->parent_category_id) && !empty($model->parent) && $model->parent instanceof ProductCategory) ? $model->name : "-";
+                        }
+                        return $name;
+                    },
+                    'header' => 'Subcategory Name',
+                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'status',
@@ -120,10 +134,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => 'Status',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
+                    'buttons' => [//
+                        'delete' => function ($url, $model) {
+                            return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['/admin/product-category/delete', 'id' => $model->id], ['title' => 'Delete', 'data-method' => 'post', 'data-confirm' => "Are you sure to delete this category/subcategory and its related products?"]);
+                        },],
                     'width' => '12%'
                 ],
             ],
@@ -163,8 +181,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            'itemLabelSingle' => 'product category',
-            'itemLabelPlural' => 'Product Categories'
+            'itemLabelSingle' => 'category',
+            'itemLabelPlural' => 'All Categories'
         ]);
         ?>
     </div>

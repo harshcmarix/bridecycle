@@ -20,6 +20,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $billing_address_line_2
  * @property string $city
  * @property int $post_code
+ * @property string $payment_type
+ * @property string|null $paypal_email
  * @property string $created_at
  * @property string|null $updated_at
  *
@@ -56,19 +58,34 @@ class UserBankDetails extends \yii\db\ActiveRecord
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
 
+    const PAYMENT_TYPE_BANK = "bank";
+    const PAYMENT_TYPE_PAYPAL = "paypal";
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'on' => self::SCENARIO_UPDATE],
+            [['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code', 'payment_type'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code', 'payment_type'], 'required', 'on' => self::SCENARIO_UPDATE],
             [['user_id', 'post_code'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['debit_card', 'first_name', 'last_name', 'country', 'billing_address_line_1', 'billing_address_line_2', 'city'], 'string', 'max' => 255],
+            [['debit_card', 'first_name', 'last_name', 'country', 'billing_address_line_1', 'billing_address_line_2', 'city', 'paypal_email'], 'string', 'max' => 255],
             [['iban'], 'string', 'max' => 100],
             //['confirm_account_number', 'compare', 'compareAttribute' => 'account_number', 'message' => "Confirm Account Number don't match!"],
+
+            [
+                ['paypal_email'], 'required', 'when' => function ($model) {
+                return $model->payment_type == self::PAYMENT_TYPE_PAYPAL;
+            },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#userbankdetails-payment_type').val() == " . self::PAYMENT_TYPE_PAYPAL . ") {            
+                        return $('#userbankdetails-paypal_email').val() == '';                                    
+                    }
+                }",
+            ],
+
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']]
 
         ];
@@ -91,6 +108,8 @@ class UserBankDetails extends \yii\db\ActiveRecord
             'billing_address_line_2' => 'Billing Address Line 2',
             'city' => 'Town/City',
             'post_code' => 'Post Code',
+            'payment_type' => 'Payment Type',
+            'paypal_email' => 'Paypal Email',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

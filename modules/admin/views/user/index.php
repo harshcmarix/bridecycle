@@ -16,14 +16,6 @@ use yii2tech\csvgrid\CsvGrid;
 $this->title = 'All Customers';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<style>
-    .btn-success-export-csv, .btn-success-export-csv:hover {
-        background-color: #00a65a;
-        border-color: #008d4c;
-        color: white;
-    }
-</style>
-
 <div class="career-index box box-primary">
     <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
@@ -97,31 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
                 'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
-//            [
-//                'attribute' => 'user_type',
-//                'value' => function ($data) {
-//                    $result = "";
-//                    if ($data->user_type == \app\modules\admin\models\User::USER_TYPE_ADMIN) {
-//                        $result = 'admin';
-//                    } elseif ($data->user_type == \app\modules\admin\models\User::USER_TYPE_SUB_ADMIN) {
-//                        $result = 'sub admin';
-//                    } elseif ($data->user_type == \app\modules\admin\models\User::USER_TYPE_NORMAL_USER) {
-//                        $result = 'Normal user';
-//                    }
-//                    return $result;
-//                },
-//                'filter' => false,
-////                'filter' => $userTypes,
-////                'filterType' => GridView::FILTER_SELECT2,
-////                'filterWidgetOptions' => [
-////                    'options' => ['prompt' => 'Select'],
-////                    'pluginOptions' => [
-////                        'allowClear' => true,
-////                    ],
-////                ],
-//                'header' => 'User Type',
-//                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-//            ],
             [
                 'attribute' => 'is_shop_owner',
                 'value' => function ($data) {

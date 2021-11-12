@@ -9,7 +9,8 @@
 .glyphicon-trash{color: red !important;}
 .glyphicon-eye-open{color: #3b70f7;}
 .glyphicon-pencil{margin: 0 5px;}
-.table-bordered>thead>tr>th{text-align: center;}
+/*.table-bordered>thead>tr>th{text-align: center;}*/
+.table-bordered>thead>tr>th{text-align: left;}
 .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td{vertical-align: middle;}
 .form-inline .form-control {width: 100px;}
 .bootstrap-dialog.type-warning .modal-header {background-color: #3b70f7 !important;}

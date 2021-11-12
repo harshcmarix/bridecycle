@@ -83,6 +83,7 @@ $this->params['breadcrumbs'][] = 'View New Product';
                     'option_size',
                     [
                         'attribute' => 'option_price',
+                        'label' => 'Tax',
                         'value' => function ($model) {
                             return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
                         },

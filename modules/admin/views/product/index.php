@@ -28,6 +28,14 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 <div class="career-index box box-primary">
     <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
+        <div class="filter-div " id="filter-div" style="display: none">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->render('_search_all_product', ['model' => $searchModel]) ?>
+                </div>
+            </div>
+        </div>
+
         <?php
         $gridColumns = [
             ['class' => 'yii\grid\CheckboxColumn'],
@@ -305,6 +313,15 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'toolbar' => [
                 [
                     'content' =>
+                    Html::button('<i class="fa fa-filter"></i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Filter',
+                        'onclick' => "applyFilterAllCustomer()",
+                    ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                [
+                    'content' =>
                         Html::button('<i class="fa fa-plus-circle"> Add Product </i>', [
                             'class' => 'btn btn-success',
                             'title' => 'Add Product',
@@ -354,8 +371,21 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#btn-delete_all').click(function () {
+    $(document).ready(function() {
+
+        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+
+        var filterDiv = $('.range-value');
+        filterDiv.next('i').remove();
+        filterDiv.css("width", "100% !important");
+
+        "<?php if (!empty($searchModel->created_at)) { ?>";
+        $('#filter-div').show();
+        "<?php } else { ?>";
+        $('#filter-div').hide();
+        "<?php } ?>";
+
+        $('#btn-delete_all').click(function() {
             var atLeastOneIsChecked = $('input[name="selection[]"]:checked').length > 0;
             if (atLeastOneIsChecked == true) {
                 krajeeDialog.confirm('Are you sure you want to delete this Products?', function (out) {
@@ -512,8 +542,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function () {
-        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+    $('document').ready(function() {
+        // $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;
         var submit_form = false;
@@ -639,4 +669,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
+    function applyFilterAllCustomer() {
+        $('#filter-div').toggle();
+    }
 </script>

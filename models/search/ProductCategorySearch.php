@@ -18,7 +18,7 @@ class ProductCategorySearch extends ProductCategory
     {
         return [
             [['id', 'parent_category_id'], 'integer'],
-            [['name', 'image', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'image', 'created_at', 'updated_at','status','sub_cat_name'], 'safe'],
         ];
     }
 
@@ -63,9 +63,11 @@ class ProductCategorySearch extends ProductCategory
             'parent_category_id' => $this->parent_category_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'status' => $this->status,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'name', $this->sub_cat_name])
             ->andFilterWhere(['like', 'image', $this->image]);
 
         return $dataProvider;

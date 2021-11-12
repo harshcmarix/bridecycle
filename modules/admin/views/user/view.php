@@ -8,10 +8,24 @@ use app\models\ShopDetail;
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\User */
 
-
 $this->title = 'View Customer';
-$this->params['breadcrumbs'][] = ['label' => 'All Customers', 'url' => ['index']];
+
+if ($pageId == '' && empty(Yii::$app->request->get('f'))) {
+    $this->params['breadcrumbs'][] = ['label' => 'All Customers', 'url' => ['index']];
+} else {
+    if (!empty(Yii::$app->request->get('f')) && Yii::$app->request->get('f') == 'o' && !empty(Yii::$app->request->get('oId'))) {
+        $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['order/index']];
+        $this->params['breadcrumbs'][] = ['label' => 'View Order Detail', 'url' => ['order/view?id=' . Yii::$app->request->get('oId')]];
+    } else if ($pageType == '') {
+        $this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['product/index']];
+        $this->params['breadcrumbs'][] = ['label' => 'View Product', 'url' => ['product/view?id=' . $pageId]];
+    } else if (empty(Yii::$app->request->get('f')) && $pageType != '') {
+        $this->params['breadcrumbs'][] = ['label' => 'New Products', 'url' => ['product/new-product']];
+        $this->params['breadcrumbs'][] = ['label' => 'View New Product', 'url' => ['product/new-product-view?id=' . $pageId]];
+    }
+}
 $this->params['breadcrumbs'][] = 'View Customer';
+
 \yii\web\YiiAsset::register($this);
 ?>
 
@@ -59,7 +73,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     //'personal_information:ntext',
                     [
                         'attribute' => "user_type",
-                        "label"=>'Customer Type',
+                        "label" => 'Customer Type',
                         'value' => function ($model) {
                             $userType = "-";
                             if ($model->user_type == 1) {
@@ -74,7 +88,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     ],
                     [
                         'attribute' => "user_status",
-                        "label"=>'Customer Status',
+                        "label" => 'Customer Status',
                         'value' => function ($model) {
                             $userStatus = "-";
                             if ($model->user_status == \app\modules\admin\models\User::USER_STATUS_ACTIVE) {
@@ -188,13 +202,15 @@ $this->params['breadcrumbs'][] = 'View Customer';
                 ],
             ]) ?>
 
-            <?php if ($bankDetails != '') { ?>
-                <div class="box box-border">
-                    <div class="box-header">
-                        <h3 class="box-title">Bank Details</h3>
-                    </div>
-                    <div class="box-body table-responsive">
-                        <?= DetailView::widget([
+            <div class="box box-border">
+                <div class="box-header">
+                    <h3 class="box-title">Bank Details</h3>
+                </div>
+                <div class="box-body table-responsive">
+
+                    <?php if ($bankDetails != '') { ?>
+                        <?=
+                        DetailView::widget([
                             'model' => $bankDetails,
                             'attributes' => [
                                 'first_name',
@@ -209,18 +225,25 @@ $this->params['breadcrumbs'][] = 'View Customer';
 
                             ],
                         ]) ?>
-                    </div>
+
+                        <?php
+                    } else {
+                        echo "<center><h5>Bank details not available.</h5></center>";
+                    }
+                    ?>
                 </div>
-            <?php } ?>
+            </div>
             <p>
 
                 <?php
-                if ($pageId == '') {
+                if ($pageId == '' && empty(Yii::$app->request->get('f'))) {
                     echo Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']);
                 } else {
-                    if ($pageType == '') {
+                    if (!empty(Yii::$app->request->get('f')) && Yii::$app->request->get('f') == 'o' && !empty(Yii::$app->request->get('oId'))) {
+                        echo Html::a('Back', \yii\helpers\Url::to(['order/view?id=' . Yii::$app->request->get('oId')]), ['class' => 'btn btn-default']);
+                    } else if ($pageType == '') {
                         echo Html::a('Back', \yii\helpers\Url::to(['product/view?id=' . $pageId]), ['class' => 'btn btn-default']);
-                    } else {
+                    } else if ($pageType != '' && empty(Yii::$app->request->get('f'))) {
                         echo Html::a('Back', \yii\helpers\Url::to(['product/new-product-view?id=' . $pageId]), ['class' => 'btn btn-default']);
                     }
                 }

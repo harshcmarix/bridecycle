@@ -25,6 +25,19 @@ use kartik\daterange\DateRangePicker;
     .box-none {
         border-top: 0px solid #8A9673 !important;
         box-shadow: none !important;
+    }
+
+    .custom-style .kv-drp-container {
+        width: 130%;
+    }
+
+    .custom-style .kv-drp-dropdown .kv-clear {
+        padding: 0 0.3 rem;
+        font-size: 1.1rem;
+        cursor: pointer;
+        right: 2.5rem;
+        line-height: 2.5rem;
+    }
 </style>
 
 <div class="box box-info box-none">
@@ -33,11 +46,11 @@ use kartik\daterange\DateRangePicker;
     <?php $form = ActiveForm::begin([
         'action' => ['index-new-shop-owner-customer'],
         'method' => 'get',
-//        'options' => [
-//            'data-pjax' => 1
-//        ],
+        //        'options' => [
+        //            'data-pjax' => 1
+        //        ],
     ]); ?>
-    <div class="users-form">
+    <div class="users-form custom-style">
         <div class="row">
             <div class="col col-md-12 form-inline">
 
@@ -54,7 +67,8 @@ use kartik\daterange\DateRangePicker;
 
         <div class="form-group form-inline">
             <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-            <!--        --><?php //echo Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+            <!--        --><?php //echo Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) 
+                            ?>
         </div>
     </div>
     <?php ActiveForm::end(); ?>

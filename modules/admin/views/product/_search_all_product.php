@@ -57,7 +57,7 @@ use kartik\daterange\DateRangePicker;
                     'convertFormat' => true,
                     'includeMonthsFilter' => false,
                     'pluginOptions' => ['locale' => ['format' => 'd-M-Y', "separator" => " to "]],
-                    'options' => ['placeholder' => 'Select range', 'class' => 'form-control']
+                    'options' => ['placeholder' => 'Select range', 'class' => 'form-control', 'value' => $model->created_at]
                 ])->label('Date Filter') ?>
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Product;
 use Imagine\Image\Box;
 use Yii;
 use app\models\ProductCategory;
@@ -27,13 +28,13 @@ class ProductCategoryController extends Controller
     public function behaviors()
     {
         return [
-           'access' => [
+            'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update','view','delete','image-delete'],
+                'only' => ['index', 'create', 'update', 'view', 'delete', 'image-delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update','view','delete','image-delete'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'image-delete'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -48,13 +49,13 @@ class ProductCategoryController extends Controller
     public function actionIndex()
     {
         $searchModel = new ProductCategorySearch();
-        $parent_category = ProductCategory::find()->where(['parent_category_id'=>null])->all();
+        $parent_category = ProductCategory::find()->where(['parent_category_id' => null])->all();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'parent_category'=> $parent_category,
+            'parent_category' => $parent_category,
         ]);
     }
 
@@ -76,7 +77,7 @@ class ProductCategoryController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-     public function actionCreate()
+    public function actionCreate()
     {
         $model = new ProductCategory();
         $parent_category = ProductCategory::find()->where(['parent_category_id' => null])->all();
@@ -88,7 +89,7 @@ class ProductCategoryController extends Controller
         }
 
         $img = UploadedFile::getInstance($model, 'image');
-        if ($model->load(Yii::$app->request->post()) ) {
+        if ($model->load(Yii::$app->request->post())) {
 
             if (!empty($img)) {
                 $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
@@ -120,9 +121,9 @@ class ProductCategoryController extends Controller
             }
 
             if ($model->save()) {
-                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Product category created successfully.");
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Category/Subcategory created successfully.");
             } else {
-                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Product category.");
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Category/Subcategory.");
             }
             return $this->redirect(['index']);
         }
@@ -140,70 +141,70 @@ class ProductCategoryController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-   public function actionUpdate($id)
+    public function actionUpdate($id)
     {
-    $model = $this->findModel($id);
+        $model = $this->findModel($id);
 
-    $parent_category = ProductCategory::find()->where(['parent_category_id' => null])->all();
-    $old_image = $model->image;
-    if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return \yii\widgets\ActiveForm::validate($model);
-    }
-
-    $new_image = UploadedFile::getInstance($model, 'image');
-    if ($model->load(Yii::$app->request->post())) {
-        if (!empty($new_image)) {
-            $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
-            $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
-            $thumbImagePath = '';
-
-            // Create product image upload directory if not exist
-            if (!is_dir($uploadDirPath)) {
-            mkdir($uploadDirPath, 0777);
-            }
-            //unlink real image if update
-            if (file_exists($uploadDirPath . '/' . $old_image) && !empty($old_image)) {
-            unlink($uploadDirPath . '/' . $old_image);
-            }
-            // Create product image thumb upload directory if not exist
-            if (!is_dir($uploadThumbDirPath)) {
-            mkdir($uploadThumbDirPath, 0777);
-            }
-            //unlink thumb image if update
-            if (file_exists($uploadThumbDirPath . '/' . $old_image) && !empty($old_image)) {
-            unlink($uploadThumbDirPath . '/' . $old_image);
-            }
-
-            $ext = $new_image->extension;
-            $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
-            $fileName = time() . rand(99999, 88888) . '.' . $ext;
-            // Upload profile picture
-            $new_image->saveAs($uploadDirPath . '/' . $fileName);
-            // Create thumb of profile picture
-            $actualImagePath = $uploadDirPath . '/' . $fileName;
-            $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
-
-            Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
-            // Insert profile picture name into database
-            $model->image = $fileName;
-        } else {
-            $model->image = $old_image;
+        $parent_category = ProductCategory::find()->where(['parent_category_id' => null])->all();
+        $old_image = $model->image;
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
         }
 
-        if ($model->save()) {
-            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Product category updated successfully.");
-        } else {
-            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Product category.");
-        }
+        $new_image = UploadedFile::getInstance($model, 'image');
+        if ($model->load(Yii::$app->request->post())) {
+            if (!empty($new_image)) {
+                $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
+                $thumbImagePath = '';
+
+                // Create product image upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+                //unlink real image if update
+                if (file_exists($uploadDirPath . '/' . $old_image) && !empty($old_image)) {
+                    unlink($uploadDirPath . '/' . $old_image);
+                }
+                // Create product image thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+                //unlink thumb image if update
+                if (file_exists($uploadThumbDirPath . '/' . $old_image) && !empty($old_image)) {
+                    unlink($uploadThumbDirPath . '/' . $old_image);
+                }
+
+                $ext = $new_image->extension;
+                $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
+                // Upload profile picture
+                $new_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
+            } else {
+                $model->image = $old_image;
+            }
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Category/Subcategory updated successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Category/Subcategory.");
+            }
             return $this->redirect(['index']);
         }
 
         return $this->render('update', [
-        'model' => $model,
-        'parent_category' => $parent_category,
+            'model' => $model,
+            'parent_category' => $parent_category,
 
-            ]);
+        ]);
     }
 
     /**
@@ -215,24 +216,54 @@ class ProductCategoryController extends Controller
      */
     public function actionDelete($id)
     {
-         $model = $this->findModel($id);
-         $image = $model->image;
-         $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
-         // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$image) && !empty($image)){
-                unlink($uploadDirPath.'/'.$image);
-         }
-         if(file_exists($uploadThumbDirPath.'/'.$image) && !empty($image)){
-                unlink($uploadThumbDirPath.'/'.$image);
-         }
+        $model = $this->findModel($id);
+        $modelReference = $model;
+        $image = $model->image;
+        $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $image) && !empty($image)) {
+            unlink($uploadDirPath . '/' . $image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $image) && !empty($image)) {
+            unlink($uploadThumbDirPath . '/' . $image);
+        }
         if ($model->delete()) {
-            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Product category deleted successfully.");
+
+            if (!empty($modelReference) && $modelReference instanceof ProductCategory) {
+
+                if (empty($modelReference->parent_category_id)) {
+                    $subCategories = $modelReference->children;
+
+                    // Delete sub category
+                    if (!empty($subCategories)) {
+                        foreach ($subCategories as $key => $subCategoriesRow) {
+                            if (!empty($subCategoriesRow) && $subCategoriesRow instanceof ProductCategory) {
+                                $subCategoriesRow->delete();
+                            }
+                        }
+                    }
+                }
+
+                // Delete Product
+                $categoryProducts = $modelReference->products;
+                if (!empty($categoryProducts)) {
+                    foreach ($categoryProducts as $keys => $categoryProductsRow) {
+                        if (!empty($categoryProductsRow) && $categoryProductsRow instanceof Product) {
+                            $categoryProductsRow->delete();
+                        }
+                    }
+                }
+
+            }
+
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Category/Subcategory deleted successfully.");
         } else {
-            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Product category.");
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Category/Subcategory.");
         }
         return $this->redirect(['index']);
     }
+
     /**
      * Deletes an existing image from perticular field.
      * If deletion is successful, success message will get in update page result.
@@ -240,23 +271,25 @@ class ProductCategoryController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionImageDelete($id){
+    public function actionImageDelete($id)
+    {
         $model = $this->findModel($id);
-        
-         $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
-         $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
-         // unlink images with thumb
-         if(file_exists($uploadDirPath.'/'.$model->image) && !empty($model->image)){
-                unlink($uploadDirPath.'/'.$model->image);
-         }
-         if(file_exists($uploadThumbDirPath.'/'.$model->image) && !empty($model->image)){
-                unlink($uploadThumbDirPath.'/'.$model->image);
-         }
-         $model->image = null;
-        if($model->save()){
-           return Json::encode(['success'=>'image successfully deleted']);
+
+        $uploadDirPath = Yii::getAlias('@productCategoryImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@productCategoryImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $model->image) && !empty($model->image)) {
+            unlink($uploadDirPath . '/' . $model->image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $model->image) && !empty($model->image)) {
+            unlink($uploadThumbDirPath . '/' . $model->image);
+        }
+        $model->image = null;
+        if ($model->save()) {
+            return Json::encode(['success' => 'image successfully deleted']);
         }
     }
+
     /**
      * Finds the ProductCategory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

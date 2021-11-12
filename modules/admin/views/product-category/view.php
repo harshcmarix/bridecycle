@@ -11,8 +11,11 @@ use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $model app\models\ProductCategory */
 
-$this->title = 'View Product Category';
-$this->params['breadcrumbs'][] = ['label' => 'Product Categories', 'url' => ['index']];
+$this->title = 'View Category';
+if(!empty($model->parent_category_id)){
+    $this->title = 'View Subcategory';
+}
+$this->params['breadcrumbs'][] = ['label' => 'All Categories', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -65,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'product_category_id',
                         'label' => 'Parent Category',
                         'value' => function ($model) {
-                            $parent_name = '';
+                            $parent_name = '-';
                             if ($model->parent instanceof ProductCategory) {
                                 $parent_name = $model->parent->name;
                             }
