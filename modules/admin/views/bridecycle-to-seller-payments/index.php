@@ -64,15 +64,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'format' => ['raw'],
-                    'attribute' => 'Buyer',
+                    'attribute' => 'buyer_id',
                     'value' => function ($model) {
                         $buyer = '-';
-                        if ($model instanceof BridecycleToSellerPayments && !empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User) {
+                        if ($model instanceof BridecycleToSellerPayments && !empty($model->order->user) && $model->order->user instanceof \app\modules\admin\models\User) {
                             $buyer = Html::a($model->order->user->first_name . " " . $model->order->user->last_name, \yii\helpers\Url::to(['user/view?id=' . $model->order->user->id . "&pageType=seller"]), ['class' => '']);
                         }
                         return $buyer;
                     },
-                    'header' => '',
+                    'header' => 'Buyer',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
