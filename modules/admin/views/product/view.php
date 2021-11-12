@@ -15,7 +15,6 @@ use yii\bootstrap\Modal;
 //$this->title = $model->name;
 $this->title = 'View Product';
 $this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['index']];
-//$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'View Product';
 \yii\web\YiiAsset::register($this);
 ?>
@@ -83,6 +82,7 @@ $this->params['breadcrumbs'][] = 'View Product';
                     'option_size',
                     [
                         'attribute' => 'option_price',
+                        'label' => 'Tax',
                         'value' => function ($model) {
                             return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
                         },
