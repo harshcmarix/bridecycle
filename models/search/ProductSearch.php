@@ -2,10 +2,10 @@
 
 namespace app\models\search;
 
-use app\models\Product;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-
+use app\models\Product;
+use Yii;
 
 /**
  * ProductsSearch represents the model behind the search form of `app\modules\admin\models\Products`.
@@ -42,30 +42,47 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        // p(\Yii::$app->controller->action->id);
-        
         $query = Product::find();
 
-        if((\Yii::$app->controller->action->id == "new-product")){
-            // p('innn');
-            $query->andWhere(['status_id' => 1]);
-        }
-
         // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
             'pagination' => [
-                'pageSize' => (!empty(\Yii::$app->params['default_page_size_for_backend'])) ? \Yii::$app->params['default_page_size_for_backend'] : 50,
+                // 'pageSize' => (!empty(\Yii::$app->params['default_page_size_for_backend'])) ? \Yii::$app->params['default_page_size_for_backend'] : 50,
+                'pageSize' => 50,
             ]
         ]);
 
         $this->load($params);
+        $dateWiseFilter = "";
+        if (Yii::$app->controller->action->id == 'index') {
+            if (!empty($this->created_at)) {
+                $dateWiseFilter = $this->created_at;
+                $dates = explode(" to ", $dateWiseFilter);
+                $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
+                $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
+                $query->andWhere(['between', 'created_at', $startDate, $endDate]);
+            }
+        }
+
+        if (Yii::$app->controller->action->id == "new-product") {
+
+            $query->andWhere(['status_id' => 1]);
+
+            if (!empty($this->created_at)) {
+                $dateWiseFilter = $this->created_at;
+                $dates = explode(" to ", $dateWiseFilter);
+                $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
+                $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
+            } else {
+                $startDate = date('Y-m-d 00:00:01', strtotime('-35 days'));
+                $endDate = date('Y-m-d 23:59:59');
+            }
+            $query->andWhere(['between', 'created_at', $startDate, $endDate]);
+        }
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
@@ -84,7 +101,7 @@ class ProductSearch extends Product
             'width' => $this->width,
             'is_admin_favourite' => $this->is_admin_favourite,
             'type' => $this->type,
-            'created_at' => $this->created_at,
+            // 'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 

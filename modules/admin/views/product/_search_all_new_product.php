@@ -42,23 +42,20 @@ use kartik\daterange\DateRangePicker;
 
 <div class="box box-info box-none">
 
-
     <?php $form = ActiveForm::begin([
-        'action' => ['index-new-customer'],
+        'action' => ['new-product'],
         'method' => 'get',
-        //        'options' => [
-        //            'data-pjax' => 1
-        //        ],
-    ]); ?>
+    ]);
+    ?>
     <div class="users-form custom-style">
         <div class="row">
             <div class="col col-md-12 form-inline">
 
                 <?php echo $form->field($model, 'created_at')->widget(DateRangePicker::classname(), [
-                    'name' => 'date_range_2',
+                    'name' => 'date_range_1',
                     'presetDropdown' => true,
                     'convertFormat' => true,
-                    //'includeMonthsFilter' => true,
+                    'includeMonthsFilter' => false,
                     'pluginOptions' => ['locale' => ['format' => 'd-M-Y', "separator" => " to "]],
                     'options' => ['placeholder' => 'Select range', 'class' => 'form-control', 'value' => $model->created_at]
                 ])->label('Date Filter') ?>
@@ -67,11 +64,8 @@ use kartik\daterange\DateRangePicker;
 
         <div class="form-group form-inline">
             <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-            <!--        --><?php //echo Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) 
-                            ?>
         </div>
     </div>
     <?php ActiveForm::end(); ?>
-
 
 </div>
