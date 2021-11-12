@@ -15,7 +15,7 @@ use app\models\ProductImage;
 $this->title = 'View Order Detail';
 if ($pageType == '') {
     $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
-}else{
+} else {
     $this->params['breadcrumbs'][] = ['label' => 'Bridecycle To Seller Payments', 'url' => ['bridecycle-to-seller-payments/index']];
 }
 $this->params['breadcrumbs'][] = $this->title;
@@ -65,10 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::encode('Order Invoice: ') ?>
                         <strong>
                             <?php if (file_exists(Yii::getAlias('@orderInvoiceRelativePath') . "/" . $invoice)) { ?>
-                                <a download
-                                   href="<?php echo Yii::getAlias('@orderInvoiceAbsolutePath') . "/" . $invoice; ?>"
-                                   title="Download Invoice" class="btn btn-default"><i
-                                            class="fa fa-download"></i> Download Invoice</a>
+                                <a download href="<?php echo Yii::getAlias('@orderInvoiceAbsolutePath') . "/" . $invoice; ?>" title="Download Invoice" class="btn btn-default"><i class="fa fa-download"></i> Download Invoice</a>
                             <?php } else { ?>
                                 Not Generated
                             <?php } ?>
@@ -125,29 +122,29 @@ $this->params['breadcrumbs'][] = $this->title;
                                             return $model->userAddress->address . ", " . $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
                                         },
                                     ],
-//                                    [
-//                                        'attribute' => 'total_amount',
-//                                        'value' => function ($model) {
-//                                            return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
-//                                        },
-//                                    ],
-//                                    [
-//                                        'attribute' => 'status',
-//                                        'value' => function ($model) {
-//                                            $status = 'Pending';
-//                                            if ($model->status == \app\models\Order::STATUS_ORDER_INPROGRESS) {
-//                                                $status = 'In progress';
-//                                            } elseif ($model->status == \app\models\Order::STATUS_ORDER_COMPLETED) {
-//                                                $status = 'Completed';
-//                                            } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCELLED) {
-//                                                $status = 'Cancelled';
-//                                            }
-//                                            return $status;
-//                                        }
-//
-//                                    ],
-//                            'created_at',
-//                            'updated_at',
+                                    //                                    [
+                                    //                                        'attribute' => 'total_amount',
+                                    //                                        'value' => function ($model) {
+                                    //                                            return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
+                                    //                                        },
+                                    //                                    ],
+                                    //                                    [
+                                    //                                        'attribute' => 'status',
+                                    //                                        'value' => function ($model) {
+                                    //                                            $status = 'Pending';
+                                    //                                            if ($model->status == \app\models\Order::STATUS_ORDER_INPROGRESS) {
+                                    //                                                $status = 'In progress';
+                                    //                                            } elseif ($model->status == \app\models\Order::STATUS_ORDER_COMPLETED) {
+                                    //                                                $status = 'Completed';
+                                    //                                            } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCELLED) {
+                                    //                                                $status = 'Cancelled';
+                                    //                                            }
+                                    //                                            return $status;
+                                    //                                        }
+                                    //
+                                    //                                    ],
+                                    //                            'created_at',
+                                    //                            'updated_at',
                                 ],
                             ]) ?>
                         </div>
@@ -419,7 +416,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                                                 }
 
-                                                $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),                                             //'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
+                                                $dataImages[] = [
+                                                    'content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),                                             //'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
                                                     'options' => ['interval' => '600']
                                                 ];
                                             }
@@ -483,7 +481,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row">
                 <div class="col col-md-12">
                     <p>
-                        <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+
+                        <?php
+                        if ($pageType == '') {
+                            echo Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']);
+                        } else {
+                            echo Html::a('Back', \yii\helpers\Url::to(['bridecycle-to-seller-payments/index']), ['class' => 'btn btn-default']);
+                        }
+                        ?>
                     </p>
                 </div>
             </div>
