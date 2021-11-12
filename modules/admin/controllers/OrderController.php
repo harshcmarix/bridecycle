@@ -57,9 +57,8 @@ class OrderController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($id, $pageType = '')
     {
-
         $searchModelOrderItem = new OrderItemSearch();
         $dataProviderOrderItem = $searchModelOrderItem->searchByOrder(Yii::$app->request->queryParams, $id);
 
@@ -67,6 +66,7 @@ class OrderController extends Controller
             'model' => $this->findModel($id),
             'searchModel' => $searchModelOrderItem,
             'dataProvider' => $dataProviderOrderItem,
+            'pageType' => $pageType,
         ]);
     }
 

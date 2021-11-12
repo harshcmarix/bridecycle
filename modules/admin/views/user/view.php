@@ -9,8 +9,7 @@ use app\models\ShopDetail;
 /* @var $model app\modules\admin\models\User */
 
 $this->title = 'View Customer';
-
-if ($pageId == '' && empty(Yii::$app->request->get('f'))) {
+if ($pageId == '' && empty(Yii::$app->request->get('f')) && $pageType != 'seller') {
     $this->params['breadcrumbs'][] = ['label' => 'All Customers', 'url' => ['index']];
 } else {
     if (!empty(Yii::$app->request->get('f')) && Yii::$app->request->get('f') == 'o' && !empty(Yii::$app->request->get('oId'))) {
@@ -19,9 +18,11 @@ if ($pageId == '' && empty(Yii::$app->request->get('f'))) {
     } else if ($pageType == '') {
         $this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['product/index']];
         $this->params['breadcrumbs'][] = ['label' => 'View Product', 'url' => ['product/view?id=' . $pageId]];
-    } else if (empty(Yii::$app->request->get('f')) && $pageType != '') {
+    } else if (empty(Yii::$app->request->get('f')) && $pageType != '' && $pageType != 'seller') {
         $this->params['breadcrumbs'][] = ['label' => 'New Products', 'url' => ['product/new-product']];
         $this->params['breadcrumbs'][] = ['label' => 'View New Product', 'url' => ['product/new-product-view?id=' . $pageId]];
+    } else if ($pageType == 'seller') {
+        $this->params['breadcrumbs'][] = ['label' => 'Bridecycle To Seller Payments', 'url' => ['bridecycle-to-seller-payments/index']];
     }
 }
 $this->params['breadcrumbs'][] = 'View Customer';
@@ -222,11 +223,13 @@ $this->params['breadcrumbs'][] = 'View Customer';
                                 'billing_address_line_1',
                                 'billing_address_line_2',
                                 'post_code',
+                                'payment_type',
+                                'paypal_email',
 
                             ],
                         ]) ?>
 
-                        <?php
+                    <?php
                     } else {
                         echo "<center><h5>Bank details not available.</h5></center>";
                     }

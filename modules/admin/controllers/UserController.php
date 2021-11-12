@@ -109,7 +109,7 @@ class UserController extends Controller
     {
         $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
         $bankDetails = UserBankDetails::find()->where(['user_id' => $id])->one();
-        // p($bankDetails->attributes);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
             'shopAddress' => $userShopAddress,
@@ -127,9 +127,11 @@ class UserController extends Controller
     public function actionNewCustomerView($id)
     {
         $userShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
+        $bankDetails = UserBankDetails::find()->where(['user_id' => $id])->one();
         return $this->render('view_new_customer', [
             'model' => $this->findModel($id),
             'shopAddress' => $userShopAddress,
+            'bankDetails' => $bankDetails,
         ]);
     }
 

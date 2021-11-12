@@ -46,6 +46,7 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
         // add conditions that should always apply here
 
         $query->leftJoin('users As seller', 'bridecycle_to_seller_payments.seller_id=seller.id');
+        // $query->leftJoin('users As buyer', 'bridecycle_to_seller_payments.seller_id=seller.id');
         $query->leftJoin('order_items', 'bridecycle_to_seller_payments.order_item_id=order_items.id');
         $query->leftJoin('products', 'order_items.product_id=products.id');
 
