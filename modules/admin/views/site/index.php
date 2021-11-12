@@ -75,14 +75,14 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/tailor/index' ?>" class="small-box-footer">
-            <div class="small-box bg-red">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/brand/new-brand' ?>" class="small-box-footer">
+            <div class="small-box bg-maroon">
                 <div class="inner">
-                    <h3><?php echo $totalTailor; ?></h3>
-                    <p>Total Tailor</p>
+                    <h3><?php echo $totalNewBrandToday ?></h3>
+                    <p>New Brand <?php echo date('j M, Y') ?></p>
                 </div>
                 <div class="icon">
-                    <i class="fa fa-cut"></i>
+                    <i class="fa fa-tag"></i>
                 </div>
             </div>
         </a>
@@ -231,6 +231,20 @@ $this->title = 'Dashboard';
         </a>
     </div>
 
+    <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/tailor/index' ?>" class="small-box-footer">
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3><?php echo $totalTailor; ?></h3>
+                    <p>Total Tailor</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-cut"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
 </div>
 
 <div class="row">
@@ -247,10 +261,10 @@ $this->title = 'Dashboard';
                 </select>
                 <div id="ordersGraph"></div>
                 <script>
-                    $(document).ready(function () {
+                    $(document).ready(function() {
                         renderGraph('current-year-orders');
                     });
-                    $('#orders').on('change', function () {
+                    $('#orders').on('change', function() {
                         var action = this.value;
                         renderGraph(action);
                     })
@@ -259,7 +273,7 @@ $this->title = 'Dashboard';
                         $.ajax({
                             url: '<?php echo Yii::$app->request->baseUrl . '/admin/site/' ?>' + action,
                             type: 'get',
-                            success: function (data) {
+                            success: function(data) {
                                 var graphData = JSON.parse(data);
                                 const d = new Date();
                                 var chart = Highcharts.chart('ordersGraph', {
@@ -281,13 +295,11 @@ $this->title = 'Dashboard';
                                         headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
-                                    series: [
-                                        {
-                                            name: "Orders",
-                                            colorByPoint: false,
-                                            data: graphData
-                                        }
-                                    ]
+                                    series: [{
+                                        name: "Orders",
+                                        colorByPoint: false,
+                                        data: graphData
+                                    }]
                                 });
                             }
                         });
@@ -309,10 +321,10 @@ $this->title = 'Dashboard';
                 </select>
                 <div id="incomeGraph"></div>
                 <script>
-                    $(document).ready(function () {
+                    $(document).ready(function() {
                         renderIncomeGraph('current-year-income');
                     });
-                    $('#income').on('change', function () {
+                    $('#income').on('change', function() {
                         var action = this.value;
                         renderIncomeGraph(action);
                     })
@@ -321,7 +333,7 @@ $this->title = 'Dashboard';
                         $.ajax({
                             url: '<?php echo Yii::$app->request->baseUrl . '/admin/site/' ?>' + action,
                             type: 'get',
-                            success: function (data) {
+                            success: function(data) {
                                 var incomeGraphData = JSON.parse(data);
                                 const d = new Date();
                                 var chart = Highcharts.chart('incomeGraph', {
@@ -343,13 +355,11 @@ $this->title = 'Dashboard';
                                         headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
-                                    series: [
-                                        {
-                                            name: "Income",
-                                            colorByPoint: false,
-                                            data: incomeGraphData
-                                        }
-                                    ]
+                                    series: [{
+                                        name: "Income",
+                                        colorByPoint: false,
+                                        data: incomeGraphData
+                                    }]
                                 });
                             }
                         });

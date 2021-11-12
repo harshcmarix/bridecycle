@@ -6,6 +6,7 @@ use app\models\Order;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Brand;
+use Yii;
 
 /**
  * BrandSearch represents the model behind the search form of `app\models\Brand`.
@@ -44,29 +45,53 @@ class BrandSearch extends Brand
     public function search($params)
     {
         $query = Brand::find();
-        $query1 = Brand::find();
 
         // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+            'pagination' => [
+                // 'pageSize' => (!empty(\Yii::$app->params['default_page_size_for_backend'])) ? \Yii::$app->params['default_page_size_for_backend'] : 50,
+                'pageSize' => 50,
+            ]
         ]);
 
         $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
+        $dateWiseFilter = "";
+        if (Yii::$app->controller->action->id == 'index') {
+            if (!empty($this->created_at)) {
+                $dateWiseFilter = $this->created_at;
+                $dates = explode(" to ", $dateWiseFilter);
+                $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
+                $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
+                $query->andWhere(['between', 'created_at', $startDate, $endDate]);
+            }
         }
 
-//        $query->select(['brands.*']);
+        if (Yii::$app->controller->action->id == "new-brand") {
+
+            $query->andWhere(['status' => 1]);
+
+            if (!empty($this->created_at)) {
+                $dateWiseFilter = $this->created_at;
+                $dates = explode(" to ", $dateWiseFilter);
+                $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
+                $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
+            } else {
+                $startDate = date('Y-m-d 00:00:01', strtotime('-35 days'));
+                $endDate = date('Y-m-d 23:59:59');
+            }
+            $query->andWhere(['between', 'created_at', $startDate, $endDate]);
+        }
+
+        if (!$this->validate()) {
+            return $dataProvider;
+        }
 
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'created_at' => $this->created_at,
+            // 'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
