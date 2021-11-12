@@ -72,18 +72,23 @@ class SiteController extends Controller
         $todayTo = date('Y-m-d 23:59:59');
 
         $modelTotalCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '0'])->count();
+
         $totalShopOwnerCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->count();
 
-        $totalShopOwnerCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
+        $totalShopOwnerCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();       
 
         $totSubAdmin = User::find()->where(['user_type' => User::USER_TYPE_SUB_ADMIN])->count();
 
         $modelTotalCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $totalActiveAds = Ads::find()->where(['status' => '2'])->count();
+        
         $totalBrand = Brand::find()->count();
+        
+        $totalNewBrandToday = Brand::find()->Where(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalProduct = Product::find()->count();
+        
         $modelTotalProductPendingApproval = Product::find()->where(['status_id' => ProductStatus::STATUS_PENDING_APPROVAL])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalOrder = Order::find()->count();
@@ -156,6 +161,7 @@ class SiteController extends Controller
             'totalCustomerToday' => $modelTotalCustomerToday,
             'totalActiveAds' => $totalActiveAds,
             'totalBrand' => $totalBrand,
+            'totalNewBrandToday' => $totalNewBrandToday,
             'totalProduct' => $modelTotalProduct,
             'totalProductPendingApproval' => $modelTotalProductPendingApproval,
             'totalOrder' => $modelTotalOrder,

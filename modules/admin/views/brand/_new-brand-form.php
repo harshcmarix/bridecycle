@@ -107,7 +107,7 @@ echo Dialog::widget(
 
 
             <div class="form-group">
-                <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+                <?= Html::a('Back', Url::to(['new-brand']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             </div>
 

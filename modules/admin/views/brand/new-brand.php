@@ -18,7 +18,7 @@ use kartik\select2\Select2;
 $this->registerCssFile("@web/css/toggle-switch.css");
 $this->registerJsFile("@web/js/toggle-switch.js");
 
-$this->title = 'Brand';
+$this->title = 'New Brand';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="filter-div " id="filter-div" style="display: none">
             <div class="row">
                 <div class="col-md-12">
-                    <?= $this->render('_search_all_brand', ['model' => $searchModel]) ?>
+                    <?= $this->render('_search_all_new_brand', ['model' => $searchModel]) ?>
                 </div>
             </div>
         </div>
@@ -157,7 +157,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 // ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
-                    'width' => '12%'
+                    'width' => '12%',
+                    'urlCreator' => function ($action, $model, $key, $index) {
+                        return Url::to(['brand/new-brand-' . $action . '/', 'id' => $model->id]);
+                    }
                 ],
             ],
 
@@ -177,8 +180,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'content' =>
                     Html::button('<i class="fa fa-plus-circle"> Add Brand</i>', [
                         'class' => 'btn btn-success',
-                        'title' => \Yii::t('kvgrid', 'Add Brand'),
-                        'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/create']) . "';",
+                        'title' => \Yii::t('kvgrid', 'Add New Brand'),
+                        'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/new-brand-create']) . "';",
                     ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
@@ -187,7 +190,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     Html::button('<i class="fa fa-refresh"> Reset </i>', [
                         'class' => 'btn btn-basic',
                         'title' => 'Reset Filter',
-                        'onclick' => "window.location.href = '" . Url::to(['brand/index']) . "';",
+                        'onclick' => "window.location.href = '" . Url::to(['brand/new-brand']) . "';",
                     ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
@@ -206,8 +209,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            'itemLabelSingle' => 'brand',
-            'itemLabelPlural' => 'Brands'
+            'itemLabelSingle' => 'new brand',
+            'itemLabelPlural' => 'New Brands'
         ]);
         ?>
     </div>
@@ -216,7 +219,7 @@ $this->params['breadcrumbs'][] = $this->title;
     $(document).on('change', '.is-top-brand', function() {
         var id = $(this).attr('data-key');
         if ($(this).is(':checked')) {
-            krajeeDialog.confirm('Are you sure you want to add this brand to top brand?', function(out) {
+            krajeeDialog.confirm('Are you sure you want to add this new brand to top brand?', function(out) {
                 if (out) {
                     var is_top_brand = '1';
                     $.ajax({
@@ -238,7 +241,7 @@ $this->params['breadcrumbs'][] = $this->title;
             });
 
         } else {
-            krajeeDialog.confirm('Are you sure you want to remove this brand from top brand?', function(out) {
+            krajeeDialog.confirm('Are you sure you want to remove this new brand from top brand?', function(out) {
                 if (out) {
                     var is_top_brand = '0';
                     $.ajax({

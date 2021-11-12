@@ -18,7 +18,7 @@ use app\modules\admin\models\Module;
                 }
                 ?>
 
-                <img src="<?= $profilePic ?>" alt="User Image" class="sidebar-profile"/>
+                <img src="<?= $profilePic ?>" alt="User Image" class="sidebar-profile" />
             </div>
             <?php if (!Yii::$app->user->isGuest) { ?>
                 <div class="pull-left info">
@@ -46,11 +46,15 @@ use app\modules\admin\models\Module;
         $menuList[] = ['label' => 'Order', 'icon' => 'cart-arrow-down', 'url' => ['order/index'], 'visible' => $visible, 'active' => ($route === 'admin/order/index' || $route === 'admin/order/update' || $route === 'admin/order/view')];
         $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => false, 'active' => ($route === 'admin/sub-admin/index' || $route === 'admin/sub-admin/create' || $route === 'admin/sub-admin/update' || $route === 'admin/sub-admin/view')];
         $menuList[] = ['label' => 'Ads', 'icon' => 'film', 'url' => ['ads/index'], 'visible' => $visible, 'active' => ($route === 'admin/ads/index' || $route === 'admin/ads/create' || $route === 'admin/ads/update' || $route === 'admin/ads/view')];
-        $menuList[] = ['label' => 'Brand', 'icon' => 'tag', 'url' => ['brand/index'], 'visible' => $visible, 'active' => ($route === 'admin/brand/index' || $route === 'admin/brand/create' || $route === 'admin/brand/update' || $route === 'admin/brand/view')];
+        // $menuList[] = ['label' => 'Brand', 'icon' => 'tag', 'url' => ['brand/index'], 'visible' => $visible, 'active' => ($route === 'admin/brand/index' || $route === 'admin/brand/create' || $route === 'admin/brand/update' || $route === 'admin/brand/view')];
+        $menuList[] = ['label' => 'Brands', 'icon' => 'tag', 'items' => [
+            ['label' => 'All Brands', 'icon' => 'fas fa-list', 'url' => ['brand/index'], 'visible' => $visible, 'active' => ($route === 'admin/brand/index' || $route === 'admin/brand/create' || $route === 'admin/brand/update' || $route === 'admin/brand/view')],
+            ['label' => "New Brands", 'icon' => 'plus-square', 'url' => ['brand/new-brand'], 'visible' => $visible, 'active' => ($route === 'admin/brand/new-brand' || $route === 'admin/brand/new-brand-create' || $route === 'admin/brand/new-brand-update' || $route === 'admin/brand/new-brand-view')],
+        ],];
         //$menuList[] = ['label' => 'Product', 'icon' => 'product-hunt', 'url' => ['product/index'], 'visible' => $visible, 'active' => ($route === 'admin/product/index' || $route === 'admin/product/create' || $route === 'admin/product/update' || $route === 'admin/product/view')];
         $menuList[] = ['label' => 'Products', 'icon' => 'product-hunt', 'items' => [
             ['label' => 'All Products', 'icon' => 'fas fa-list', 'url' => ['product/index'], 'visible' => $visible, 'active' => ($route === 'admin/product/index' || $route === 'admin/product/create' || $route === 'admin/product/update' || $route === 'admin/product/view')],
-            ['label' => "New Products", 'icon' => 'plus-square', 'url' => ['product/new-product'], 'visible' => $visible, 'active' => ($route === 'admin/product/new-product' || $route === 'admin/product/create' || $route === 'admin/product/update' || $route === 'admin/product/view')],
+            ['label' => "New Products", 'icon' => 'plus-square', 'url' => ['product/new-product'], 'visible' => $visible, 'active' => ($route === 'admin/product/new-product' || $route === 'admin/product/new-product-create' || $route === 'admin/product/new-product-update' || $route === 'admin/product/new-product-view')],
         ],];
         $menuList[] = ['label' => 'All Categories', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => $visible, 'active' => ($route === 'admin/product-category/index' || $route === 'admin/product-category/create' || $route === 'admin/product-category/update' || $route === 'admin/product-category/view')];
         $menuList[] = ['label' => 'Product Rating', 'icon' => 'star', 'url' => ['product-rating/index'], 'visible' => $visible, 'active' => ($route === 'admin/product-rating/index' || $route === 'admin/product-rating/update' || $route === 'admin/product-rating/view')];
@@ -88,7 +92,7 @@ use app\modules\admin\models\Module;
 
 
 <style>
-    .skin-blue .sidebar-menu > li > a {
+    .skin-blue .sidebar-menu>li>a {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -97,7 +101,7 @@ use app\modules\admin\models\Module;
         align-items: center;
     }
 
-    .treeview > a {
+    .treeview>a {
         white-space: break-spaces
     }
 

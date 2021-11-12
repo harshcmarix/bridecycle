@@ -31,11 +31,11 @@ class BrandController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'update', 'view', 'delete', 'update-top-brand'],
+                'only' => ['index', 'new-brand', 'create', 'new-brand-create', 'update', 'new-brand-update', 'view', 'new-brand-view', 'delete', 'new-brand-delete', 'update-top-brand'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'update-top-brand'],
+                        'actions' => ['index', 'new-brand', 'create', 'new-brand-create', 'update', 'new-brand-update', 'view', 'new-brand-view', 'delete', 'new-brand-delete', 'update-top-brand'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -58,6 +58,17 @@ class BrandController extends Controller
         ]);
     }
 
+    public function actionNewBrand()
+    {
+        $searchModel = new BrandSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('new-brand', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     /**
      * Displays a single Brand model.
      * @param integer $id
@@ -67,6 +78,13 @@ class BrandController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    public function actionNewBrandView($id)
+    {
+        return $this->render('new-brand-view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -131,6 +149,65 @@ class BrandController extends Controller
         }
 
         return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionNewBrandCreate()
+    {
+        $model = new Brand();
+        $model->scenario = Brand::SCENARIO_CREATE;
+        $brand_image = UploadedFile::getInstance($model, 'image');
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            if (!empty($brand_image)) {
+                $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+                $thumbImagePath = '';
+
+                // Create profile upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+
+                // Create profile thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+
+                $ext = $brand_image->extension;
+                $fileName = pathinfo($brand_image->name, PATHINFO_FILENAME);
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
+                // Upload profile picture
+                $brand_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
+
+                $brandData = Yii::$app->request->post('Brand');
+                $model->is_top_brand = $brandData['is_top_brand'];
+                $model->status = $brandData['status'];
+            }
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "New brand created successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating new brand.");
+            }
+            return $this->redirect(['new-brand']);
+        }
+
+        return $this->render('new-brand-create', [
             'model' => $model,
         ]);
     }
@@ -214,6 +291,78 @@ class BrandController extends Controller
         ]);
     }
 
+    public function actionNewBrandUpdate($id)
+    {
+        $model = $this->findModel($id);
+        $old_image = $model->image;
+
+        $new_image = UploadedFile::getInstance($model, 'image');
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
+        }
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $brandData = Yii::$app->request->post('Brand');
+
+            $model->is_top_brand = $brandData['is_top_brand'];
+            if (!empty($brandData['status'])) {
+                $model->status = $brandData['status'];
+            }
+
+            if (!empty($new_image)) {
+                $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+                $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+                $thumbImagePath = '';
+
+                // Create product image upload directory if not exist
+                if (!is_dir($uploadDirPath)) {
+                    mkdir($uploadDirPath, 0777);
+                }
+                //unlink real image if update
+                if (file_exists($uploadDirPath . '/' . $old_image) && !empty($old_image)) {
+                    unlink($uploadDirPath . '/' . $old_image);
+                }
+                // Create product image thumb upload directory if not exist
+                if (!is_dir($uploadThumbDirPath)) {
+                    mkdir($uploadThumbDirPath, 0777);
+                }
+                //unlink thumb image if update
+                if (file_exists($uploadThumbDirPath . '/' . $old_image) && !empty($old_image)) {
+                    unlink($uploadThumbDirPath . '/' . $old_image);
+                }
+
+                $ext = $new_image->extension;
+                $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
+                $fileName = time() . rand(99999, 88888) . '.' . $ext;
+                // Upload profile picture
+                $new_image->saveAs($uploadDirPath . '/' . $fileName);
+                // Create thumb of profile picture
+                $actualImagePath = $uploadDirPath . '/' . $fileName;
+                $thumbImagePath = $uploadThumbDirPath . '/' . $fileName;
+
+                Image::getImagine()->open($actualImagePath)->thumbnail(new Box(Yii::$app->params['profile_picture_thumb_width'], Yii::$app->params['profile_picture_thumb_height']))->save($thumbImagePath, ['quality' => Yii::$app->params['profile_picture_thumb_quality']]);
+                // Insert profile picture name into database
+                $model->image = $fileName;
+            } else {
+                $model->image = $old_image;
+            }
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "New brand updated successfully.");
+            } else {
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating new brand.");
+            }
+            return $this->redirect(['new-brand']);
+        }
+
+        return $this->render('new-brand-update', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Deletes an existing Brand model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -240,6 +389,27 @@ class BrandController extends Controller
             Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Brand.");
         }
         return $this->redirect(['index']);
+    }
+
+    public function actionNewBrandDelete($id)
+    {
+        $model = $this->findModel($id);
+        $image = $model->image;
+        $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
+        $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
+        // unlink images with thumb
+        if (file_exists($uploadDirPath . '/' . $image) && !empty($image)) {
+            unlink($uploadDirPath . '/' . $image);
+        }
+        if (file_exists($uploadThumbDirPath . '/' . $image) && !empty($image)) {
+            unlink($uploadThumbDirPath . '/' . $image);
+        }
+        if ($model->delete()) {
+            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "New brand deleted successfully.");
+        } else {
+            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting new brand.");
+        }
+        return $this->redirect(['new-brand']);
     }
 
     /**
