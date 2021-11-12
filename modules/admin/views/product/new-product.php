@@ -38,7 +38,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return $model->name;
                 },
                 'header' => 'Name',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 200px']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 200px']
             ],
             [
                 'format' => 'raw',
@@ -83,7 +83,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return $result;
                 },
                 'header' => 'Images',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 100px'],
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 100px'],
 
             ],
             //        [
@@ -92,7 +92,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             //                return $model->number;
             //            },
             //            'header' => '',
-            //            'headerOptions' => ['class' => 'kartik-sheet-style']
+            //            //'headerOptions' => ['class' => 'kartik-sheet-style']
             //        ],
             [
                 'attribute' => 'category_id',
@@ -108,7 +108,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => 'Category',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
             ],
             [
                 'attribute' => 'sub_category_id',
@@ -124,7 +124,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => 'Sub Category',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
             ],
             [
                 'attribute' => 'price',
@@ -132,7 +132,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
                 },
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
             ],
 
             [
@@ -141,7 +141,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
                 },
                 'header' => 'Tax',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 70px'],
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 70px'],
             ],
             //            [
             //                'attribute' => 'option_conditions',
@@ -152,7 +152,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             //                    return $model->option_conditions;
             //                },
             //                'header' => '',
-            //                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+            //                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             //            ],
             //            [
             //                'attribute' => 'option_size',
@@ -160,7 +160,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             //                    return $model->option_size;
             //                },
             //                'header' => '',
-            //                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+            //                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             //            ],
             //            [
             //                'attribute' => 'option_show_only',
@@ -176,7 +176,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             //                    ],
             //                ],
             //                'header' => '',
-            //                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+            //                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             //            ],
             [
                 'attribute' => 'available_quantity',
@@ -185,7 +185,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 },
                 'header' => '',
                 'width' => '5%',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'format' => ['raw'],
@@ -202,7 +202,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
 
             // [
@@ -220,7 +220,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             //         ],
             //     ],
             //     'header' => '',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            //     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             // ],
             // [
             //     'format' => ['raw'],
@@ -237,7 +237,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             //         ],
             //     ],
             //     'header' => '',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            //     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             // ],
             [
                 'attribute' => 'type',
@@ -259,13 +259,13 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => 'Conditions',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
 
             [
                 'attribute' => 'is_admin_favourite',
                 'header' => 'Admin Favourite',
-                'headerOptions' => ['style' => 'text-align: center !important'],
+                //'headerOptions' => ['style' => 'text-align: center !important'],
                 'value' => function ($model) {
 
                     return (!empty($model->is_admin_favourite) && $model->is_admin_favourite == \app\models\Product::IS_ADMIN_FAVOURITE_YES) ? 'Yes' : "No";
@@ -278,6 +278,15 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         'allowClear' => true,
                     ],
                 ],
+            ],
+            [
+                'attribute' => 'created_at',
+                'value' => function ($model) {
+                    return date("Y M, d H:i:s", strtotime($model->created_at));
+                },
+                'filter' => "",
+                'header' => '',
+                //'headerOptions' => ['style' => 'text-align: center !important'],
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',

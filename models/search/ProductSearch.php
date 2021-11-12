@@ -19,7 +19,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'number', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'is_admin_favourite'], 'integer'],
-            [['type', 'name', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at'], 'safe'],
+            [['type', 'name', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at','status_id'], 'safe'],
             [['option_price'], 'number'],
         ];
     }
@@ -47,8 +47,7 @@ class ProductSearch extends Product
         $query = Product::find();
 
         if((\Yii::$app->controller->action->id == "new-product")){
-            // p('innn');
-            $query->andWhere(['status_id' => 1]);
+            $query->andWhere(['status_id' => '1']);
         }
 
         // add conditions that should always apply here
@@ -86,6 +85,7 @@ class ProductSearch extends Product
             'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'status_id' => $this->status_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
