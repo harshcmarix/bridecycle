@@ -133,7 +133,7 @@ $this->title = 'Dashboard';
     </div>
 
 
-    <div class="col-md-3 col-xs-6">
+    <!-- <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box bg-lime">
                 <div class="inner">
@@ -159,7 +159,7 @@ $this->title = 'Dashboard';
                 </div>
             </div>
         </a>
-    </div>
+    </div> -->
 
     <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">

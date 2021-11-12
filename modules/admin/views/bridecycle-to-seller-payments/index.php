@@ -18,8 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php
 
-        $gridColumns = [
-        ];
+        $gridColumns = [];
         echo GridView::widget([
             'id' => 'bc_to_seller_payments-grid',
             'dataProvider' => $dataProvider,
@@ -27,9 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => [
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
+                    'format' => ['raw'],
                     'attribute' => 'order_id',
                     'value' => function ($model) {
-                        return $model->order_id;
+
+                        $orderLink = Html::a($model->order_id, \yii\helpers\Url::to(['order/view?id=' . $model->order_id . "&pageType=seller"]), ['class' => '']);
+                        return $orderLink;
                     },
                     'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
@@ -47,13 +49,28 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
+                    'format' => ['raw'],
                     'attribute' => 'seller_id',
                     'value' => function ($model) {
                         $seller = '-';
                         if ($model instanceof BridecycleToSellerPayments && !empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User) {
-                            $seller = $model->seller->first_name . " " . $model->seller->last_name;
+                            // $seller = $model->seller->first_name . " " . $model->seller->last_name;
+                            $seller = Html::a($model->seller->first_name . " " . $model->seller->last_name, \yii\helpers\Url::to(['user/view?id=' . $model->seller->id . "&pageType=seller"]), ['class' => '']);
                         }
                         return $seller;
+                    },
+                    'header' => '',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                ],
+                [
+                    'format' => ['raw'],
+                    'attribute' => 'Buyer',
+                    'value' => function ($model) {
+                        $buyer = '-';
+                        if ($model instanceof BridecycleToSellerPayments && !empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User) {
+                            $buyer = Html::a($model->order->user->first_name . " " . $model->order->user->last_name, \yii\helpers\Url::to(['user/view?id=' . $model->order->user->id . "&pageType=seller"]), ['class' => '']);
+                        }
+                        return $buyer;
                     },
                     'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
@@ -117,11 +134,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'toolbar' => [
                 [
                     'content' =>
-                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                            'class' => 'btn btn-basic',
-                            'title' => 'Reset Filter',
-                            'onclick' => "window.location.href = '" . Url::to(['bridecycle-to-seller-payments/index']) . "';",
-                        ]),
+                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Reset Filter',
+                        'onclick' => "window.location.href = '" . Url::to(['bridecycle-to-seller-payments/index']) . "';",
+                    ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
 
@@ -162,7 +179,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function () {
+    $('document').ready(function() {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;
@@ -170,21 +187,21 @@ $this->params['breadcrumbs'][] = $this->title;
         var filter_selector = '#bc_to_seller_payments-grid-filters input';
         var isInput = true;
 
-        $('select').on('change', function () {
+        $('select').on('change', function() {
             isInput = false;
         });
 
-        $('input').on('keypress', function () {
+        $('input').on('keypress', function() {
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#bc_to_seller_payments-grid", function (event) {
+        $("body").on('beforeFilter', "#bc_to_seller_payments-grid", function(event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#bc_to_seller_payments-grid", function (event) {
+        $("body").on('afterFilter', "#bc_to_seller_payments-grid", function(event) {
             if (isInput) {
                 submit_form = false;
             }
@@ -192,7 +209,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-            .on('keyup', filter_selector, function (e) {
+            .on('keyup', filter_selector, function(e) {
                 input = $(this).attr('name');
                 var keyCode = e.keyCode ? e.keyCode : e.which;
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
@@ -202,7 +219,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             })
-            .on('pjax:success', function () {
+            .on('pjax:success', function() {
                 if (isInput) {
                     var i = $("[name='" + input + "']");
                     var val = i.val();
@@ -218,8 +235,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
                     }
 
-                    $('.pagination').find('li a').on('click', function () {
-                        setTimeout(function () {
+                    $('.pagination').find('li a').on('click', function() {
+                        setTimeout(function() {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
                     })
@@ -232,18 +249,18 @@ $this->params['breadcrumbs'][] = $this->title;
         var select_filter_selector = '#bc_to_seller_payments-grid-filters select';
         var isSelect = true;
 
-        $('select').on('change', function () {
+        $('select').on('change', function() {
             isSelect = true;
         });
-        $('input').on('keypress', function () {
+        $('input').on('keypress', function() {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#bc_to_seller_payments-grid", function (event) {
+        $("body").on('beforeFilter', "#bc_to_seller_payments-grid", function(event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#bc_to_seller_payments-grid", function (event) {
+        $("body").on('afterFilter', "#bc_to_seller_payments-grid", function(event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -251,14 +268,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
-            .on('change', select_filter_selector, function (e) {
+            .on('change', select_filter_selector, function(e) {
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
                     $("#bc_to_seller_payments-grid").yiiGridView("applyFilter");
                 }
             })
-            .on('pjax:success', function () {
+            .on('pjax:success', function() {
                 var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);
@@ -274,8 +291,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
                     }
 
-                    $('.pagination').find('li a').on('click', function () {
-                        setTimeout(function () {
+                    $('.pagination').find('li a').on('click', function() {
+                        setTimeout(function() {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
                     })
@@ -283,16 +300,16 @@ $this->params['breadcrumbs'][] = $this->title;
             });
     });
 
-    $('.pagination').find('li a').on('click', function () {
-        setTimeout(function () {
+    $('.pagination').find('li a').on('click', function() {
+        setTimeout(function() {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
 
-    $(document).on('click', '.bc_to_seller_payment_payment-update', function (e) {
+    $(document).on('click', '.bc_to_seller_payment_payment-update', function(e) {
         e.preventDefault();
         var id = $(this).attr('data-key');
-        krajeeDialog.confirm("Are you sure the seller's payment has been done?", function (out) {
+        krajeeDialog.confirm("Are you sure the seller's payment has been done?", function(out) {
             if (out) {
                 // alert('Yes'); // or do something on confirmation
                 var formAction = "<?php echo Url::to(['bridecycle-to-seller-payments/update', 'id' => ""]) ?>" + id;
@@ -303,7 +320,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
     });
 
-    $(document).on('click', '#btn-bc_to_seller_payment-update-form-submit', function (e) {
+    $(document).on('click', '#btn-bc_to_seller_payment-update-form-submit', function(e) {
         e.preventDefault();
         var form = $('#bc_to_seller_payment-update-frm');
         $(this).attr("disabled", true);
@@ -313,7 +330,7 @@ $this->params['breadcrumbs'][] = $this->title;
             "method": "POST",
             'data': form.serialize(),
             'dataType': "json",
-            success: function (result) {
+            success: function(result) {
                 if (result.success) {
                     window.location.reload();
                 } else {
@@ -322,7 +339,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     $("#btn-bc_to_seller_payment-update-form-cancel").attr("disabled", false);
                 }
             },
-            fail: function (result) {
+            fail: function(result) {
                 alert(result);
                 $(this).attr("disabled", false);
                 $("#btn-bc_to_seller_payment-update-form-cancel").attr("disabled", false);

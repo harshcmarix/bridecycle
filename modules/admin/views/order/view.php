@@ -13,7 +13,11 @@ use app\models\ProductImage;
 
 //$this->title = $model->id;
 $this->title = 'View Order Detail';
-$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
+if ($pageType == '') {
+    $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
+}else{
+    $this->params['breadcrumbs'][] = ['label' => 'Bridecycle To Seller Payments', 'url' => ['bridecycle-to-seller-payments/index']];
+}
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>

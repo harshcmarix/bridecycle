@@ -201,7 +201,8 @@ $this->params['breadcrumbs'][] = 'View New Shop Owner';
                             'billing_address_line_1',
                             'billing_address_line_2',
                             'post_code',
-
+                            'payment_type',
+                            'paypal_email',
                         ],
                     ]) ?>
                 </div>
