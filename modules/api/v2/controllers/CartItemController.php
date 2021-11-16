@@ -700,10 +700,14 @@ class CartItemController extends ActiveController
         $modelOrderItem->order_tracking_id = $uniqueNumber;
         // End - Generate Ordre Tracking Number
 
-        $transactionFees = Setting::find()->where(['option_key' => 'transaction_fees'])->one();
+        //$transactionFees = Setting::find()->where(['option_key' => 'transaction_fees'])->one();
         $transactionFeesAmount = 0;
-        if ($transactionFees instanceof Setting) {
-            $transactionFeesAmount = $transactionFees->option_value;
+        // if ($transactionFees instanceof Setting) {
+        //     $transactionFeesAmount = $transactionFees->option_value;
+        // }
+
+        if(!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->option_price)){
+            $transactionFeesAmount = $modelProduct->option_price;
         }
 
         $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail, 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser, 'buyerUserAddress' => $buyerUserAddress, 'transactionFeesAmount' => $transactionFeesAmount]);

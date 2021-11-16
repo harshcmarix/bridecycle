@@ -60,7 +60,7 @@ $this->title = 'Dashboard';
                     <p>New Shop Owner <?php echo date('j M, Y') ?></p>
                 </div>
                 <div class="icon">
-                    <i class="fa fa-user"></i>
+                    <i class="fa fa-user-plus"></i>
                 </div>
             </div>
         </a>
@@ -132,7 +132,7 @@ $this->title = 'Dashboard';
 
 <div class="row">
 
-<div class="col-md-3 col-xs-6">
+    <div class="col-md-3 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
