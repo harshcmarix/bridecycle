@@ -71,6 +71,7 @@ class UserController extends Controller
     public function actionIndexNewCustomer()
     {
         $searchModel = new UserSearch();
+
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $userTypes = [User::USER_TYPE_ADMIN => 'Admin', User::USER_TYPE_SUB_ADMIN => 'Sub Admin', User::USER_TYPE_NORMAL_USER => "Normal User"];
 

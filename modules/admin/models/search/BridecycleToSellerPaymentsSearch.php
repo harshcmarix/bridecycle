@@ -71,7 +71,7 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'status' => $this->status,
+            'bridecycle_to_seller_payments.status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

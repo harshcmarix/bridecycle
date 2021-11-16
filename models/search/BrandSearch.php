@@ -22,7 +22,7 @@ class BrandSearch extends Brand
     {
         return [
             [['id'], 'integer'],
-            [['name', 'image', 'is_top_brand', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'image', 'is_top_brand', 'created_at', 'updated_at','status'], 'safe'],
         ];
     }
 
@@ -91,6 +91,7 @@ class BrandSearch extends Brand
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'status'=>$this->status,
             // 'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

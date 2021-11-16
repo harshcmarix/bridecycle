@@ -35,12 +35,12 @@ class ProductController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index', 'new-product', 'create', 'new-product-create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index','new-product', 'create', 'new-product-create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
+                        'actions' => ['index', 'new-product', 'create', 'new-product-create', 'update', 'new-product-update', 'view', 'new-product-view', 'delete', 'new-product-delete', 'get-sub-category-list', 'update-top-selling', 'update-top-trending', 'delete-product-image', 'delete-product-receipt-image', 'delete-multiple'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -177,7 +177,7 @@ class ProductController extends Controller
 
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
-            }else{
+            } else {
                 $model->option_show_only = '0';
             }
 
@@ -305,7 +305,7 @@ class ProductController extends Controller
         $shippingPrice = $model->shippingCost;
 
         $postData = Yii::$app->request->post('Product');
-        
+
         $model->scenario = Product::SCENARIO_CREATE;
         $model->is_top_selling = Product::IS_TOP_SELLING_NO;
         if (!empty($postData['is_top_selling'])) {
@@ -328,10 +328,10 @@ class ProductController extends Controller
         $model->receipt = $ReceiptImages;
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            
+
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
-            }else{
+            } else {
                 $model->option_show_only = '0';
             }
 
@@ -477,10 +477,10 @@ class ProductController extends Controller
 
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
-            }else{
+            } else {
                 $model->option_show_only = '0';
             }
-            
+
             $model->option_color = implode(",", $postData['option_color']);
             if (empty($oldUserId)) {
                 $model->user_id = Yii::$app->user->identity->id;
@@ -505,6 +505,31 @@ class ProductController extends Controller
             }
 
             if ($model->save(false)) {
+
+
+                // Status of product is Approve then color/brand status approved START.
+                if ($model->status_id == ProductStatus::STATUS_APPROVED) {
+
+                    $arrColors = explode(",", $model->option_color);
+                    if (!empty($arrColors)) {
+                        $modelColors = Color::find()->where(['in', 'id', $arrColors])->all();
+                        if (!empty($modelColors)) {
+                            foreach ($modelColors as $c => $modelColorsRow) {
+                                if (!empty($modelColorsRow) && $modelColorsRow instanceof Color && in_array($modelColorsRow->status, [Color::STATUS_PENDING_APPROVAL])) {
+                                    $modelColorsRow->status = Color::STATUS_APPROVE;
+                                    $modelColorsRow->save(false);
+                                }
+                            }
+                        }
+                    }
+
+                    $modelBrand = Brand::findOne($model->brand_id);
+                    if (!empty($modelBrand) && $modelBrand instanceof Brand && in_array($modelBrand->status, [Brand::STATUS_PENDING_APPROVAL])) {
+                        $modelBrand->status = Brand::STATUS_APPROVE;
+                        $modelBrand->save(false);
+                    }
+                }
+                // Status of product is Approve then color/brand status approved END.
 
                 if (!empty($postData['shipping_country_price'])) {
 
@@ -670,10 +695,10 @@ class ProductController extends Controller
 
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
-            }else{
+            } else {
                 $model->option_show_only = '0';
             }
-            
+
             $model->option_color = implode(",", $postData['option_color']);
             if (empty($oldUserId)) {
                 $model->user_id = Yii::$app->user->identity->id;

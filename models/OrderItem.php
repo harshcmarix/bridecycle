@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\modules\api\v2\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 
@@ -11,6 +12,10 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property int $order_id
  * @property int $product_id
+ * @property string|null $product_name
+ * @property string|null $category_name
+ * @property string|null $subcategory_name
+ * @property int|null $seller_id
  * @property int $quantity
  * @property string|null $color
  * @property string|null $price
@@ -54,13 +59,15 @@ class OrderItem extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'product_id', 'quantity'], 'required'],
-            [['order_id', 'product_id', 'quantity', 'size'], 'integer'],
-            [['shipping_cost','price'], 'number'],
+            [['order_id', 'product_id', 'quantity', 'size', 'seller_id'], 'integer'],
+            [['shipping_cost', 'price'], 'number'],
+            [['product_name', 'category_name', 'subcategory_name'], 'safe'],
             [['color'], 'string', 'max' => 100],
             [['order_tracking_id'], 'unique'],
             [['invoice', 'created_at', 'updated_at'], 'safe'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['seller_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['seller_id' => 'id']],
         ];
     }
 

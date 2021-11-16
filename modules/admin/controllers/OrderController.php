@@ -6,6 +6,7 @@ use app\models\search\OrderItemSearch;
 use Yii;
 use app\models\Order;
 use app\models\search\OrderSearch;
+use kartik\growl\Growl;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -81,8 +82,14 @@ class OrderController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if($model->save()){
+                Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Order Updated successfully.");
+            }else{
+                Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Order.");
+            }
+            //return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
         return $this->render('update', [
             'model' => $model,

@@ -82,7 +82,9 @@ class SiteController extends Controller
         $modelTotalCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $totalActiveAds = Ads::find()->where(['status' => '2'])->count();
-        
+
+        $totalAds = Ads::find()->count();
+
         $totalBrand = Brand::find()->count();
         
         $totalNewBrandToday = Brand::find()->Where(['between', 'created_at', $todayFrom, $todayTo])->count();
@@ -92,12 +94,14 @@ class SiteController extends Controller
         $modelTotalProductPendingApproval = Product::find()->where(['status_id' => ProductStatus::STATUS_PENDING_APPROVAL])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalOrder = Order::find()->count();
+        //p($modelTotalOrder);
         $modelTotalOrderLast30Days = Order::find()->where(['between', 'created_at', date('Y-m-d 23:59:59', strtotime('-30 days')), date('Y-m-d 00:00:01')])->count();
         $modelTotalOrderLast7Days = Order::find()->where(['between', 'created_at', date('Y-m-d 23:59:59', strtotime('-7 days')), date('Y-m-d 00:00:01')])->count();
         $modelTotalOrderToday = Order::find()->where(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
         $modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
+        
         $modelTotalIncome = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
         $totalTailor = Tailor::find()->count();
 
@@ -159,7 +163,7 @@ class SiteController extends Controller
             'totalShopOwnerCustomerToday' => $totalShopOwnerCustomerToday,
             'totSubAdmin' => $totSubAdmin,
             'totalCustomerToday' => $modelTotalCustomerToday,
-            'totalActiveAds' => $totalActiveAds,
+            'totalActiveAds' => $totalAds,
             'totalBrand' => $totalBrand,
             'totalNewBrandToday' => $totalNewBrandToday,
             'totalProduct' => $modelTotalProduct,

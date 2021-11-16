@@ -47,9 +47,27 @@ class OrderSearch extends Order
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+            'pagination' => [
+                //'pageSize' => (!empty(\Yii::$app->params['default_page_size_for_backend'])) ? \Yii::$app->params['default_page_size_for_backend'] : 50,
+                'pageSize' => 50,
+            ]
         ]);
 
         $this->load($params);
+
+        if (!empty($this->created_at)) {
+            $dateWiseFilter = $this->created_at;
+            $dates = explode(" to ", $dateWiseFilter);
+            $startDate = date('Y-m-d 00:00:01', strtotime($dates[0]));
+            $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
+
+            $query->andWhere(['between', 'created_at', $startDate, $endDate]);
+        } 
+        // else {
+        //     $startDate = date('Y-m-d 00:00:01', strtotime('-35 days'));
+        //     $endDate = date('Y-m-d 23:59:59');
+        // }
+        
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -63,7 +81,7 @@ class OrderSearch extends Order
             'user_id' => $this->user_id,
             'user_address_id' => $this->user_address_id,
             'total_amount' => $this->total_amount,
-            'created_at' => $this->created_at,
+            //'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 

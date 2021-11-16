@@ -13,6 +13,7 @@ use Yii;
  * @property string $name
  * @property string|null $image
  * @property string $is_top_brand 1 => top brand
+ * @property string $status
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -85,11 +86,11 @@ class Brand extends ActiveRecord
         return [
             [['name'], 'required'],
             [['is_top_brand'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'status'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['name'], 'unique'],
             // [['image'], 'string', 'max' => 250],
-           // [['image'], 'file', 'extensions' => 'png, jpg'],
+            // [['image'], 'file', 'extensions' => 'png, jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
             //[['image'], 'required', 'on' => self::SCENARIO_CREATE_API],
             [['image'], 'required', 'when' => function ($model) {
@@ -144,12 +145,13 @@ class Brand extends ActiveRecord
      * @param $brandId
      * @return array|ActiveRecord|null
      */
-    public function isBrandOfTheWeek ($brandId) {
+    public function isBrandOfTheWeek($brandId)
+    {
         $brandFromDate = date("Y-m-d 00:00:01", strtotime('-1 week'));
         $brandToDate = date("Y-m-d 23:59:59");
         $query1 = Brand::find();
 
-        $query1->innerJoin('products', 'products.brand_id="'. $brandId .'"');
+        $query1->innerJoin('products', 'products.brand_id="' . $brandId . '"');
         $query1->leftjoin('order_items', 'order_items.product_id=products.id');
         $query1->rightjoin('orders', 'orders.id=order_items.order_id');
         $query1->select(['SUM(order_items.quantity) AS total_sold_product', 'products.brand_id']);

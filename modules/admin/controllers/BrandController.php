@@ -13,6 +13,7 @@ use yii\web\{
     Response
 };
 use kartik\growl\Growl;
+use Mpdf\Tag\Em;
 use yii\imagine\Image;
 use yii\filters\AccessControl;
 use \yii\helpers\Json;
@@ -136,7 +137,7 @@ class BrandController extends Controller
                 $model->image = $fileName;
 
                 $brandData = Yii::$app->request->post('Brand');
-                $model->is_top_brand = $brandData['is_top_brand'];
+                $model->is_top_brand = (!empty($brandData['is_top_brand'])) ? $brandData['is_top_brand'] : Brand::NOT_TOP_BRAND;
                 $model->status = $brandData['status'];
             }
 
@@ -195,7 +196,7 @@ class BrandController extends Controller
                 $model->image = $fileName;
 
                 $brandData = Yii::$app->request->post('Brand');
-                $model->is_top_brand = $brandData['is_top_brand'];
+                $model->is_top_brand = (!empty($brandData['is_top_brand'])) ? $brandData['is_top_brand'] : Brand::NOT_TOP_BRAND;
                 $model->status = $brandData['status'];
             }
 
@@ -235,7 +236,7 @@ class BrandController extends Controller
 
             $brandData = Yii::$app->request->post('Brand');
 
-            $model->is_top_brand = $brandData['is_top_brand'];
+            $model->is_top_brand = (!empty($brandData['is_top_brand'])) ? $brandData['is_top_brand'] : Brand::NOT_TOP_BRAND;
             if (!empty($brandData['status'])) {
                 $model->status = $brandData['status'];
             }
@@ -307,7 +308,7 @@ class BrandController extends Controller
 
             $brandData = Yii::$app->request->post('Brand');
 
-            $model->is_top_brand = $brandData['is_top_brand'];
+            $model->is_top_brand = (!empty($brandData['is_top_brand'])) ? $brandData['is_top_brand'] : Brand::NOT_TOP_BRAND;
             if (!empty($brandData['status'])) {
                 $model->status = $brandData['status'];
             }

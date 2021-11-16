@@ -106,30 +106,30 @@ $this->params['breadcrumbs'][] = $this->title;
                     'header' => '',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-                [
-                    'format' => ['raw'],
-                    'attribute' => 'is_top_brand',
-                    'value' => function ($model) {
-                        $is_top_brand = '';
-                        if ($model instanceof Brand) {
-                            // $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
-                            $is_top_brand = Html::checkbox("", $model->is_top_brand, ['class' => 'is-top-brand', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
-                        }
-                        return $is_top_brand;
-                    },
-                    'filter' => Brand::IS_TOP_BRAND_OR_NOT,
-                    'filterType' => GridView::FILTER_SELECT2,
-                    'filterWidgetOptions' => [
-                        'options' => ['prompt' => ''],
-                        'pluginOptions' => [
-                            'allowClear' => true,
-                            'width' => '70%'
-                        ],
-                    ],
+                // [
+                //     'format' => ['raw'],
+                //     'attribute' => 'is_top_brand',
+                //     'value' => function ($model) {
+                //         $is_top_brand = '';
+                //         if ($model instanceof Brand) {
+                //             // $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
+                //             $is_top_brand = Html::checkbox("", $model->is_top_brand, ['class' => 'is-top-brand', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
+                //         }
+                //         return $is_top_brand;
+                //     },
+                //     'filter' => Brand::IS_TOP_BRAND_OR_NOT,
+                //     'filterType' => GridView::FILTER_SELECT2,
+                //     'filterWidgetOptions' => [
+                //         'options' => ['prompt' => ''],
+                //         'pluginOptions' => [
+                //             'allowClear' => true,
+                //             'width' => '70%'
+                //         ],
+                //     ],
 
-                    'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                ],
+                //     'header' => '',
+                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                // ],
                 [
                     'header' => 'Brand Of The Week',
                     'value' => function ($data) {

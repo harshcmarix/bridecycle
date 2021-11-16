@@ -79,18 +79,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
-                    [
-                        'attribute' => 'is_top_brand',
-                        'value' => function ($model) {
-                            $is_top_brand = '';
-                            if ($model instanceof Brand) {
-                                $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
-                            }
-                            return $is_top_brand;
-                        },
-                        'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style']
-                    ],
+                    // [
+                    //     'attribute' => 'is_top_brand',
+                    //     'value' => function ($model) {
+                    //         $is_top_brand = '';
+                    //         if ($model instanceof Brand) {
+                    //             $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
+                    //         }
+                    //         return $is_top_brand;
+                    //     },
+                    //     'header' => '',
+                    //     'headerOptions' => ['class' => 'kartik-sheet-style']
+                    // ],
                 ],
             ]) ?>
             <p>

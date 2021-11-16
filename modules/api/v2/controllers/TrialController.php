@@ -4,6 +4,7 @@ namespace app\modules\api\v2\controllers;
 
 use app\models\Notification;
 use app\models\Product;
+use app\models\Timezone;
 use app\modules\api\v2\models\User;
 use Yii;
 use app\models\Trial;
@@ -44,6 +45,7 @@ class TrialController extends ActiveController
             'get-trial-list-seller' => ['POST', 'OPTIONS'],
             'get-trial-list-user' => ['POST', 'OPTIONS'],
             'update' => ['PUT', 'PATCH'],
+            'get-timezone-list' => ['GET', 'HEAD', 'OPTIONS'],
         ];
     }
 
@@ -55,7 +57,7 @@ class TrialController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'get-trial-list-seller', 'get-trial-list-user'], //, 'delete'
+            'only' => ['index', 'view', 'create', 'update', 'get-trial-list-seller', 'get-trial-list-user', 'get-timezone-list'], //, 'delete'
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -90,6 +92,7 @@ class TrialController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
+        unset($actions['get-timezone-list']);
         return $actions;
     }
 
@@ -135,11 +138,18 @@ class TrialController extends ActiveController
 
         $postData['Trial']['sender_id'] = Yii::$app->user->identity->id;
         $postData['Trial']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
-
+        
         if ($model->load($postData) && $model->validate()) {
             $model->status = Trial::STATUS_PENDING;
+
             if ($model->save()) {
-                $model->status = $model->arrTrialStatus[$model->status];
+
+                $getUtcTime = $this->getUTCTimeBasedOnTimeZone($model->timezone_id, $model->time);
+                if (!empty($getUtcTime)) {
+                    $model->timezone_utc_time = (string)$getUtcTime;
+                }
+
+                $model->save(false);
 
                 // Send Push notification and email notification start
                 $getUsers[] = $model->receiver;
@@ -215,11 +225,11 @@ class TrialController extends ActiveController
     {
         $model = Trial::findOne($id);
 
-        $model->scenario = Trial::SCENARIO_ACCEPT_REJECT;
-
         if (!$model instanceof Trial) {
             throw new NotFoundHttpException('Trial doesn\'t exist.');
         }
+
+        $model->scenario = Trial::SCENARIO_ACCEPT_REJECT;
 
         $postData = Yii::$app->request->post();
         $trialPostData['Trial'] = $postData;
@@ -228,6 +238,11 @@ class TrialController extends ActiveController
 
         if ($model->load($trialPostData) && $model->validate()) {
             if ($model->save(false)) {
+
+                $getUtcTime = $this->getUTCTimeBasedOnTimeZone($model->timezone_id, $model->time);
+                if (!empty($getUtcTime)) {
+                    $model->timezone_utc_time = $getUtcTime;
+                }
 
                 if ($model->status == Trial::STATUS_ACCEPT) {
                     $action = "accept_trial";
@@ -349,6 +364,41 @@ class TrialController extends ActiveController
             throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "sender_id"');
         }
         $models = Trial::find()->where(['sender_id' => $postData['sender_id']])->orderBy(['created_at' => SORT_DESC])->all();
+        return $models;
+    }
+
+    /**
+     * @param $timezone_id
+     * @param null $time
+     * @return false|int
+     * @throws NotFoundHttpException
+     */
+    public function getUTCTimeBasedOnTimeZone($timezone_id, $time = null)
+    {
+        $modelTimeZone = Timezone::findOne($timezone_id);
+
+        if (!$modelTimeZone instanceof Timezone) {
+            throw new NotFoundHttpException('The requested timezone does not exist.');
+        }
+
+        date_default_timezone_set("$modelTimeZone->time_zone");
+
+        //p(date('Y-m-d H:i:s', strtotime('now')) . "\n", 0);
+
+        //date_default_timezone_set('Asia/Kolkata');
+
+        //$utcTime =  date('Y-m-d H:i:s', strtotime($time . ' UTC'));
+
+        $utcTime = date('H:i:s', strtotime($time . ' UTC'));
+        return (string)$utcTime;
+    }
+
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    public function actionGetTimezoneList()
+    {
+        $models = Timezone::find()->all();
         return $models;
     }
 

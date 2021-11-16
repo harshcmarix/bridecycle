@@ -16,6 +16,8 @@ use Yii;
  * @property string $date
  * @property string $name
  * @property string $time
+ * @property int $timezone_id
+ * @property string $timezone_utc_time
  * @property string $created_at
  * @property string|null $updated_at
  *
@@ -52,13 +54,14 @@ class Trial extends \yii\db\ActiveRecord
     {
         return [
             //[['product_id', 'sender_id', 'receiver_id', 'status', 'date', 'time'], 'required'],
-            [['product_id', 'name', 'date', 'time'], 'required'],
+            [['product_id', 'name', 'date', 'time', 'timezone_id'], 'required'],
             [['status'], 'required', 'on' => self::SCENARIO_ACCEPT_REJECT],
-            [['product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
-            [['date', 'time', 'created_at', 'updated_at'], 'safe'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['sender_id' => 'id']],
-            [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['receiver_id' => 'id']],
+            [['product_id', 'sender_id', 'receiver_id', 'status', 'timezone_id'], 'integer'],
+            [['date', 'time', 'created_at', 'updated_at', 'timezone_utc_time'], 'safe'],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['sender_id' => 'id']],
+            [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['receiver_id' => 'id']],
+            [['timezone_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Timezone::class, 'targetAttribute' => ['timezone_id' => 'id']],
         ];
     }
 
@@ -75,6 +78,8 @@ class Trial extends \yii\db\ActiveRecord
             'status' => 'Status',
             'date' => 'Date',
             'time' => 'Time',
+            'timezone_id' => 'Timezone',
+            'timezone_utc_time' => 'UTC Time',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -94,7 +99,7 @@ class Trial extends \yii\db\ActiveRecord
             'subCategory0' => 'subCategory0',
             'sender0' => 'sender0',
             'receiver0' => 'receiver0',
-            //'rating' => 'rating',
+            'timezone0' => 'timezone0',
         ];
     }
 
@@ -126,6 +131,14 @@ class Trial extends \yii\db\ActiveRecord
     public function getReceiver()
     {
         return $this->hasOne(User::className(), ['id' => 'receiver_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTimezone()
+    {
+        return $this->hasOne(Timezone::class, ['id' => 'timezone_id']);
     }
 
     ///////////////////////For api use only /////////////////////////////////////////////
@@ -251,5 +264,13 @@ class Trial extends \yii\db\ActiveRecord
             $brand->image = $brandImage;
         }
         return $brand;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTimezone0()
+    {
+        return $this->hasOne(Timezone::class, ['id' => 'timezone_id']);
     }
 }

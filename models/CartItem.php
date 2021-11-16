@@ -13,6 +13,10 @@ use Yii;
  * @property int $id
  * @property int $user_id
  * @property int $product_id
+ * @property string|null $product_name
+ * @property string|null $category_name
+ * @property string|null $subcategory_name
+ * @property int|null $seller_id
  * @property int $quantity
  * @property float $price
  * @property float $shipping_cost
@@ -58,12 +62,14 @@ class CartItem extends \yii\db\ActiveRecord
     {
         return [
             //[['user_id', 'product_id', 'quantity', 'price'], 'required'],
-            [['user_id', 'product_id', 'quantity','shipping_cost'], 'required'],
-            [['user_id', 'product_id', 'quantity'], 'integer'],
+            [['user_id', 'product_id', 'quantity', 'shipping_cost'], 'required'],
+            [['user_id', 'product_id', 'quantity', 'seller_id'], 'integer'],
             [['shipping_cost', 'price'], 'number'],
             [['size', 'is_checkout', 'created_at', 'updated_at'], 'safe'],
+            [['product_name', 'category_name', 'subcategory_name'], 'safe'],
             [['color'], 'string', 'max' => 100],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['seller_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['seller_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['color'], 'exist', 'skipOnError' => true, 'targetClass' => Color::className(), 'targetAttribute' => ['color' => 'id']],
         ];

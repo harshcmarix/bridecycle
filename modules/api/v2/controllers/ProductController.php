@@ -2,6 +2,8 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\Brand;
+use app\models\Color;
 use app\models\Product;
 use app\models\ProductImage;
 use app\models\ProductStatus;
@@ -213,6 +215,32 @@ class ProductController extends ActiveController
                 $model->option_size = strtolower($model->option_size);
             }
             if ($model->save(false)) {
+
+                // Status of product if color/brand status approved START.
+                $isPendingApprovalColor = 0;
+                $arrColors = explode(",", $model->option_color);
+                if (!empty($arrColors)) {
+                    $modelColors = Color::find()->where(['in', 'id', $arrColors])->all();
+                    if (!empty($modelColors)) {
+                        foreach ($modelColors as $c => $modelColorsRow) {
+                            if (!empty($modelColorsRow) && $modelColorsRow instanceof Color && in_array($modelColorsRow->status, [Color::STATUS_PENDING_APPROVAL, Color::STATUS_DECLINE])) {
+                                $isPendingApprovalColor += 1;
+                            }
+                        }
+                    }
+                }
+
+                $isPendingApprovalBrand = 0;
+                $modelBrand = Brand::findOne($model->brand_id);
+                if (!empty($modelBrand) && $modelBrand instanceof Brand && in_array($modelBrand->status, [Brand::STATUS_PENDING_APPROVAL, Brand::STATUS_DECLINE])) {
+                    $isPendingApprovalBrand += 1;
+                }
+
+                if ($isPendingApprovalColor == 0 && $isPendingApprovalBrand == 0) {
+                    $model->status_id = ProductStatus::STATUS_APPROVED;
+                    $model->save(false);
+                }
+                // Status of product if color/brand status approved END.
 
                 /* Product Image */
                 if (!empty($images)) {
@@ -485,6 +513,33 @@ class ProductController extends ActiveController
             }
 
             if ($model->save(false)) {
+
+
+                // Status of product if color/brand status approved START.
+                $isPendingApprovalColor = 0;
+                $arrColors = explode(",", $model->option_color);
+                if (!empty($arrColors)) {
+                    $modelColors = Color::find()->where(['in', 'id', $arrColors])->all();
+                    if (!empty($modelColors)) {
+                        foreach ($modelColors as $c => $modelColorsRow) {
+                            if (!empty($modelColorsRow) && $modelColorsRow instanceof Color && in_array($modelColorsRow->status, [Color::STATUS_PENDING_APPROVAL, Color::STATUS_DECLINE])) {
+                                $isPendingApprovalColor += 1;
+                            }
+                        }
+                    }
+                }
+
+                $isPendingApprovalBrand = 0;
+                $modelBrand = Brand::findOne($model->brand_id);
+                if (!empty($modelBrand) && $modelBrand instanceof Brand && in_array($modelBrand->status, [Brand::STATUS_PENDING_APPROVAL, Brand::STATUS_DECLINE])) {
+                    $isPendingApprovalBrand += 1;
+                }
+
+                if ($isPendingApprovalColor == 0 && $isPendingApprovalBrand == 0 && ($model->status_id == ProductStatus::STATUS_PENDING_APPROVAL && !in_array($model->status_id, [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED]))) {
+                    $model->status_id = ProductStatus::STATUS_APPROVED;
+                    $model->save(false);
+                }
+                // Status of product if color/brand status approved END.
 
                 $modelAddress = $model->address;
                 if (empty($modelAddress) && empty($productData['Product']['is_profile_address'])) {

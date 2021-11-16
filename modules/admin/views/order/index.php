@@ -16,6 +16,14 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="career-index box box-primary">
     <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
+        <div class="filter-div " id="filter-div-order" style="display: none">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->render('_search', ['model' => $searchModel]) ?>
+                </div>
+            </div>
+        </div>
+
         <?php
         $gridColumns = [
             // [
@@ -176,6 +184,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'pjax' => true, // pjax is set to always true for this demo
             'toolbar' => [
                 [
+                    'content' =>
+                    Html::button('<i class="fa fa-filter"></i>', [
+                        'class' => 'btn btn-basic',
+                        'title' => 'Filter',
+                        'onclick' => "applyFilterAllOrder()",
+                    ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
@@ -218,6 +232,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     $('document').ready(function () {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+
+        var filterDiv = $('.range-value');
+        filterDiv.next('i').remove();
+        filterDiv.css("width", "100% !important");
+
+        "<?php if (!empty($searchModel->created_at)) { ?>";
+        $('#filter-div-order').show();
+        "<?php } else { ?>";
+        $('#filter-div-order').hide();
+        "<?php } ?>";
 
         var input;
         var submit_form = false;
@@ -284,4 +308,9 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     })
+
+    function applyFilterAllOrder() {
+        $('#filter-div-order').toggle();
+    }
+
 </script>

@@ -99,10 +99,9 @@ echo Dialog::widget(
                         ],
                     ]); ?>
                 </div>
-                <div class="col col-md-6">
-                    <?php echo $form->field($model, 'is_top_brand')
-                        ->checkBox(['label' => $model->getAttributeLabel('is_top_brand'), 'id' => 'brand-is_top_brand', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No", 'selected' => false]); ?>
-                </div>
+                <!-- <div class="col col-md-6">
+                    <?php //echo $form->field($model, 'is_top_brand')->checkBox(['label' => $model->getAttributeLabel('is_top_brand'), 'id' => 'brand-is_top_brand', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No", 'selected' => false]); ?>                        
+                </div> -->
             </div>
 
 

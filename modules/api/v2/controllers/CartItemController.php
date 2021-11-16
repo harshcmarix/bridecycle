@@ -10,6 +10,7 @@ use app\models\Order;
 use app\models\OrderItem;
 use app\models\OrderPayment;
 use app\models\Product;
+use app\models\ProductCategory;
 use app\models\ProductStatus;
 use app\models\ProductTracking;
 use app\models\Setting;
@@ -168,6 +169,11 @@ class CartItemController extends ActiveController
             $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
             $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
             $model->price = ($basePrice + $taxPrice);
+
+            $model->product_name = (!empty($productData) && $productData instanceof Product && !empty($productData->name)) ? $productData->name : 0;
+            $model->category_name = (!empty($productData) && $productData instanceof Product && !empty($productData->category) && $productData->category instanceof ProductCategory && !empty($productData->category->name)) ? $productData->category->name : 0;
+            $model->subcategory_name = (!empty($productData) && $productData instanceof Product && !empty($productData->subCategory) && $productData->subCategory instanceof ProductCategory && !empty($productData->subCategory->name)) ? $productData->subCategory->name : 0;
+            $model->seller_id = (!empty($productData) && $productData instanceof Product && !empty($productData->user_id)) ? $productData->user_id : 0;
             $model->save();
         }
         return $model;
@@ -302,7 +308,7 @@ class CartItemController extends ActiveController
             }
         }
         if ($productSold > 0) {
-            throw new HttpException(403,$productSold.' product(s) are out of stock from you have selected product.');
+            throw new HttpException(403, $productSold . ' product(s) are out of stock from you have selected product.');
         }
 
         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
@@ -334,6 +340,12 @@ class CartItemController extends ActiveController
                     $modelOrderItem->size = $modelCartItemRow->size;
                     $modelOrderItem->price = $modelCartItemRow->price;
                     $modelOrderItem->shipping_cost = $modelCartItemRow->shipping_cost;
+
+                    $modelOrderItem->product_name = $modelCartItemRow->product_name;
+                    $modelOrderItem->category_name = $modelCartItemRow->category_name;
+                    $modelOrderItem->subcategory_name = $modelCartItemRow->subcategory_name;
+                    $modelOrderItem->seller_id = $modelCartItemRow->seller_id;
+
                     $modelOrderItem->save(false);
                 }
             }
@@ -732,7 +744,7 @@ class CartItemController extends ActiveController
             }
         }
         if ($productSold > 0) {
-            throw new HttpException(403,$productSold.' product(s) are out of stock from you have selected product.');
+            throw new HttpException(403, $productSold . ' product(s) are out of stock from you have selected product.');
         }
 
         $user_id = Yii::$app->user->identity->id;

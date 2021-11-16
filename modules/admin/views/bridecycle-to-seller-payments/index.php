@@ -110,7 +110,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'format' => ['raw'],
                     'value' => function ($model) {
-
                         if ($model instanceof BridecycleToSellerPayments && $model->status == BridecycleToSellerPayments::STATUS_PENDING) {
                             $isPaymentDone = "<button type='button' title='BrideCycle to seller payment status change if payment done by BrideCycle' class='btn btn-sm bc_to_seller_payment_payment-update' data-key='$model->id'>Payment Done?</button>";
                         } else {
