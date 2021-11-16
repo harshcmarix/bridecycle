@@ -161,7 +161,7 @@
                 <td class="col-20 text-right"
                     style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
                     <?php if (!empty($product) && $product instanceof \app\models\Product && $product->type == \app\models\Product::PRODUCT_TYPE_NEW) { ?>
-                        <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo number_format($order->total_amount + $transactionFeesAmount, 2); ?></p>
+                        <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo number_format(($order->total_amount - $product->option_price) + $transactionFeesAmount, 2); ?></p>
                     <?php } else { ?>
                         <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo number_format($order->total_amount, 2); ?></p>
                     <?php } ?>
@@ -179,7 +179,7 @@
                     style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
 <!--                    <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;">--><?php //echo number_format($order->total_amount + $transactionFeesAmount, 2); ?><!--</p>-->
                     <?php if (!empty($product) && $product instanceof \app\models\Product && $product->type == \app\models\Product::PRODUCT_TYPE_NEW) { ?>
-                        <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo number_format($order->total_amount + $transactionFeesAmount, 2); ?></p>
+                        <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo number_format(($order->total_amount - $product->option_price) + $transactionFeesAmount, 2); ?></p>
                     <?php } else { ?>
                         <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo number_format($order->total_amount, 2); ?></p>
                     <?php } ?>
