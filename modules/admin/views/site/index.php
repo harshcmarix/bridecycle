@@ -9,36 +9,6 @@ $this->title = 'Dashboard';
 <div class="row">
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['user/index-new-customer', 'UserSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>"
-           class="small-box-footer">
-            <div class="small-box bg-light-blue-gradient">
-                <div class="inner">
-                    <h3><?php echo $totalCustomerToday ?></h3>
-                    <p>New Customer <?php echo date('j M, Y') ?></p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-user"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['user/index-new-shop-owner-customer', 'UserSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>"
-           class="small-box-footer">
-            <div class="small-box bg-light-blue-gradient">
-                <div class="inner">
-                    <h3><?php echo $totalShopOwnerCustomerToday ?></h3>
-                    <p>New Shop Owner <?php echo date('j M, Y') ?></p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 col-xs-6">
         <a href="<?php echo Url::to(['user/index', 'UserSearch[is_shop_owner]' => '0']) ?>" class="small-box-footer">
             <div class="small-box bg-light-blue-gradient">
                 <div class="inner">
@@ -66,14 +36,58 @@ $this->title = 'Dashboard';
         </a>
     </div>
 
+    <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Url::to(['user/index-new-customer', 'UserSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>"
+           class="small-box-footer">
+            <div class="small-box bg-light-blue-gradient">
+                <div class="inner">
+                    <h3><?php echo $totalCustomerToday ?></h3>
+                    <p>New Customer <?php echo date('j M, Y') ?></p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Url::to(['user/index-new-shop-owner-customer', 'UserSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>"
+           class="small-box-footer">
+            <div class="small-box bg-light-blue-gradient">
+                <div class="inner">
+                    <h3><?php echo $totalShopOwnerCustomerToday ?></h3>
+                    <p>New Shop Owner <?php echo date('j M, Y') ?></p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
 </div>
 
 <div class="row">
 
     <div class="col-md-3 col-xs-6">
+        <a href="<?php echo Url::to(['product/index']) ?>" class="small-box-footer">
+            <div class="small-box bg-orange-active">
+                <div class="inner">
+                    <h3><?php echo $totalProduct ?></h3>
+                    <p>All Products</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-product-hunt"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
         <a href="
                 <?php echo Url::to(['product/new-product', 'ProductSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>" class="small-box-footer">
-            <div class="small-box bg-maroon-active">
+            <div class="small-box bg-orange-active">
                 <div class="inner">
                     <h3><?php echo $totalProductPendingApproval ?></h3>
                     <p>New Products <?php echo date('j M, Y') ?></p>
@@ -87,25 +101,11 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['product/index']) ?>" class="small-box-footer">
-            <div class="small-box bg-maroon-active">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/brand/index' ?>" class="small-box-footer">
+            <div class="small-box bg-info">
                 <div class="inner">
-                    <h3><?php echo $totalProduct ?></h3>
-                    <p>All Products</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-product-hunt"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['brand/new-brand', 'BrandSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>" class="small-box-footer">
-            <div class="small-box bg-maroon-active">
-                <div class="inner">
-                    <h3><?php echo $totalNewBrandToday ?></h3>
-                    <p>New Brand <?php echo date('j M, Y') ?></p>
+                    <h3><?php echo $totalBrand ?></h3>
+                    <p>All Brand</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-tag"></i>
@@ -115,11 +115,11 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/brand/index' ?>" class="small-box-footer">
-            <div class="small-box bg-maroon-active">
+        <a href="<?php echo Url::to(['brand/new-brand', 'BrandSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>" class="small-box-footer">
+            <div class="small-box bg-info">
                 <div class="inner">
-                    <h3><?php echo $totalBrand ?></h3>
-                    <p>All Brand</p>
+                    <h3><?php echo $totalNewBrandToday ?></h3>
+                    <p>New Brand <?php echo date('j M, Y') ?></p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-tag"></i>
@@ -132,12 +132,12 @@ $this->title = 'Dashboard';
 
 <div class="row">
 
-    <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['order/index', 'OrderSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>" class="small-box-footer">
+<div class="col-md-3 col-xs-6">
+        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
-                    <h3><?php echo $totalOrderToday ?></h3>
-                    <p>Total Order Today</p>
+                    <h3><?php echo $totalOrder ?></h3>
+                    <p>Total Order So Far</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-shopping-cart"></i>
@@ -147,11 +147,11 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['order/index', 'OrderSearch[status]' => Order::STATUS_ORDER_PENDING]) ?>" class="small-box-footer">
+        <a href="<?php echo Url::to(['order/index', 'OrderSearch[status]' => Order::STATUS_ORDER_INPROGRESS]) ?>" class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
                     <h3><?php echo $totalOrderPending ?></h3>
-                    <p>Order Pending</p>
+                    <p>Order Inprogress</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-clock-o"></i>
@@ -174,13 +174,13 @@ $this->title = 'Dashboard';
             </div>
         </a>
     </div>
-
+    
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
+        <a href="<?php echo Url::to(['order/index', 'OrderSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>" class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
-                    <h3><?php echo $totalOrder ?></h3>
-                    <p>Total Order So Far</p>
+                    <h3><?php echo $totalOrderToday ?></h3>
+                    <p>Total Order Today</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-shopping-cart"></i>

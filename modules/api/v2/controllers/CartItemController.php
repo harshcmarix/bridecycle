@@ -486,6 +486,7 @@ class CartItemController extends ActiveController
                             }
                         }
                     }
+                    //$modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
                     $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
 
                     if (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') {
