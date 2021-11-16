@@ -325,6 +325,8 @@ class CartItemController extends ActiveController
         $subTotal = (!empty($cartTotal)) ? $cartTotal : 0.00;
 
         $modelOrder->total_amount = (!empty($cartTotal)) ? ($cartTotal + $cartTotalShipping) : 0.00;
+
+        $modelOrder->status = Order::STATUS_ORDER_PENDING;
         $modelOrder->save(false);
 
         $grandTotal = $modelOrder->total_amount;
@@ -486,11 +488,10 @@ class CartItemController extends ActiveController
                             }
                         }
                     }
-                    //$modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
-                    $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
+                    //$modelOrder->status = Order::STATUS_ORDER_INPROGRESS;                    
 
                     if (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') {
-                        $modelOrder->status = Order::STATUS_ORDER_COMPLETED;
+                        $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
 
                         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
 
@@ -652,7 +653,8 @@ class CartItemController extends ActiveController
         $order = Order::find($order_id);
         if (!empty($order)) {
             if ($is_success) {
-                $order->status = Order::STATUS_ORDER_COMPLETED;
+                //$order->status = Order::STATUS_ORDER_COMPLETED;
+                $order->status = Order::STATUS_ORDER_INPROGRESS;
             } else {
                 $order->status = Order::STATUS_ORDER_CANCELLED;
             }

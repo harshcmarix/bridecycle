@@ -50,7 +50,7 @@ class Order extends \yii\db\ActiveRecord
     const STATUS_ORDER_CANCELLED = '4';
 
     public $arrOrderStatus = [
-        self::STATUS_ORDER_PENDING => 'Pending',
+       // self::STATUS_ORDER_PENDING => 'Pending',
         self::STATUS_ORDER_INPROGRESS => 'In Progress',
         self::STATUS_ORDER_COMPLETED => 'Completed',
         self::STATUS_ORDER_CANCELLED => 'Cancelled',
