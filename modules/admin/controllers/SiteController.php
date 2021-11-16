@@ -100,7 +100,9 @@ class SiteController extends Controller
         $modelTotalOrderToday = Order::find()->where(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
-        $modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
+        
+        //$modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
+        $modelTotalOrderInprogress = Order::find()->where(['status' => Order::STATUS_ORDER_INPROGRESS])->count();
         
         $modelTotalIncome = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
         $totalTailor = Tailor::find()->count();
@@ -173,7 +175,7 @@ class SiteController extends Controller
             'totalOrderLastWeek' => $modelTotalOrderLast7Days,
             'totalOrderToday' => $modelTotalOrderToday,
             'totalOrderDeliveredAndCompleted' => $modelTotalOrderDelivered,
-            'totalOrderPending' => $modelTotalOrderPending,
+            'totalOrderPending' => $modelTotalOrderInprogress,
             'totalIncome' => (!empty($modelTotalIncome)) ? $modelTotalIncome : 0,
             'totalTailor' => $totalTailor,
             'month' => $month,
