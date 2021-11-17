@@ -18,7 +18,7 @@ class TrialSearch extends Trial
     {
         return [
             [['id', 'product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
-            [['name', 'date', 'time', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'date', 'time', 'created_at', 'updated_at','timezone_id'], 'safe'],
         ];
     }
 
@@ -68,6 +68,7 @@ class TrialSearch extends Trial
             'time' => $this->time,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'timezone_id' => $this->timezone_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

@@ -620,8 +620,14 @@ class UserController extends Controller
             $model->updated_at = date('Y-m-d H:i:s');
 
             if ($model->save()) {
-                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Customer updated successfully.');
-                return $this->redirect(['index']);
+                if (!empty(Yii::$app->request->get('f')) && Yii::$app->request->get('f') == 'ap') {
+                    \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Login user updated successfully.');
+                    return $this->redirect(['site/index']);
+                } else {
+                    \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Customer updated successfully.');
+                    return $this->redirect(['index']);
+                }
+
             }
         }
 

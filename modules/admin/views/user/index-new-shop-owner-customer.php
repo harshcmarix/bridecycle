@@ -199,8 +199,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            'itemLabelSingle' => 'new shop owner',
-            'itemLabelPlural' => 'New Shop Owners',
+            'itemLabelSingle' => 'shop owner',
+            'itemLabelPlural' => 'Shop Owners',
         ]);
         ?>
     </div>
