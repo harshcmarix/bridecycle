@@ -9,9 +9,9 @@ use app\models\ShopDetail;
 /* @var $model app\modules\admin\models\User */
 
 
-$this->title = 'View New Customer';
-$this->params['breadcrumbs'][] = ['label' => 'New Customers', 'url' => ['index-new-customer']];
-$this->params['breadcrumbs'][] = 'View New Customer';
+$this->title = 'View Customer';
+$this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index-new-customer']];
+$this->params['breadcrumbs'][] = 'View Customer';
 \yii\web\YiiAsset::register($this);
 ?>
 
@@ -23,15 +23,15 @@ $this->params['breadcrumbs'][] = 'View New Customer';
 
             <!--    <p>-->
             <!--        --><?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) 
-                            ?>
+            ?>
             <!--        --><?php //echo Html::a('Delete', ['delete', 'id' => $model->id], [
-                            //            'class' => 'btn btn-danger',
-                            //            'data' => [
-                            //                'confirm' => 'Are you sure you want to delete this item?',
-                            //                'method' => 'post',
-                            //            ],
-                            //        ]) 
-                            ?>
+            //            'class' => 'btn btn-danger',
+            //            'data' => [
+            //                'confirm' => 'Are you sure you want to delete this item?',
+            //                'method' => 'post',
+            //            ],
+            //        ])
+            ?>
             <!--    </p>-->
 
             <?= DetailView::widget([
@@ -214,7 +214,7 @@ $this->params['breadcrumbs'][] = 'View New Customer';
                             ],
                         ]) ?>
 
-                    <?php
+                        <?php
                     } else {
                         echo "<center><h5>Bank details not available.</h5></center>";
                     }

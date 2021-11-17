@@ -10,7 +10,7 @@ use yii\helpers\Url;
 /* @var $searchModel app\modules\admin\models\search\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'New Shop Owners';
+$this->title = 'Shop Owners';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">

@@ -9,9 +9,9 @@ use app\models\ShopDetail;
 /* @var $model app\modules\admin\models\User */
 
 
-$this->title = 'View New Shop Owner';
-$this->params['breadcrumbs'][] = ['label' => 'New Shop Owners', 'url' => ['index-new-shop-owner-customer']];
-$this->params['breadcrumbs'][] = 'View New Shop Owner';
+$this->title = 'View Shop Owner';
+$this->params['breadcrumbs'][] = ['label' => 'Shop Owners', 'url' => ['index-new-shop-owner-customer']];
+$this->params['breadcrumbs'][] = 'View Shop Owner';
 \yii\web\YiiAsset::register($this);
 ?>
 
