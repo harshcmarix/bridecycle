@@ -8,6 +8,7 @@ use app\models\Timezone;
 use app\modules\api\v2\models\User;
 use Yii;
 use app\models\Trial;
+use Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\auth\HttpBasicAuth;
@@ -57,7 +58,7 @@ class TrialController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index', 'view', 'create', 'update', 'get-trial-list-seller', 'get-trial-list-user', 'get-timezone-list'], //, 'delete'
+            'only' => ['index', 'view', 'create', 'update', 'get-trial-list-seller', 'get-trial-list-user'], //, 'delete','get-timezone-list'
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -92,7 +93,7 @@ class TrialController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
-        unset($actions['get-timezone-list']);
+        //unset($actions['get-timezone-list']);
         return $actions;
     }
 
@@ -142,72 +143,78 @@ class TrialController extends ActiveController
         if ($model->load($postData) && $model->validate()) {
             $model->status = Trial::STATUS_PENDING;
 
-            if ($model->save()) {
+            $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id,$model->timezone_id, $model->time);
+            if($resultData == true){
 
-                $getUtcTime = $this->getUTCTimeBasedOnTimeZone($model->timezone_id, $model->time);
-                if (!empty($getUtcTime)) {
-                    $model->timezone_utc_time = (string)$getUtcTime;
-                }
+                if ($model->save()) {                
 
-                $model->save(false);
+                    $getUtcTime = $this->getUTCTimeBasedOnTimeZone($model->timezone_id, $model->time);
+                    if (!empty($getUtcTime)) {
+                        $model->timezone_utc_time = (string)$getUtcTime;
+                    }
 
-                // Send Push notification and email notification start
-                $getUsers[] = $model->receiver;
-                if (!empty($getUsers)) {
-                    foreach ($getUsers as $userROW) {
-                        if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
-                            $notificationText = "";
-                            if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
-                                $userDevice = $userROW->userDevice;
+                    $model->save(false);
 
-                                if (!empty($userDevice) && !empty($userDevice->notification_token)) {
-                                    // Insert into notification.
-                                    $notificationText = $model->name . " has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
-                                    $modelNotification = new Notification();
-                                    $modelNotification->owner_id = Yii::$app->user->identity->id;
-                                    $modelNotification->notification_receiver_id = $userROW->id;
-                                    $modelNotification->ref_id = $model->id;
-                                    $modelNotification->notification_text = $notificationText;
-                                    $modelNotification->action = "Add";
-                                    $modelNotification->ref_type = "trial_book";
-                                    $modelNotification->save(false);
+                    // Send Push notification and email notification start
+                    $getUsers[] = $model->receiver;
+                    if (!empty($getUsers)) {
+                        foreach ($getUsers as $userROW) {
+                            if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
+                                $notificationText = "";
+                                if ($userROW->is_click_and_try_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                                    $userDevice = $userROW->userDevice;
 
-                                    $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
-                                    if ($userDevice->device_platform == 'android') {
-                                        $notificationToken = array($userDevice->notification_token);
-                                        $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
-                                    } else {
-                                        $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
-                                        $note->setBadge($badge);
-                                        $note->setSound('default');
-                                        $message = Yii::$app->fcm->createMessage();
-                                        $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
-                                        $message->setNotification($note)
-                                            ->setData([
-                                                'id' => $modelNotification->ref_id,
-                                                'type' => $modelNotification->ref_type,
-                                                'message' => $notificationText,
-                                            ]);
-                                        $response = Yii::$app->fcm->send($message);
+                                    if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                        // Insert into notification.
+                                        $notificationText = $model->name . " has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                                        $modelNotification = new Notification();
+                                        $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                        $modelNotification->notification_receiver_id = $userROW->id;
+                                        $modelNotification->ref_id = $model->id;
+                                        $modelNotification->notification_text = $notificationText;
+                                        $modelNotification->action = "Add";
+                                        $modelNotification->ref_type = "trial_book";
+                                        $modelNotification->save(false);
+
+                                        $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                        if ($userDevice->device_platform == 'android') {
+                                            $notificationToken = array($userDevice->notification_token);
+                                            $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
+                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                        } else {
+                                            $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                            $note->setBadge($badge);
+                                            $note->setSound('default');
+                                            $message = Yii::$app->fcm->createMessage();
+                                            $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                            $message->setNotification($note)
+                                                ->setData([
+                                                    'id' => $modelNotification->ref_id,
+                                                    'type' => $modelNotification->ref_type,
+                                                    'message' => $notificationText,
+                                                ]);
+                                            $response = Yii::$app->fcm->send($message);
+                                        }
                                     }
                                 }
+    //                          if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
+    //                              $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+    //                              if (!empty($userROW->email)) {
+    //                                  Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+    //                                      ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+    //                                      ->setTo($userROW->email)
+    //                                      ->setSubject('Request for trial of your product')
+    //                                      ->send();
+    //                              }
+    //                          }
+   
                             }
-
-//                            if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
-//                                $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
-//                                if (!empty($userROW->email)) {
-//                                    Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
-//                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-//                                        ->setTo($userROW->email)
-//                                        ->setSubject('Request for trial of your product')
-//                                        ->send();
-//                                }
-//                            }
                         }
                     }
+                    // Send Push notification and email notification end
                 }
-                // Send Push notification and email notification end
+             } else{
+                throw new Exception('Please select another timezone for this trial booking.');
             }
         }
 
@@ -400,6 +407,43 @@ class TrialController extends ActiveController
     {
         $models = Timezone::find()->all();
         return $models;
+    }
+
+/**
+ * return bool
+ */
+    public function getTwoTimeZoneDifference($seller_timezone,$buyer_selected_timezone,$buyer_selected_time=null){
+
+        $modelTimeZoneSeller = Timezone::findOne($seller_timezone);
+
+        if (!$modelTimeZoneSeller instanceof Timezone) {
+            throw new NotFoundHttpException('The requested seller timezone does not exist.');
+        }
+
+        date_default_timezone_set("$modelTimeZoneSeller->time_zone");
+
+        $utcTimeFromSeller =  date('Y-m-d H:i:s',strtotime($buyer_selected_time . ' UTC'));        
+
+        $modelTimeZoneSelectedFromBuyer = Timezone::findOne($buyer_selected_timezone);
+
+        if (!$modelTimeZoneSelectedFromBuyer instanceof Timezone) {
+            throw new NotFoundHttpException('The requested buyer selected timezone does not exist.');
+        }
+
+        date_default_timezone_set("$modelTimeZoneSelectedFromBuyer->time_zone");
+
+        $utcTimeFromBuyer = date('Y-m-d H:i:s',strtotime($buyer_selected_time . ' UTC'));        
+
+        $sellerTimeString = strtotime($utcTimeFromSeller);
+        $buyerTimeString = strtotime($utcTimeFromBuyer);
+        
+        if(($sellerTimeString - $buyerTimeString) > 0){
+        
+            return true;
+
+        }
+
+        return false;
     }
 
 }

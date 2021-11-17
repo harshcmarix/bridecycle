@@ -8,6 +8,7 @@ use app\models\Order;
 use app\models\ProductRating;
 use app\models\SellerRating;
 use app\models\ShopDetail;
+use app\models\Timezone;
 use app\models\UserBankDetails;
 use app\models\UserDevice;
 use app\models\UserSubscription;
@@ -79,7 +80,7 @@ use yii\web\UnauthorizedHttpException;
  * @property string|null $is_newsletter_subscription
  * @property string|null $is_subscribed_user
  * @property string|null $user_status
- *
+ * @property int|null $timezone_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -94,6 +95,7 @@ use yii\web\UnauthorizedHttpException;
  * @property UserDevices[] $userDevices
  * @property UserDevice $userDevice
  * @property UserBankDetails $bankDetail
+ * @property Timezone $timezone
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -184,13 +186,13 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             // [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
-            [['email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
+            [['email','timezone_id'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
             // [['first_name'], 'required', 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]], // 'last_name'
             [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
             [['top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size', 'height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
             [['facebook_id', 'apple_id', 'google_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
-            [['mobile', 'shop_phone_number'], 'integer'],
+            [['timezone_id','mobile', 'shop_phone_number'], 'integer'],
             //[['mobile', 'shop_phone_number'], 'string'],
             [['country_code'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
@@ -214,7 +216,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on'], 'safe'],
             [['is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'safe'],
             [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on', 'is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
-            [['shop_email'], 'unique', 'targetClass' => ShopDetail::ClassName(), 'targetAttribute' => ['shop_email'], 'on' => [self::SCENARIO_SHOP_OWNER]]
+            [['shop_email'], 'unique', 'targetClass' => ShopDetail::class, 'targetAttribute' => ['shop_email'], 'on' => [self::SCENARIO_SHOP_OWNER]],
+            //[['timezone_id'], 'exist', 'skipOnEmpty' => true,'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['timezone_id' => 'id']],
         ];
     }
 
@@ -272,7 +275,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'userAddresses' => 'userAddresses',
             'shopDetails' => 'shopDetails',
-            'rating' => 'rating'
+            'rating' => 'rating',
+            'timezone'=>'timezone'
         ];
     }
 
@@ -478,6 +482,16 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->hasOne(UserBankDetails::className(), ['user_id' => 'id']);
     }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTimezone()
+    {
+        return $this->hasOne(Timezone::class, ['timezone_id' => 'id']);
+    }
+
 
     /************************************************************************/
     /************************* Identity functions **************************/

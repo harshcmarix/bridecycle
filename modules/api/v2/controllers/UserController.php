@@ -340,6 +340,10 @@ class UserController extends ActiveController
                 $model->country_code = $data['User']['country_code'];
             }
 
+            if (!empty($data['User']['timezone_id'])) {
+                $model->timezone_id = $data['User']['timezone_id'];
+            }
+
             if ($model->save()) {
 
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
