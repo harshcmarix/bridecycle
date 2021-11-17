@@ -409,10 +409,10 @@ class TrialController extends ActiveController
         return $models;
     }
 
-/**
- * return bool
- */
-    public function getTwoTimeZoneDifference($seller_timezone,$buyer_selected_timezone,$buyer_selected_time=null){
+    /**
+     * return bool
+     */
+    public function getTwoTimeZoneDifference($seller_timezone,$buyer_selected_timezone,$buyer_selected_time=null) {
 
         $modelTimeZoneSeller = Timezone::findOne($seller_timezone);
 
@@ -437,12 +437,9 @@ class TrialController extends ActiveController
         $sellerTimeString = strtotime($utcTimeFromSeller);
         $buyerTimeString = strtotime($utcTimeFromBuyer);
         
-        if(($sellerTimeString - $buyerTimeString) > 0){
-        
+        if(($sellerTimeString - $buyerTimeString) > 0) {        
             return true;
-
-        }
-
+        }        
         return false;
     }
 
