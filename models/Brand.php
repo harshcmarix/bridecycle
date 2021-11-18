@@ -88,7 +88,7 @@ class Brand extends ActiveRecord
             [['is_top_brand'], 'string'],
             [['created_at', 'updated_at', 'status'], 'safe'],
             [['name'], 'string', 'max' => 50],
-            [['name'], 'unique'],
+            [['name'], 'unique', 'message' => $this->name . ' is already in review, after approval from admin it will be display. Please wait for some time.'],
             // [['image'], 'string', 'max' => 250],
             // [['image'], 'file', 'extensions' => 'png, jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
