@@ -58,6 +58,10 @@ class BridecycleToSellerPaymentsSearch extends BridecycleToSellerPayments
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+            'pagination' => [
+                //'pageSize' => (!empty(\Yii::$app->params['default_page_size_for_backend'])) ? \Yii::$app->params['default_page_size_for_backend'] : 50,
+                'pageSize' => 50,
+            ]
         ]);
 
         $this->load($params);

@@ -19,6 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $quantity
  * @property string|null $color
  * @property string|null $price
+ * @property string|null $tax
  * @property float|null $shipping_cost
  * @property string|null $order_tracking_id
  * @property string|null $invoice
@@ -60,7 +61,7 @@ class OrderItem extends \yii\db\ActiveRecord
         return [
             [['order_id', 'product_id', 'quantity'], 'required'],
             [['order_id', 'product_id', 'quantity', 'size', 'seller_id'], 'integer'],
-            [['shipping_cost', 'price'], 'number'],
+            [['shipping_cost', 'price', 'tax'], 'number'],
             [['product_name', 'category_name', 'subcategory_name'], 'safe'],
             [['color'], 'string', 'max' => 100],
             [['order_tracking_id'], 'unique'],
@@ -115,5 +116,15 @@ class OrderItem extends \yii\db\ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+
+    /**
+     * @param $price
+     * @return float|int
+     */
+    public function getBrideEarning($price)
+    {
+        $earnPrice = (($price * Yii::$app->params['bridecycle_product_order_charge_percentage']) / 100);
+        return $earnPrice;
     }
 }

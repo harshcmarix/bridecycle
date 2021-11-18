@@ -74,4 +74,7 @@ return [
     //'google_map_api_key'=>'AIzaSyDTBLZMRefUIIM9f0StWgeQ1lVglay22wk',
 
     'bridecycle_product_sell_charges_percentage' => '5%',
+
+    // Per product order charges
+    'bridecycle_product_order_charge_percentage' => '11'
 ];

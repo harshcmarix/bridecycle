@@ -135,13 +135,80 @@ $this->params['breadcrumbs'][] = $this->title;
                 //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
-                'format' => 'raw',
                 'attribute' => 'total_amount',
                 'value' => function ($model) {
                     return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
                 },
                 'filter' => '',
-                'header' => "Total Amount <br>(Product price <br> + Tax <br> + Shipping)",
+                'header' => "Total Amount <br>(Product Price <br> + Tax <br> + Shipping)",
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+            ],
+            [
+                'value' => function ($model) {
+                    $brideEarning = "-";
+                    if (!empty($model->orderItems)) {
+                        foreach ($model->orderItems as $key => $orderItem) {
+                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
+
+                                $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->tax)));
+
+                            } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
+
+                                if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
+
+                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price)));
+
+                                } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
+
+                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->product->price));
+
+                                } else {
+
+                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->price));
+
+                                }
+                            }
+                        }
+                    }
+
+                    return $brideEarning;
+                },
+                'filter' => '',
+                'header' => "BrideCycle <br> Earning",
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+            ],
+            [
+                'value' => function ($model) {
+                    $brideEarning = "0.0";
+                    if (!empty($model->orderItems)) {
+                        foreach ($model->orderItems as $key => $orderItem) {
+                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
+
+                                $brideEarning = $orderItem->getBrideEarning(($orderItem->price - $orderItem->tax));
+
+                            } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
+
+                                if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
+
+                                    $brideEarning = $orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price));
+
+                                } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
+
+                                    $brideEarning = $orderItem->getBrideEarning($orderItem->product->price);
+
+                                } else {
+
+                                    $brideEarning = $orderItem->getBrideEarning($orderItem->price);
+
+                                }
+                            }
+                        }
+                    }
+
+                    return Yii::$app->formatter->asCurrency($model->total_amount - $brideEarning);
+                },
+                'filter' => '',
+                'header' => "Seller <br> Earning",
                 //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [

@@ -18,6 +18,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int|null $product_id
  * @property int $seller_id
  * @property float $amount
+ * @property float|null $product_price
+ * @property float|null $tax
  * @property int $status
  * @property string|null $note_content
  * @property string $created_at
@@ -62,7 +64,7 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
         return [
             [['order_id', 'order_item_id', 'product_id', 'seller_id', 'status'], 'integer'],
             [['order_id', 'order_item_id', 'seller_id', 'amount', 'status'], 'required'],
-            [['amount'], 'number'],
+            [['amount', 'product_price', 'tax'], 'number'],
             [['note_content'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
@@ -84,6 +86,8 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
             'product_id' => 'Product',
             'seller_id' => 'Seller',
             'amount' => 'Amount',
+            'product_price' => 'Product Price',
+            'tax' => 'Tax',
             'status' => 'Status',
             'note_content' => 'Bridecycle Note',
             'created_at' => 'Created At',
@@ -142,6 +146,16 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+
+    /**
+     * @param $price
+     * @return float|int
+     */
+    public function getBrideEarning($price)
+    {
+        $earnPrice = (($price * Yii::$app->params['bridecycle_product_order_charge_percentage']) / 100);
+        return $earnPrice;
     }
     ///////////////////////For api use only /////////////////////////////////////////////
 

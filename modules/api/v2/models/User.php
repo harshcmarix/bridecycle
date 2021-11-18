@@ -489,7 +489,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getTimezone()
     {
-        return $this->hasOne(Timezone::class, ['timezone_id' => 'id']);
+        return $this->hasOne(Timezone::class, ['id' => 'timezone_id']);
     }
 
 

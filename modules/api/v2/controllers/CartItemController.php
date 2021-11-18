@@ -30,6 +30,7 @@ use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
 use PayPal\Exception\PayPalConnectionException;
 use Yii;
+use yii\base\Exception;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
@@ -166,15 +167,21 @@ class CartItemController extends ActiveController
             }
 
             $productData = Product::find()->where(['id' => $model->product_id])->one();
+
+            if (!empty($productData) && $productData instanceof Product && in_array($productData->status_id, [ProductStatus::STATUS_ARCHIVED, ProductStatus::STATUS_PENDING_APPROVAL])) {
+                throw new Exception("This product will be available after some time, Please choose another product!");
+            }
+
             $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
             $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
             $model->price = ($basePrice + $taxPrice);
+            $model->tax = $taxPrice;
 
             $model->product_name = (!empty($productData) && $productData instanceof Product && !empty($productData->name)) ? $productData->name : 0;
             $model->category_name = (!empty($productData) && $productData instanceof Product && !empty($productData->category) && $productData->category instanceof ProductCategory && !empty($productData->category->name)) ? $productData->category->name : 0;
             $model->subcategory_name = (!empty($productData) && $productData instanceof Product && !empty($productData->subCategory) && $productData->subCategory instanceof ProductCategory && !empty($productData->subCategory->name)) ? $productData->subCategory->name : 0;
             $model->seller_id = (!empty($productData) && $productData instanceof Product && !empty($productData->user_id)) ? $productData->user_id : 0;
-            $model->save();
+            $model->save(false);
         }
         return $model;
     }
@@ -201,7 +208,14 @@ class CartItemController extends ActiveController
             $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
             $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
             $model->price = ($basePrice + $taxPrice);
-            $model->save();
+            $model->tax = ($taxPrice);
+
+            $model->product_name = (!empty($productData) && $productData instanceof Product && !empty($productData->name)) ? $productData->name : 0;
+            $model->category_name = (!empty($productData) && $productData instanceof Product && !empty($productData->category) && $productData->category instanceof ProductCategory && !empty($productData->category->name)) ? $productData->category->name : 0;
+            $model->subcategory_name = (!empty($productData) && $productData instanceof Product && !empty($productData->subCategory) && $productData->subCategory instanceof ProductCategory && !empty($productData->subCategory->name)) ? $productData->subCategory->name : 0;
+            $model->seller_id = (!empty($productData) && $productData instanceof Product && !empty($productData->user_id)) ? $productData->user_id : 0;
+
+            $model->save(false);
         }
         return $model;
     }
@@ -324,6 +338,7 @@ class CartItemController extends ActiveController
 
         $subTotal = (!empty($cartTotal)) ? $cartTotal : 0.00;
 
+        // (product price + tax + shipping cost)
         $modelOrder->total_amount = (!empty($cartTotal)) ? ($cartTotal + $cartTotalShipping) : 0.00;
 
         $modelOrder->status = Order::STATUS_ORDER_PENDING;
@@ -341,6 +356,7 @@ class CartItemController extends ActiveController
                     $modelOrderItem->color = $modelCartItemRow->color;
                     $modelOrderItem->size = $modelCartItemRow->size;
                     $modelOrderItem->price = $modelCartItemRow->price;
+                    $modelOrderItem->tax = $modelCartItemRow->tax;
                     $modelOrderItem->shipping_cost = $modelCartItemRow->shipping_cost;
 
                     $modelOrderItem->product_name = $modelCartItemRow->product_name;
@@ -433,6 +449,8 @@ class CartItemController extends ActiveController
                                 $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
                                 $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
                                 $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->price + $orderItemRow->shipping_cost);
+                                $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->price - $orderItemRow->tax);
+                                $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
                                 $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
                                 $modelBridecycleToSellerPayment->save(false);
                                 // Track for Pending payment from bridecycle to seller end
@@ -706,7 +724,7 @@ class CartItemController extends ActiveController
         //     $transactionFeesAmount = $transactionFees->option_value;
         // }
 
-        if(!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->option_price)){
+        if (!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->option_price)) {
             $transactionFeesAmount = $modelProduct->option_price;
         }
 
@@ -745,7 +763,8 @@ class CartItemController extends ActiveController
         $productSold = 0;
         if (!empty($modelProducts)) {
             foreach ($modelProducts as $prodKey => $modelProductRow) {
-                if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 && in_array($modelProductRow->status_id, [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
+                //if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 && in_array($modelProductRow->status_id, [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
+                if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 || in_array($modelProductRow->status_id, [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
                     $productSold++;
                 }
             }
@@ -773,11 +792,11 @@ class CartItemController extends ActiveController
                     }
                 }
             } else {
-                throw new HttpException(404, Yii::t('app', "Data not found!"));
+                throw new HttpException(404, "Data not found!");
             }
 
             if ($readyToCheckout != 1 && $readyToCheckout == 0) {
-                throw new HttpException(403, Yii::t('app', $notReadyToCheckoutProducts . " are sold!"));
+                throw new HttpException(403, $notReadyToCheckoutProducts . " are sold!");
             }
         }
 
@@ -792,5 +811,4 @@ class CartItemController extends ActiveController
         }
         return $modelCartItems;
     }
-
 }

@@ -35,16 +35,48 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'seller_id',
                         'value' => function ($model) {
                             if (!empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User) {
-                                return (!empty($model->seller->first_name)) ? $model->seller->first_name . " " . $model->seller->last_name : "seller";
+                                return (!empty($model->seller->first_name)) ? $model->seller->first_name . " " . $model->seller->last_name : "Seller";
+                            }
+                        },
+                    ],
+                    [
+                        'attribute' => 'buyer_id',
+                        'label' => 'Buyer',
+                        'value' => function ($model) {
+                            if ($model instanceof \app\models\BridecycleToSellerPayments && !empty($model->order) && $model->order instanceof \app\models\Order && !empty($model->order->user) && $model->order->user instanceof \app\modules\admin\models\User) {
+                                return (!empty($model->order->user->first_name)) ? $model->order->user->first_name . " " . $model->order->user->last_name : "Buyer";
                             }
                         },
                     ],
                     [
                         'attribute' => 'amount',
+                        'label' => 'Total Amount (Product Price + Tax + Shipping)',
                         'value' => function ($model) {
-                            if (!empty($model->amount)) {
-                                return Yii::$app->formatter->asCurrency($model->amount);
+                            $amount = 0.0;
+                            if (!empty($model) && $model instanceof \app\models\BridecycleToSellerPayments && !empty($model->amount)) {
+                                $amount = $model->amount;
                             }
+                            return Yii::$app->formatter->asCurrency($amount);
+                        },
+                    ],
+                    [
+                        'label' => 'BrideCycle Earning',
+                        'value' => function ($model) {
+                            $bridecycleAmount = 0.0;
+                            if (!empty($model) && $model instanceof \app\models\BridecycleToSellerPayments) {
+                                $bridecycleAmount = $model->getBrideEarning($model->product_price);
+                            }
+                            return Yii::$app->formatter->asCurrency($bridecycleAmount);
+                        },
+                    ],
+                    [
+                        'label' => 'Seller Earning',
+                        'value' => function ($model) {
+                            $bridecycleEarningAmount = 0.0;
+                            if (!empty($model) && $model instanceof \app\models\BridecycleToSellerPayments) {
+                                $bridecycleEarningAmount = $model->getBrideEarning($model->product_price);
+                            }
+                            return Yii::$app->formatter->asCurrency(($model->amount - $bridecycleEarningAmount));
                         },
                     ],
                     [

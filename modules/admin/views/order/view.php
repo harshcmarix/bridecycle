@@ -47,8 +47,72 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="col col-md-6 text-right">
                 <div class="form-group">
-                    <h4><?= Html::encode('Order Amount: ') ?>
+                    <h4><?= Html::encode('Order Amount (Product Price + Tax + Shipping) : ') ?>
                         <strong><?php echo (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "" ?></strong>
+                    </h4>
+                </div>
+                <div class="form-group">
+                    <?php
+                    $brideEarning = "-";
+                    if (!empty($model->orderItems)) {
+                        foreach ($model->orderItems as $key => $orderItem) {
+                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
+
+                                $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->tax)));
+
+                            } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
+
+                                if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
+
+                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price)));
+
+                                } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
+
+                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->product->price));
+
+                                } else {
+
+                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->price));
+
+                                }
+                            }
+                        }
+                    }
+                    ?>
+                    <h4><?= Html::encode('BrideCycle Earning : ') ?>
+                        <strong><?php echo $brideEarning ?></strong>
+                    </h4>
+                </div>
+                <div class="form-group">
+                    <?php
+                    $brideEarningAmount = 0.0;
+                    if (!empty($model->orderItems)) {
+                        foreach ($model->orderItems as $key => $orderItem) {
+                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
+
+                                $brideEarningAmount = ($orderItem->getBrideEarning(($orderItem->price - $orderItem->tax)));
+
+                            } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
+
+                                if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
+
+                                    $brideEarningAmount = ($orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price)));
+
+                                } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
+
+                                    $brideEarningAmount = ($orderItem->getBrideEarning($orderItem->product->price));
+
+                                } else {
+
+                                    $brideEarningAmount = ($orderItem->getBrideEarning($orderItem->price));
+
+                                }
+                            }
+                        }
+                    }
+                    ?>
+                    <h4><?= Html::encode('Seller Earning : ') ?>
+                        <strong><?php echo (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency(($model->total_amount - $brideEarningAmount)) : "-" ?></strong>
                     </h4>
                 </div>
                 <div class="form-group">
@@ -66,7 +130,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::encode('Order Invoice: ') ?>
                         <strong>
                             <?php if (file_exists(Yii::getAlias('@orderInvoiceRelativePath') . "/" . $invoice)) { ?>
-                                <a download href="<?php echo Yii::getAlias('@orderInvoiceAbsolutePath') . "/" . $invoice; ?>" title="Download Invoice" class="btn btn-default"><i class="fa fa-download"></i> Download Invoice</a>
+                                <a download
+                                   href="<?php echo Yii::getAlias('@orderInvoiceAbsolutePath') . "/" . $invoice; ?>"
+                                   title="Download Invoice" class="btn btn-default"><i class="fa fa-download"></i>
+                                    Download Invoice</a>
                             <?php } else { ?>
                                 Not Generated
                             <?php } ?>
@@ -176,7 +243,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]); ?>
                         </div>
                     </div>
-                </div>              
+                </div>
                 <!-- Seller Detail -->
                 <div class="col col-md-6">
                     <div class="box box-border">
@@ -194,13 +261,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'value' => function ($model) {
                                             $actionUrl = "";
                                             $sellerUserName = "";
-                                            if(!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->id)){
+                                            if (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->id)) {
                                                 $actionUrl = \yii\helpers\Url::to(['user/view', 'id' => $model->orderItems[0]->product->user->id, 'f' => 'o', 'oId' => $model->id]);
                                                 $sellerUserName = $model->orderItems[0]->product->user->first_name . " " . $model->orderItems[0]->product->user->last_name;
-                                            }elseif(empty($model->orderItems) ){
+                                            } elseif (empty($model->orderItems)) {
                                                 $actionUrl = "javascript:void(0);";
                                                 $sellerUserName = "(not-set)";
-                                            }    
+                                            }
                                             return '<a href="' . $actionUrl . '" class="view-seller-profile" title="View Seller Profile">' . $sellerUserName . '</a>';
                                         },
                                     ],
@@ -208,9 +275,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'label' => 'Seller Email',
                                         'value' => function ($model) {
                                             $sellerUserEmail = "";
-                                            if(!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->email)){                                                
+                                            if (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->email)) {
                                                 $sellerUserEmail = $model->orderItems[0]->product->user->email;
-                                            }elseif(empty($model->orderItems) ){                                                
+                                            } elseif (empty($model->orderItems)) {
                                                 $sellerUserEmail = "(not-set)";
                                             }
                                             return $sellerUserEmail;
@@ -220,12 +287,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'label' => 'Seller Phone',
                                         'value' => function ($model) {
                                             $sellerUserContactNo = "";
-                                            if(!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->mobile)){                                                
+                                            if (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product) && !empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->mobile)) {
                                                 $sellerUserContactNo = $model->orderItems[0]->product->user->mobile;
-                                            }elseif(empty($model->orderItems) ){                                                
+                                            } elseif (empty($model->orderItems)) {
                                                 $sellerUserContactNo = "(not-set)";
                                             }
-                                            return $sellerUserContactNo;                                            
+                                            return $sellerUserContactNo;
                                         },
                                     ],
                                     [
@@ -435,9 +502,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]) ?>
                         </div>
                     </div>
-                </div>                
-                  <!-- Customer Detail -->
-                  <div class="col col-md-6">
+                </div>
+                <!-- Customer Detail -->
+                <div class="col col-md-6">
                     <div class="box box-border">
                         <div class="box-header">
                             <h3 class="box-title"> Customer/Buyer Detail</h3>
@@ -506,8 +573,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                 </div>
-                 <!-- Customer Bank Detail -->
-                 <div class="col col-md-6">
+                <!-- Customer Bank Detail -->
+                <div class="col col-md-6">
                     <div class="box box-border">
                         <div class="box-header">
                             <h3 class="box-title"> Customer Bank Detail</h3>
@@ -640,7 +707,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]) ?>
                         </div>
                     </div>
-                </div> 
+                </div>
             </div>
             <div class="row">
                 <div class="col col-md-12">
