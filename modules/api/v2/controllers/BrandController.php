@@ -116,10 +116,14 @@ class BrandController extends ActiveController
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
+        $from = "";
+        $product_id = "";
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
+            $from = (!empty(Yii::$app->request->get('from')) && Yii::$app->request->get('from') == 'edit_product') ? Yii::$app->request->get('from') : "";
+            $product_id = (!empty(Yii::$app->request->get('product_id'))) ? Yii::$app->request->get('product_id') : "";
         }
-        return $model->search($requestParams, Yii::$app->user->identity->id);
+        return $model->search($requestParams, $from, $product_id, Yii::$app->user->identity->id);
     }
 
     /**

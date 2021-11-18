@@ -57,7 +57,7 @@ class Color extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['code'], 'required'],
+            [['name'], 'required'],
             [['name', 'code'], 'required', 'on' => self::SCENARIO_ADD_COLOR],
             [['name', 'code'], 'required', 'on' => self::SCENARIO_UPDATE_COLOR],
             [['status', 'created_at', 'updated_at'], 'safe'],

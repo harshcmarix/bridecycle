@@ -4,6 +4,7 @@ namespace app\modules\api\v2\models\search;
 
 use app\models\Brand;
 use app\models\Order;
+use app\models\Product;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
@@ -46,7 +47,7 @@ class BrandSearch extends Brand
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams, $userId = null)
+    public function search($requestParams, $from = null, $product_id = null, $userId = null)
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -98,6 +99,7 @@ class BrandSearch extends Brand
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find()->where(['IN', 'brands.status', [Brand::STATUS_APPROVE]]);
 
+        // Brand of the week start
         if (!empty($requestParams['brand_of_the_week']) && $requestParams['brand_of_the_week'] == '1') {
             $brandFromDate = date("Y-m-d 00:00:01", strtotime('-1 week'));
             $brandToDate = date("Y-m-d 23:59:59");
@@ -106,8 +108,24 @@ class BrandSearch extends Brand
             $query->leftjoin('order_items', 'order_items.product_id=products.id');
             $query->rightjoin('orders', 'orders.id=order_items.order_id');
 
-            $query->where(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_COMPLETED]);
+            $query->andWhere(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_COMPLETED]);
         }
+        // Brand of the week end
+
+
+        // Edit product Pending Approve color get start
+        if (!empty($from) && $from == "edit_product" && !empty($product_id)) {
+            $modelProduct = Product::findOne($product_id);
+            if (!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->brand_id)) {
+                $brandIds = explode(",", $modelProduct->brand_id);
+
+                if (!empty($brandIds)) {
+                    $query->orWhere(['in', 'brands.id', $brandIds]);
+                }
+            }
+        }
+        // Edit product Pending Approve color get end
+
 
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {

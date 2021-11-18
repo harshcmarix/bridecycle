@@ -216,7 +216,7 @@ class ProductController extends ActiveController
             }
             if ($model->save(false)) {
 
-                // Status of product if color/brand status approved START.
+                // Status of product color/brand status approved START.
                 $isPendingApprovalColor = 0;
                 $arrColors = explode(",", $model->option_color);
                 if (!empty($arrColors)) {
@@ -240,7 +240,7 @@ class ProductController extends ActiveController
                     $model->status_id = ProductStatus::STATUS_APPROVED;
                     $model->save(false);
                 }
-                // Status of product if color/brand status approved END.
+                // Status of product color/brand status approved END.
 
                 /* Product Image */
                 if (!empty($images)) {
@@ -365,7 +365,6 @@ class ProductController extends ActiveController
                     ]);
                 }
                 $modelsSearch = $query->groupBy(['search_text', 'user_id'])->all();
-                //$modelsSearch = $query->all();
 
                 if (!empty($modelsSearch)) {
                     foreach ($modelsSearch as $key => $modelSearchRow) {

@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v2\models\search;
 
+use app\models\Product;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
@@ -45,7 +46,7 @@ class ColorSearch extends Color
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $from = null, $product_id = null)
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -97,6 +98,19 @@ class ColorSearch extends Color
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find()->where(['status' => Color::STATUS_APPROVE]);
+
+        // Edit product Pending Approve color get start
+        if (!empty($from) && $from == "edit_product" && !empty($product_id)) {
+            $modelProduct = Product::findOne($product_id);
+            if (!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->option_color)) {
+                $colorIds = explode(",", $modelProduct->option_color);
+                if (!empty($colorIds)) {
+                    $query->orWhere(['in', 'color.id', $colorIds]);
+                }
+            }
+        }
+        // Edit product Pending Approve color get end
+
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
@@ -130,6 +144,7 @@ class ColorSearch extends Color
             foreach ($colorModelData as $key => $data) {
                 if (!empty($data) && $data instanceof Color) {
                     $colorModelData[$key]['name'] = (!empty($data->name)) ? $data->name : "";
+                    $colorModelData[$key]['code'] = (!empty($data->code)) ? $data->code : "";
                 }
             }
         }

@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //         return $model->id;
             //     },
             //     'header' => 'Order ID',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+            //     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             // ],
             ['class' => 'kartik\grid\SerialColumn'],
             [
@@ -42,28 +42,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => '',
                 'header' => 'Order Date',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'value' => function ($model) {
                     return $model->user->first_name . " " . $model->user->last_name;
                 },
                 'header' => 'Customer Name',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'value' => function ($model) {
                     return $model->user->email;
                 },
                 'header' => 'Customer Email',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'value' => function ($model) {
                     return $model->user->mobile;
                 },
                 'header' => 'Customer Phone',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'value' => function ($model) {
@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $address;
                 },
                 'header' => 'Customer Address',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'format' => 'raw',
@@ -132,16 +132,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $html;
                 },
                 'header' => 'Order Products',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
+                'format' => 'raw',
                 'attribute' => 'total_amount',
                 'value' => function ($model) {
                     return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
                 },
                 'filter' => '',
-                'header' => 'Total Amount Paid',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                'header' => "Total Amount <br>(Product price <br> + Tax <br> + Shipping)",
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [
                 'attribute' => 'status',
@@ -165,7 +166,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => 'Order Status',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -185,11 +186,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'toolbar' => [
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-filter"></i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Filter',
-                        'onclick' => "applyFilterAllOrder()",
-                    ]),
+                        Html::button('<i class="fa fa-filter"></i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Filter',
+                            'onclick' => "applyFilterAllOrder()",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
