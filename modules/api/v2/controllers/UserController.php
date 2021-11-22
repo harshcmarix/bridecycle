@@ -672,9 +672,9 @@ class UserController extends ActiveController
         if ($model->load($data) && $model->validate()) {
             $tmpPassword = \Yii::$app->security->generateRandomString(8);
             $userModel = $model->getUser();
-            $userModel->password_hash = $model->getUser()->password_hash;
+            //$userModel->password_hash = $model->getUser()->password_hash;
             $userModel->temporary_password = $tmpPassword;
-            if ($userModel->save()) {
+            if ($userModel->save(false)) {
 
                 if (!empty($model->email)) {
                     $mail = \Yii::$app->mailer->compose('api/forgot_password', ['model' => $model, 'user' => $userModel, 'appname' => Yii::$app->name])

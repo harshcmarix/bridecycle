@@ -53,7 +53,7 @@ if ($user instanceof User && !empty($user->last_name)) {
                                                     <tbody style="line-height:25px;font-size:14px">
                                                     <tr>
                                                         <td colspan="2">
-                                                            <b>Hello <?= $fullName ?>,</b></td>
+                                                            <b>Hello <?php echo $user->first_name . " " . $user->last_name; ?> ,</b></td>
                                                     </tr>
                                                     <tr>
                                                         <td>&nbsp;</td>

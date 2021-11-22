@@ -155,6 +155,10 @@ class MakeOfferController extends ActiveController
         }
         $modelProduct = Product::findOne($postData['MakeOffer']['product_id']);
 
+        if (!$modelProduct instanceof Product) {
+            throw new NotFoundHttpException('Requested product doesn\'t exist.');
+        }
+
         $postData['MakeOffer']['sender_id'] = Yii::$app->user->identity->id;
         $postData['MakeOffer']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
         $postData['MakeOffer']['status'] = MakeOffer::STATUS_PENDING;
