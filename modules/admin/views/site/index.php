@@ -86,7 +86,8 @@ $this->title = 'Dashboard';
 
     <div class="col-md-3 col-xs-6">
         <a href="
-                <?php echo Url::to(['product/new-product', 'ProductSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>" class="small-box-footer">
+                <?php echo Url::to(['product/new-product', 'ProductSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>"
+           class="small-box-footer">
             <div class="small-box bg-orange-active">
                 <div class="inner">
                     <h3><?php echo $totalProductPendingApproval ?></h3>
@@ -101,7 +102,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/brand/index' ?>" class="small-box-footer">
+        <a href="<?php echo Url::to(['brand/index']) ?>" class="small-box-footer">
             <div class="small-box bg-info">
                 <div class="inner">
                     <h3><?php echo $totalBrand ?></h3>
@@ -115,7 +116,8 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['brand/new-brand', 'BrandSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>" class="small-box-footer">
+        <a href="<?php echo Url::to(['brand/new-brand', 'BrandSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>"
+           class="small-box-footer">
             <div class="small-box bg-info">
                 <div class="inner">
                     <h3><?php echo $totalNewBrandToday ?></h3>
@@ -133,7 +135,7 @@ $this->title = 'Dashboard';
 <div class="row">
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
+        <a href="<?php echo Url::to(['order/index']) ?>" class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
                     <h3><?php echo $totalOrder ?></h3>
@@ -147,7 +149,8 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['order/index', 'OrderSearch[status]' => Order::STATUS_ORDER_INPROGRESS]) ?>" class="small-box-footer">
+        <a href="<?php echo Url::to(['order/index', 'OrderSearch[status]' => Order::STATUS_ORDER_INPROGRESS]) ?>"
+           class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
                     <h3><?php echo $totalOrderPending ?></h3>
@@ -161,7 +164,8 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['order/index', 'OrderSearch[status]' => Order::STATUS_ORDER_COMPLETED]) ?>" class="small-box-footer">
+        <a href="<?php echo Url::to(['order/index', 'OrderSearch[status]' => Order::STATUS_ORDER_COMPLETED]) ?>"
+           class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
                     <h3><?php echo $totalOrderDeliveredAndCompleted ?></h3>
@@ -174,9 +178,10 @@ $this->title = 'Dashboard';
             </div>
         </a>
     </div>
-    
+
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['order/index', 'OrderSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>" class="small-box-footer">
+        <a href="<?php echo Url::to(['order/index', 'OrderSearch[created_at]' => date('d-M-Y') . " to " . date('d-M-Y')]) ?>"
+           class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
                     <h3><?php echo $totalOrderToday ?></h3>
@@ -221,7 +226,7 @@ $this->title = 'Dashboard';
         </a>
     </div>
 
-    <div class="col-md-3 col-xs-6">
+    <div class="col-md-6 col-xs-6">
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box" id="tot_income_box" style="background-color: #8A9673 !important">
                 <div class="inner">

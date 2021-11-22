@@ -796,9 +796,9 @@ class ProductController extends Controller
                                     // Send Email notification Start
                                     if (!empty($userDataModel) && $userDataModel instanceof User && !empty($userDataModel->email)) {
                                         $message = "Brand has been approved, Which you have selected for your product.";
-                                        Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
+                                        Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
                                             ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                            ->setTo($userModel->email)
+                                            ->setTo($userDataModel->email)
                                             ->setSubject('Brand approved!')
                                             ->send();
                                     }
@@ -806,8 +806,6 @@ class ProductController extends Controller
                                 }
                             }
                         }
-
-
                     }
                 }
                 // Status of product is Approve then color/brand status approved END.
