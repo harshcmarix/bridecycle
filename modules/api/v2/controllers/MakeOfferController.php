@@ -175,6 +175,17 @@ class MakeOfferController extends ActiveController
             throw new HttpException(403, "Sorry, You have exceeded the maximum limit of making an offer for this product!");
         }
 
+        $createdOffersData = MakeOffer::find()
+            ->where('make_offer.sender_id=' . Yii::$app->user->identity->id)
+            ->andWhere('make_offer.product_id=' . $modelProduct->id)->all();
+
+        if (!empty($createdOffersData) && !empty($createdOffersData[count($createdOffersData)-1])) {
+            $data = $createdOffersData[count($createdOffersData)-1] ;
+            if (!empty($data) && $data instanceof MakeOffer && $data->status == MakeOffer::STATUS_PENDING){
+                throw new HttpException(403, "Sorry, You have already made an offer for this product, the seller will take action on it first, then you will be performed this action!");
+            }
+        }
+
         if ($model->load($postData) && $model->validate()) {
 
             if ($model->save()) {
@@ -222,7 +233,7 @@ class MakeOfferController extends ActiveController
                                     }
                                 }
 
-                                if ($userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                if (!empty($userROW->email) && $userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
                                     $message = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
                                     $subject = "Sent an offer for your product";
                                     if (!empty($userROW->email)) {
@@ -327,7 +338,7 @@ class MakeOfferController extends ActiveController
                                 }
                             }
 
-                            if ($userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
+                            if (!empty($userROW->email) && $userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
                                 $message = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
                                 $subject = "Your product offer rejected by seller";
                                 if ($offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {

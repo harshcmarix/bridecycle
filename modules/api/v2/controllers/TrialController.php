@@ -139,16 +139,17 @@ class TrialController extends ActiveController
 
         $postData['Trial']['sender_id'] = Yii::$app->user->identity->id;
         $postData['Trial']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
-        
+
         if ($model->load($postData) && $model->validate()) {
             $model->status = Trial::STATUS_PENDING;
 
-            $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id,$model->timezone_id, $model->time);
-            if($resultData == true){
+            $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id, $model->timezone_id, $model->time);
+            if ($resultData == true) {
 
-                if ($model->save()) {                
+                if ($model->save()) {
 
                     $getUtcTime = $this->getUTCTimeBasedOnTimeZone($model->timezone_id, $model->time);
+
                     if (!empty($getUtcTime)) {
                         $model->timezone_utc_time = (string)$getUtcTime;
                     }
@@ -197,23 +198,24 @@ class TrialController extends ActiveController
                                         }
                                     }
                                 }
-    //                          if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
-    //                              $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
-    //                              if (!empty($userROW->email)) {
-    //                                  Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
-    //                                      ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-    //                                      ->setTo($userROW->email)
-    //                                      ->setSubject('Request for trial of your product')
-    //                                      ->send();
-    //                              }
-    //                          }
-   
+
+                                if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                    $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
+                                    if (!empty($userROW->email)) {
+                                        Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                            ->setTo($userROW->email)
+                                            ->setSubject('Request for trial of your product')
+                                            ->send();
+                                    }
+                                }
+
                             }
                         }
                     }
                     // Send Push notification and email notification end
                 }
-             } else{
+            } else {
                 throw new Exception('Please select another timezone for this trial booking.');
             }
         }
@@ -412,7 +414,8 @@ class TrialController extends ActiveController
     /**
      * return bool
      */
-    public function getTwoTimeZoneDifference($seller_timezone,$buyer_selected_timezone,$buyer_selected_time=null) {
+    public function getTwoTimeZoneDifference($seller_timezone, $buyer_selected_timezone, $buyer_selected_time = null)
+    {
 
         $modelTimeZoneSeller = Timezone::findOne($seller_timezone);
 
@@ -422,7 +425,7 @@ class TrialController extends ActiveController
 
         date_default_timezone_set("$modelTimeZoneSeller->time_zone");
 
-        $utcTimeFromSeller =  date('Y-m-d H:i:s',strtotime($buyer_selected_time . ' UTC'));        
+        $utcTimeFromSeller = date('Y-m-d H:i:s', strtotime($buyer_selected_time . ' UTC'));
 
         $modelTimeZoneSelectedFromBuyer = Timezone::findOne($buyer_selected_timezone);
 
@@ -432,14 +435,14 @@ class TrialController extends ActiveController
 
         date_default_timezone_set("$modelTimeZoneSelectedFromBuyer->time_zone");
 
-        $utcTimeFromBuyer = date('Y-m-d H:i:s',strtotime($buyer_selected_time . ' UTC'));        
+        $utcTimeFromBuyer = date('Y-m-d H:i:s', strtotime($buyer_selected_time . ' UTC'));
 
         $sellerTimeString = strtotime($utcTimeFromSeller);
         $buyerTimeString = strtotime($utcTimeFromBuyer);
-        
-        if(($sellerTimeString - $buyerTimeString) > 0) {        
+
+        if (($sellerTimeString - $buyerTimeString) >= 0) {
             return true;
-        }        
+        }
         return false;
     }
 
