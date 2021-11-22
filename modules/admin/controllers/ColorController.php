@@ -2,6 +2,9 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Notification;
+use app\models\Product;
+use app\modules\api\v2\models\User;
 use kartik\growl\Growl;
 use Yii;
 use app\models\Color;
@@ -100,6 +103,98 @@ class ColorController extends Controller
         $model = $this->findModel($id);
         $model->scenario = Color::SCENARIO_UPDATE_COLOR;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            if (in_array($model->status, [Color::STATUS_APPROVE, Color::STATUS_DECLINE])) {
+
+                $colorIds = [$model->id];
+                $query = Product::find();
+                if (!empty($colorIds)) {
+                    foreach ($colorIds as $keyColor => $colorRow) {
+                        if ($keyColor > 0) {
+                            $query->orFilterWhere([
+                                'or',
+                                ['OR LIKE', 'products.option_color', $colorRow, false],
+                            ]);
+                        } else {
+                            $query->andFilterWhere([
+                                'or',
+                                ['LIKE', 'products.option_color', $colorRow, false],
+                            ]);
+                        }
+                    }
+                }
+                $modelProductsBasedOnColor = $query->all();
+
+                if (!empty($modelProductsBasedOnColor)) {
+                    foreach ($modelProductsBasedOnColor as $keyProd => $modelProductsBasedOnColorRow) {
+                        if (!empty($modelProductsBasedOnColorRow) && $modelProductsBasedOnColorRow instanceof Product) {
+                            $userModel = $modelProductsBasedOnColorRow->user;
+
+                            $actionStatus = ($model->status == Color::STATUS_APPROVE) ? 'approve' : 'decline';
+
+                            // Send push notification Start
+                            $getUsers[] = $userModel;
+                            if (!empty($getUsers)) {
+                                foreach ($getUsers as $userROW) {
+                                    if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
+                                        $notificationText = "";
+                                        if (!empty($userROW->userDevice)) {
+                                            $userDevice = $userROW->userDevice;
+
+                                            if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                                // Insert into notification.
+                                                $notificationText = "Color has been " . $actionStatus . "d, Which you have selected for your product.";
+                                                $modelNotification = new Notification();
+                                                $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                                $modelNotification->notification_receiver_id = $userROW->id;
+                                                $modelNotification->ref_id = $modelProductsBasedOnColorRow->id;
+                                                $modelNotification->notification_text = $notificationText;
+                                                $modelNotification->action = "product_color_" . $actionStatus;
+                                                $modelNotification->ref_type = "products";
+                                                $modelNotification->save(false);
+
+                                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                                if ($userDevice->device_platform == 'android') {
+                                                    $notificationToken = array($userDevice->notification_token);
+                                                    $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
+                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                } else {
+                                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                    $note->setBadge($badge);
+                                                    $note->setSound('default');
+                                                    $message = Yii::$app->fcm->createMessage();
+                                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                    $message->setNotification($note)
+                                                        ->setData([
+                                                            'id' => $modelNotification->ref_id,
+                                                            'type' => $modelNotification->ref_type,
+                                                            'message' => $notificationText,
+                                                        ]);
+                                                    $response = Yii::$app->fcm->send($message);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // Send push notification End
+
+                            // Send Email notification Start
+                            if (!empty($userModel) && $userModel instanceof User && !empty($userModel->email)) {
+                                $message = "Color has been " . $actionStatus . "d, that has been added by you.";
+                                Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
+                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                    ->setTo($userModel->email)
+                                    ->setSubject('Color ' . $actionStatus . 'd!')
+                                    ->send();
+                            }
+                            // Send Email notification End
+                        }
+                    }
+                }
+            }
+
+
             \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Color updated successfully.');
             return $this->redirect(['index']);
         }

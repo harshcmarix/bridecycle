@@ -629,7 +629,7 @@ class ProductController extends Controller
                 }
 
                 // Status of product is Approve then color/brand status approved START.
-                if ($model->status_id == ProductStatus::STATUS_APPROVED) {
+                if (in_array($model->status_id,[ProductStatus::STATUS_APPROVED])) {
 
                     $arrColors = explode(",", $model->option_color);
                     if (!empty($arrColors)) {
@@ -886,6 +886,7 @@ class ProductController extends Controller
 
             if ($model->save(false)) {
 
+                //
                 if (!empty($postData['shipping_country_price'])) {
 
                     $modelOldPrice = ShippingPrice::find()->where(['product_id' => $model->id])->all();
@@ -912,6 +913,7 @@ class ProductController extends Controller
                     }
                 }
 
+                //
                 if (!empty($images)) {
 
                     $oldImages = $model->productImages;
@@ -1002,6 +1004,189 @@ class ProductController extends Controller
                         $modelImageReceipt->save(false);
                     }
                 }
+
+                // Status of product is Approve then color/brand status approved START.
+                if (in_array($model->status_id,[ProductStatus::STATUS_APPROVED])) {
+
+                    $arrColors = explode(",", $model->option_color);
+                    if (!empty($arrColors)) {
+                        $modelColors = Color::find()->where(['in', 'id', $arrColors])->all();
+                        if (!empty($modelColors)) {
+                            $colorIds = [];
+                            foreach ($modelColors as $c => $modelColorsRow) {
+                                if (!empty($modelColorsRow) && $modelColorsRow instanceof Color && in_array($modelColorsRow->status, [Color::STATUS_PENDING_APPROVAL])) {
+                                    $colorIds[] = $modelColorsRow->id;
+                                    $modelColorsRow->status = Color::STATUS_APPROVE;
+                                    $modelColorsRow->save(false);
+                                }
+                            }
+
+                            if (!empty($colorIds) && count($colorIds) > 0) {
+                                $query = Product::find();
+                                if (!empty($colorIds)) {
+                                    foreach ($colorIds as $keyColor => $colorRow) {
+                                        if ($keyColor > 0) {
+                                            $query->orFilterWhere([
+                                                'or',
+                                                ['OR LIKE', 'products.option_color', $colorRow, false],
+                                            ]);
+                                        } else {
+                                            $query->andFilterWhere([
+                                                'or',
+                                                ['LIKE', 'products.option_color', $colorRow, false],
+                                            ]);
+                                        }
+                                    }
+                                }
+                                $modelProductsBasedOnColor = $query->all();
+
+                                if (!empty($modelProductsBasedOnColor)) {
+                                    foreach ($modelProductsBasedOnColor as $keyProd => $modelProductsBasedOnColorRow) {
+                                        if (!empty($modelProductsBasedOnColorRow) && $modelProductsBasedOnColorRow instanceof Product) {
+                                            $userModel = $modelProductsBasedOnColorRow->user;
+
+                                            // Send push notification Start
+                                            $getUsers[] = $userModel;
+                                            if (!empty($getUsers)) {
+                                                foreach ($getUsers as $userROW) {
+                                                    if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
+                                                        $notificationText = "";
+                                                        if (!empty($userROW->userDevice)) {
+                                                            $userDevice = $userROW->userDevice;
+
+                                                            if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                                                // Insert into notification.
+                                                                $notificationText = "Color has been approved, Which you have selected for your product.";
+                                                                $modelNotification = new Notification();
+                                                                $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                                                $modelNotification->notification_receiver_id = $userROW->id;
+                                                                $modelNotification->ref_id = $modelProductsBasedOnColorRow->id;
+                                                                $modelNotification->notification_text = $notificationText;
+                                                                $modelNotification->action = "product_color_approve";
+                                                                $modelNotification->ref_type = "products";
+                                                                $modelNotification->save(false);
+
+                                                                $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                                                if ($userDevice->device_platform == 'android') {
+                                                                    $notificationToken = array($userDevice->notification_token);
+                                                                    $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
+                                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                                } else {
+                                                                    $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                                    $note->setBadge($badge);
+                                                                    $note->setSound('default');
+                                                                    $message = Yii::$app->fcm->createMessage();
+                                                                    $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                                    $message->setNotification($note)
+                                                                        ->setData([
+                                                                            'id' => $modelNotification->ref_id,
+                                                                            'type' => $modelNotification->ref_type,
+                                                                            'message' => $notificationText,
+                                                                        ]);
+                                                                    $response = Yii::$app->fcm->send($message);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            // Send push notification End
+
+                                            // Send Email notification Start
+                                            if (!empty($userModel) && $userModel instanceof User && !empty($userModel->email)) {
+                                                $message = "Color has been approved, that has been added by you.";
+                                                Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
+                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                    ->setTo($userModel->email)
+                                                    ->setSubject('Color approved!')
+                                                    ->send();
+                                            }
+                                            // Send Email notification End
+                                        }
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+
+                    $modelBrand = Brand::findOne($model->brand_id);
+                    if (!empty($modelBrand) && $modelBrand instanceof Brand && in_array($modelBrand->status, [Brand::STATUS_PENDING_APPROVAL])) {
+                        $modelBrand->status = Brand::STATUS_APPROVE;
+                        $modelBrand->save(false);
+
+                        $modelProductsBasedOnBrand = Product::find()->where(['brand_id' => $model->brand_id])->all();
+
+                        if (!empty($modelProductsBasedOnBrand)) {
+                            foreach ($modelProductsBasedOnBrand as $keyProdBrand => $modelProductsBasedOnBrandRow) {
+                                if (!empty($modelProductsBasedOnBrandRow) && $modelProductsBasedOnBrandRow instanceof Product) {
+                                    $userDataModel = $modelProductsBasedOnBrandRow->user;
+
+                                    // Send push notification Start
+                                    $getUsers[] = $userDataModel;
+                                    if (!empty($getUsers)) {
+                                        foreach ($getUsers as $userROW) {
+                                            if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
+                                                $notificationText = "";
+                                                if (!empty($userROW->userDevice)) {
+                                                    $userDevice = $userROW->userDevice;
+
+                                                    if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                                        // Insert into notification.
+                                                        $notificationText = "Brand has been approved, Which you have selected for your product.";
+                                                        $modelNotification = new Notification();
+                                                        $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                                        $modelNotification->notification_receiver_id = $userROW->id;
+                                                        $modelNotification->ref_id = $modelProductsBasedOnBrandRow->id;
+                                                        $modelNotification->notification_text = $notificationText;
+                                                        $modelNotification->action = "product_brand_approve";
+                                                        $modelNotification->ref_type = "products";
+                                                        $modelNotification->save(false);
+
+                                                        $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                                        if ($userDevice->device_platform == 'android') {
+                                                            $notificationToken = array($userDevice->notification_token);
+                                                            $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
+                                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                        } else {
+                                                            $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                            $note->setBadge($badge);
+                                                            $note->setSound('default');
+                                                            $message = Yii::$app->fcm->createMessage();
+                                                            $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                            $message->setNotification($note)
+                                                                ->setData([
+                                                                    'id' => $modelNotification->ref_id,
+                                                                    'type' => $modelNotification->ref_type,
+                                                                    'message' => $notificationText,
+                                                                ]);
+                                                            $response = Yii::$app->fcm->send($message);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // Send push notification End
+
+                                    // Send Email notification Start
+                                    if (!empty($userDataModel) && $userDataModel instanceof User && !empty($userDataModel->email)) {
+                                        $message = "Brand has been approved, Which you have selected for your product.";
+                                        Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
+                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                            ->setTo($userDataModel->email)
+                                            ->setSubject('Brand approved!')
+                                            ->send();
+                                    }
+                                    // Send Email notification End
+                                }
+                            }
+                        }
+                    }
+                }
+                // Status of product is Approve then color/brand status approved END.
+
             }
 
             \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'New Product updated successfully.');

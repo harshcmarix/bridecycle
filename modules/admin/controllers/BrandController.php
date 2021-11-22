@@ -2,6 +2,9 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Notification;
+use app\models\Product;
+use app\modules\api\v2\models\User;
 use Imagine\Image\Box;
 use Yii;
 use app\models\Brand;
@@ -280,6 +283,80 @@ class BrandController extends Controller
             }
 
             if ($model->save()) {
+
+                if (in_array($model->status, [Brand::STATUS_APPROVE, Brand::STATUS_DECLINE])) {
+                    $productsModel = Product::find()->where(['brand_id' => $model->id])->all();
+
+                    if (!empty($productsModel)) {
+                        foreach ($productsModel as $key => $productsModelRow) {
+                            if (!empty($productsModelRow) && $productsModelRow instanceof Product) {
+
+                                $actionStatus = ($model->status == Brand::STATUS_APPROVE) ? 'approve' : 'decline';
+
+                                $userDataModel = $productsModelRow->user;
+
+                                // Send push notification Start
+                                $getUsers[] = $userDataModel;
+                                if (!empty($getUsers)) {
+                                    foreach ($getUsers as $userROW) {
+                                        if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
+                                            $notificationText = "";
+                                            if (!empty($userROW->userDevice)) {
+                                                $userDevice = $userROW->userDevice;
+
+                                                if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                                    // Insert into notification.
+                                                    $notificationText = "Brand has been " . $actionStatus . "d, Which you have selected for your product.";
+                                                    $modelNotification = new Notification();
+                                                    $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                                    $modelNotification->notification_receiver_id = $userROW->id;
+                                                    $modelNotification->ref_id = $productsModelRow->id;
+                                                    $modelNotification->notification_text = $notificationText;
+                                                    $modelNotification->action = "product_brand_" . $actionStatus;
+                                                    $modelNotification->ref_type = "products";
+                                                    $modelNotification->save(false);
+
+                                                    $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                                    if ($userDevice->device_platform == 'android') {
+                                                        $notificationToken = array($userDevice->notification_token);
+                                                        $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
+                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                    } else {
+                                                        $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                        $note->setBadge($badge);
+                                                        $note->setSound('default');
+                                                        $message = Yii::$app->fcm->createMessage();
+                                                        $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                        $message->setNotification($note)
+                                                            ->setData([
+                                                                'id' => $modelNotification->ref_id,
+                                                                'type' => $modelNotification->ref_type,
+                                                                'message' => $notificationText,
+                                                            ]);
+                                                        $response = Yii::$app->fcm->send($message);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                // Send push notification End
+
+                                // Send Email notification Start
+                                if (!empty($userDataModel) && $userDataModel instanceof User && !empty($userDataModel->email)) {
+                                    $message = "Brand has been " . $actionStatus . "d, Which you have selected for your product.";
+                                    Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
+                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                        ->setTo($userDataModel->email)
+                                        ->setSubject('Brand ' . $actionStatus . 'd!')
+                                        ->send();
+                                }
+                                // Send Email notification End
+                            }
+                        }
+                    }
+                }
+
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Brand updated successfully.");
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Brand.");
@@ -352,6 +429,80 @@ class BrandController extends Controller
             }
 
             if ($model->save()) {
+
+                if (in_array($model->status, [Brand::STATUS_APPROVE, Brand::STATUS_DECLINE])) {
+                    $productsModel = Product::find()->where(['brand_id' => $model->id])->all();
+
+                    if (!empty($productsModel)) {
+                        foreach ($productsModel as $key => $productsModelRow) {
+                            if (!empty($productsModelRow) && $productsModelRow instanceof Product) {
+
+                                $actionStatus = ($model->status == Brand::STATUS_APPROVE) ? 'approve' : 'decline';
+
+                                $userDataModel = $productsModelRow->user;
+
+                                // Send push notification Start
+                                $getUsers[] = $userDataModel;
+                                if (!empty($getUsers)) {
+                                    foreach ($getUsers as $userROW) {
+                                        if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
+                                            $notificationText = "";
+                                            if (!empty($userROW->userDevice)) {
+                                                $userDevice = $userROW->userDevice;
+
+                                                if (!empty($userDevice) && !empty($userDevice->notification_token)) {
+                                                    // Insert into notification.
+                                                    $notificationText = "Brand has been " . $actionStatus . "d, Which you have selected for your product.";
+                                                    $modelNotification = new Notification();
+                                                    $modelNotification->owner_id = Yii::$app->user->identity->id;
+                                                    $modelNotification->notification_receiver_id = $userROW->id;
+                                                    $modelNotification->ref_id = $productsModelRow->id;
+                                                    $modelNotification->notification_text = $notificationText;
+                                                    $modelNotification->action = "product_brand_" . $actionStatus;
+                                                    $modelNotification->ref_type = "products";
+                                                    $modelNotification->save(false);
+
+                                                    $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                                    if ($userDevice->device_platform == 'android') {
+                                                        $notificationToken = array($userDevice->notification_token);
+                                                        $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
+                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                    } else {
+                                                        $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                        $note->setBadge($badge);
+                                                        $note->setSound('default');
+                                                        $message = Yii::$app->fcm->createMessage();
+                                                        $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                        $message->setNotification($note)
+                                                            ->setData([
+                                                                'id' => $modelNotification->ref_id,
+                                                                'type' => $modelNotification->ref_type,
+                                                                'message' => $notificationText,
+                                                            ]);
+                                                        $response = Yii::$app->fcm->send($message);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                // Send push notification End
+
+                                // Send Email notification Start
+                                if (!empty($userDataModel) && $userDataModel instanceof User && !empty($userDataModel->email)) {
+                                    $message = "Brand has been " . $actionStatus . "d, Which you have selected for your product.";
+                                    Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
+                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                        ->setTo($userDataModel->email)
+                                        ->setSubject('Brand ' . $actionStatus . 'd!')
+                                        ->send();
+                                }
+                                // Send Email notification End
+                            }
+                        }
+                    }
+                }
+
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "New brand updated successfully.");
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating new brand.");
