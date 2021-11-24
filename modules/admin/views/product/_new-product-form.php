@@ -127,7 +127,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                 $checked = "";
                             }
                             $key = $index + 1;
-                            echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='{$index}'> {$label}</label></div>";
+                            echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCostNew(this)' type='checkbox' {$checked} name='{$name}' value='{$index}'> {$label}</label></div>";
                         }
                     ])->label(false) ?>
                 </div>
@@ -213,17 +213,17 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <!--            <div class="row">-->
             <!--                <div class="col col-md-6">-->
             <!--                    --><?php //echo $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) 
-                                        ?>
+            ?>
             <!--                </div>-->
             <!--                <div class="col col-md-6">-->
             <!--                    --><?php //echo $form->field($model, 'option_show_only')->widget(Select2::classname(), [
-                                        //                        'data' => $model->arrOptionIsShowOnly,
-                                        //                        'options' => ['placeholder' => 'Select'],
-                                        //                        'pluginOptions' => [
-                                        //                            'allowClear' => true
-                                        //                        ],
-                                        //                    ]); 
-                                        ?>
+            //                        'data' => $model->arrOptionIsShowOnly,
+            //                        'options' => ['placeholder' => 'Select'],
+            //                        'pluginOptions' => [
+            //                            'allowClear' => true
+            //                        ],
+            //                    ]);
+            ?>
             <!--                </div>-->
             <!--            </div>-->
 
@@ -267,14 +267,14 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             <!--            <div class="row">-->
             <!--                <div class="col col-md-6  mr-top">-->
             <!--                    --><?php //echo $form->field($model, 'is_top_selling')
-                                        //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]); 
-                                        ?>
+            //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
+            ?>
             <!--                </div>-->
             <!--                <div class="col col-md-6  mr-top">-->
             <!--                    --><?php //echo $form->field($model, 'is_top_trending')
-                                        //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-                                        //                    
-                                        ?>
+            //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
+            //
+            ?>
             <!--                </div>-->
             <!--            </div>-->
 
@@ -306,7 +306,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="row">
-                <div class="col col-md-6 receiptUpload" style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
+                <div class="col col-md-6 receiptUpload"
+                     style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
                     <?php
                     $is_product_receipt_images_empty = Product::IMAGE_EMPTY;
                     if (Yii::$app->controller->action->id == 'update') {
@@ -369,9 +370,9 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
 
-        $('#product-option_price, #product-price, .shipping_country_cost_1, .shipping_country_cost_2, .shipping_country_cost_3, .shipping_country_cost_4, .shipping_country_cost_5').keypress(function(event) {
+        $('#product-option_price, #product-price, .shipping_country_cost_1, .shipping_country_cost_2, .shipping_country_cost_3, .shipping_country_cost_4, .shipping_country_cost_5').keypress(function (event) {
             if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
                 event.preventDefault();
             }
@@ -390,13 +391,13 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         "<?php } ?>"
         "<?php } ?>"
 
-        $('#product-category_id').change(function() {
+        $('#product-category_id').change(function () {
             var categoryId = $(this).val();
             $.ajax({
                 type: "POST",
                 url: '<?php echo Url::to(['product/get-sub-category-list', 'category_id' => ""]); ?>' + categoryId,
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         $('#product-sub_category_id').html(response.dataList);
                     }
@@ -404,7 +405,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             })
         });
 
-        $('#product-is_cleaned').change(function() {
+        $('#product-is_cleaned').change(function () {
             var valueData = $(this).val();
             if (valueData == 1) {
                 $('.receiptUpload').show();
@@ -425,7 +426,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         $('#contentmodalProductImgReceiptEdit_' + id).modal('show');
     }
 
-    function shippingCost(obj) {
+    function shippingCostNew(obj) {
         var idIndex = $(obj).attr('tabindex');
         idIndex = parseInt(idIndex) + 1;
         var errDiv = $('.shipping_country_cost_' + idIndex).parent('.field-product-shipping_country_price').children('.help-block');
@@ -433,7 +434,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             var html = '';
             "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
             html += '<div class="form-group field-product-shipping_country_price">';
-            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_"' + idIndex + ' name="Product[shipping_country_price][]" value="">';
+            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + idIndex + '" name="Product[shipping_country_price][]" value="">';
             html += '<div class="help-block"></div></div>';
             $('.field-product-shipping_country_price').last().append(html);
             "<?php } else { ?>"

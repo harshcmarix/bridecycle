@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\modules\api\v2\models\User;
+use yii\web\Response;
 
 /**
  * This is the model class for table "notification".
@@ -116,7 +117,7 @@ class Notification extends \yii\db\ActiveRecord
      * @param $messageString
      * @return bool|string
      */
-    public function sendPushNotificationAndroid($id, $type, $notificationToken, $messageString, $senderName = 'BrideCycle')
+    public function sendPushNotificationAndroid($id, $type, $notificationToken, $messageString, $senderName = 'BrideCycle', $otherData = null)
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
         $fields = array(
@@ -127,17 +128,18 @@ class Notification extends \yii\db\ActiveRecord
                 'title' => (!empty($type) && $type == 'chat_history') ? "New message from " . Yii::$app->name : Yii::$app->name,
                 'body' => (!empty($type) && $type == 'chat_history') ? 'sender' . ' : ' . $messageString : $messageString,
                 'type' => $type, // Notification ref type
-                'message' => $messageString
+                'message' => $messageString,
+                'action' => (!empty($otherData) && !empty($otherData->action)) ? $otherData->action : "",
             ),
             'notification' => array(
                 'id' => $id,
                 'title' => (!empty($type) && $type == 'chat_history') ? "New message from " . Yii::$app->name : Yii::$app->name,
                 'body' => (!empty($type) && $type == 'chat_history') ? 'sender' . ' : ' . $messageString : $messageString,
                 'type' => $type, // Notification ref type
-                'message' => $messageString
+                'message' => $messageString,
+                'action' => (!empty($otherData) && !empty($otherData->action)) ? $otherData->action : "",
             ),
         );
-
         $headers = array(
             'Authorization:key=' . Yii::$app->fcm->apiKey,
             'Content-Type: application/json'

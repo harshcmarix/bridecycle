@@ -213,6 +213,8 @@ class UserController extends ActiveController
                 $model->is_verify_user = User::IS_VERIFY_USER_YES;
             }
 
+            $model->is_subscribed_user = (integer)User::IS_VERIFY_USER_YES;
+
             if ($model->save()) {
                 // Insert shop details
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {

@@ -108,23 +108,23 @@ class ProductImageController extends ActiveController
         $arrayImage = [];
         if ($model->load($productImage) && $model->validate()) {
             if (!empty($images)) {
-                $deleteImages = ProductImage::find()->where(['product_id' => $productImage['ProductImage']['product_id']]);
-                $modelsOldImg = $deleteImages->all();
-                if (!empty($modelsOldImg)) {
-                    foreach ($modelsOldImg as $key => $modelOldImgRow) {
-                        if (!empty($modelOldImgRow) && $modelOldImgRow instanceof ProductImage) {
-
-                            if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name)) {
-                                unlink(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name);
-                            }
-
-                            if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name)) {
-                                unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name);
-                            }
-                        }
-                    }
-                    ProductImage::deleteAll(['product_id' => $productImage['ProductImage']['product_id']]);
-                }
+//                $deleteImages = ProductImage::find()->where(['product_id' => $productImage['ProductImage']['product_id']]);
+//                $modelsOldImg = $deleteImages->all();
+//                if (!empty($modelsOldImg)) {
+//                    foreach ($modelsOldImg as $key => $modelOldImgRow) {
+//                        if (!empty($modelOldImgRow) && $modelOldImgRow instanceof ProductImage) {
+//
+//                            if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name)) {
+//                                unlink(Yii::getAlias('@productImageRelativePath') . "/" . $modelOldImgRow->name);
+//                            }
+//
+//                            if (!empty($modelOldImgRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name)) {
+//                                unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $modelOldImgRow->name);
+//                            }
+//                        }
+//                    }
+//                    ProductImage::deleteAll(['product_id' => $productImage['ProductImage']['product_id']]);
+//                }
 
                 foreach ($images as $img) {
                     $modelImage = new ProductImage();

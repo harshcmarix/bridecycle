@@ -9,12 +9,10 @@ use Imagine\Image\Box;
 use Yii;
 use app\models\Brand;
 use app\models\search\BrandSearch;
-use yii\web\{
-    Controller,
-    NotFoundHttpException,
-    UploadedFile,
-    Response
-};
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
+use yii\web\Response;
 use kartik\growl\Growl;
 use Mpdf\Tag\Em;
 use yii\imagine\Image;
@@ -320,7 +318,7 @@ class BrandController extends Controller
                                                     if ($userDevice->device_platform == 'android') {
                                                         $notificationToken = array($userDevice->notification_token);
                                                         $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
                                                     } else {
                                                         $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                         $note->setBadge($badge);
@@ -332,6 +330,7 @@ class BrandController extends Controller
                                                                 'id' => $modelNotification->ref_id,
                                                                 'type' => $modelNotification->ref_type,
                                                                 'message' => $notificationText,
+                                                                'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                                             ]);
                                                         $response = Yii::$app->fcm->send($message);
                                                     }
@@ -466,7 +465,7 @@ class BrandController extends Controller
                                                     if ($userDevice->device_platform == 'android') {
                                                         $notificationToken = array($userDevice->notification_token);
                                                         $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
                                                     } else {
                                                         $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                         $note->setBadge($badge);
@@ -478,6 +477,7 @@ class BrandController extends Controller
                                                                 'id' => $modelNotification->ref_id,
                                                                 'type' => $modelNotification->ref_type,
                                                                 'message' => $notificationText,
+                                                                'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                                             ]);
                                                         $response = Yii::$app->fcm->send($message);
                                                     }

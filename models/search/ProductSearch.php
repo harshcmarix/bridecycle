@@ -2,6 +2,7 @@
 
 namespace app\models\search;
 
+use app\models\ProductStatus;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Product;
@@ -19,7 +20,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'number', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'is_admin_favourite'], 'integer'],
-            [['type', 'name', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at','status_id'], 'safe'],
+            [['type', 'name', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at', 'status_id'], 'safe'],
             [['option_price'], 'number'],
         ];
     }
@@ -42,7 +43,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find();
+        $query = Product::find()->where(['not in', 'status_id', [ProductStatus::STATUS_ARCHIVED]]);
 
         // add conditions that should always apply here
 

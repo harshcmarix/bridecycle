@@ -31,13 +31,14 @@ use app\modules\api\v2\models\User;
  * @property string|null $type n => new , u => used
  * @property string|null $product_tracking_id
  * @property string $is_cleaned 1 => cleaned product
- * @property string $is_receipt 1 => cleaned product
+ * @property string $is_receipt 1 => cleaned product receipt
  * @property int|null $height
  * @property int|null $weight
  * @property int|null $width
  * @property int $status_id
  * @property int $address_id
  * @property string|null $option_color
+ * @property int|null $is_saved_search_notification_sent 1 => yes,0 => no
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -152,6 +153,9 @@ class Product extends \yii\db\ActiveRecord
         self::PRODUCT_TYPE_USED => 'Used',
     ];
 
+    const IS_SAVED_SEARCH_NOTIFICATION_SENT_TRUE = '1';
+    const IS_SAVED_SEARCH_NOTIFICATION_SENT_FALSE = '0';
+
     /**
      * {@inheritdoc}
      */
@@ -164,7 +168,7 @@ class Product extends \yii\db\ActiveRecord
             [['price', 'height', 'weight', 'width'], 'number'],
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
-            [['number', 'other_info', 'created_at', 'updated_at'], 'safe'],
+            [['number', 'other_info', 'created_at', 'updated_at', 'is_saved_search_notification_sent'], 'safe'],
             [['name', 'option_size'], 'string', 'max' => 50],
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],

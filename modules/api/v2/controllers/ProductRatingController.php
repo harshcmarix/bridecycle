@@ -207,7 +207,7 @@ class ProductRatingController extends ActiveController
                             if ($userDevice->device_platform == 'android') {
                                 $notificationToken = array($userDevice->notification_token);
                                 $senderName = $model->user->first_name . " " . $model->user->last_name;
-                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
                             } else {
                                 $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                 $note->setBadge($badge);
@@ -219,6 +219,7 @@ class ProductRatingController extends ActiveController
                                         'id' => $modelNotification->ref_id,
                                         'type' => $modelNotification->ref_type,
                                         'message' => $notificationText,
+                                        'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                     ]);
                                 $response = Yii::$app->fcm->send($message);
                             }

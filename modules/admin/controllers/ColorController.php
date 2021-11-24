@@ -157,7 +157,7 @@ class ColorController extends Controller
                                                 if ($userDevice->device_platform == 'android') {
                                                     $notificationToken = array($userDevice->notification_token);
                                                     $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
                                                 } else {
                                                     $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                     $note->setBadge($badge);
@@ -169,6 +169,7 @@ class ColorController extends Controller
                                                             'id' => $modelNotification->ref_id,
                                                             'type' => $modelNotification->ref_type,
                                                             'message' => $notificationText,
+                                                            'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                                         ]);
                                                     $response = Yii::$app->fcm->send($message);
                                                 }

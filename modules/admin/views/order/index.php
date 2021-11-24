@@ -90,38 +90,63 @@ $this->params['breadcrumbs'][] = $this->title;
                     $html .= "<th style='border: solid 1px;'>Total Quantity</th>";
                     if (!empty($model->orderItems)) {
                         foreach ($model->orderItems as $key => $orderItem) {
+                            if (!empty($orderItem)) {
+                                $images = (!empty($orderItem) && !empty($orderItem->product) && !empty($orderItem->product->productImages)) ? $orderItem->product->productImages : [];
+                                $dataImages = [];
+                                if (!empty($images)) {
+                                    foreach ($images as $imageRow) {
 
-                            $images = $orderItem->product->productImages;
-                            $dataImages = [];
-                            foreach ($images as $imageRow) {
+                                        if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
+                                            $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
+                                        } else {
+                                            $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                                        }
 
-                                if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
-                                    $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
-                                } else {
-                                    $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                                        $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
+                                            // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
+                                            'options' => ['interval' => '600']
+                                        ];
+                                    }
+                                }
+                                $result = "";
+                                if (!empty($dataImages)) {
+                                    $result = \yii\bootstrap\Carousel::widget(
+                                        ['items' => $dataImages]
+                                    );
                                 }
 
-                                $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
-                                    // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
-                                    'options' => ['interval' => '600']
-                                ];
-                            }
+                                $productPrice = "";
+                                if (!empty($orderItem->product->price)) {
+                                    $productPrice = Yii::$app->formatter->asCurrency($orderItem->product->price);
+                                } elseif (!empty($orderItem) && !empty($orderItem->price)) {
+                                    $productPrice = Yii::$app->formatter->asCurrency($orderItem->price);
+                                }
 
-                            $result = "";
-                            if (!empty($dataImages)) {
-                                $result = \yii\bootstrap\Carousel::widget(
-                                    ['items' => $dataImages]
-                                );
-                            }
-                            $productPrice = (!empty($orderItem->product->price)) ? Yii::$app->formatter->asCurrency($orderItem->product->price) : '';
 
-                            $html .= "<tr style='border: solid 1px;'>";
-                            $html .= "<td style='border: solid 1px;'>" . $result . "</td>";
-                            $html .= "<td style='border: solid 1px;'>" . $orderItem->product->name . "</td>";
-                            $html .= "<td style='border: solid 1px;'>" . $orderItem->product->category->name . "</td>";
-                            $html .= "<td style='border: solid 1px;'>" . $productPrice . "</td>";
-                            $html .= "<td style='border: solid 1px;'>" . $orderItem->quantity . "</td>";
-                            $html .= "</tr>";
+                                $productName = "";
+                                if (!empty($orderItem) && !empty($orderItem->product) && !empty($orderItem->product->name)) {
+                                    $productName = $orderItem->product->name;
+                                } elseif (!empty($orderItem) && !empty($orderItem->product_name)) {
+                                    $productName = $orderItem->product_name;
+                                }
+
+                                $productCatName = "";
+                                if (!empty($orderItem) && !empty($orderItem->product) && !empty($orderItem->product->category) && !empty($orderItem->product->category->name)) {
+                                    $productCatName = $orderItem->product->category->name;
+                                } elseif (!empty($orderItem) && !empty($orderItem->category_name)) {
+                                    $productCatName = $orderItem->category_name;
+                                }
+
+                                $orderProductQty = (!empty($orderItem) && !empty($orderItem->quantity)) ? $orderItem->quantity : '';
+
+                                $html .= "<tr style='border: solid 1px;'>";
+                                $html .= "<td style='border: solid 1px;'>" . $result . "</td>";
+                                $html .= "<td style='border: solid 1px;'>" . $productName . "</td>";
+                                $html .= "<td style='border: solid 1px;'>" . $productCatName . "</td>";
+                                $html .= "<td style='border: solid 1px;'>" . $productPrice . "</td>";
+                                $html .= "<td style='border: solid 1px;'>" . $orderProductQty . "</td>";
+                                $html .= "</tr>";
+                            }
                         }
                     } else {
                         $html .= "<tr><td colspan='5'><p>Product data not found.</p></td></tr>";

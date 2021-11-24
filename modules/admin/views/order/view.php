@@ -166,20 +166,22 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'format' => 'raw',
                                         'value' => function ($model) {
-                                            $images = $model->product->productImages;
+                                            $images = (!empty($model->product) && !empty($model->product->productImages)) ? $model->product->productImages : [];
                                             $dataImages = [];
-                                            foreach ($images as $imageRow) {
+                                            if (!empty($images)) {
+                                                foreach ($images as $imageRow) {
 
-                                                if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
-                                                    $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
-                                                } else {
-                                                    $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                                                    if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
+                                                        $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
+                                                    } else {
+                                                        $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+                                                    }
+
+                                                    $dataImages[] = [
+                                                        'content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),                                             //'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
+                                                        'options' => ['interval' => '600']
+                                                    ];
                                                 }
-
-                                                $dataImages[] = [
-                                                    'content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),                                             //'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
-                                                    'options' => ['interval' => '600']
-                                                ];
                                             }
 
                                             $result = "";
@@ -206,28 +208,54 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ],
                                     [
                                         'value' => function ($model) {
-                                            return $model->product->name;
+                                            $productName = "";
+                                            if (!empty($model->product) && !empty($model->product->name)) {
+                                                $productName = $model->product->name;
+                                            } elseif (!empty($model->product_name)) {
+                                                $productName = $model->product_name;
+                                            }
+                                            return $productName;
+
                                         },
                                         'header' => 'Product Name',
                                         'headerOptions' => ['class' => 'kartik-sheet-style']
                                     ],
                                     [
                                         'value' => function ($model) {
-                                            return $model->product->category->name;
+
+                                            $productCatName = "";
+                                            if (!empty($model->product) && !empty($model->product->category) && !empty($model->product->category->name)) {
+                                                $productCatName = $model->product->category->name;
+                                            } elseif (!empty($model->category_name)) {
+                                                $productCatName = $model->category_name;
+                                            }
+                                            return $productCatName;
                                         },
                                         'header' => 'Product Category',
                                         'headerOptions' => ['class' => 'kartik-sheet-style']
                                     ],
                                     [
                                         'value' => function ($model) {
-                                            return (!empty($model->product) && !empty($model->product->price)) ? Yii::$app->formatter->asCurrency($model->product->price) : "-";
+                                            $productPrice = "";
+                                            if (!empty($model->product->price)) {
+                                                $productPrice = Yii::$app->formatter->asCurrency($model->product->price);
+                                            } elseif (!empty($model) && !empty($model->price)) {
+                                                $productPrice = Yii::$app->formatter->asCurrency($model->price);
+                                            }
+                                            return $productPrice;
                                         },
                                         'header' => 'Product Price',
                                         'headerOptions' => ['class' => 'kartik-sheet-style']
                                     ],
                                     [
                                         'value' => function ($model) {
-                                            return (!empty($model->product) && !empty($model->product->option_price)) ? Yii::$app->formatter->asCurrency($model->product->option_price) : "-";
+                                            $productTaxPrice = "";
+                                            if (!empty($model->product->option_price)) {
+                                                $productTaxPrice = Yii::$app->formatter->asCurrency($model->product->option_price);
+                                            } elseif (!empty($model) && !empty($model->tax)) {
+                                                $productTaxPrice = Yii::$app->formatter->asCurrency($model->tax);
+                                            }
+                                            return $productTaxPrice;
                                         },
                                         'header' => 'Product Tax',
                                         'headerOptions' => ['class' => 'kartik-sheet-style']
@@ -256,7 +284,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attributes' => [
                                     [
                                         'format' => ['raw'],
-                                        'attribute' => 'user_id',
+                                        'attribute' => 'seller_id',
                                         'label' => 'Seller Name',
                                         'value' => function ($model) {
                                             $actionUrl = "";

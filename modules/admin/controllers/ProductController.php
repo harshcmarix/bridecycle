@@ -466,6 +466,7 @@ class ProductController extends Controller
 
         $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
+        //p($shippingCountry);
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $model->category_id])->all(), 'id', 'name');;
@@ -629,7 +630,7 @@ class ProductController extends Controller
                 }
 
                 // Status of product is Approve then color/brand status approved START.
-                if (in_array($model->status_id,[ProductStatus::STATUS_APPROVED])) {
+                if (in_array($model->status_id, [ProductStatus::STATUS_APPROVED])) {
 
                     $arrColors = explode(",", $model->option_color);
                     if (!empty($arrColors)) {
@@ -693,7 +694,7 @@ class ProductController extends Controller
                                                                 if ($userDevice->device_platform == 'android') {
                                                                     $notificationToken = array($userDevice->notification_token);
                                                                     $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                                 } else {
                                                                     $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                                     $note->setBadge($badge);
@@ -705,6 +706,7 @@ class ProductController extends Controller
                                                                             'id' => $modelNotification->ref_id,
                                                                             'type' => $modelNotification->ref_type,
                                                                             'message' => $notificationText,
+                                                                            'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                                                         ]);
                                                                     $response = Yii::$app->fcm->send($message);
                                                                 }
@@ -771,7 +773,7 @@ class ProductController extends Controller
                                                         if ($userDevice->device_platform == 'android') {
                                                             $notificationToken = array($userDevice->notification_token);
                                                             $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                         } else {
                                                             $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                             $note->setBadge($badge);
@@ -783,6 +785,7 @@ class ProductController extends Controller
                                                                     'id' => $modelNotification->ref_id,
                                                                     'type' => $modelNotification->ref_type,
                                                                     'message' => $notificationText,
+                                                                    'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                                                 ]);
                                                             $response = Yii::$app->fcm->send($message);
                                                         }
@@ -1006,7 +1009,7 @@ class ProductController extends Controller
                 }
 
                 // Status of product is Approve then color/brand status approved START.
-                if (in_array($model->status_id,[ProductStatus::STATUS_APPROVED])) {
+                if (in_array($model->status_id, [ProductStatus::STATUS_APPROVED])) {
 
                     $arrColors = explode(",", $model->option_color);
                     if (!empty($arrColors)) {
@@ -1070,7 +1073,7 @@ class ProductController extends Controller
                                                                 if ($userDevice->device_platform == 'android') {
                                                                     $notificationToken = array($userDevice->notification_token);
                                                                     $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                                 } else {
                                                                     $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                                     $note->setBadge($badge);
@@ -1082,6 +1085,7 @@ class ProductController extends Controller
                                                                             'id' => $modelNotification->ref_id,
                                                                             'type' => $modelNotification->ref_type,
                                                                             'message' => $notificationText,
+                                                                            'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                                                         ]);
                                                                     $response = Yii::$app->fcm->send($message);
                                                                 }
@@ -1148,7 +1152,7 @@ class ProductController extends Controller
                                                         if ($userDevice->device_platform == 'android') {
                                                             $notificationToken = array($userDevice->notification_token);
                                                             $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                         } else {
                                                             $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                             $note->setBadge($badge);
@@ -1160,6 +1164,7 @@ class ProductController extends Controller
                                                                     'id' => $modelNotification->ref_id,
                                                                     'type' => $modelNotification->ref_type,
                                                                     'message' => $notificationText,
+                                                                    'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                                                 ]);
                                                             $response = Yii::$app->fcm->send($message);
                                                         }
@@ -1215,21 +1220,23 @@ class ProductController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        if (!empty($model->productImages)) {
-            foreach ($model->productImages as $key => $imageRow) {
-                if ($imageRow instanceof ProductImage) {
-                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
-                        unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
-                    }
-
-                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
-                        unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
-                    }
-                    $imageRow->delete();
-                }
-            }
-        }
-        $this->findModel($id)->delete();
+//        if (!empty($model->productImages)) {
+//            foreach ($model->productImages as $key => $imageRow) {
+//                if ($imageRow instanceof ProductImage) {
+//                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
+//                        unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
+//                    }
+//
+//                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
+//                        unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
+//                    }
+//                    $imageRow->delete();
+//                }
+//            }
+//        }
+        //$this->findModel($id)->delete();
+        $model->status_id = ProductStatus::STATUS_ARCHIVED;
+        $model->save(false);
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Product deleted successfully.');
         return $this->redirect(['index']);
     }
@@ -1244,21 +1251,23 @@ class ProductController extends Controller
     public function actionNewProductDelete($id)
     {
         $model = $this->findModel($id);
-        if (!empty($model->productImages)) {
-            foreach ($model->productImages as $key => $imageRow) {
-                if ($imageRow instanceof ProductImage) {
-                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
-                        unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
-                    }
-
-                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
-                        unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
-                    }
-                    $imageRow->delete();
-                }
-            }
-        }
-        $this->findModel($id)->delete();
+//        if (!empty($model->productImages)) {
+//            foreach ($model->productImages as $key => $imageRow) {
+//                if ($imageRow instanceof ProductImage) {
+//                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
+//                        unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
+//                    }
+//
+//                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
+//                        unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
+//                    }
+//                    $imageRow->delete();
+//                }
+//            }
+//        }
+//        $this->findModel($id)->delete();
+        $model->status_id = ProductStatus::STATUS_ARCHIVED;
+        $model->save(false);
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'New product deleted successfully.');
         return $this->redirect(['new-product']);
     }
@@ -1409,38 +1418,40 @@ class ProductController extends Controller
         if (!empty($models)) {
             foreach ($models as $model) {
                 if (!empty($model) && $model instanceof Product) {
-                    if (!empty($model->productImages)) {
-                        foreach ($model->productImages as $key => $imageRow) {
-                            if ($imageRow instanceof ProductImage) {
-                                if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
-                                    unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
-                                }
+//                    if (!empty($model->productImages)) {
+//                        foreach ($model->productImages as $key => $imageRow) {
+//                            if ($imageRow instanceof ProductImage) {
+//                                if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
+//                                    unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
+//                                }
+//
+//                                if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
+//                                    unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
+//                                }
+//                                $imageRow->delete();
+//                            }
+//                        }
+//                    }
 
-                                if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
-                                    unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
-                                }
-                                $imageRow->delete();
-                            }
-                        }
-                    }
-
-                    if (!empty($model->productReceipt)) {
-                        foreach ($model->productReceipt as $keys => $dataRow) {
-                            if (!empty($dataRow) && $dataRow instanceof ProductReceipt) {
-                                $receiptImagePathRelative = Yii::getAlias('@productReceiptImageRelativePath');
-                                $receiptThumbImagePathRelative = Yii::getAlias('@productReceiptImageThumbRelativePath');
-
-                                if (!empty($dataRow->file) && file_exists($receiptImagePathRelative . "/" . $dataRow->file)) {
-                                    unlink($receiptImagePathRelative . "/" . $dataRow->file);
-                                }
-
-                                if (!empty($dataRow->file) && file_exists($receiptThumbImagePathRelative . "/" . $dataRow->file)) {
-                                    unlink($receiptThumbImagePathRelative . "/" . $dataRow->file);
-                                }
-                            }
-                        }
-                    }
-                    $model->delete();
+//                    if (!empty($model->productReceipt)) {
+//                        foreach ($model->productReceipt as $keys => $dataRow) {
+//                            if (!empty($dataRow) && $dataRow instanceof ProductReceipt) {
+//                                $receiptImagePathRelative = Yii::getAlias('@productReceiptImageRelativePath');
+//                                $receiptThumbImagePathRelative = Yii::getAlias('@productReceiptImageThumbRelativePath');
+//
+//                                if (!empty($dataRow->file) && file_exists($receiptImagePathRelative . "/" . $dataRow->file)) {
+//                                    unlink($receiptImagePathRelative . "/" . $dataRow->file);
+//                                }
+//
+//                                if (!empty($dataRow->file) && file_exists($receiptThumbImagePathRelative . "/" . $dataRow->file)) {
+//                                    unlink($receiptThumbImagePathRelative . "/" . $dataRow->file);
+//                                }
+//                            }
+//                        }
+//                    }
+//                    $model->delete();
+                    $model->status_id = ProductStatus::STATUS_ARCHIVED;
+                    $model->save(false);
                 }
             }
             \Yii::$app->session->setFlash(\kartik\growl\Growl::TYPE_SUCCESS, 'Products deleted successfully!');

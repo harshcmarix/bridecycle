@@ -10,6 +10,7 @@ use Yii;
 use app\models\Trial;
 use Exception;
 use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
@@ -143,6 +144,20 @@ class TrialController extends ActiveController
         if ($model->load($postData) && $model->validate()) {
             $model->status = Trial::STATUS_PENDING;
 
+            // Check seller has accepted/rejected trial booking if no then it throw exception start.
+            $createdTrialsData = Trial::find()
+                ->where('trials.sender_id=' . Yii::$app->user->identity->id)
+                ->andWhere('trials.receiver_id=' . $modelProduct->user_id)
+                ->andWhere('trials.product_id=' . $modelProduct->id)->all();
+
+            if (!empty($createdTrialsData) && !empty($createdTrialsData[count($createdTrialsData) - 1])) {
+                $data = $createdTrialsData[count($createdTrialsData) - 1];
+                if (!empty($data) && $data instanceof Trial && $data->status == Trial::STATUS_PENDING) {
+                    throw new Exception(403, "Sorry, You have already made the trial booking for this product, the seller will take action on it first, then you will be performed this action!");
+                }
+            }
+            // Check seller has accepted/rejected trial booking if no then it throw exception end.
+
             $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id, $model->timezone_id, $model->time);
             if ($resultData == true) {
 
@@ -151,7 +166,9 @@ class TrialController extends ActiveController
                     $getUtcTime = $this->getUTCTimeBasedOnTimeZone($model->timezone_id, $model->time);
 
                     if (!empty($getUtcTime)) {
+
                         $model->timezone_utc_time = (string)$getUtcTime;
+
                     }
 
                     $model->save(false);
@@ -181,7 +198,7 @@ class TrialController extends ActiveController
                                         if ($userDevice->device_platform == 'android') {
                                             $notificationToken = array($userDevice->notification_token);
                                             $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                         } else {
                                             $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                             $note->setBadge($badge);
@@ -193,6 +210,7 @@ class TrialController extends ActiveController
                                                     'id' => $modelNotification->ref_id,
                                                     'type' => $modelNotification->ref_type,
                                                     'message' => $notificationText,
+                                                    'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                                 ]);
                                             $response = Yii::$app->fcm->send($message);
                                         }
@@ -202,11 +220,15 @@ class TrialController extends ActiveController
                                 if ($userROW->is_click_and_try_email_notification_on == User::IS_NOTIFICATION_ON) {
                                     $message = $model->name . "has create a request for trial of " . $modelProduct->name . " on date" . $model->date . " at " . $model->time;
                                     if (!empty($userROW->email)) {
-                                        Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
-                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                            ->setTo($userROW->email)
-                                            ->setSubject('Request for trial of your product')
-                                            ->send();
+                                        try {
+                                            Yii::$app->mailer->compose('api/addNewTrialBooking', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                ->setTo($userROW->email)
+                                                ->setSubject('Request for trial of your product')
+                                                ->send();
+                                        } catch (Exception $e) {
+                                            echo "Error: " . $e->getMessage();
+                                        }
                                     }
                                 }
 
@@ -286,7 +308,7 @@ class TrialController extends ActiveController
                                     if ($userDevice->device_platform == 'android') {
                                         $notificationToken = array($userDevice->notification_token);
                                         $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName);
+                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                     } else {
                                         $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                         $note->setBadge($badge);
@@ -298,6 +320,7 @@ class TrialController extends ActiveController
                                                 'id' => $modelNotification->ref_id,
                                                 'type' => $modelNotification->ref_type,
                                                 'message' => $notificationText,
+                                                'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                             ]);
                                         $response = Yii::$app->fcm->send($message);
                                     }
@@ -314,11 +337,15 @@ class TrialController extends ActiveController
                                 }
 
                                 if (!empty($userROW->email)) {
-                                    Yii::$app->mailer->compose('api/trialBookingAcceptReject', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
-                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                        ->setTo($userROW->email)
-                                        ->setSubject('Request for trial has ' . $isAccept)
-                                        ->send();
+                                    try {
+                                        Yii::$app->mailer->compose('api/trialBookingAcceptReject', ['sender' => Yii::$app->user->identity, 'receiver' => $userROW, 'product' => $modelProduct, 'message' => $message, 'model' => $model])
+                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                            ->setTo($userROW->email)
+                                            ->setSubject('Request for trial has ' . $isAccept)
+                                            ->send();
+                                    } catch (Exception $e) {
+                                        echo "Error: " . $e->getMessage();
+                                    }
                                 }
                             }
                         }
