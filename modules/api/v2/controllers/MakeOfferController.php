@@ -172,7 +172,7 @@ class MakeOfferController extends ActiveController
         }
 
         if ($createdOffers > 0 && $createdOffers >= MakeOffer::USER_ALLOWED_OFFER) {
-            throw new Exception(403, "Sorry, You have exceeded the maximum limit of making an offer for this product!");
+            throw new httpException(403, "Sorry, You have exceeded the maximum limit of making an offer for this product!");
         }
 
         $createdOffersData = MakeOffer::find()
@@ -182,7 +182,7 @@ class MakeOfferController extends ActiveController
         if (!empty($createdOffersData) && !empty($createdOffersData[count($createdOffersData) - 1])) {
             $data = $createdOffersData[count($createdOffersData) - 1];
             if (!empty($data) && $data instanceof MakeOffer && $data->status == MakeOffer::STATUS_PENDING) {
-                throw new Exception(403, "Sorry, You have already made an offer for this product, the seller will take action on it first, then you will be performed this action!");
+                throw new httpException(403, "Sorry, You have already made an offer for this product, the seller will take action on it first, then you will be performed this action!");
             }
         }
 
@@ -244,7 +244,7 @@ class MakeOfferController extends ActiveController
                                                 ->setTo($userROW->email)
                                                 ->setSubject($subject)
                                                 ->send();
-                                        } catch (Exception $e) {
+                                        } catch (httpException $e) {
                                             echo "Error: " . $e->getMessage();
                                         }
                                     }

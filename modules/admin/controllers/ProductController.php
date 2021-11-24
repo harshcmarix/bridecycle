@@ -464,9 +464,9 @@ class ProductController extends Controller
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
 
-        $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id','name');
         $shippingPrice = $model->shippingCost;
-        //p($shippingCountry);
+
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $model->category_id])->all(), 'id', 'name');;
@@ -512,7 +512,7 @@ class ProductController extends Controller
 
             if ($model->save(false)) {
 
-                if (!empty($postData['shipping_country_price'])) {
+                if (!empty($postData['shipping_country_ids']) && !empty($postData['shipping_country_price'])) {
 
                     $modelOldPrice = ShippingPrice::find()->where(['product_id' => $model->id])->all();
                     if (!empty($modelOldPrice)) {
@@ -523,16 +523,21 @@ class ProductController extends Controller
                         }
                     }
 
-                    foreach ($postData['shipping_country_price'] as $keyPrice => $countryPrice) {
-                        if (!empty($countryPrice)) {
-                            $countryId = $keyPrice + 1;
-                            $modelCountry = ShippingCost::find()->where(['id' => $countryId])->one();
-                            if (!empty($modelCountry) && $modelCountry instanceof ShippingCost) {
-                                $modelPrice = new ShippingPrice();
-                                $modelPrice->shipping_cost_id = $modelCountry->id;
-                                $modelPrice->price = $countryPrice;
-                                $modelPrice->product_id = $model->id;
-                                $modelPrice->save(false);
+                    $shippingCountryIds = explode(",", $postData['shipping_country_ids']);
+
+                    if (!empty($shippingCountryIds)) {
+                        foreach ($postData['shipping_country_price'] as $keyPrice => $countryPrice) {
+                            if (!empty($countryPrice)) {
+                                $countryId = (!empty($shippingCountryIds[$keyPrice])) ? $shippingCountryIds[$keyPrice] : $keyPrice + 1;
+
+                                $modelCountry = ShippingCost::find()->where(['id' => $countryId])->one();
+                                if (!empty($modelCountry) && $modelCountry instanceof ShippingCost) {
+                                    $modelPrice = new ShippingPrice();
+                                    $modelPrice->shipping_cost_id = $modelCountry->id;
+                                    $modelPrice->price = $countryPrice;
+                                    $modelPrice->product_id = $model->id;
+                                    $modelPrice->save(false);
+                                }
                             }
                         }
                     }
@@ -842,7 +847,8 @@ class ProductController extends Controller
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
 
-        $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
+        //$shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id','name');
         $shippingPrice = $model->shippingCost;
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');

@@ -117,36 +117,54 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
                 <div class="col col-md-3 ship-country">
                     <lable><strong>Shipping Country</strong></lable>
+
                     <?php
                     echo $form->field($model, 'shipping_country[]')->checkboxList($shippingCountry, [
-
                         'item' => function ($index, $label, $name, $checked, $value) {
                             if (Yii::$app->controller->action->id == 'create') {
                                 $checked = "checked";
+                                $key = $index + 1;
+                                echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
                             } else {
                                 $checked = "";
+                                $key = $index + 1;
+                                echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick=\"return false;\" onkeydown=\"return false;\" type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
                             }
-                            $key = $index + 1;
-                            echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='$index'> {$label}</label></div>";
+
+
                         }
                     ])->label(false) ?>
+
+                    <?php echo $form->field($model, 'shipping_country_ids')->hiddenInput()->label(false) ?>
                 </div>
 
                 <div class="col col-md-3">
                     <label>Shipping Cost</label>
-                    <?php
-                    if (Yii::$app->controller->action->id == 'create') {
-                        $shippingPrice = $shippingCountry;
-                    }
-                    ?>
-                    <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
-                        <?php $pKey = $key; ?>
-                        <?php echo $form->field($model, 'shipping_country_price[]')->textInput([
-                            'value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
-                            'class' => 'shipping_country_cost_' . $pKey,
+                    <div class="shipping_cost_price_tex_boxes">
+                        <?php
+                        if (Yii::$app->controller->action->id == 'create') {
+                            $shippingPrice = $shippingCountry;
+                        }
+                        ?>
+                        <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
+                            <?php
+                            $pKey = $key;
 
-                        ])->label(false) ?>
-                    <?php } ?>
+                            $class = 'shipping_country_cost_' . $pKey;
+                            $readonly = false;
+                            if (Yii::$app->controller->action->id == 'update') {
+                                $readonly = true;
+                            }
+                            ?>
+
+                            <?php echo $form->field($model, 'shipping_country_price[]')->textInput([
+                                'value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
+                                'class' => $class,
+                                'disabled' => $readonly
+
+                            ])->label(false) ?>
+                        <?php } ?>
+                    </div>
                 </div>
 
                 <div class="col col-md-6">
@@ -379,16 +397,19 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         });
 
         "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
+        var arrCheckedCountry = [];
         "<?php if (!empty($shippingPrice)) { ?>"
         "<?php foreach ($shippingPrice as $key => $list) { ?>"
         "<?php if (!empty($list) && $list instanceof \app\models\ShippingPrice) { ?>"
         "<?php if (!empty($list->id)) { ?>"
         var Id = "<?php echo $key + 1 ?>";
         $('.shipping_country_' + Id).prop("checked", true);
+        arrCheckedCountry.push(Id);
         "<?php } ?>"
         "<?php } ?>"
         "<?php } ?>"
         "<?php } ?>"
+        $("#product-shipping_country_ids").val(arrCheckedCountry.join(','));
         "<?php } ?>"
 
         $('#product-category_id').change(function () {
@@ -427,24 +448,39 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     }
 
     function shippingCost(obj) {
+
+        var previousCheckedDataVal = "";
+        if ($("#product-shipping_country_ids").val()) {
+            previousCheckedDataVal = $("#product-shipping_country_ids").val()
+        }
         var idIndex = $(obj).attr('tabindex');
         idIndex = parseInt(idIndex) + 1;
 
+        var updatedString = "";
         var errDiv = $('.shipping_country_cost_' + idIndex).parent('.field-product-shipping_country_price').children('.help-block');
         if ($(obj).prop("checked") == true) {
+            $('.shipping_country_' + idIndex).val(idIndex);
             var html = '';
             "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
             html += '<div class="form-group field-product-shipping_country_price">';
             html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + idIndex + '" name="Product[shipping_country_price][]" value="">';
             html += '<div class="help-block"></div></div>';
-            $('.field-product-shipping_country_price').last().append(html);
+            $('.shipping_cost_price_tex_boxes').append(html);
+            previousCheckedDataVal = previousCheckedDataVal + "," + idIndex;
+            updatedString = previousCheckedDataVal;
             "<?php } else { ?>"
             $('.shipping_country_cost_' + idIndex).show();
             errDiv.show();
             "<?php } ?>"
         } else if ($(obj).prop("checked") == false) {
+            //$('.shipping_country_' + idIndex).val('');
             "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
-            $('.field-product-shipping_country_price').last().remove();
+            $('.shipping_country_cost_' + (idIndex)).parent('.field-product-shipping_country_price').remove();
+            if (idIndex > 1) {
+                updatedString = previousCheckedDataVal.replace("," + idIndex, "");
+            } else {
+                updatedString = previousCheckedDataVal.replace(idIndex, "");
+            }
             "<?php } else { ?>"
             $('.shipping_country_cost_' + idIndex).hide();
             $('.shipping_country_cost_' + idIndex).val('');
@@ -452,5 +488,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             errDiv.hide();
             "<?php } ?>"
         }
+        //$("input[name=product-shipping_country_ids]").val(updatedString);
+        $("#product-shipping_country_ids").val(updatedString);
     }
 </script>

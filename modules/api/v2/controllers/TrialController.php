@@ -153,7 +153,7 @@ class TrialController extends ActiveController
             if (!empty($createdTrialsData) && !empty($createdTrialsData[count($createdTrialsData) - 1])) {
                 $data = $createdTrialsData[count($createdTrialsData) - 1];
                 if (!empty($data) && $data instanceof Trial && $data->status == Trial::STATUS_PENDING) {
-                    throw new Exception(403, "Sorry, You have already made the trial booking for this product, the seller will take action on it first, then you will be performed this action!");
+                    throw new HttpException(403, "Sorry, You have already made the trial booking for this product, the seller will take action on it first, then you will be performed this action!");
                 }
             }
             // Check seller has accepted/rejected trial booking if no then it throw exception end.
@@ -226,7 +226,7 @@ class TrialController extends ActiveController
                                                 ->setTo($userROW->email)
                                                 ->setSubject('Request for trial of your product')
                                                 ->send();
-                                        } catch (Exception $e) {
+                                        } catch (HttpException $e) {
                                             echo "Error: " . $e->getMessage();
                                         }
                                     }
@@ -238,7 +238,7 @@ class TrialController extends ActiveController
                     // Send Push notification and email notification end
                 }
             } else {
-                throw new Exception('Please select another timezone for this trial booking.');
+                throw new HttpException('Please select another timezone for this trial booking.');
             }
         }
 

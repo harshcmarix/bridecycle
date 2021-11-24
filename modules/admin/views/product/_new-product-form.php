@@ -70,7 +70,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ]); ?>
                 </div>
                 <div class="col col-md-6">
-                    <?php if (Yii::$app->controller->action->id == 'update') { //
+                    <?php if (Yii::$app->controller->action->id == 'new-product-update') { //
                         $colorIds = explode(",", $model->option_color);
                         $model->option_color = $colorIds;
                     } ?>
@@ -123,30 +123,40 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         'item' => function ($index, $label, $name, $checked, $value) {
                             if (Yii::$app->controller->action->id == 'new-product-create') {
                                 $checked = "checked";
+                                $key = $index + 1;
+                                echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
                             } else {
                                 $checked = "";
+                                $key = $index + 1;
+                                echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick=\"return false;\" onkeydown=\"return false;\" type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
                             }
-                            $key = $index + 1;
-                            echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCostNew(this)' type='checkbox' {$checked} name='{$name}' value='{$index}'> {$label}</label></div>";
                         }
                     ])->label(false) ?>
+                    <?php echo $form->field($model, 'shipping_country_ids')->hiddenInput()->label(false) ?>
                 </div>
 
                 <div class="col col-md-3">
                     <label>Shipping Cost</label>
-                    <?php
-                    if (Yii::$app->controller->action->id == 'new-product-create') {
-                        $shippingPrice = $shippingCountry;
-                    }
-                    ?>
-                    <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
-                        <?php $pKey = $key; ?>
-                        <?php echo $form->field($model, 'shipping_country_price[]')->textInput([
-                            'value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'update') ? $shippingPrice[$key]['price'] : "",
-                            'class' => 'shipping_country_cost_' . $pKey,
+                    <div class="shipping_cost_price_tex_boxes">
+                        <?php
+                        if (Yii::$app->controller->action->id == 'new-product-create') {
+                            $shippingPrice = $shippingCountry;
+                        }
+                        $readonly = false;
+                        if (Yii::$app->controller->action->id == 'new-product-update') {
+                            $readonly = true;
+                        }
+                        ?>
+                        <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
+                            <?php $pKey = $key; ?>
+                            <?php echo $form->field($model, 'shipping_country_price[]')->textInput([
+                                'value' => (!empty($shippingPrice) && !empty($shippingPrice[$key]) && !empty($shippingPrice[$key]['price']) && Yii::$app->controller->action->id == 'new-product-update') ? $shippingPrice[$key]['price'] : "",
+                                'class' => 'shipping_country_cost_' . $pKey,
+                                'disabled' => $readonly,
 
-                        ])->label(false) ?>
-                    <?php } ?>
+                            ])->label(false) ?>
+                        <?php } ?>
+                    </div>
                 </div>
 
                 <div class="col col-md-6">
@@ -160,7 +170,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ])->label('Image <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
                     <!-- </div> -->
 
-                    <?php if (Yii::$app->controller->action->id == 'update') { ?>
+                    <?php if (Yii::$app->controller->action->id == 'new-product-update') { ?>
                         <?php
                         $is_product_images_empty = Product::IMAGE_EMPTY;
                         if (!empty($model->productImages)) {
@@ -250,7 +260,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-4">
                     <?php
                     $disabledProductType = false;
-                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
+                    if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
                         $disabledProductType = true;
                     }
                     ?>
@@ -291,7 +301,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-6">
                     <?php
                     $disabled = false;
-                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status_id) && in_array($model->status_id, [\app\models\ProductStatus::STATUS_APPROVED, \app\models\ProductStatus::STATUS_IN_STOCK])) {
+                    if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->status_id) && in_array($model->status_id, [\app\models\ProductStatus::STATUS_APPROVED, \app\models\ProductStatus::STATUS_IN_STOCK])) {
                         $disabled = true;
                     }
                     ?>
@@ -307,10 +317,10 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
             <div class="row">
                 <div class="col col-md-6 receiptUpload"
-                     style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
+                     style="display: <?php echo (Yii::$app->controller->action->id == 'new-product-update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
                     <?php
                     $is_product_receipt_images_empty = Product::IMAGE_EMPTY;
-                    if (Yii::$app->controller->action->id == 'update') {
+                    if (Yii::$app->controller->action->id == 'new-product-update') {
                         if (!empty($model->productReceipt)) {
                             $is_product_receipt_images_empty = Product::IMAGE_NOT_EMPTY;
                         }
@@ -330,7 +340,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="row">
-                <?php if ((Yii::$app->controller->action->id == 'update') && !empty($model->productReceipt)) {
+                <?php if ((Yii::$app->controller->action->id == 'new-product-update') && !empty($model->productReceipt)) {
                     $data = "";
                     foreach ($model->productReceipt as $imageRow) {
                         if (!empty($imageRow) && $imageRow instanceof \app\models\ProductReceipt && !empty($imageRow->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . '/' . $imageRow->file)) {
@@ -378,17 +388,20 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             }
         });
 
-        "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
+        "<?php if (Yii::$app->controller->action->id == 'new-product-update') { ?>"
+        var arrCheckedCountry = [];
         "<?php if (!empty($shippingPrice)) { ?>"
         "<?php foreach ($shippingPrice as $key => $list) { ?>"
         "<?php if (!empty($list) && $list instanceof \app\models\ShippingPrice) { ?>"
         "<?php if (!empty($list->id)) { ?>"
         var Id = "<?php echo $key + 1 ?>";
         $('.shipping_country_' + Id).prop("checked", true);
+        arrCheckedCountry.push(Id);
         "<?php } ?>"
         "<?php } ?>"
         "<?php } ?>"
         "<?php } ?>"
+        $("#product-shipping_country_ids").val(arrCheckedCountry.join(','));
         "<?php } ?>"
 
         $('#product-category_id').change(function () {
@@ -432,7 +445,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         var errDiv = $('.shipping_country_cost_' + idIndex).parent('.field-product-shipping_country_price').children('.help-block');
         if ($(obj).prop("checked") == true) {
             var html = '';
-            "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
+            "<?php if (Yii::$app->controller->action->id == 'new-product-update') { ?>"
             html += '<div class="form-group field-product-shipping_country_price">';
             html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + idIndex + '" name="Product[shipping_country_price][]" value="">';
             html += '<div class="help-block"></div></div>';
@@ -442,7 +455,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             errDiv.show();
             "<?php } ?>"
         } else if ($(obj).prop("checked") == false) {
-            "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
+            "<?php if (Yii::$app->controller->action->id == 'new-product-update') { ?>"
             $('.field-product-shipping_country_price').last().remove();
             "<?php } else { ?>"
             $('.shipping_country_cost_' + idIndex).hide();

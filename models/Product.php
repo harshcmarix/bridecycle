@@ -75,6 +75,13 @@ class Product extends \yii\db\ActiveRecord
     public $is_product_receipt_images_empty;
 
     /**
+     * @var
+     *
+     *  It is use for admin panel only
+     */
+    public $shipping_country_ids;
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
