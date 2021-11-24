@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $title;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
 
@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     // 'format' => ['raw'],
                     'filter' => false,
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
 
                 // [

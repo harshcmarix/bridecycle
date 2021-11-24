@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Product',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 250px']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 250px']
                     ],
                     [
                         'attribute' => 'user_id',
@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'User',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 300px']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 300px']
                     ],
                     [
                         'attribute' => 'rating',
@@ -90,7 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             return (!empty($model->rating)) ? $model->rating : '';
                         },
                         'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 100px']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 100px']
                     ],
                     [
                         'attribute' => 'review',
@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'header' => '',
                         'format'=>['html'],
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 300px']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 300px']
                     ],
                     [
                         'attribute' => 'status',
@@ -123,7 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Status',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 150px']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 150px']
                     ],
                     [
                         'header' => 'Actions',

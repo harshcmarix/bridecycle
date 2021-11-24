@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'vAlign' => 'middle',
                     'format' => 'raw',
                     'width' => '65%',
-                    'headerOptions' => ['style' => 'text-align: center !important']
+                    //'headerOptions' => ['style' => 'text-align: center !important']
                 ],
                 [
                     'format' => ['raw'],
@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'header' => '',
                     'width' => '20%',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
 //                [
 //                    'attribute' => 'status',

@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '20%',
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'type',
@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '10%',
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'value',
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '10%',
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'start_date',
@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '10%',
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'end_date',
@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '10%',
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'status',
@@ -113,7 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //                    ],
                     'width' => '10%',
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',

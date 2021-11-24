@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->name;
                         },
                         'header' => 'Customer',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'product_id',
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
 
                         'header' => 'Product',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'sender_id',
@@ -69,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => '',
                         'header' => 'Sender User',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'receiver_id',
@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => '',
                         'header' => 'Store',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     //                    [
                     ////                        'format' => ['raw'],
@@ -139,7 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Status',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'date',
@@ -148,7 +148,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => '',
                         'header' => 'Trial Date',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'time',
@@ -157,7 +157,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => '',
                         'header' => 'Trial Time',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'timezone_id',
@@ -173,7 +173,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Trial Timezone',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     //                    [
                     //                        'class' => 'kartik\grid\ActionColumn',

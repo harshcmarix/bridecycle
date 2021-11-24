@@ -56,12 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     'header' => '',
                     'vAlign' => 'middle',
                     'format' => 'raw',
-                    'headerOptions' => ['style' => 'text-align: center !important']
+                    //'headerOptions' => ['style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'code',
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'status',
@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => 'Status',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',

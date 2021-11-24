@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->first_name;
                 },
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'last_name',
@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->last_name;
                 },
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'email',
@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->email;
                 },
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'format' => ['raw'],
@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '50px', 'width' => '50px']);
                 },
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [
                 'attribute' => 'mobile',
@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return (!empty($model) && !empty($model->mobile)) ? $model->mobile : "-";
                 },
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'is_shop_owner',
@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => '',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'is_newsletter_subscription',
@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => 'Is Newsletter',
-                'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',

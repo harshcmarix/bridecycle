@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $brandmodal, 'height' => '50px', 'width' => '50px']);
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'name',
@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $name;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'format' => ['raw'],
@@ -104,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 // [
                 //     'format' => ['raw'],

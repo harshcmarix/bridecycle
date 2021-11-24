@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->first_name;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'last_name',
@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->last_name;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'email',
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->email;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',

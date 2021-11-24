@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'User',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
                     ],
                     [
                         'attribute' => 'seller_id',
@@ -59,19 +59,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Seller',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
                     ],
                     [
                         'format' => 'html',
                         'attribute' => 'content',
                         'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
                     ],
                     [
                         'attribute' => 'created_at',
                         'filter' => false,
                         'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
                     ],
                     //'updated_at',
                     [

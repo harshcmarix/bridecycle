@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->name;
                         },
                         'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 250px']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 250px']
                     ],
                     [
                         'format' => ['raw'],
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter' => false,
                         'width' => '20%',
                         'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
+                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
                     ],
 //                    [
 //                        'attribute' => 'brand_id',

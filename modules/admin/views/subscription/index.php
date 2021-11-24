@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $name;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'amount',
@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $amount;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'status',
@@ -90,7 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'width' => '10%',
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'label' => 'Total Subscribed users',
@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'filter' => false,
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
             // [
             //     'attribute' => 'created_at',

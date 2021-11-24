@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $type;
                     },
                     'header' => 'Subscription Type',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'user_id',
@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => 'User',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'amount',
@@ -93,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $amount;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'transaction_id',
@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $transaction_id;
                     },
                     'header' => 'Transaction ID',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'subscription_id',
@@ -117,7 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $subscription_id;
                     },
                     'header' => 'Subscription ID',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'date_time',
@@ -129,7 +129,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $subscription_date_time;
                     },
                     'header' => '',
-                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
