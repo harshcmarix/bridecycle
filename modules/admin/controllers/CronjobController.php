@@ -127,14 +127,14 @@ class CronjobController extends Controller
                 ->setProductId($product_id)
                 ->setPurchaseToken($purchaseToken)
                 ->validateSubscription();
-
+            p($response);
         } catch (\Exception $e) {
             var_dump($e->getMessage());
             // example message: Error calling GET ....: (404) Product not found for this application.
         }
 
         // success
-        p($response);
+
 
     }
 
