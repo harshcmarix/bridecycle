@@ -6,6 +6,7 @@ use app\models\Notification;
 use app\models\SearchHistory;
 use app\models\UserPurchasedSubscriptions;
 use app\modules\api\v2\models\User;
+use ReceiptValidator\GooglePlay\SubscriptionResponse;
 use yii\web\Controller;
 use Yii;
 use app\models\Product as DB_Product;
@@ -51,6 +52,8 @@ class CronjobController extends Controller
 
                     if (strtolower($userSubscriptionRow->device_platform) == UserPurchasedSubscriptions::DEVICE_PLATFORM_ANDROID) {
 
+                        $googlePlayResponseSuccess = '';
+                        $googlePlayResponseFail = '';
                         $subscriptionRespose = [];
                         $purchaseToken = $product_id = "";
                         if (!empty($userSubscriptionRow->subscription_response)) {
@@ -99,16 +102,30 @@ class CronjobController extends Controller
                                     ->setProductId($product_id)
                                     ->setPurchaseToken($purchaseToken)
                                     ->validateSubscription();
-                                p($response);
+                                $googlePlayResponseSuccess = $response;
                             } catch (\Exception $e) {
-                                var_dump($e->getMessage());
-                                // example message: Error calling GET ....: (404) Product not found for this application.
+
+                                $googlePlayResponseFail = $e->getMessage();
+
+                                echo "Error: " . $e->getMessage();
+
+
+                                \Yii::info("\n------------Fail Subscription ----------------\n" . "userId:" . $userSubscriptionRow->user_id . "\n" . $e->getMessage(), 'notifyUserBasedOnAndroidGooglePlaySubscription');
                             }
-                            // success
-
-
                         }
                         // End Android subscription check
+
+
+                        if (!empty($googlePlayResponseSuccess) && (empty($googlePlayResponseFail) || $googlePlayResponseFail == "")) {
+                            if ($googlePlayResponseSuccess instanceof SubscriptionResponse && !empty($googlePlayResponseSuccess->getExpiryTimeMillis())) {
+                                $expireTime = $googlePlayResponseSuccess->getExpiryTimeMillis(); // in miliseconds
+
+                                $milliseconds = round(microtime(true) * 1000); // current Time
+                                p($expireTime, 0);
+                                p($milliseconds);
+                            }
+                        }
+                        // Update User subscription data (in our DATABASE) Start.
 
                     }
 

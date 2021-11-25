@@ -148,6 +148,14 @@ $config = [
                     'logVars' => [],
                     'logFile' => '@runtime/logs/addproductnotification/' . date('d-m-Y') . 'addProductTonotifyUserBasedOnsaveSearch.log',
                 ],
+                // writes to php-fpm output stream
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['info', 'trace', 'error', 'warning'],
+                    'categories' => ['notifyUserBasedOnAndroidGooglePlaySubscription'],
+                    'logVars' => [],
+                    'logFile' => '@runtime/logs/androidgoogleplaysubscriptionfail/' . date('d-m-Y') . 'androidGooglePlaySubscriptionFailUser.log',
+                ],
             ],
         ],
         'db' => $db,
