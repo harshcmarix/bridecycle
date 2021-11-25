@@ -121,8 +121,9 @@ class CronjobController extends Controller
                                 $expireTime = $googlePlayResponseSuccess->getExpiryTimeMillis(); // in miliseconds
 
                                 $milliseconds = round(microtime(true) * 1000); // current Time
-                                p($expireTime, 0);
-                                p($milliseconds);
+                                p("expire: " . $expireTime, 0);
+                                p("current: " . $milliseconds, 0);
+                                p("result: " . ($expireTime < $milliseconds));
                             }
                         }
                         // Update User subscription data (in our DATABASE) Start.
