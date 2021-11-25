@@ -47,6 +47,9 @@ class UserPurchasedSubscriptions extends \yii\db\ActiveRecord
         ];
     }
 
+    const DEVICE_PLATFORM_ANDROID = "android";
+    const DEVICE_PLATFORM_IOS= "ios";
+
     /**
      * {@inheritdoc}
      */

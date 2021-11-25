@@ -4,6 +4,7 @@ namespace app\modules\admin\controllers;
 
 use app\models\Notification;
 use app\models\SearchHistory;
+use app\models\UserPurchasedSubscriptions;
 use app\modules\api\v2\models\User;
 use yii\web\Controller;
 use Yii;
@@ -13,127 +14,108 @@ use ReceiptValidator\GooglePlay\Validator as PlayValidator;
 
 class CronjobController extends Controller
 {
-    public function actionCheckPlayStoreSubscriptionStatusBackup()
-    {
-        $connection = Yii::$app->getDb();
-        $command = $connection->createCommand("SELECT *
-        FROM `user_purchased_subscriptions` 
-        WHERE `id` IN (SELECT MAX(`id`) AS `id`
-             FROM `user_purchased_subscriptions` 
-             WHERE `device_platform` = 'android'
-             GROUP BY `user_id`) 
-        ORDER BY `created_at` DESC");
-
-        $userSubscriptions = $command->queryAll();
-        //p($userSubscriptions);
-
-
-        $request = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.bridecycle/purchases/subscriptions/com.bridecycle.three.month/tokens/gohhmiemjlhcgoflapbnjlfb.AO-J1OxLWiA0c8TPpD4wVWjYj6WT84mGTHp4t_DiEnfXWdz07OGvaSQB-N7SpmOYNhOcib44VzlHdZAeOOfDPq3u5J2ydLY23w";
-
-
-//        $request = "https://iam.googleapis.com/v1/projects/pc-api-5945952200218555652-603/serviceAccounts";
-        $result = file_get_contents($request);
-        $res = json_decode($result, true);
-        p($res);
-
-
-        //$path = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsRelativePath') . '/google-app-credentials.json';
-        $path = Yii::getAlias('@uploadsRelativePath') . '/google-app-credentials.json';
-
-        //putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $path);
-        putenv(sprintf("GOOGLE_APPLICATION_CREDENTIALS=%s", $path));
-
-
-        try {
-
-            //ini_set('max_execution_time', 3000);
-            $client = new \Google_Client();
-            if ($credentials_file = $path) {
-                // set the location manually
-                $client->setAuthConfig($credentials_file);
-            } elseif (getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
-                // use the application default credentials
-                $client->useApplicationDefaultCredentials();
-            } else {
-                $rv = "missingServiceAccountDetailsWarning()";
-                return [$rv];
-            }
-
-            $client->addScope("https://www.googleapis.com/auth/androidpublisher");
-            $serviceAndroidPublisher = new \Google_Service_AndroidPublisher($client);
-            $servicePurchaseSubscription = $serviceAndroidPublisher->purchases_subscriptions;
-            //p($servicePurchaseSubscription);
-            $rv = $servicePurchaseSubscription->get(
-                "com.bridecycle",
-                "com.bridecycle.three.month",
-                "gohhmiemjlhcgoflapbnjlfb.AO-J1OxLWiA0c8TPpD4wVWjYj6WT84mGTHp4t_DiEnfXWdz07OGvaSQB-N7SpmOYNhOcib44VzlHdZAeOOfDPq3u5J2ydLY23w"
-            );
-            p($rv);
-
-        } catch (\Exception $e) {
-            //return $e->getCode() . " " . $e->getMessage();
-            return $e->getMessage();
-        }
-
-
-//        $client = ClientFactory::create([ClientFactory::SCOPE_ANDROID_PUBLISHER]);
-//        $client->setAuthConfig($path);
-//        $product = new Product($client, 'com.bridecycle', 'com.bridecycle.three.month', 'gohhmiemjlhcgoflapbnjlfb.AO-J1OxLWiA0c8TPpD4wVWjYj6WT84mGTHp4t_DiEnfXWdz07OGvaSQB-N7SpmOYNhOcib44VzlHdZAeOOfDPq3u5J2ydLY23w');
-//        $product->acknowledge();
-
-
-//        $client = ClientFactory::create([ClientFactory::SCOPE_ANDROID_PUBLISHER]);
-//        $subscription = new Subscription($client, 'com.bridecycle', 'com.bridecycle.three.month', 'gohhmiemjlhcgoflapbnjlfb.AO-J1OxLWiA0c8TPpD4wVWjYj6WT84mGTHp4t_DiEnfXWdz07OGvaSQB-N7SpmOYNhOcib44VzlHdZAeOOfDPq3u5J2ydLY23w');
-//        $subscription->acknowledge();
-//        $resource = $subscription->get(); // Imdhemy\GooglePlay\Subscriptions\SubscriptionPurchase
-//        p($resource);
-
-
-    }
-
 
     public function actionCheckPlayStoreSubscriptionStatus()
     {
-        $connection = Yii::$app->getDb();
-        $command = $connection->createCommand("SELECT *
-        FROM `user_purchased_subscriptions` 
-        WHERE `id` IN (SELECT MAX(`id`) AS `id`
+        /**
+         *
+         */
+//        $connection = Yii::$app->getDb();
+//        $command = $connection->createCommand("SELECT *
+//        FROM `user_purchased_subscriptions`
+//        WHERE `id` IN (SELECT MAX(`id`) AS `id`
+//             FROM `user_purchased_subscriptions`
+//             WHERE `device_platform` = 'android'
+//             GROUP BY `user_id`)
+//        ORDER BY `created_at` DESC");
+//        $userSubscriptions = $command->queryAll();
+
+
+        /**
+         * Start Actual Execution of cronjob from here.
+         *
+         *  WHERE `device_platform` = 'android'
+         */
+        $query = UserPurchasedSubscriptions::find();
+        $query->where("`id` IN (SELECT MAX(`id`) AS `id`
              FROM `user_purchased_subscriptions` 
-             WHERE `device_platform` = 'android'
+             
              GROUP BY `user_id`) 
         ORDER BY `created_at` DESC");
+        $userSubscriptions = $query->all();
 
-        $userSubscriptions = $command->queryAll();
-        //p($userSubscriptions);
+        if (!empty($userSubscriptions)) {
+
+            foreach ($userSubscriptions as $key => $userSubscriptionRow) {
+                if (!empty($userSubscriptionRow) && $userSubscriptionRow instanceof UserPurchasedSubscriptions) {
+
+                    if (strtolower($userSubscriptionRow->device_platform) == UserPurchasedSubscriptions::DEVICE_PLATFORM_ANDROID) {
+
+                        $subscriptionRespose = [];
+                        $purchaseToken = $product_id = "";
+                        if (!empty($userSubscriptionRow->subscription_response)) {
+                            $subscriptionRespose = json_decode($userSubscriptionRow->subscription_response);
+
+                            if (!empty($subscriptionRespose)) {
+
+                                // Set Purchase token.
+                                if (!empty($subscriptionRespose) && !empty($subscriptionRespose->purchaseToken)) {
+                                    $purchaseToken = $subscriptionRespose->purchaseToken;
+                                }
+
+                                // Set product ID.
+                                if (!empty($subscriptionRespose) && !empty($subscriptionRespose->productId)) {
+                                    $product_id = $subscriptionRespose->productId;
+                                }
+                            }
+
+                        }
 
 
-        $path = Yii::getAlias('@uploadsRelativePath') . '/google-app-credentials.json';
+                        // Start Android subscription check
+                        if (!empty($subscriptionRespose) && !empty($purchaseToken) && !empty($product_id)) {
 
-        $packageName = "com.bridecycle";
-        $product_id = "com.bridecycle.six.month";
-        $purchaseToken = "cmpdhgoifnklbhfeefbekfnn.AO-J1OztDGK2scDQxYgZIzM1wcIS38QnAhxyun7iLX-qZgpOlyQ-G_OmpgSgiaN_g1vb_HL2pUG0XGid6NQCRjgdMBiQbjadBg";
+                            /**
+                             *  For Google Play subscription Use
+                             *
+                             *  App ID / Service account Id as Below to use for google play store subscription
+                             *
+                             *  https://console.cloud.google.com/apis/credentials/domainverification?project=pc-api-5945952200218555652-968
+                             *
+                             */
+
+                            $path = Yii::getAlias('@uploadsRelativePath') . '/google-app-credentials.json';
+
+                            $googleClient = new \Google_Client();
+                            $googleClient->setScopes([\Google\Service\AndroidPublisher::ANDROIDPUBLISHER]);
+                            $googleClient->setApplicationName(Yii::$app->params['google_play_store_subscription_app_name']);
+                            $googleClient->setAuthConfig($path);
+
+                            $googleAndroidPublisher = new \Google\Service\AndroidPublisher($googleClient);
+                            $validator = new PlayValidator($googleAndroidPublisher);
+
+                            try {
+                                $response = $validator->setPackageName(Yii::$app->params['google_play_store_subscription_package_name'])
+                                    ->setProductId($product_id)
+                                    ->setPurchaseToken($purchaseToken)
+                                    ->validateSubscription();
+                                p($response);
+                            } catch (\Exception $e) {
+                                var_dump($e->getMessage());
+                                // example message: Error calling GET ....: (404) Product not found for this application.
+                            }
+                            // success
 
 
-        $googleClient = new \Google_Client();
-        $googleClient->setScopes([\Google\Service\AndroidPublisher::ANDROIDPUBLISHER]);
-        $googleClient->setApplicationName('bridecycle');
-        $googleClient->setAuthConfig($path);
+                        }
+                        // End Android subscription check
 
-        $googleAndroidPublisher = new \Google\Service\AndroidPublisher($googleClient);
-        $validator = new \ReceiptValidator\GooglePlay\Validator($googleAndroidPublisher);
+                    }
 
-        try {
-            $response = $validator->setPackageName($packageName)
-                ->setProductId($product_id)
-                ->setPurchaseToken($purchaseToken)
-                ->validateSubscription();
-            p($response);
-        } catch (\Exception $e) {
-            var_dump($e->getMessage());
-            // example message: Error calling GET ....: (404) Product not found for this application.
+                }
+            }
+
         }
-
-        // success
 
 
     }

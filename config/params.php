@@ -55,6 +55,10 @@ return [
      *
      * Username: paypaltest.ctpl@gmail.com
      * Password: ctpl@dev
+     *
+     *  Username: ketan.cmarix@gmail.com
+     *  Password: ctpl@dev
+     *
      */
 
     'paypal_client_id' => 'AcjJ_Ugx14mHKvPuPuCK7Uii8I8SL1yzcW585G9zp6UjCXvVMga7CmBOSMH5HVO8fx4YXtY8LCPULZNm',
@@ -76,5 +80,11 @@ return [
     'bridecycle_product_sell_charges_percentage' => '5%',
 
     // Per product order charges
-    'bridecycle_product_order_charge_percentage' => '11'
+    'bridecycle_product_order_charge_percentage' => '11',
+
+
+    // Google Play store subscription package name, Used for check subscription expire status cronjob.
+    'google_play_store_subscription_package_name' => 'com.bridecycle',
+    'google_play_store_subscription_app_name' => 'bridecycle',
+
 ];
