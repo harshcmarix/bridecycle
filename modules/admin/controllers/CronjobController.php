@@ -4,22 +4,16 @@ namespace app\modules\admin\controllers;
 
 use app\models\Notification;
 use app\models\SearchHistory;
-use app\models\UserPurchasedSubscriptions;
 use app\modules\api\v2\models\User;
-use Google\Client;
-use Google\Service\AndroidPublisher\SubscriptionPurchase;
-use Imdhemy\GooglePlay\Subscriptions\Subscription;
 use yii\web\Controller;
 use Yii;
-use Imdhemy\GooglePlay\ClientFactory;
-use Imdhemy\GooglePlay\Products\Product;
 use app\models\Product as DB_Product;
 use yii\web\HttpException;
-
+use ReceiptValidator\GooglePlay\Validator as PlayValidator;
 
 class CronjobController extends Controller
 {
-    public function actionCheckPlayStoreSubscriptionStatus()
+    public function actionCheckPlayStoreSubscriptionStatusBackup()
     {
         $connection = Yii::$app->getDb();
         $command = $connection->createCommand("SELECT *
@@ -97,6 +91,53 @@ class CronjobController extends Controller
 
     }
 
+
+    public function actionCheckPlayStoreSubscriptionStatus()
+    {
+        $connection = Yii::$app->getDb();
+        $command = $connection->createCommand("SELECT *
+        FROM `user_purchased_subscriptions` 
+        WHERE `id` IN (SELECT MAX(`id`) AS `id`
+             FROM `user_purchased_subscriptions` 
+             WHERE `device_platform` = 'android'
+             GROUP BY `user_id`) 
+        ORDER BY `created_at` DESC");
+
+        $userSubscriptions = $command->queryAll();
+        //p($userSubscriptions);
+
+
+        $path = Yii::getAlias('@uploadsRelativePath') . '/google-app-credentials.json';
+
+        $packageName = "com.bridecycle";
+        $product_id = "com.bridecycle.six.month";
+        $purchaseToken = "cmpdhgoifnklbhfeefbekfnn.AO-J1OztDGK2scDQxYgZIzM1wcIS38QnAhxyun7iLX-qZgpOlyQ-G_OmpgSgiaN_g1vb_HL2pUG0XGid6NQCRjgdMBiQbjadBg";
+
+
+        $googleClient = new \Google_Client();
+        $googleClient->setScopes([\Google\Service\AndroidPublisher::ANDROIDPUBLISHER]);
+        $googleClient->setApplicationName('bridecycle');
+        $googleClient->setAuthConfig($path);
+
+        $googleAndroidPublisher = new \Google\Service\AndroidPublisher($googleClient);
+        $validator = new \ReceiptValidator\GooglePlay\Validator($googleAndroidPublisher);
+
+        try {
+            $response = $validator->setPackageName($packageName)
+                ->setProductId($product_id)
+                ->setPurchaseToken($purchaseToken)
+                ->validateSubscription();
+
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            // example message: Error calling GET ....: (404) Product not found for this application.
+        }
+
+        // success
+        p($response);
+
+    }
+
     /**
      * Send Notification For saved Search user For new Added Product.
      *
@@ -168,7 +209,7 @@ class CronjobController extends Controller
                                                     if ($userDevice->device_platform == 'android') {
                                                         $notificationToken = array($userDevice->notification_token);
                                                         $senderName = $model->user->first_name . " " . $model->user->last_name;
-                                                        $notification = $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
+                                                        $notification = $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                         \Yii::info("\n------------android notification ----------------\n" . "userId:" . $userROW->id . "\n" . $notification, 'notifyUserBasedOnsaveSearch');
                                                     } else {
                                                         $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);

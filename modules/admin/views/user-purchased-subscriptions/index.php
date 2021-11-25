@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="box-header">
             <div class="row">
-                <div class="col-md-3 col-xs-6 pull-right">
+                <div class="col-md-4 col-xs-8 pull-right">
                     <a href="javascript:void(0);" class="small-box-footer">
                         <div class="small-box" style="background-color: #8A9673 !important;"
                              id="tot_income_from_subscription_box">
