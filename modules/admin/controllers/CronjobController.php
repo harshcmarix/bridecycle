@@ -16,6 +16,14 @@ use ReceiptValidator\GooglePlay\Validator as PlayValidator;
 class CronjobController extends Controller
 {
 
+    /**
+     * @throws \Google\Exception
+     *
+     *  Check subscription is valid or expire for user(shop owner).
+     *
+     *  It is execute every 10 minute.
+     *
+     */
     public function actionCheckPlayStoreSubscriptionStatus()
     {
         /**
@@ -48,12 +56,14 @@ class CronjobController extends Controller
         if (!empty($userSubscriptions)) {
 
             foreach ($userSubscriptions as $key => $userSubscriptionRow) {
+
                 if (!empty($userSubscriptionRow) && $userSubscriptionRow instanceof UserPurchasedSubscriptions) {
 
+                    // Check for Android User subscription start.
                     if (strtolower($userSubscriptionRow->device_platform) == UserPurchasedSubscriptions::DEVICE_PLATFORM_ANDROID) {
 
-                        $googlePlayResponseSuccess = '';
-                        $googlePlayResponseFail = '';
+                        $googlePlayResponseSuccess = "";
+                        $googlePlayResponseFail = "";
                         $subscriptionRespose = [];
                         $purchaseToken = $product_id = "";
                         if (!empty($userSubscriptionRow->subscription_response)) {
@@ -73,7 +83,6 @@ class CronjobController extends Controller
                             }
 
                         }
-
 
                         // Start Android subscription check
                         if (!empty($subscriptionRespose) && !empty($purchaseToken) && !empty($product_id)) {
@@ -115,22 +124,37 @@ class CronjobController extends Controller
                         }
                         // End Android subscription check
 
-
+                        // Update User subscription data (in our DATABASE) start.
                         if (!empty($googlePlayResponseSuccess) && (empty($googlePlayResponseFail) || $googlePlayResponseFail == "")) {
                             if ($googlePlayResponseSuccess instanceof SubscriptionResponse && !empty($googlePlayResponseSuccess->getExpiryTimeMillis())) {
+
+                                // Expire time from google play store
                                 $expireTime = $googlePlayResponseSuccess->getExpiryTimeMillis(); // in miliseconds
 
-                                $milliseconds = round(microtime(true) * 1000); // current Time
-                                p("expire: " . $expireTime, 0);
-                                p("current: " . $milliseconds, 0);
-                                p("result: " . ($expireTime < $milliseconds));
+                                // current time get in miliseconds
+                                $milliseconds = round(microtime(true) * 1000);
+
+                                if (!empty($userSubscriptionRow) && !empty($userSubscriptionRow->user) && $userSubscriptionRow->user instanceof User && $userSubscriptionRow->user->is_subscribed_user == User::IS_SUBSCRIBE_USER_YES) {
+
+                                    if ($expireTime <= $milliseconds) {
+                                        $userSubscriptionRow->user->is_subscribed_user = User::IS_SUBSCRIBE_USER_NO;
+                                    } else {
+                                        $userSubscriptionRow->user->is_subscribed_user = User::IS_SUBSCRIBE_USER_YES;
+                                    }
+                                    $userSubscriptionRow->user->save(false);
+                                }
                             }
+                        } else {
+                            $userSubscriptionRow->user->is_subscribed_user = User::IS_SUBSCRIBE_USER_NO;
+                            $userSubscriptionRow->user->save(false);
                         }
-                        // Update User subscription data (in our DATABASE) Start.
+                        // Update User subscription data (in our DATABASE) end.
 
                     }
+                    // Check for Android User subscription end.
 
                 }
+
             }
 
         }

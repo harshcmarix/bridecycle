@@ -158,6 +158,9 @@ class User extends ActiveRecord implements IdentityInterface
     const USER_STATUS_ACTIVE = '1';
     const USER_STATUS_IN_ACTIVE = '0';
 
+    const IS_SUBSCRIBE_USER_YES = '1';
+    const IS_SUBSCRIBE_USER_NO = '0';
+
     /**
      * @return string
      */
@@ -186,13 +189,13 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             // [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
-            [['email','timezone_id'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
+            [['email', 'timezone_id'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
             // [['first_name'], 'required', 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]], // 'last_name'
             [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
             [['top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size', 'height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
             [['facebook_id', 'apple_id', 'google_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
-            [['timezone_id','mobile', 'shop_phone_number'], 'integer'],
+            [['timezone_id', 'mobile', 'shop_phone_number'], 'integer'],
             //[['mobile', 'shop_phone_number'], 'string'],
             [['country_code'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
@@ -276,7 +279,7 @@ class User extends ActiveRecord implements IdentityInterface
             'userAddresses' => 'userAddresses',
             'shopDetails' => 'shopDetails',
             'rating' => 'rating',
-            'timezone'=>'timezone'
+            'timezone' => 'timezone'
         ];
     }
 
