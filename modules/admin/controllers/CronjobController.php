@@ -34,6 +34,7 @@ class CronjobController extends Controller
          *  composer update
          *
          */
+
 //        $connection = Yii::$app->getDb();
 //        $command = $connection->createCommand("SELECT *
 //        FROM `user_purchased_subscriptions`
@@ -43,7 +44,6 @@ class CronjobController extends Controller
 //             GROUP BY `user_id`)
 //        ORDER BY `created_at` DESC");
 //        $userSubscriptions = $command->queryAll();
-
 
         /**
          * Start Actual Execution of cronjob from here.
@@ -122,7 +122,6 @@ class CronjobController extends Controller
                                 $googlePlayResponseFail = $e->getMessage();
 
                                 echo "Error: " . $e->getMessage();
-
 
                                 \Yii::info("\n------------Fail Subscription ----------------\n" . "userId:" . $userSubscriptionRow->user_id . "\n" . $e->getMessage(), 'notifyUserBasedOnAndroidGooglePlaySubscription');
                             }
