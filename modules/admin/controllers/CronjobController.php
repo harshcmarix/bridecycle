@@ -21,7 +21,7 @@ class CronjobController extends Controller
      *
      *  Check subscription is valid or expire for user(shop owner).
      *
-     *  It is execute every 10 minute.
+     *  It is execute at every 10 minute.
      *
      */
     public function actionCheckPlayStoreSubscriptionStatus()
@@ -131,10 +131,16 @@ class CronjobController extends Controller
                                 // Expire time from google play store
                                 $expireTime = $googlePlayResponseSuccess->getExpiryTimeMillis(); // in miliseconds
 
-                                // current time get in miliseconds
-                                $milliseconds = round(microtime(true) * 1000);
-
                                 if (!empty($userSubscriptionRow) && !empty($userSubscriptionRow->user) && $userSubscriptionRow->user instanceof User && $userSubscriptionRow->user->is_subscribed_user == User::IS_SUBSCRIBE_USER_YES) {
+
+                                    $timezone = (!empty($userSubscriptionRow->user->timezone) && !empty($userSubscriptionRow->user->timezone->time_zone)) ? $userSubscriptionRow->user->timezone->time_zone : "";
+
+                                    if (!empty($timezone)) {
+                                        date_default_timezone_set("$timezone");
+                                    }
+
+                                    // current time get in miliseconds for user
+                                    $milliseconds = round(microtime(true) * 1000);
 
                                     if ($expireTime <= $milliseconds) {
                                         $userSubscriptionRow->user->is_subscribed_user = User::IS_SUBSCRIBE_USER_NO;
@@ -159,13 +165,12 @@ class CronjobController extends Controller
 
         }
 
-
     }
 
     /**
      * Send Notification For saved Search user For new Added Product.
      *
-     *  It is execute every minute.
+     *  It is execute at every minute.
      */
     public function actionSendSavedSearchNotificationForAddProduct()
     {
