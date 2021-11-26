@@ -28,6 +28,11 @@ class CronjobController extends Controller
     {
         /**
          *
+         *  IMPORTANT: If you add any services back in composer.json, you will need to remove the vendor/google/apiclient-services directory explicity for the change you made to have effect:
+         *
+         *  rm -r vendor/google/apiclient-services
+         *  composer update
+         *
          */
 //        $connection = Yii::$app->getDb();
 //        $command = $connection->createCommand("SELECT *
