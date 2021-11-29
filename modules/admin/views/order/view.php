@@ -570,7 +570,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'attribute' => 'user_address_id',
                                         'label' => 'Buyer Address',
                                         'value' => function ($model) {
-                                            return $model->userAddress->address . ", " . $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
+                                            //return $model->userAddress->address . ", " . $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
+                                            return $model->userAddress->address;
                                         },
                                     ],
                                     //                                    [
