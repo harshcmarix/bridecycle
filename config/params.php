@@ -31,6 +31,7 @@ return [
     ],
     //'mail_image_base_path' => Yii::$app->request->baseUrl . '/web',
     'mail_image_base_path' => 'http://203.109.113.157/bridecycle/web',
+    //'mail_image_base_path' => 'http://bridecycle.tk/bridecycle/web',
 
     // Recent time for general uses in system
     'recent_time' => '1 week',
@@ -43,21 +44,10 @@ return [
     'paypal_payment_currency' => 'USD',
 
     /**
-     * Paypal (CTPL) sendbox account credential.
+     * Paypal sendbox/live account credential.
      *
-     * Username: buyertest.gwm@gmail.com
-     * Password: ctpl@dev
-     *
-     * Username: merchant.gwm@gmail.com
-     * Password: ctpl@dev
-     *
-     * @Note : CTPL Testing Account
-     *
-     * Username: paypaltest.ctpl@gmail.com
-     * Password: ctpl@dev
-     *
-     *  Username: ketan.cmarix@gmail.com
-     *  Password: ctpl@dev
+     * Username: laura@bridecycle.com
+     * Password: Bridecycle2021!
      *
      */
 
@@ -71,17 +61,22 @@ return [
     //'mobile_api_latest_version' => 'v1',
     'mobile_api_latest_version' => 'v2',
 
+    /**
+     *  Credential of google
+     *
+     *  email: bridecycle@googlemail.com
+     *  password: You$hop3000
+     *
+     */
+
     // Live // client
     //'google_map_api_key'=>'AIzaSyBuITv7RS9RWyEoZkJ1df6-zrw6ZT_C36Q',
     'google_map_api_key' => 'AIzaSyAO1tfGWm30RyXQbiaVGvKxo0M5h9-4bP8',
-    // Local // my
-    //'google_map_api_key'=>'AIzaSyDTBLZMRefUIIM9f0StWgeQ1lVglay22wk',
 
     'bridecycle_product_sell_charges_percentage' => '5%',
 
     // Per product order charges
     'bridecycle_product_order_charge_percentage' => '11',
-
 
     // Google Play store subscription package name, Used for check subscription expire status cronjob.
     'google_play_store_subscription_package_name' => 'com.bridecycle',
