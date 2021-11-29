@@ -69,8 +69,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'parent_category_id',
                     'value' => function ($model) {
                         $parent_name = '(not-set)';
-                        if ($model->parent instanceof ProductCategory) {
+                        if (!empty($model->parent) && $model->parent instanceof ProductCategory) {
                             $parent_name = $model->parent->name;
+                        }elseif (empty($model->parent)){
+                            $parent_name = $model->name;
                         }
                         return $parent_name;
                     },
@@ -83,22 +85,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => '',
-                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-                [
-                    'attribute' => 'name',
-                    'value' => function ($model) {
-                        $name = '';
-                        if ((!empty($model->parent_category_id) && !empty($model->parent) && !empty($model->parent->name)) && $model instanceof ProductCategory) {
-                            $name = $model->parent->name;
-                        } else {
-                            $name = $model->name;
-                        }
-                        return $name;
-                    },
-                    'header' => 'Parent Category Name',
-                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                ],
+//                [
+//                    'attribute' => 'name',
+//                    'value' => function ($model) {
+//                        $name = '';
+//                        if ((!empty($model->parent_category_id) && !empty($model->parent) && !empty($model->parent->name)) && $model instanceof ProductCategory) {
+//                            $name = $model->parent->name;
+//                        } else {
+//                            $name = $model->name;
+//                        }
+//                        return $name;
+//                    },
+//                    'header' => 'Parent Category Name',
+//                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+//                ],
                 [
                     'attribute' => 'sub_cat_name',
                     'value' => function ($model) {
@@ -108,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         return $name;
                     },
-                    'header' => 'Subcategory Name',
+                    'header' => 'Subcategory',
                     ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [

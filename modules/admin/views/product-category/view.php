@@ -69,8 +69,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'label' => 'Parent Category',
                         'value' => function ($model) {
                             $parent_name = '-';
-                            if ($model->parent instanceof ProductCategory) {
+                            if (!empty($model->parent) && $model->parent instanceof ProductCategory) {
                                 $parent_name = $model->parent->name;
+                            }elseif (empty($model->parent)){
+                                $parent_name = $model->name;
                             }
                             return $parent_name;
                         },
