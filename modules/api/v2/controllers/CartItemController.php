@@ -478,7 +478,7 @@ class CartItemController extends ActiveController
                                                 if ($userDevice->device_platform == 'android') {
                                                     $notificationToken = array($userDevice->notification_token);
                                                     $senderName = $modelOrder->user->first_name . " " . $modelOrder->user->last_name;
-                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
+                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                 } else {
                                                     $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                     $note->setBadge($badge);
@@ -644,7 +644,8 @@ class CartItemController extends ActiveController
 
         $payment = new Payment();
         $payment->setRedirectUrls($redirectUrls);
-        $payment->setIntent("sale");
+        //$payment->setIntent("sale");
+        $payment->setIntent("CAPTURE");
         $payment->setPayer($payer);
         $payment->setTransactions(array($transaction));
 
