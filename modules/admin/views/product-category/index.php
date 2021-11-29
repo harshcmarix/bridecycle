@@ -71,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         $parent_name = '(not-set)';
                         if (!empty($model->parent) && $model->parent instanceof ProductCategory) {
                             $parent_name = $model->parent->name;
-                        }elseif (empty($model->parent)){
+                        } elseif (empty($model->parent)) {
                             $parent_name = $model->name;
                         }
                         return $parent_name;
@@ -142,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'kartik\grid\ActionColumn',
                     'buttons' => [//
                         'delete' => function ($url, $model) {
-                            return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['/admin/product-category/delete', 'id' => $model->id], ['title' => 'Delete', 'data-method' => 'post', 'data-confirm' => "Are you sure to delete this category/subcategory and its related products?"]);
+                            return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['/admin/product-category/delete', 'id' => $model->id], ['title' => 'Delete', 'data-method' => 'post', 'data-confirm' => (!empty($model->parent)) ? "Are you sure to delete this subcategory and its related products?" : "Are you sure to delete this category and its related subcategory and products?"]);
                         },],
                     'width' => '12%'
                 ],
