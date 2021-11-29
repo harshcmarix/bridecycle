@@ -404,6 +404,7 @@ class CartItemController extends ActiveController
             $modelOrderPayment->save(false);
 
             $response = $this->makePayment(array_merge($post, $paymentRequestData));
+            //p($response);
             if (!empty($response)) {
 
                 if (!empty($response->getState()) && $response->getState() == 'created') {
@@ -644,8 +645,8 @@ class CartItemController extends ActiveController
 
         $payment = new Payment();
         $payment->setRedirectUrls($redirectUrls);
-        //$payment->setIntent("sale");
-        $payment->setIntent("CAPTURE");
+        $payment->setIntent("sale");
+        //$payment->setIntent("CAPTURE");
         $payment->setPayer($payer);
         $payment->setTransactions(array($transaction));
 
