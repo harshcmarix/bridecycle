@@ -14,6 +14,7 @@ use app\models\ProductCategory;
 use app\models\ProductStatus;
 use app\models\ProductTracking;
 use app\models\Setting;
+use app\models\Sizes;
 use app\modules\api\v2\models\User;
 use app\modules\api\v2\models\UserAddress;
 use Dompdf\Dompdf;
@@ -176,6 +177,17 @@ class CartItemController extends ActiveController
             $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
             $model->price = ($basePrice + $taxPrice);
             $model->tax = $taxPrice;
+
+            // Update Size data start
+            $modelSize = Sizes::find()->where(['id' => $model->size])->one();
+            if (!empty($modelSize) && $modelSize instanceof Sizes) {
+                $model->size_id = $modelSize->id;
+                $model->size = $modelSize->size;
+            } else {
+                $model->size_id = $model->size;
+                $model->size = "";
+            }
+            // Update Size data end
 
             $model->product_name = (!empty($productData) && $productData instanceof Product && !empty($productData->name)) ? $productData->name : 0;
             $model->category_name = (!empty($productData) && $productData instanceof Product && !empty($productData->category) && $productData->category instanceof ProductCategory && !empty($productData->category->name)) ? $productData->category->name : 0;
@@ -354,6 +366,7 @@ class CartItemController extends ActiveController
                     $modelOrderItem->product_id = $modelCartItemRow->product_id;
                     $modelOrderItem->quantity = $modelCartItemRow->quantity;
                     $modelOrderItem->color = $modelCartItemRow->color;
+                    $modelOrderItem->size_id = $modelCartItemRow->size_id;
                     $modelOrderItem->size = $modelCartItemRow->size;
                     $modelOrderItem->price = $modelCartItemRow->price;
                     $modelOrderItem->tax = $modelCartItemRow->tax;
@@ -646,7 +659,6 @@ class CartItemController extends ActiveController
         $payment = new Payment();
         $payment->setRedirectUrls($redirectUrls);
         $payment->setIntent("sale");
-        //$payment->setIntent("CAPTURE");
         $payment->setPayer($payer);
         $payment->setTransactions(array($transaction));
 

@@ -15,11 +15,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'category' => $category,
         'subcategory' => $subcategory,
+        'size' => $size,
         'brand' => $brand,
         'color' => $color,
         'status' => $status,
-        'shippingCountry'=>$shippingCountry,
-        'shippingPrice'=>$shippingPrice
+        'shippingCountry' => $shippingCountry,
+        'shippingPrice' => $shippingPrice
     ]) ?>
 
 </div>

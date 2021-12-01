@@ -1,123 +1,89 @@
 <?php
 
+use yii\helpers\Html;
+use yii\helpers\Url;
 use \app\modules\admin\widgets\GridView;
-use yii\helpers\{
-    Html,
-    ArrayHelper,
-    Url
-};
-use kartik\editable\Editable;
-use app\models\Subscription;
-
+use app\models\Sizes;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\SubscriptionSearch */
+/* @var $searchModel app\modules\admin\models\search\SizesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Subscription';
+$this->title = 'Sizes';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
         <?php
 
         $gridColumns = [
-
-
         ];
+
         echo GridView::widget([
-            'id' => 'subscription-grid',
+            'id' => 'sizes-grid',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'value' => function ($model) {
-                //         $id = '';
-                //         if ($model instanceof Subscription) {
-                //             $id = $model->id;
-                //         }
-                //         return $id;
-                //     },
-                //     'width' => '8%',
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
-                    'attribute' => 'name',
+                    'attribute' => 'size',
                     'value' => function ($model) {
-                        $name = '';
-                        if ($model instanceof Subscription) {
-                            $name = $model->name;
+                        $size = '';
+                        if ($model instanceof Sizes) {
+                            $size = $model->size;
                         }
-                        return $name;
+                        return $size;
                     },
                     'header' => '',
                     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    'width' => '36%'
                 ],
                 [
-                    'attribute' => 'amount',
+                    'attribute' => 'product_category_id',
                     'value' => function ($model) {
-                        $amount = '';
-                        if ($model instanceof Subscription) {
-                            $amount = Yii::$app->formatter->asCurrency($model->amount);
+                        $productCategoryName = '';
+                        if ($model instanceof Sizes && !empty($model->product_category_id) && !empty($model->productCategory) && $model->productCategory instanceof \app\models\ProductCategory && !empty($model->productCategory->name)) {
+                            $productCategoryName = $model->productCategory->name;
                         }
-                        return $amount;
+                        return $productCategoryName;
                     },
-                    'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                ],
-                [
-                    'attribute' => 'status',
-                    'value' => function ($model) {
-                        $status = '';
-                        if ($model instanceof Subscription) {
-                            $status = Subscription::SUBSCRIPTION_STATUS_ARRAY[$model->status];
-                        }
-                        return $status;
-                    },
-
-                    'filter' => Subscription::SUBSCRIPTION_STATUS_ARRAY,
+                    'filter' => $productCategories,
                     'filterType' => GridView::FILTER_SELECT2,
                     'filterWidgetOptions' => [
-                        'options' => ['prompt' => ''],
+                        'options' => ['prompt' => 'Select'],
                         'pluginOptions' => [
                             'allowClear' => true,
                             // 'width'=>'20px'
                         ],
                     ],
-                    'width' => '10%',
-                    'header' => '',
+                    'header' => 'Category',
                     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+                    'width' => '24%'
                 ],
                 [
-                    'label' => 'Total Subscribed users',
+                    'attribute' => 'status',
                     'value' => function ($model) {
-                        $created_at = '';
-                        if ($model instanceof Subscription) {
-                            $created_at = $model->subscribedUsersCount;
+                        $status = $model->arrStatus['0'];
+                        if ($model instanceof Sizes && $model->status == Sizes::STATUS_ACTIVE) {
+                            $status = $model->arrStatus[$model->status];
                         }
-                        return $created_at;
+                        return $status;
                     },
-                    'filter' => false,
+                    'filter' => $searchModel->arrStatus,
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filterWidgetOptions' => [
+                        'options' => ['prompt' => 'Select'],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            // 'width'=>'20px'
+                        ],
+                    ],
+                    //'width' => '10%',
                     'header' => '',
                     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-                // [
-                //     'attribute' => 'created_at',
-                //     'value' => function ($model) {
-                //         $created_at = '';
-                //         if ($model instanceof Subscription) {
-                //             $created_at = $model->created_at;
-                //         }
-                //         return $created_at;
-                //     },
-                //     'filter' => false,
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style']
-                // ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'width' => '12%'
@@ -129,10 +95,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'toolbar' => [
                 [
                     'content' =>
-                        Html::button('<i class="fa fa-plus-circle"> Add Subscription</i>', [
+                        Html::button('<i class="fa fa-plus-circle"> Add Size</i>', [
                             'class' => 'btn btn-success',
-                            'title' => \Yii::t('kvgrid', 'Add Subscription'),
-                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/subscription/create']) . "';",
+                            'title' => \Yii::t('kvgrid', 'Add Size'),
+                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/size/create']) . "';",
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
@@ -141,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         Html::button('<i class="fa fa-refresh"> Reset </i>', [
                             'class' => 'btn btn-basic',
                             'title' => 'Reset Filter',
-                            'onclick' => "window.location.href = '" . Url::to(['subscription/index']) . "';",
+                            'onclick' => "window.location.href = '" . Url::to(['size/index']) . "';",
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
@@ -154,18 +120,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => false,
-            // 'hover' => $hover,
-            // 'showPageSummary' => $pageSummary,
+            'responsive' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Subscriptions',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            //'exportConfig' => $exportConfig,
-            'itemLabelSingle' => 'subscription',
-            'itemLabelPlural' => 'Subscriptions'
+            'itemLabelSingle' => 'size',
+            'itemLabelPlural' => 'Sizes'
         ]);
         ?>
 
@@ -185,7 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         var input;
         var submit_form = false;
-        var filter_selector = '#subscription-grid-filters input';
+        var filter_selector = '#sizes-grid-filters input';
         var isInput = true;
 
         $('select').on('change', function () {
@@ -196,13 +158,13 @@ $this->params['breadcrumbs'][] = $this->title;
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#subscription-grid", function (event) {
+        $("body").on('beforeFilter', "#sizes-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#subscription-grid", function (event) {
+        $("body").on('afterFilter', "#sizes-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
@@ -216,7 +178,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
                     if (submit_form === false) {
                         submit_form = true;
-                        $("#subscription-grid").yiiGridView("applyFilter");
+                        $("#sizes-grid").yiiGridView("applyFilter");
                     }
                 }
             })
@@ -247,7 +209,7 @@ $this->params['breadcrumbs'][] = $this->title;
         //select box filter
         var select;
         var submit_form = false;
-        var select_filter_selector = '#subscription-grid-filters select';
+        var select_filter_selector = '#sizes-grid-filters select';
         var isSelect = true;
 
         $('select').on('change', function () {
@@ -256,12 +218,12 @@ $this->params['breadcrumbs'][] = $this->title;
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#subscription-grid", function (event) {
+        $("body").on('beforeFilter', "#sizes-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#subscription-grid", function (event) {
+        $("body").on('afterFilter', "#sizes-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -273,7 +235,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
-                    $("#subscription-grid").yiiGridView("applyFilter");
+                    $("#sizes-grid").yiiGridView("applyFilter");
                 }
             })
             .on('pjax:success', function () {

@@ -8,10 +8,12 @@ use app\models\Notification;
 use app\models\ProductCategory;
 use app\models\ProductImage;
 use app\models\ProductReceipt;
+use app\models\ProductSizes;
 use app\models\ProductStatus;
 use app\models\search\ProductSearch;
 use app\models\ShippingCost;
 use app\models\ShippingPrice;
+use app\models\Sizes;
 use app\modules\api\v2\models\User;
 use Imagine\Image\Box;
 use Yii;
@@ -146,8 +148,9 @@ class ProductController extends Controller
         $model = new Product();
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = [];
+        $size = [];
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
-        $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
+        $color = ArrayHelper::map(Color::find()->where(['not in', 'status', [Color::STATUS_DECLINE]])->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
         $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
@@ -186,7 +189,27 @@ class ProductController extends Controller
             $images = UploadedFile::getInstances($model, 'images');
 
             $model->option_color = implode(",", $postData['option_color']);
+
+            $sizeIds = (!empty($postData['option_size'])) ? $postData['option_size'] : [];
+            $model->option_size = (!empty($sizeIds)) ? implode(",", $sizeIds) : "";
+
             if ($model->save()) {
+
+                // Product Size DB entry start.
+                if (!empty($postData['option_size']) && is_array($postData['option_size'])) {
+                    $productSizes = $postData['option_size'];
+                    if (!empty($productSizes)) {
+                        foreach ($productSizes as $key => $productSizesRow) {
+                            if (!empty($productSizesRow)) {
+                                $modelProductSize = new ProductSizes();
+                                $modelProductSize->product_id = $model->id;
+                                $modelProductSize->size_id = $productSizesRow;
+                                $modelProductSize->save(false);
+                            }
+                        }
+                    }
+                }
+                // Product Size DB entry end.
 
                 if (!empty($postData['shipping_country_price'])) {
                     foreach ($postData['shipping_country_price'] as $keyPrice => $countryPrice) {
@@ -287,6 +310,7 @@ class ProductController extends Controller
             'model' => $model,
             'category' => $category,
             'subcategory' => $subcategory,
+            'size' => $size,
             'brand' => $brand,
             'color' => $color,
             'status' => $status,
@@ -303,8 +327,9 @@ class ProductController extends Controller
         $model = new Product();
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = [];
+        $size = [];
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
-        $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
+        $color = ArrayHelper::map(Color::find()->where(['not in', 'status', [Color::STATUS_DECLINE]])->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
         $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
@@ -343,7 +368,27 @@ class ProductController extends Controller
             $images = UploadedFile::getInstances($model, 'images');
 
             $model->option_color = implode(",", $postData['option_color']);
+
+            $sizeIds = (!empty($postData['option_size'])) ? $postData['option_size'] : [];
+            $model->option_size = (!empty($sizeIds)) ? implode(",", $sizeIds) : "";
+
             if ($model->save()) {
+
+                // Product Size DB entry start.
+                if (!empty($postData['option_size']) && is_array($postData['option_size'])) {
+                    $productSizes = $postData['option_size'];
+                    if (!empty($productSizes)) {
+                        foreach ($productSizes as $key => $productSizesRow) {
+                            if (!empty($productSizesRow)) {
+                                $modelProductSize = new ProductSizes();
+                                $modelProductSize->product_id = $model->id;
+                                $modelProductSize->size_id = $productSizesRow;
+                                $modelProductSize->save(false);
+                            }
+                        }
+                    }
+                }
+                // Product Size DB entry end.
 
                 if (!empty($postData['shipping_country_price'])) {
                     foreach ($postData['shipping_country_price'] as $keyPrice => $countryPrice) {
@@ -444,6 +489,7 @@ class ProductController extends Controller
             'model' => $model,
             'category' => $category,
             'subcategory' => $subcategory,
+            'size' => $size,
             'brand' => $brand,
             'color' => $color,
             'status' => $status,
@@ -464,20 +510,27 @@ class ProductController extends Controller
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
 
-        $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id','name');
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
-
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
         $subcategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $model->category_id])->all(), 'id', 'name');;
         if (empty($subcategory)) {
             $subcategory = ArrayHelper::map(ProductCategory::find()->where(['IS NOT', 'parent_category_id', null])->all(), 'id', 'name');;
         }
+
+        $size = ArrayHelper::map(Sizes::find()->where(['product_category_id' => $model->category_id, 'status' => Sizes::STATUS_ACTIVE])->all(), 'id', 'size');
+        if (empty($size)) {
+            $size = ArrayHelper::map(ProductSizes::find()->where(['product_id' => $model->id])->all(), 'id', 'size');
+        }
+
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
-        $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
+        $color = ArrayHelper::map(Color::find()->where(['not in', 'status', [Color::STATUS_DECLINE]])->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         $postData = Yii::$app->request->post('Product');
+
+        $productSizes = $model->productSizes;
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
@@ -510,7 +563,47 @@ class ProductController extends Controller
                 $model->type = $postData['type'];
             }
 
+            $sizeIds = (!empty($postData['option_size'])) ? $postData['option_size'] : [];
+            $model->option_size = (!empty($sizeIds)) ? implode(",", $sizeIds) : "";
+
             if ($model->save(false)) {
+
+                // Updated sizes start
+                if (!empty($postData['option_size']) && is_array($postData['option_size'])) {
+                    $oldSizeIds = array_column($productSizes, 'size_id');
+                    $newSizeIds = array_values($postData['option_size']);
+                    $deleteDiffIds = array_diff(array_values($oldSizeIds), array_values($newSizeIds));
+                    $newDiffIds = array_diff(array_values($newSizeIds), array_values($oldSizeIds));
+
+                    if (!empty($deleteDiffIds)) {
+                        $modelOldEnteries = ProductSizes::find()->where(['in', 'size_id', $deleteDiffIds])->andWhere(['product_id' => $model->id])->all();
+                        if (!empty($modelOldEnteries)) {
+                            foreach ($modelOldEnteries as $keys => $modelOldEnteriesRow) {
+                                if (!empty($modelOldEnteriesRow) && $modelOldEnteriesRow instanceof ProductSizes) {
+                                    $modelOldEnteriesRow->delete();
+                                }
+                            }
+                        }
+                    }
+                    if (!empty($newDiffIds)) {
+                        foreach ($newDiffIds as $keyNew => $newDiffIdsRow) {
+                            $modelOldEntery = new ProductSizes();
+                            $modelOldEntery->product_id = $model->id;
+                            $modelOldEntery->size_id = $newDiffIdsRow;
+                            $modelOldEntery->save(false);
+                        }
+                    }
+                } elseif ((isset($postData['option_size']) && $postData['option_size'] == "") || $postData['option_size'] == "" || $postData['option_size'] == []) {
+                    $modelOldEnteries = ProductSizes::find()->andWhere(['product_id' => $model->id])->all();
+                    if (!empty($modelOldEnteries)) {
+                        foreach ($modelOldEnteries as $keys => $modelOldEnteriesRow) {
+                            if (!empty($modelOldEnteriesRow) && $modelOldEnteriesRow instanceof ProductSizes) {
+                                $modelOldEnteriesRow->delete();
+                            }
+                        }
+                    }
+                }
+                // Updated sizes end
 
                 if (!empty($postData['shipping_country_ids']) && !empty($postData['shipping_country_price'])) {
 
@@ -827,6 +920,7 @@ class ProductController extends Controller
             'model' => $model,
             'category' => $category,
             'subcategory' => $subcategory,
+            'size' => $size,
             'brand' => $brand,
             'color' => $color,
             'status' => $status,
@@ -848,7 +942,7 @@ class ProductController extends Controller
         $oldUserId = $model->user_id;
 
         //$shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
-        $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id','name');
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
@@ -856,11 +950,19 @@ class ProductController extends Controller
         if (empty($subcategory)) {
             $subcategory = ArrayHelper::map(ProductCategory::find()->where(['IS NOT', 'parent_category_id', null])->all(), 'id', 'name');;
         }
+
+        $size = ArrayHelper::map(Sizes::find()->where(['product_category_id' => $model->category_id, 'status' => Sizes::STATUS_ACTIVE])->all(), 'id', 'size');
+        if (empty($size)) {
+            $size = ArrayHelper::map(ProductSizes::find()->where(['product_id' => $model->id])->all(), 'id', 'size');
+        }
+
         $brand = ArrayHelper::map(Brand::find()->all(), 'id', 'name');
-        $color = ArrayHelper::map(Color::find()->all(), 'id', 'name');
+        $color = ArrayHelper::map(Color::find()->where(['not in', 'status', [Color::STATUS_DECLINE]])->all(), 'id', 'name');
         $status = ArrayHelper::map(ProductStatus::find()->all(), 'id', 'status');
 
         $postData = Yii::$app->request->post('Product');
+
+        $productSizes = $model->productSizes;
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
@@ -893,7 +995,47 @@ class ProductController extends Controller
                 $model->type = $postData['type'];
             }
 
+            $sizeIds = (!empty($postData['option_size'])) ? $postData['option_size'] : [];
+            $model->option_size = (!empty($sizeIds)) ? implode(",", $sizeIds) : "";
+
             if ($model->save(false)) {
+
+                // Updated sizes start
+                if (!empty($postData['option_size']) && is_array($postData['option_size'])) {
+                    $oldSizeIds = array_column($productSizes, 'size_id');
+                    $newSizeIds = array_values($postData['option_size']);
+                    $deleteDiffIds = array_diff(array_values($oldSizeIds), array_values($newSizeIds));
+                    $newDiffIds = array_diff(array_values($newSizeIds), array_values($oldSizeIds));
+
+                    if (!empty($deleteDiffIds)) {
+                        $modelOldEnteries = ProductSizes::find()->where(['in', 'size_id', $deleteDiffIds])->andWhere(['product_id' => $model->id])->all();
+                        if (!empty($modelOldEnteries)) {
+                            foreach ($modelOldEnteries as $keys => $modelOldEnteriesRow) {
+                                if (!empty($modelOldEnteriesRow) && $modelOldEnteriesRow instanceof ProductSizes) {
+                                    $modelOldEnteriesRow->delete();
+                                }
+                            }
+                        }
+                    }
+                    if (!empty($newDiffIds)) {
+                        foreach ($newDiffIds as $keyNew => $newDiffIdsRow) {
+                            $modelOldEntery = new ProductSizes();
+                            $modelOldEntery->product_id = $model->id;
+                            $modelOldEntery->size_id = $newDiffIdsRow;
+                            $modelOldEntery->save(false);
+                        }
+                    }
+                } elseif ((isset($postData['option_size']) && $postData['option_size'] == "") || $postData['option_size'] == "" || $postData['option_size'] == []) {
+                    $modelOldEnteries = ProductSizes::find()->andWhere(['product_id' => $model->id])->all();
+                    if (!empty($modelOldEnteries)) {
+                        foreach ($modelOldEnteries as $keys => $modelOldEnteriesRow) {
+                            if (!empty($modelOldEnteriesRow) && $modelOldEnteriesRow instanceof ProductSizes) {
+                                $modelOldEnteriesRow->delete();
+                            }
+                        }
+                    }
+                }
+                // Updated sizes end
 
                 //
                 if (!empty($postData['shipping_country_price'])) {
@@ -1208,6 +1350,7 @@ class ProductController extends Controller
             'model' => $model,
             'category' => $category,
             'subcategory' => $subcategory,
+            'size' => $size,
             'brand' => $brand,
             'color' => $color,
             'status' => $status,
@@ -1301,6 +1444,7 @@ class ProductController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $subCategoryList = [];
+        $sizeList = [];
         if (!empty($category_id)) {
             $subCategory = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => $category_id])->all(), 'id', 'name');
             if (!empty($subCategory)) {
@@ -1308,8 +1452,15 @@ class ProductController extends Controller
                     $subCategoryList[] = "<option value='" . $key . "'>" . $subCategoryRow . "</option>";
                 }
             }
+
+            $sizes = ArrayHelper::map(Sizes::find()->where(['product_category_id' => $category_id])->andWhere(['status' => Sizes::STATUS_ACTIVE])->all(), 'id', 'size');
+            if (!empty($sizes)) {
+                foreach ($sizes as $keySize => $sizesRow) {
+                    $sizeList[] = "<option value='" . $keySize . "'>" . $sizesRow . "</option>";
+                }
+            }
         }
-        return ['success' => true, 'dataList' => $subCategoryList];
+        return ['success' => true, 'dataList' => $subCategoryList, 'dataSizeList' => $sizeList];
     }
 
     /**

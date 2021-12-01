@@ -163,6 +163,12 @@ class CronjobController extends Controller
                     }
                     // Check for Android User subscription end.
 
+                    // Check for Ios User subscription start.
+                    if(strtolower($userSubscriptionRow->device_platform) == UserPurchasedSubscriptions::DEVICE_PLATFORM_IOS){
+
+                    }
+                    // Check for Ios User subscription end.
+
                 }
 
             }

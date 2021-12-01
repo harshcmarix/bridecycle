@@ -23,7 +23,8 @@ use yii\behaviors\TimestampBehavior;
  * @property float|null $shipping_cost
  * @property string|null $order_tracking_id
  * @property string|null $invoice
- * @property int|null $size
+ * @property int|null $size_id
+ * @property string|null $size
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -60,15 +61,16 @@ class OrderItem extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'product_id', 'quantity'], 'required'],
-            [['order_id', 'product_id', 'quantity', 'size', 'seller_id'], 'integer'],
+            [['order_id', 'product_id', 'quantity', 'size', 'seller_id', 'size_id'], 'integer'],
             [['shipping_cost', 'price', 'tax'], 'number'],
             [['product_name', 'category_name', 'subcategory_name'], 'safe'],
             [['color'], 'string', 'max' => 100],
             [['order_tracking_id'], 'unique'],
             [['invoice', 'created_at', 'updated_at'], 'safe'],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['seller_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['seller_id' => 'id']],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['seller_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['seller_id' => 'id']],
+            [['size_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Sizes::class, 'targetAttribute' => ['size_id' => 'id']],
         ];
     }
 

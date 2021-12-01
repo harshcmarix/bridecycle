@@ -18,7 +18,7 @@ use app\modules\admin\models\Module;
                 }
                 ?>
 
-                <img src="<?= $profilePic ?>" alt="User Image" class="sidebar-profile" />
+                <img src="<?= $profilePic ?>" alt="User Image" class="sidebar-profile"/>
             </div>
             <?php if (!Yii::$app->user->isGuest) { ?>
                 <div class="pull-left info">
@@ -57,6 +57,7 @@ use app\modules\admin\models\Module;
             ['label' => "New Products", 'icon' => 'plus-square', 'url' => ['product/new-product'], 'visible' => $visible, 'active' => ($route === 'admin/product/new-product' || $route === 'admin/product/new-product-create' || $route === 'admin/product/new-product-update' || $route === 'admin/product/new-product-view')],
         ],];
         $menuList[] = ['label' => 'All Categories', 'icon' => 'list', 'url' => ['product-category/index'], 'visible' => $visible, 'active' => ($route === 'admin/product-category/index' || $route === 'admin/product-category/create' || $route === 'admin/product-category/update' || $route === 'admin/product-category/view')];
+        $menuList[] = ['label' => 'All Sizes', 'icon' => 'object-group', 'url' => ['size/index'], 'visible' => $visible, 'active' => ($route === 'admin/size/index' || $route === 'admin/size/create' || $route === 'admin/size/update' || $route === 'admin/size/view')];
         $menuList[] = ['label' => 'Product Rating', 'icon' => 'star', 'url' => ['product-rating/index'], 'visible' => $visible, 'active' => ($route === 'admin/product-rating/index' || $route === 'admin/product-rating/update' || $route === 'admin/product-rating/view')];
         $menuList[] = ['label' => 'Promo Code', 'icon' => 'money', 'url' => ['promo-code/index'], 'visible' => $visible, 'active' => ($route === 'admin/promo-code/index' || $route === 'admin/promo-code/create' || $route === 'admin/promo-code/update' || $route === 'admin/promo-code/view')];
         $menuList[] = ['label' => 'Seller Payments', 'icon' => 'eur', 'url' => ['bridecycle-to-seller-payments/index'], 'visible' => $visible, 'active' => ($route === 'admin/bridecycle-to-seller-payments/index' || $route === 'admin/bridecycle-to-seller-payments/create' || $route === 'admin/bridecycle-to-seller-payments/update' || $route === 'admin/bridecycle-to-seller-payments/view')];
@@ -92,7 +93,7 @@ use app\modules\admin\models\Module;
 
 
 <style>
-    .skin-blue .sidebar-menu>li>a {
+    .skin-blue .sidebar-menu > li > a {
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -101,7 +102,7 @@ use app\modules\admin\models\Module;
         align-items: center;
     }
 
-    .treeview>a {
+    .treeview > a {
         white-space: break-spaces
     }
 

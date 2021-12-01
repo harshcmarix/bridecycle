@@ -313,11 +313,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'toolbar' => [
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-filter"></i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Filter',
-                        'onclick' => "applyFilterAllCustomer()",
-                    ]),
+                        Html::button('<i class="fa fa-filter"></i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Filter',
+                            'onclick' => "applyFilterAllCustomer()",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
@@ -371,7 +371,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
@@ -385,7 +385,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         $('#filter-div').hide();
         "<?php } ?>";
 
-        $('#btn-delete_all').click(function() {
+        $('#btn-delete_all').click(function () {
             var atLeastOneIsChecked = $('input[name="selection[]"]:checked').length > 0;
             if (atLeastOneIsChecked == true) {
                 krajeeDialog.confirm('Are you sure you want to delete this Products?', function (out) {
@@ -542,7 +542,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function() {
+    $('document').ready(function () {
         // $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var input;

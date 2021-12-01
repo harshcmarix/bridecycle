@@ -6,6 +6,7 @@ use app\models\Brand;
 use app\models\Color;
 use app\models\Product;
 use app\models\ProductImage;
+use app\models\ProductSizes;
 use app\models\ProductStatus;
 use app\models\UserAddress;
 use app\models\Notification;
@@ -211,10 +212,30 @@ class ProductController extends ActiveController
             $model->shipping_country_id = (!empty($productData['Product']['shipping_country_id'])) ? $productData['Product']['shipping_country_id'] : "";
             $model->shipping_country_price = (!empty($productData['Product']['shipping_country_price'])) ? $productData['Product']['shipping_country_price'] : "";
 
-            if (!empty($model->option_size)) {
-                $model->option_size = strtolower($model->option_size);
-            }
+//            if (!empty($model->option_size)) {
+//                $model->option_size = strtolower($model->option_size);
+//            }
+
+            $sizeIds = (!empty($productData['Product']['option_size'])) ? $productData['Product']['option_size'] : "";
+            $model->option_size = (!empty($sizeIds)) ? $sizeIds : "";
+
             if ($model->save(false)) {
+
+                // Product Size DB entry start.
+                if (!empty($productData['Product']['option_size'])) {
+                    $productSizes = explode(",", $productData['Product']['option_size']);
+                    if (!empty($productSizes)) {
+                        foreach ($productSizes as $key => $productSizesRow) {
+                            if (!empty($productSizesRow)) {
+                                $modelProductSize = new ProductSizes();
+                                $modelProductSize->product_id = $model->id;
+                                $modelProductSize->size_id = $productSizesRow;
+                                $modelProductSize->save(false);
+                            }
+                        }
+                    }
+                }
+                // Product Size DB entry end.
 
                 // Status of product color/brand status approved START.
                 $isPendingApprovalColor = 0;
@@ -373,6 +394,8 @@ class ProductController extends ActiveController
 
         $model->gender = Product::GENDER_FOR_FEMALE;
 
+        $productSizes = $model->productSizes;
+
         if ($model->load($productData) && $model->validate()) {
             $model->user_id = Yii::$app->user->identity->id;
             if (!empty($postData['option_show_only'])) {
@@ -417,9 +440,12 @@ class ProductController extends ActiveController
                 $model->type = $productData['Product']['type'];
             }
 
-            if (!empty($model->option_size)) {
-                $model->option_size = strtolower($model->option_size);
-            }
+//            if (!empty($model->option_size)) {
+//                $model->option_size = strtolower($model->option_size);
+//            }
+
+            $sizeIds = (!empty($productData['Product']['option_size'])) ? $productData['Product']['option_size'] : '';
+            $model->option_size = (!empty($sizeIds)) ? $sizeIds : "";
 
             if (!empty($productData['Product']['shipping_country_id'])) {
                 $model->shipping_country_id = $productData['Product']['shipping_country_id'];
@@ -429,6 +455,44 @@ class ProductController extends ActiveController
             }
 
             if ($model->save(false)) {
+
+                // Updated sizes start
+                if (!empty($productData['Product']['option_size'])) {
+                    $arrSizes = explode(",", $productData['Product']['option_size']);
+                    $oldSizeIds = array_column($productSizes, 'size_id');
+                    $newSizeIds = array_values($arrSizes);
+                    $deleteDiffIds = array_diff(array_values($oldSizeIds), array_values($newSizeIds));
+                    $newDiffIds = array_diff(array_values($newSizeIds), array_values($oldSizeIds));
+
+                    if (!empty($deleteDiffIds)) {
+                        $modelOldEnteries = ProductSizes::find()->where(['in', 'size_id', $deleteDiffIds])->andWhere(['product_id' => $model->id])->all();
+                        if (!empty($modelOldEnteries)) {
+                            foreach ($modelOldEnteries as $keys => $modelOldEnteriesRow) {
+                                if (!empty($modelOldEnteriesRow) && $modelOldEnteriesRow instanceof ProductSizes) {
+                                    $modelOldEnteriesRow->delete();
+                                }
+                            }
+                        }
+                    }
+                    if (!empty($newDiffIds)) {
+                        foreach ($newDiffIds as $keyNew => $newDiffIdsRow) {
+                            $modelOldEntery = new ProductSizes();
+                            $modelOldEntery->product_id = $model->id;
+                            $modelOldEntery->size_id = $newDiffIdsRow;
+                            $modelOldEntery->save(false);
+                        }
+                    }
+                } elseif ((isset($productData['Product']['option_size']) && $productData['Product']['option_size'] == "") || isNull($productData['Product']['option_size'])) {
+                    $modelOldEnteries = ProductSizes::find()->andWhere(['product_id' => $model->id])->all();
+                    if (!empty($modelOldEnteries)) {
+                        foreach ($modelOldEnteries as $keys => $modelOldEnteriesRow) {
+                            if (!empty($modelOldEnteriesRow) && $modelOldEnteriesRow instanceof ProductSizes) {
+                                $modelOldEnteriesRow->delete();
+                            }
+                        }
+                    }
+                }
+                // Updated sizes end
 
 
                 // Status of product if color/brand status approved START.

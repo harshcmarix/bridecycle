@@ -22,7 +22,8 @@ use Yii;
  * @property float|null $tax
  * @property float $shipping_cost
  * @property string|null $color
- * @property int|null $size
+ * @property int|null $size_id
+ * @property string|null $size
  * @property int|null $is_checkout
  * @property string|null $created_at
  * @property string|null $updated_at
@@ -64,15 +65,16 @@ class CartItem extends \yii\db\ActiveRecord
         return [
             //[['user_id', 'product_id', 'quantity', 'price'], 'required'],
             [['user_id', 'product_id', 'quantity', 'shipping_cost'], 'required'],
-            [['user_id', 'product_id', 'quantity', 'seller_id'], 'integer'],
-            [['shipping_cost', 'price','tax'], 'number'],
+            [['user_id', 'product_id', 'quantity', 'seller_id', 'size_id'], 'integer'],
+            [['shipping_cost', 'price', 'tax'], 'number'],
             [['size', 'is_checkout', 'created_at', 'updated_at'], 'safe'],
             [['product_name', 'category_name', 'subcategory_name'], 'safe'],
             [['color'], 'string', 'max' => 100],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['seller_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['seller_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['color'], 'exist', 'skipOnError' => true, 'targetClass' => Color::className(), 'targetAttribute' => ['color' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['seller_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['seller_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['color'], 'exist', 'skipOnError' => true, 'targetClass' => Color::class, 'targetAttribute' => ['color' => 'id']],
+            [['size_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Sizes::class, 'targetAttribute' => ['size_id' => 'id']],
         ];
     }
 

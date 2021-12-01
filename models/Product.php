@@ -47,6 +47,7 @@ use app\modules\api\v2\models\User;
  * @property ProductRating[] $productRatings
  * @property ProductImage[] $productImages
  * @property ProductImage[] $productImages0
+ * @property ProductSizes[] $ProductSizes
  * @property Brand $brand
  * @property Brand $brand0
  * @property Color $color
@@ -55,6 +56,7 @@ use app\modules\api\v2\models\User;
  * @property SubCategory $subCategory
  * @property UserAddress $address
  * @property ProductReceipt $productReceipt
+ * @property ProductReceipt $productReceipt0
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -176,7 +178,7 @@ class Product extends \yii\db\ActiveRecord
             [['option_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
             [['number', 'other_info', 'created_at', 'updated_at', 'is_saved_search_notification_sent'], 'safe'],
-            [['name', 'option_size'], 'string', 'max' => 50],
+            [['name'], 'string', 'max' => 50], //'option_size'
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
             [['is_receipt', 'is_admin_favourite'], 'safe'],
@@ -275,7 +277,8 @@ class Product extends \yii\db\ActiveRecord
             'productReceipt0' => 'productReceipt0',
             'shippingCountry0' => 'shippingCountry0',
             'productTracking' => 'productTracking',
-            'productTrackingChild' => 'productTrackingChild'
+            'productTrackingChild' => 'productTrackingChild',
+            'productSizes0' => 'productSizes0'
         ];
     }
 
@@ -417,6 +420,37 @@ class Product extends \yii\db\ActiveRecord
     public function getShippingCost()
     {
         return $this->hasMany(ShippingPrice::className(), ['product_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[FavouriteProducts]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductSizes()
+    {
+        return $this->hasMany(ProductSizes::className(), ['product_id' => 'id']);
+    }
+
+
+    /**
+     * Uses for admin panel view pages
+     *
+     * @return string
+     */
+    public function getProductSizeString()
+    {
+        $modelsQry = ProductSizes::find();
+        $modelsQry->leftJoin('sizes', 'sizes.id=product_sizes.size_id');
+        $modelsQry->where(['product_id' => $this->id]);
+        $preResult = $modelsQry->select('sizes.size')->asArray()->all();
+
+        $result = "";
+        if (!empty($preResult)) {
+            $preResult = array_column($preResult, 'size');
+            $result = implode(", ", $preResult);
+        }
+        return $result;
     }
 
     ///////////////////////For api use only /////////////////////////////////////////////
@@ -675,5 +709,24 @@ class Product extends \yii\db\ActiveRecord
 
         $modelProductTracking = ProductTracking::find()->where(['id' => $this->product_tracking_id])->orWhere(['parent_id' => $this->product_tracking_id])->orderBy(['id' => SORT_ASC])->all();
         return $modelProductTracking;
+    }
+
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    public function getProductSizes0()
+    {
+        //return $this->hasMany(ProductSizes::className(), ['product_id' => 'id']);
+
+        $ProductSizes = ProductSizes::find()->where(['product_id' => $this->id])->all();
+        $data = [];
+        if (!empty($ProductSizes)) {
+            foreach ($ProductSizes as $key => $ProductSizesRow) {
+                $result['size'] = $ProductSizesRow->size->toArray();
+                $data[] = array_merge($ProductSizesRow->toArray(), $result);
+            }
+            $ProductSizes = $data;
+        }
+        return $ProductSizes;
     }
 }

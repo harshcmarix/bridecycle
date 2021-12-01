@@ -1,15 +1,15 @@
 <?php
 
-namespace app\models\search;
+namespace app\modules\admin\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Color;
+use app\models\ProductSizes;
 
 /**
- * ColorSearch represents the model behind the search form of `app\models\Color`.
+ * ProductSizesSearch represents the model behind the search form of `app\models\ProductSizes`.
  */
-class ColorSearch extends Color
+class ProductSizesSearch extends ProductSizes
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class ColorSearch extends Color
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name', 'code', 'created_at', 'updated_at','status'], 'safe'],
+            [['id', 'product_id', 'size_id'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class ColorSearch extends Color
      */
     public function search($params)
     {
-        $query = Color::find();
+        $query = ProductSizes::find();
 
         // add conditions that should always apply here
 
@@ -60,13 +60,11 @@ class ColorSearch extends Color
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'status' => $this->status,
+            'product_id' => $this->product_id,
+            'size_id' => $this->size_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
-
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'code', $this->code]);
 
         return $dataProvider;
     }

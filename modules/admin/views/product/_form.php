@@ -96,7 +96,19 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?= $form->field($model, 'width')->textInput() ?>
                 </div>
                 <div class="col col-md-4">
-                    <?= $form->field($model, 'option_size')->textInput(['maxlength' => true]) ?>
+                    <?php if (Yii::$app->controller->action->id == 'update') { //
+                        $sizeIds = explode(",", $model->option_size);
+                        $model->option_size = $sizeIds;
+
+                    } ?>
+                    <?= $form->field($model, 'option_size')->widget(Select2::class, [
+                        'data' => $size,
+                        'options' => ['placeholder' => 'Select Size'],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            'multiple' => true
+                        ],
+                    ]); ?>
                 </div>
                 <div class="col col-md-2">
                     <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
@@ -421,6 +433,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 success: function (response) {
                     if (response.success) {
                         $('#product-sub_category_id').html(response.dataList);
+                        $('#product-option_size').html(response.dataSizeList);
                     }
                 }
             })

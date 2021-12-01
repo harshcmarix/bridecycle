@@ -44,12 +44,12 @@ $this->params['breadcrumbs'][] = 'View Product';
                         'attribute' => 'user_id',
                         'label' => 'Seller',
                         'value' => function ($model) {
-                            if(!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\api\v2\models\User) {
+                            if (!empty($model) && !empty($model->user) && $model->user instanceof \app\modules\api\v2\models\User) {
                                 $sellerName = Html::a($model->user->first_name . " " . $model->user->last_name, \yii\helpers\Url::to(['user/view?id=' . $model->user->id . "&pageId=" . $model->id]), ['class' => '']);
-                            }else{
-                                $sellerName =  '';
+                            } else {
+                                $sellerName = '';
                             }
-                             
+
                             return $sellerName;
 
                         },
@@ -79,7 +79,16 @@ $this->params['breadcrumbs'][] = 'View Product';
                             return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
                         },
                     ],
-                    'option_size',
+                    [
+                        'attribute' => 'option_size',
+                        'value' => function ($model) {
+                            $result = "";
+                            if (!empty($model) && $model instanceof Product) {
+                                $result = $model->getProductSizeString();
+                            }
+                            return $result;
+                        }
+                    ],
                     [
                         'attribute' => 'option_price',
                         'label' => 'Tax',
@@ -158,7 +167,7 @@ $this->params['breadcrumbs'][] = 'View Product';
                                 if (!empty($modelColors)) {
                                     foreach ($modelColors as $key => $modelColor) {
                                         if (!empty($modelColor) && $modelColor instanceof Color) {
-                                            if ($key < count($modelColors)-1) {
+                                            if ($key < count($modelColors) - 1) {
                                                 $color .= $modelColor->name . ",";
                                             } else {
                                                 $color .= $modelColor->name;
@@ -199,7 +208,7 @@ $this->params['breadcrumbs'][] = 'View Product';
                         'filter' => false,
                         'attribute' => 'receipt',
                         'value' => function ($model) {
-                            $receiptImages = array_column($model->productReceipt,'file');
+                            $receiptImages = array_column($model->productReceipt, 'file');
                             $data = "";
                             $image_path = "";
                             if (!empty($receiptImages)) {
