@@ -139,7 +139,7 @@ class SizeController extends Controller
         $modelsProductSize = $model->productSizes;
 
         if (!empty($model) && !empty($modelsProductSize) && count($modelsProductSize) > 0) {
-            Yii::$app->session->setFlash(Growl::TYPE_INFO, count($modelsProductSize) . " product(s) are using this size, So you can not delete this size!");
+            Yii::$app->session->setFlash(Growl::TYPE_INFO, count($modelsProductSize) . " Product(s) are using this size, So you can not delete this size!");
         } elseif (!empty($model) && empty($modelsProductSize) && count($modelsProductSize) <= 0) {
             $model->delete();
             Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Size deleted successfully.");
