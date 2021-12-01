@@ -53,6 +53,7 @@ use kartik\select2\Select2;
             <!--    --><?php //echo $form->field($model, 'updated_at')->textInput() ?>
 
             <div class="form-group">
+                <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             </div>
 
