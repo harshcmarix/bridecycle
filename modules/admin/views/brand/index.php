@@ -100,10 +100,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'options' => ['prompt' => ''],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'width' => '70%'
+                            //'width' => '70%'
                         ],
                     ],
                     'header' => '',
+                    'width' => '20%',
                     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 // [
@@ -139,7 +140,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             $isBrandOfTheWeek = 'Yes';
                         }
                         return $isBrandOfTheWeek;
-                    }
+                    },
+                    'width' => '5%',
 
                 ],
                 // [
@@ -166,29 +168,29 @@ $this->params['breadcrumbs'][] = $this->title;
             'toolbar' => [
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-filter"></i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Filter',
-                        'onclick' => "applyFilterAllCustomer()",
-                    ]),
+                        Html::button('<i class="fa fa-filter"></i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Filter',
+                            'onclick' => "applyFilterAllCustomer()",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-plus-circle"> Add Brand</i>', [
-                        'class' => 'btn btn-success',
-                        'title' => \Yii::t('kvgrid', 'Add Brand'),
-                        'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/create']) . "';",
-                    ]),
+                        Html::button('<i class="fa fa-plus-circle"> Add Brand</i>', [
+                            'class' => 'btn btn-success',
+                            'title' => \Yii::t('kvgrid', 'Add Brand'),
+                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/brand/create']) . "';",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 [
                     'content' =>
-                    Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                        'class' => 'btn btn-basic',
-                        'title' => 'Reset Filter',
-                        'onclick' => "window.location.href = '" . Url::to(['brand/index']) . "';",
-                    ]),
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . Url::to(['brand/index']) . "';",
+                        ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
                 '{toggleData}',
@@ -210,13 +212,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'itemLabelPlural' => 'Brands'
         ]);
         ?>
+
     </div>
 </div>
 <script type="text/javascript">
-    $(document).on('change', '.is-top-brand', function() {
+    $(document).on('change', '.is-top-brand', function () {
         var id = $(this).attr('data-key');
         if ($(this).is(':checked')) {
-            krajeeDialog.confirm('Are you sure you want to add this brand to top brand?', function(out) {
+            krajeeDialog.confirm('Are you sure you want to add this brand to top brand?', function (out) {
                 if (out) {
                     var is_top_brand = '1';
                     $.ajax({
@@ -228,7 +231,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'id': id,
                             'is_top_brand': is_top_brand
                         },
-                        success: function(response) {
+                        success: function (response) {
                             location.reload(true);
                         }
                     });
@@ -238,7 +241,7 @@ $this->params['breadcrumbs'][] = $this->title;
             });
 
         } else {
-            krajeeDialog.confirm('Are you sure you want to remove this brand from top brand?', function(out) {
+            krajeeDialog.confirm('Are you sure you want to remove this brand from top brand?', function (out) {
                 if (out) {
                     var is_top_brand = '0';
                     $.ajax({
@@ -250,7 +253,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'id': id,
                             'is_top_brand': is_top_brand
                         },
-                        success: function(response) {
+                        success: function (response) {
                             location.reload(true);
                         }
                     });
@@ -273,7 +276,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function() {
+    $('document').ready(function () {
         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
 
         var filterDiv = $('.range-value');
@@ -291,21 +294,21 @@ $this->params['breadcrumbs'][] = $this->title;
         var filter_selector = '#brand-grid-filters input';
         var isInput = true;
 
-        $('select').on('change', function() {
+        $('select').on('change', function () {
             isInput = false;
         });
 
-        $('input').on('keypress', function() {
+        $('input').on('keypress', function () {
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#brand-grid", function(event) {
+        $("body").on('beforeFilter', "#brand-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#brand-grid", function(event) {
+        $("body").on('afterFilter', "#brand-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
@@ -313,7 +316,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-            .on('keyup', filter_selector, function(e) {
+            .on('keyup', filter_selector, function (e) {
                 input = $(this).attr('name');
                 var keyCode = e.keyCode ? e.keyCode : e.which;
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
@@ -323,7 +326,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             })
-            .on('pjax:success', function() {
+            .on('pjax:success', function () {
                 if (isInput) {
                     var i = $("[name='" + input + "']");
                     var val = i.val();
@@ -339,8 +342,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
                     }
 
-                    $('.pagination').find('li a').on('click', function() {
-                        setTimeout(function() {
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
                     })
@@ -353,18 +356,18 @@ $this->params['breadcrumbs'][] = $this->title;
         var select_filter_selector = '#brand-grid-filters select';
         var isSelect = true;
 
-        $('select').on('change', function() {
+        $('select').on('change', function () {
             isSelect = true;
         });
-        $('input').on('keypress', function() {
+        $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#brand-grid", function(event) {
+        $("body").on('beforeFilter', "#brand-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#brand-grid", function(event) {
+        $("body").on('afterFilter', "#brand-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -372,14 +375,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
-            .on('change', select_filter_selector, function(e) {
+            .on('change', select_filter_selector, function (e) {
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
                     $("#brand-grid").yiiGridView("applyFilter");
                 }
             })
-            .on('pjax:success', function() {
+            .on('pjax:success', function () {
                 window.location.reload();
                 var i = $("[name='" + input + "']");
                 var val = i.val();
@@ -396,8 +399,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
                     }
 
-                    $('.pagination').find('li a').on('click', function() {
-                        setTimeout(function() {
+                    $('.pagination').find('li a').on('click', function () {
+                        setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
                     })
@@ -405,8 +408,8 @@ $this->params['breadcrumbs'][] = $this->title;
             });
     });
 
-    $('.pagination').find('li a').on('click', function() {
-        setTimeout(function() {
+    $('.pagination').find('li a').on('click', function () {
+        setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     })
