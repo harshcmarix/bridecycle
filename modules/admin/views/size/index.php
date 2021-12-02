@@ -60,33 +60,34 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'header' => 'Category',
                     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                    'width' => '24%'
+                    'width' => '36%'
                 ],
-                [
-                    'attribute' => 'status',
-                    'value' => function ($model) {
-                        $status = $model->arrStatus['0'];
-                        if ($model instanceof Sizes && $model->status == Sizes::STATUS_ACTIVE) {
-                            $status = $model->arrStatus[$model->status];
-                        }
-                        return $status;
-                    },
-                    'filter' => $searchModel->arrStatus,
-                    'filterType' => GridView::FILTER_SELECT2,
-                    'filterWidgetOptions' => [
-                        'options' => ['prompt' => 'Select'],
-                        'pluginOptions' => [
-                            'allowClear' => true,
-                            // 'width'=>'20px'
-                        ],
-                    ],
-                    //'width' => '10%',
-                    'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                ],
+//                [
+//                    'attribute' => 'status',
+//                    'value' => function ($model) {
+//                        $status = $model->arrStatus['0'];
+//                        if ($model instanceof Sizes && $model->status == Sizes::STATUS_ACTIVE) {
+//                            $status = $model->arrStatus[$model->status];
+//                        }
+//                        return $status;
+//                    },
+//                    'filter' => $searchModel->arrStatus,
+//                    'filterType' => GridView::FILTER_SELECT2,
+//                    'filterWidgetOptions' => [
+//                        'options' => ['prompt' => 'Select'],
+//                        'pluginOptions' => [
+//                            'allowClear' => true,
+//                            // 'width'=>'20px'
+//                        ],
+//                    ],
+//                    //'width' => '10%',
+//                    'header' => '',
+//                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
+//                ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
-                    'width' => '12%'
+                    'width' => '24%',
+                    'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
             ],
 

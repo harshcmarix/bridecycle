@@ -8,11 +8,13 @@ use app\models\Product;
 use app\models\ProductImage;
 use app\models\ProductSizes;
 use app\models\ProductStatus;
+use app\models\Sizes;
 use app\models\UserAddress;
 use app\models\Notification;
 use app\models\ProductReceipt;
 use app\models\SearchHistory;
 use app\models\ShippingPrice;
+use app\modules\admin\models\search\SizesSearch;
 use app\modules\api\v2\models\User;
 use Yii;
 use yii\filters\auth\HttpBasicAuth;
@@ -55,6 +57,7 @@ class ProductController extends ActiveController
             'delete-product-receipt' => ['POST', 'DELETE'],
             'delete' => ['POST', 'DELETE'],
             'add-product-receipt' => ['POST', 'OPTIONS'],
+            'size-list' => ['GET', 'HEAD', 'OPTIONS'],
         ];
     }
 
@@ -66,7 +69,7 @@ class ProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index-list', 'view', 'view-product', 'create', 'update', 'delete', 'add-product-receipt', 'delete-product-receipt'],//'index'
+            'only' => ['index-list', 'view', 'view-product', 'create', 'update', 'delete', 'add-product-receipt', 'delete-product-receipt'],//'index', 'size-list'
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -726,6 +729,24 @@ class ProductController extends ActiveController
         }
 
         $model->delete();
+    }
+
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    public function actionSizeList()
+    {
+//        $models = Sizes::find()->where(['status' => Sizes::STATUS_ACTIVE])->all();
+//        return $models;
+
+        //$model = new $this->searchModelClass;
+        $model = new SizesSearch();
+        $requestParams = Yii::$app->getRequest()->getBodyParams();
+
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }
+        return $model->searchForMobile($requestParams);
     }
 
 }

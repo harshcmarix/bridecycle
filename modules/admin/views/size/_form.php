@@ -19,12 +19,12 @@ use kartik\select2\Select2;
 
             <div class="row">
 
-                <div class="col col-md-4">
+                <div class="col col-md-6">
 
                     <?= $form->field($model, 'size')->textInput(['maxlength' => true]) ?>
                 </div>
 
-                <div class="col col-md-4">
+                <div class="col col-md-6">
                     <?= $form->field($model, 'product_category_id')->widget(Select2::classname(), [
                         'data' => $productCategories,
                         'options' => ['placeholder' => 'Select Category'],
@@ -35,16 +35,16 @@ use kartik\select2\Select2;
                     ]); ?>
                 </div>
 
-                <div class="col col-md-4">
-                    <?= $form->field($model, 'status')->widget(Select2::classname(), [
-                        'data' => $model->arrStatus,
-                        //'options' => ['placeholder' => ''],
-                        'pluginOptions' => [
-                            'allowClear' => true,
-                            'multiple' => false
-                        ],
-                    ]);  ?>
-                </div>
+<!--                <div class="col col-md-4">-->
+<!--                    --><?php //echo $form->field($model, 'status')->widget(Select2::classname(), [
+//                        'data' => $model->arrStatus,
+//                        //'options' => ['placeholder' => ''],
+//                        'pluginOptions' => [
+//                            'allowClear' => true,
+//                            'multiple' => false
+//                        ],
+//                    ]);  ?>
+<!--                </div>-->
 
             </div>
 
