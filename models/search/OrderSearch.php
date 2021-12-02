@@ -17,8 +17,9 @@ class OrderSearch extends Order
     public function rules()
     {
         return [
-            [['id', 'user_id', 'user_address_id', 'total_amount'], 'integer'],
+            [['id', 'user_id', 'user_address_id'], 'integer'],
             [['status', 'created_at', 'updated_at'], 'safe'],
+            [['total_amount'], 'number'],
         ];
     }
 
@@ -62,13 +63,8 @@ class OrderSearch extends Order
             $endDate = date('Y-m-d 23:59:59', strtotime($dates[1]));
 
             $query->andWhere(['between', 'created_at', $startDate, $endDate]);
-        } 
-        // else {
-        //     $startDate = date('Y-m-d 00:00:01', strtotime('-35 days'));
-        //     $endDate = date('Y-m-d 23:59:59');
-        // }
+        }
         
-
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -80,12 +76,13 @@ class OrderSearch extends Order
             'id' => $this->id,
             'user_id' => $this->user_id,
             'user_address_id' => $this->user_address_id,
-            'total_amount' => $this->total_amount,
+            //'total_amount' => $this->total_amount,
             //'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'status', $this->status]);
+        $query->andFilterWhere(['like', 'total_amount', $this->total_amount . "%", false])
+            ->andFilterWhere(['like', 'status', $this->status]);
 
         return $dataProvider;
     }

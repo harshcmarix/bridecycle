@@ -19,9 +19,9 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'number', 'category_id', 'sub_category_id', 'price', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'is_admin_favourite'], 'integer'],
+            [['id', 'number', 'category_id', 'sub_category_id', 'available_quantity', 'brand_id', 'height', 'weight', 'width', 'is_admin_favourite'], 'integer'],
             [['type', 'name', 'option_size', 'option_conditions', 'option_show_only', 'description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned', 'receipt', 'created_at', 'updated_at', 'status_id'], 'safe'],
-            [['option_price'], 'number'],
+            [['price', 'option_price'], 'number'],
         ];
     }
 
@@ -93,9 +93,9 @@ class ProductSearch extends Product
             'number' => $this->number,
             'category_id' => $this->category_id,
             'sub_category_id' => $this->sub_category_id,
-            'price' => $this->price,
-            'option_price' => $this->option_price,
-            'available_quantity' => $this->available_quantity,
+//            'price' => $this->price,
+//            'option_price' => $this->option_price,
+//            'available_quantity' => $this->available_quantity,
             'brand_id' => $this->brand_id,
             'height' => $this->height,
             'weight' => $this->weight,
@@ -115,6 +115,9 @@ class ProductSearch extends Product
             ->andFilterWhere(['like', 'is_top_selling', $this->is_top_selling])
             ->andFilterWhere(['like', 'is_top_trending', $this->is_top_trending])
             ->andFilterWhere(['like', 'gender', $this->gender])
+            ->andFilterWhere(['like', 'price', $this->price . "%", false])
+            ->andFilterWhere(['like', 'option_price', $this->option_price . "%", false])
+            ->andFilterWhere(['like', 'available_quantity', $this->available_quantity . "%", false])
             ->andFilterWhere(['like', 'is_cleaned', $this->is_cleaned]);
         //->andFilterWhere(['like', 'receipt', $this->receipt]);
 

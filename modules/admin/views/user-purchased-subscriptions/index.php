@@ -3,7 +3,8 @@
 use app\models\UserPurchasedSubscriptions;
 use app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
-use yii\helpers\{Html, Url};
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\search\UserPurchasedSubscriptionsSearch */
