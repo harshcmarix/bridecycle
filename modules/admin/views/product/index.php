@@ -543,7 +543,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     }
 
     $('document').ready(function () {
-        // $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+        // $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var input;
         var submit_form = false;

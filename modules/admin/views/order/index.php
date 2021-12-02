@@ -324,7 +324,7 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     $('document').ready(function () {
-        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var filterDiv = $('.range-value');
         filterDiv.next('i').remove();
@@ -385,7 +385,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
 
                 if ($('thead td i').length == 0) {
-                    $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                    $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
                 }
 
                 $('.pagination').find('li a').on('click', function () {

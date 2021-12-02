@@ -138,7 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'filterModel' => $searchModel,
             'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
             'exportConfig' => [
-                GridView::CSV => ['label' => 'Export as CSV', 'filename' => "all_customers_".date('d_m_Y_His')],
+                GridView::CSV => ['label' => 'Export as CSV', 'filename' => "all_customers_" . date('d_m_Y_His')],
 //                GridView::HTML => ['label' => 'Export as HTML', 'filename' => 'File_Name -' . date('d-M-Y')],
 //                GridView::PDF => ['label' => 'Export as PDF', 'filename' => 'File_Name -' . date('d-M-Y')],
 //                GridView::EXCEL => ['label' => 'Export as EXCEL', 'filename' => 'File_Name -' . date('d-M-Y')],
@@ -215,7 +215,7 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     $('document').ready(function () {
-        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var filterDiv = $('.range-value');
         filterDiv.next('i').remove();
@@ -278,7 +278,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
 
                     if ($('thead td i').length == 0) {
-                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
                     }
 
                     $('.pagination').find('li a').on('click', function () {
@@ -334,7 +334,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 if (isSelect) {
                     if ($('thead td i').length == 0) {
-                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
                     }
 
                     $('.pagination').find('li a').on('click', function () {
