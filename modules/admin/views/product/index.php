@@ -373,7 +373,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var filterDiv = $('.range-value');
         filterDiv.next('i').remove();
@@ -595,7 +595,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     }
 
                     if ($('thead td i').length == 0) {
-                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
                     }
 
                     $('.pagination').find('li a').on('click', function () {
@@ -652,7 +652,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
                 if (isSelect) {
                     if ($('thead td i').length == 0) {
-                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
                     }
 
                     $('.pagination').find('li a').on('click', function () {
