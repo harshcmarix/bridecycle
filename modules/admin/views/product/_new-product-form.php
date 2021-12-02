@@ -394,6 +394,36 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 <script type="text/javascript">
     $(document).ready(function () {
 
+        var isProductType = $('#product-type').val();
+
+        if (isProductType == 'u') {
+            $('#product-option_color').select2({
+                width: 523,
+                placeholder: "Select Color",
+                allowClear: true,
+                multiple: false
+            });
+            $('#product-option_size').select2({
+                width: 523,
+                placeholder: "Select Size",
+                allowClear: true,
+                multiple: false
+            });
+        } else {
+            $('#product-option_color').select2({
+                width: 523,
+                placeholder: "Select Color",
+                allowClear: true,
+                multiple: true
+            });
+            $('#product-option_size').select2({
+                width: 523,
+                placeholder: "Select Size",
+                allowClear: true,
+                multiple: true
+            });
+        }
+
         $('#product-option_price, #product-price, .shipping_country_cost_1, .shipping_country_cost_2, .shipping_country_cost_3, .shipping_country_cost_4, .shipping_country_cost_5').keypress(function (event) {
             if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
                 event.preventDefault();
@@ -441,6 +471,38 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
         });
 
+        $('#product-type').change(function () {
+            var productType = $(this).val();
+
+            if (productType == 'u') {
+                $('#product-option_color').select2({
+                    width: 523,
+                    placeholder: "Select Color",
+                    allowClear: true,
+                    multiple: false
+                });
+                $('#product-option_size').select2({
+                    width: 338,
+                    placeholder: "Select Size",
+                    allowClear: true,
+                    multiple: false
+                });
+            } else {
+                $('#product-option_color').select2({
+                    width: 523,
+                    placeholder: "Select Color",
+                    allowClear: true,
+                    multiple: true
+                });
+                $('#product-option_size').select2({
+                    width: 338,
+                    placeholder: "Select Size",
+                    allowClear: true,
+                    multiple: true
+                });
+            }
+        });
+
     });
 
 
@@ -478,4 +540,5 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             "<?php } ?>"
         }
     }
+
 </script>
