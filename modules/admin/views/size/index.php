@@ -112,7 +112,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
-
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],

@@ -39,6 +39,7 @@ class ProductSearch extends Product
             'address' => 'address',
             'favouriteProduct' => 'favouriteProduct',
             'shippingCountry0' => 'shippingCountry0',
+            'productSizes0' => 'productSizes0'
         ];
     }
 
