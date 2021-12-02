@@ -25,11 +25,11 @@ class UserPurchasedSubscriptionsController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'view', 'delete'],
+                'only' => ['index', 'view'], //, 'delete'
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'delete'],
+                        'actions' => ['index', 'view'], //, 'delete'
                         'roles' => ['@'], // Allow only for login user
                     ],
                 ],
@@ -99,17 +99,17 @@ class UserPurchasedSubscriptionsController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id);
-        if ($model->delete()) {
-            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "User subscription deleted successfully.");
-        } else {
-            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting User subscription.");
-        }
-
-        return $this->redirect(['index']);
-    }
+//    public function actionDelete($id)
+//    {
+//        $model = $this->findModel($id);
+//        if ($model->delete()) {
+//            Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "User subscription deleted successfully.");
+//        } else {
+//            Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting User subscription.");
+//        }
+//
+//        return $this->redirect(['index']);
+//    }
 
     /**
      * Finds the UserPurchasedSubscriptions model based on its primary key value.
