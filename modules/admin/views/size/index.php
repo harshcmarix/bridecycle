@@ -143,7 +143,7 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     $('document').ready(function () {
-        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var input;
         var submit_form = false;
@@ -195,14 +195,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
 
                     if ($('thead td i').length == 0) {
-                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
                     }
 
                     $('.pagination').find('li a').on('click', function () {
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
 
@@ -251,14 +251,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 if (isSelect) {
                     if ($('thead td i').length == 0) {
-                        $('input[type=text]').after(`<i class="fa fa-times" onclick="clearFilter(this)"></i>`);
+                        $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
                     }
 
                     $('.pagination').find('li a').on('click', function () {
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
     });
@@ -267,5 +267,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

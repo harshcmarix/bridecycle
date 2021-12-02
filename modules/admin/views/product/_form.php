@@ -263,9 +263,9 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-4">
                     <?= $form->field($model, 'gender')->widget(Select2::classname(), [
                         'data' => $model->arrGender,
-                        'options' => ['placeholder' => 'Select'],
+                        //'options' => ['placeholder' => 'Select'],
                         'pluginOptions' => [
-                            'allowClear' => true
+                            'allowClear' => false
                         ],
                     ]); ?>
                 </div>
@@ -273,7 +273,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?= $form->field($model, 'is_admin_favourite')->widget(Select2::classname(), [
                         'data' => ['0' => 'No', '1' => 'Yes'],
                         'pluginOptions' => [
-                            'allowClear' => true
+                            'allowClear' => false
                         ],
                     ]); ?>
                 </div>
@@ -287,7 +287,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?= $form->field($model, 'type')->widget(Select2::classname(), [
                         'data' => ['n' => 'New', 'u' => 'Used'],
                         'pluginOptions' => [
-                            'allowClear' => true,
+                            'allowClear' => false,
                             'disabled' => $disabledProductType
                         ],
                     ])->label('Conditions'); ?>
@@ -328,7 +328,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?= $form->field($model, 'status_id')->widget(Select2::classname(), [
                         'data' => $status,
                         'pluginOptions' => [
-                            'allowClear' => true,
+                            'allowClear' => false,
                             'disabled' => $disabled
                         ],
                     ]); ?>
