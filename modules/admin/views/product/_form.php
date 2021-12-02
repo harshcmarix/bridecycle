@@ -412,7 +412,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 multiple: false
             });
             $('#product-option_size').select2({
-                width: 523,
+                width: 338,
                 placeholder: "Select Size",
                 allowClear: true,
                 multiple: false
@@ -425,7 +425,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 multiple: true
             });
             $('#product-option_size').select2({
-                width: 523,
+                width: 338,
                 placeholder: "Select Size",
                 allowClear: true,
                 multiple: true
