@@ -29,12 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             return (!empty($model) && $model instanceOf \app\models\Sizes && !empty($model->product_category_id) && !empty($model->productCategory) && $model->productCategory instanceof \app\models\ProductCategory && !empty($model->productCategory->name)) ? $model->productCategory->name : "";
                         }
                     ],
-                    [
-                        'attribute' => 'status',
-                        'value' => function ($model) {
-                            return (!empty($model) && $model instanceOf \app\models\Sizes && !empty($model->status) && $model->status == \app\models\Sizes::STATUS_ACTIVE) ? $model->arrStatus[\app\models\Sizes::STATUS_ACTIVE] : $model->arrStatus[\app\models\Sizes::STATUS_INACTIVE];
-                        }
-                    ],
+//                    [
+//                        'attribute' => 'status',
+//                        'value' => function ($model) {
+//                            return (!empty($model) && $model instanceOf \app\models\Sizes && !empty($model->status) && $model->status == \app\models\Sizes::STATUS_ACTIVE) ? $model->arrStatus[\app\models\Sizes::STATUS_ACTIVE] : $model->arrStatus[\app\models\Sizes::STATUS_INACTIVE];
+//                        }
+//                    ],
                     'created_at',
                     'updated_at',
                 ],
