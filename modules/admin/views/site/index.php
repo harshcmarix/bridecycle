@@ -290,7 +290,7 @@ $this->title = 'Dashboard';
                     $('#orders').on('change', function () {
                         var action = this.value;
                         renderGraph(action);
-                    })
+                    });
 
                     function renderGraph(action) {
                         $.ajax({
@@ -298,7 +298,7 @@ $this->title = 'Dashboard';
                             type: 'get',
                             success: function (data) {
                                 var graphData = JSON.parse(data);
-                                const d = new Date();
+                                var d = new Date();
                                 var chart = Highcharts.chart('ordersGraph', {
                                     chart: {
                                         type: 'column'
@@ -315,7 +315,7 @@ $this->title = 'Dashboard';
                                         }
                                     },
                                     tooltip: {
-                                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                        headerFormat: '<span style="font-size:11px;">{series.name}</span><br>',
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
                                     series: [{
@@ -350,7 +350,7 @@ $this->title = 'Dashboard';
                     $('#income').on('change', function () {
                         var action = this.value;
                         renderIncomeGraph(action);
-                    })
+                    });
 
                     function renderIncomeGraph(action) {
                         $.ajax({
@@ -358,7 +358,7 @@ $this->title = 'Dashboard';
                             type: 'get',
                             success: function (data) {
                                 var incomeGraphData = JSON.parse(data);
-                                const d = new Date();
+                                var d = new Date();
                                 var chart = Highcharts.chart('incomeGraph', {
                                     chart: {
                                         type: 'column'
@@ -375,7 +375,7 @@ $this->title = 'Dashboard';
                                         }
                                     },
                                     tooltip: {
-                                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                        headerFormat: '<span style="font-size:11px;">{series.name}</span><br>',
                                         pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b>'
                                     },
                                     series: [{
