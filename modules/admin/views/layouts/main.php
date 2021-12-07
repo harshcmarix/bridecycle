@@ -52,6 +52,7 @@ if (Yii::$app->controller->action->id === 'login') {
     </head>
     <body class="hold-transition skin-blue sidebar-mini">
     <?php $this->beginBody() ?>
+
     <div class="wrapper">
 
         <?=
@@ -60,13 +61,11 @@ if (Yii::$app->controller->action->id === 'login') {
         )
         ?>
 
-
         <?=
         $this->render(
             '_sidebar.php', ['directoryAsset' => $directoryAsset]
         )
         ?>
-
 
         <?=
         $this->render(
@@ -75,6 +74,7 @@ if (Yii::$app->controller->action->id === 'login') {
         ?>
 
     </div>
+
     <?php $this->endBody() ?>
     <script>
         setTimeout(function () {

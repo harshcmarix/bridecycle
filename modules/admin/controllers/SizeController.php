@@ -87,6 +87,7 @@ class SizeController extends Controller
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating Size.");
             }
+
             return $this->redirect(['index']);
         }
 
@@ -116,6 +117,7 @@ class SizeController extends Controller
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Size.");
             }
+
             return $this->redirect(['index']);
         }
 

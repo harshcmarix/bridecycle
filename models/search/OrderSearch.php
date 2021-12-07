@@ -64,7 +64,7 @@ class OrderSearch extends Order
 
             $query->andWhere(['between', 'created_at', $startDate, $endDate]);
         }
-        
+
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');

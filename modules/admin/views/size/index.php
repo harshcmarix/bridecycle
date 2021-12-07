@@ -11,16 +11,13 @@ use app\models\Sizes;
 
 $this->title = 'Sizes';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
         <?php
-
-        $gridColumns = [
-        ];
-
         echo GridView::widget([
             'id' => 'sizes-grid',
             'dataProvider' => $dataProvider,
@@ -37,8 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $size;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                    'width' => '36%'
+                    'width' => '36%',
                 ],
                 [
                     'attribute' => 'product_category_id',
@@ -55,48 +51,23 @@ $this->params['breadcrumbs'][] = $this->title;
                         'options' => ['prompt' => 'Select'],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            // 'width'=>'20px'
                         ],
                     ],
                     'header' => 'Category',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                    'width' => '36%'
+                    'width' => '36%',
                 ],
-//                [
-//                    'attribute' => 'status',
-//                    'value' => function ($model) {
-//                        $status = $model->arrStatus['0'];
-//                        if ($model instanceof Sizes && $model->status == Sizes::STATUS_ACTIVE) {
-//                            $status = $model->arrStatus[$model->status];
-//                        }
-//                        return $status;
-//                    },
-//                    'filter' => $searchModel->arrStatus,
-//                    'filterType' => GridView::FILTER_SELECT2,
-//                    'filterWidgetOptions' => [
-//                        'options' => ['prompt' => 'Select'],
-//                        'pluginOptions' => [
-//                            'allowClear' => true,
-//                            // 'width'=>'20px'
-//                        ],
-//                    ],
-//                    //'width' => '10%',
-//                    'header' => '',
-//                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-//                ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'width' => '24%',
                     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
             ],
-
-            'pjax' => true, // pjax is set to always true for this demo
+            'pjax' => false, // pjax is set to always true for this demo
             // set your toolbar
             'toolbar' => [
                 [
                     'content' =>
-                        Html::button('<i class="fa fa-plus-circle"> Add Size</i>', [
+                        Html::button('<i class="fa fa-plus-circle"> Add Size </i>', [
                             'class' => 'btn btn-success',
                             'title' => \Yii::t('kvgrid', 'Add Size'),
                             'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/size/create']) . "';",
@@ -115,26 +86,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
             // parameters from the demo form
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => true,
+            'responsive' => false,
+            'bootstrap' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
             'itemLabelSingle' => 'size',
-            'itemLabelPlural' => 'Sizes'
+            'itemLabelPlural' => 'Sizes',
         ]);
         ?>
-
     </div>
 </div>
 
 <script>
+
     function clearFilter(element) {
         element.previousSibling.value = '';
         var e = $.Event('keyup');
@@ -268,4 +239,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

@@ -33,8 +33,8 @@ $config = [
     'components' => [
         'session' => [
             'cookieParams' => [
-                'httpOnly' => true,
-                'secure' => true
+                'httpOnly' => false,
+                'secure' => false
             ]
         ],
         'cookies' => [
