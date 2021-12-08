@@ -4,7 +4,6 @@ namespace app\modules\admin\controllers;
 
 use app\models\Product;
 use app\models\ProductStatus;
-use app\models\User;
 use Yii;
 use app\models\Trial;
 use app\modules\admin\models\search\TrialSearch;
@@ -12,7 +11,6 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * TrialController implements the CRUD actions for Trial model.
@@ -26,7 +24,7 @@ class TrialController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index', 'update', 'delete'],
                 'rules' => [
                     [
@@ -148,7 +146,6 @@ class TrialController extends Controller
         if ($model->save()) {
             $response = ['success' => true];
         }
-
         return json_encode($response);
     }
 }

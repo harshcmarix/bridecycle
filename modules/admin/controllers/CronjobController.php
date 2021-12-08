@@ -33,19 +33,6 @@ class CronjobController extends Controller
          *  rm -r vendor/google/apiclient-services
          *  composer update
          *
-         */
-
-//        $connection = Yii::$app->getDb();
-//        $command = $connection->createCommand("SELECT *
-//        FROM `user_purchased_subscriptions`
-//        WHERE `id` IN (SELECT MAX(`id`) AS `id`
-//             FROM `user_purchased_subscriptions`
-//             WHERE `device_platform` = 'android'
-//             GROUP BY `user_id`)
-//        ORDER BY `created_at` DESC");
-//        $userSubscriptions = $command->queryAll();
-
-        /**
          * Start Actual Execution of cronjob from here.
          *
          *  WHERE `device_platform` = 'android'
@@ -271,7 +258,7 @@ class CronjobController extends Controller
                                             }
 
                                             if (!empty($userROW->email) && $userROW->is_saved_searches_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                                $message = "Product is uploaded as per your saved search";
+                                                $message = "Product is uploaded as per your saved search.";
                                                 if (!empty($userROW->email)) {
                                                     try {
                                                         Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])

@@ -8,7 +8,6 @@ use app\modules\admin\models\search\DressTypeSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * DressTypeController implements the CRUD actions for DressType model.

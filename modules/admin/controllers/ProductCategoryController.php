@@ -7,11 +7,9 @@ use Imagine\Image\Box;
 use Yii;
 use app\models\ProductCategory;
 use app\models\search\ProductCategorySearch;
-use yii\web\{
-    Controller,
-    UploadedFile,
-    NotFoundHttpException
-};
+use yii\web\Controller;
+use yii\web\UploadedFile;
+use yii\web\NotFoundHttpException;
 use yii\imagine\Image;
 use yii\filters\AccessControl;
 use \yii\helpers\Json;
@@ -107,7 +105,6 @@ class ProductCategoryController extends Controller
                 }
 
                 $ext = $img->extension;
-                $fileName = pathinfo($img->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $img->saveAs($uploadDirPath . '/' . $fileName);
@@ -177,7 +174,6 @@ class ProductCategoryController extends Controller
                 }
 
                 $ext = $new_image->extension;
-                $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $new_image->saveAs($uploadDirPath . '/' . $fileName);
@@ -254,7 +250,6 @@ class ProductCategoryController extends Controller
                         }
                     }
                 }
-
             }
 
             Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Category/Subcategory deleted successfully.");

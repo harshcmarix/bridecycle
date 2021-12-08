@@ -6,11 +6,9 @@ use Imagine\Image\Box;
 use Yii;
 use app\models\Banner;
 use app\models\search\BannerSearch;
-use yii\web\{
-    Controller,
-    NotFoundHttpException,
-    UploadedFile
-};
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 use yii\filters\AccessControl;
 use yii\imagine\Image;
 use kartik\growl\Growl;
@@ -97,7 +95,6 @@ class BannerController extends Controller
                 }
 
                 $ext = $banner_image->extension;
-                $fileName = pathinfo($banner_image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $banner_image->saveAs($uploadDirPath . '/' . $fileName);
@@ -162,7 +159,6 @@ class BannerController extends Controller
                 }
 
                 $ext = $new_image->extension;
-                $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $new_image->saveAs($uploadDirPath . '/' . $fileName);

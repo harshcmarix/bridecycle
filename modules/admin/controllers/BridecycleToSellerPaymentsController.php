@@ -10,7 +10,6 @@ use app\modules\admin\models\search\BridecycleToSellerPaymentsSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**

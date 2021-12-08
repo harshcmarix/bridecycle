@@ -3,16 +3,22 @@
 namespace app\modules\admin\controllers;
 
 use app\models\ProductStatus;
-use app\models\{Order, Product};
+use app\models\Order;
+use app\models\Product;
 use app\models\Ads;
 use app\models\Brand;
 use app\models\Tailor;
-use app\modules\admin\models\{ForgotPasswordForm, LoginForm, ResetPasswordForm, User};
+use app\modules\admin\models\ForgotPasswordForm;
+use app\modules\admin\models\LoginForm;
+use app\modules\admin\models\ResetPasswordForm;
+use app\modules\admin\models\User;
 use Yii;
 use yii\base\InvalidParamException;
-use yii\filters\{AccessControl, VerbFilter};
-use yii\web\{BadRequestHttpException, Controller, Response};
-
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
+use yii\web\Controller;
+use yii\web\Response;
 
 /**
  * Class SiteController
@@ -75,35 +81,32 @@ class SiteController extends Controller
 
         $totalShopOwnerCustomer = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->count();
 
-        $totalShopOwnerCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();       
+        $totalShopOwnerCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER, 'is_shop_owner' => '1'])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $totSubAdmin = User::find()->where(['user_type' => User::USER_TYPE_SUB_ADMIN])->count();
 
         $modelTotalCustomerToday = User::find()->where(['user_type' => User::USER_TYPE_NORMAL_USER])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
-        $totalActiveAds = Ads::find()->where(['status' => '2'])->count();
-
         $totalAds = Ads::find()->count();
 
         $totalBrand = Brand::find()->count();
-        
+
         $totalNewBrandToday = Brand::find()->Where(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalProduct = Product::find()->count();
-        
+
         $modelTotalProductPendingApproval = Product::find()->where(['status_id' => ProductStatus::STATUS_PENDING_APPROVAL])->andWhere(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalOrder = Order::find()->count();
-        //p($modelTotalOrder);
+
         $modelTotalOrderLast30Days = Order::find()->where(['between', 'created_at', date('Y-m-d 23:59:59', strtotime('-30 days')), date('Y-m-d 00:00:01')])->count();
         $modelTotalOrderLast7Days = Order::find()->where(['between', 'created_at', date('Y-m-d 23:59:59', strtotime('-7 days')), date('Y-m-d 00:00:01')])->count();
         $modelTotalOrderToday = Order::find()->where(['between', 'created_at', $todayFrom, $todayTo])->count();
 
         $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
-        
-        //$modelTotalOrderPending = Order::find()->where(['status' => Order::STATUS_ORDER_PENDING])->count();
+
         $modelTotalOrderInprogress = Order::find()->where(['status' => Order::STATUS_ORDER_INPROGRESS])->count();
-        
+
         $modelTotalIncome = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
         $totalTailor = Tailor::find()->count();
 
@@ -157,7 +160,6 @@ class SiteController extends Controller
         $minIncome = (!empty($monthWiseIncomes)) ? min($monthWiseIncomes) : 0;
         $maxIncome = (!empty($monthWiseIncomes)) ? max($monthWiseIncomes) : 0;
         $monthWiseIncomes = [(double)$monthWiseIncomes[0], (double)$monthWiseIncomes[1], (double)$monthWiseIncomes[2], (double)$monthWiseIncomes[3], (double)$monthWiseIncomes[4], (double)$monthWiseIncomes[5], (double)$monthWiseIncomes[6], (double)$monthWiseIncomes[7], (double)$monthWiseIncomes[8], (double)$monthWiseIncomes[9], (double)$monthWiseIncomes[10], (double)$monthWiseIncomes[11]];
-
 
         return $this->render('index', [
             'totalCustomer' => $modelTotalCustomer,
@@ -218,7 +220,6 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
-        // return $this->goHome();
         return $this->redirect(['/admin/site/login']);
     }
 
@@ -464,7 +465,6 @@ class SiteController extends Controller
             ];
             array_push($currentMonthIncome, $tmparr);
         }
-
         return json_encode($currentMonthIncome);
     }
 

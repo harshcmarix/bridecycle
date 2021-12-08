@@ -3,7 +3,6 @@
 namespace app\modules\admin\controllers;
 
 use app\models\ProductCategory;
-use app\models\ProductSizes;
 use Yii;
 use app\models\Sizes;
 use app\modules\admin\models\search\SizesSearch;
@@ -146,7 +145,6 @@ class SizeController extends Controller
         } else {
             Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleted Size.");
         }
-
         return $this->redirect(['index']);
     }
 

@@ -169,7 +169,7 @@ class UserController extends Controller
             return \yii\widgets\ActiveForm::validate($model);
         }
 
-        if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
+        if ($model->load(Yii::$app->request->post())) {
 
             $password = $model->password;
             $model->password_hash = password_hash($model->password, PASSWORD_DEFAULT);
@@ -193,7 +193,6 @@ class UserController extends Controller
                 }
 
                 $ext = $profilePicture->extension;
-                $fileName = pathinfo($profilePicture->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $profilePicture->saveAs($uploadDirPath . '/' . $fileName);
@@ -270,7 +269,7 @@ class UserController extends Controller
             return \yii\widgets\ActiveForm::validate($model);
         }
 
-        if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
+        if ($model->load(Yii::$app->request->post())) {
 
             $password = $model->password;
             $model->password_hash = password_hash($model->password, PASSWORD_DEFAULT);
@@ -294,7 +293,6 @@ class UserController extends Controller
                 }
 
                 $ext = $profilePicture->extension;
-                $fileName = pathinfo($profilePicture->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $profilePicture->saveAs($uploadDirPath . '/' . $fileName);
@@ -371,7 +369,7 @@ class UserController extends Controller
             return \yii\widgets\ActiveForm::validate($model);
         }
 
-        if ($model->load(Yii::$app->request->post())) { //&& $model->validate()
+        if ($model->load(Yii::$app->request->post())) {
 
             $password = $model->password;
             $model->password_hash = password_hash($model->password, PASSWORD_DEFAULT);
@@ -395,7 +393,6 @@ class UserController extends Controller
                 }
 
                 $ext = $profilePicture->extension;
-                $fileName = pathinfo($profilePicture->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $profilePicture->saveAs($uploadDirPath . '/' . $fileName);
@@ -500,7 +497,7 @@ class UserController extends Controller
 
         $postData = Yii::$app->request->post('User');
 
-        if ($model->load(Yii::$app->request->post())) { // && $model->save()
+        if ($model->load(Yii::$app->request->post())) {
 
             // Update user status
             if (!empty($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
@@ -627,7 +624,6 @@ class UserController extends Controller
                     \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Customer updated successfully.');
                     return $this->redirect(['index']);
                 }
-
             }
         }
 
@@ -646,7 +642,6 @@ class UserController extends Controller
      */
     public function actionNewCustomerUpdate($id)
     {
-
         $model = $this->findModel($id);
         $modelShopAddress = UserAddress::find()->where(['user_id' => $id, 'type' => UserAddress::TYPE_SHOP])->one();
         $modelShopDetail = $model->shopDetail;
@@ -680,7 +675,7 @@ class UserController extends Controller
 
         $postData = Yii::$app->request->post('User');
 
-        if ($model->load(Yii::$app->request->post())) { // && $model->save()
+        if ($model->load(Yii::$app->request->post())) {
 
             // Update user status
             if (!empty($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {

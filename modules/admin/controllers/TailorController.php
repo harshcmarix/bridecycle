@@ -6,11 +6,9 @@ use Imagine\Image\Box;
 use Yii;
 use app\models\Tailor;
 use app\models\search\TailorSearch;
-use yii\web\{
-    Controller,
-    NotFoundHttpException,
-    UploadedFile
-};
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 use yii\filters\AccessControl;
 use yii\imagine\Image;
 use kartik\growl\Growl;
@@ -103,7 +101,6 @@ class TailorController extends Controller
                 }
 
                 $ext = $shop_image->extension;
-                $fileName = pathinfo($shop_image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $shop_image->saveAs($uploadDirPath . '/' . $fileName);
@@ -132,7 +129,6 @@ class TailorController extends Controller
                 }
 
                 $ext = $shop_image_voucher->extension;
-                $fileName = pathinfo($shop_image_voucher->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $shop_image_voucher->saveAs($uploadDirPath . '/' . $fileName);
@@ -205,7 +201,6 @@ class TailorController extends Controller
                 }
 
                 $ext = $new_image->extension;
-                $fileName = pathinfo($new_image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload tailor shop image
                 $new_image->saveAs($uploadDirPath . '/' . $fileName);
@@ -244,7 +239,6 @@ class TailorController extends Controller
                 }
 
                 $ext = $new_image_voucher->extension;
-                $fileName = pathinfo($new_image_voucher->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload tailor shop image
                 $new_image_voucher->saveAs($uploadDirPath . '/' . $fileName);
@@ -310,7 +304,6 @@ class TailorController extends Controller
         } else {
             Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Tailor.");
         }
-
         return $this->redirect(['index']);
     }
 

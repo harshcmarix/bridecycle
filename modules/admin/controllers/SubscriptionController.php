@@ -129,7 +129,6 @@ class SubscriptionController extends Controller
         } else {
             Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Subscription.");
         }
-
         return $this->redirect(['index']);
     }
 

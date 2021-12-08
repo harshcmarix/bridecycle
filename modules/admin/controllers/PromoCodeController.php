@@ -142,7 +142,6 @@ class PromoCodeController extends Controller
         } else {
             Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting Promo code.");
         }
-
         return $this->redirect(['index']);
     }
 

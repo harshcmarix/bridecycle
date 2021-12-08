@@ -9,11 +9,9 @@ use kartik\growl\Growl;
 use Yii;
 use app\models\Color;
 use app\models\search\ColorSearch;
-use yii\base\BaseObject;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ColorController implements the CRUD actions for Color model.
@@ -194,7 +192,6 @@ class ColorController extends Controller
                     }
                 }
             }
-
 
             \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Color updated successfully.');
             return $this->redirect(['index']);

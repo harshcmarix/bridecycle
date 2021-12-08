@@ -10,7 +10,6 @@ use kartik\growl\Growl;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * OrderController implements the CRUD actions for Order model.
@@ -88,7 +87,6 @@ class OrderController extends Controller
             }else{
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Order.");
             }
-            //return $this->redirect(['view', 'id' => $model->id]);
             return $this->redirect(['index']);
         }
         return $this->render('update', [

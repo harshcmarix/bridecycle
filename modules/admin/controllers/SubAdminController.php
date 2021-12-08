@@ -3,9 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use app\modules\admin\models\{
-    User
-};
+use app\modules\admin\models\User;
 use app\models\SubAdmin;
 use kartik\growl\Growl;
 use yii\web\Controller;
@@ -150,7 +148,6 @@ class SubAdminController extends Controller
         } else {
             Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while deleting sub admin.");
         }
-
         return $this->redirect(['index']);
     }
 

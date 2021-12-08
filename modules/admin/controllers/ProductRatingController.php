@@ -9,7 +9,6 @@ use app\models\search\ProductRatingSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ProductRatingController implements the CRUD actions for ProductRating model.
@@ -24,11 +23,11 @@ class ProductRatingController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'view', 'update', 'delete'],//'create',
+                'only' => ['index', 'view', 'update', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'update', 'delete'],//'create',
+                        'actions' => ['index', 'view', 'update', 'delete'],
                         'roles' => ['@'],
                     ],
                 ],

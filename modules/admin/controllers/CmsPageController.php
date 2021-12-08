@@ -183,7 +183,6 @@ class CmsPageController extends Controller
             }
 
             echo '<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction("' . $funcNum . '", "' . $url . '", "' . $message . '" );</script>';
-
         }
     }
 }

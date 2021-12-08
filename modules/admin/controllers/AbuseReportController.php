@@ -11,7 +11,6 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * AbuseReportController implements the CRUD actions for AbuseReport model.

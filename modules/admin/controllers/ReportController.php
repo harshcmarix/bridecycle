@@ -3,12 +3,10 @@
 
 namespace app\modules\admin\controllers;
 
-
 use app\models\Order;
 use app\models\Product;
 use app\models\ProductStatus;
 use app\modules\api\v1\models\User;
-use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
 use yii\web\Controller;

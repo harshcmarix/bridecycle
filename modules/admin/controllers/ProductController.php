@@ -1257,9 +1257,7 @@ class ProductController extends Controller
                                         }
                                     }
                                 }
-
                             }
-
                         }
                     }
 
@@ -1339,7 +1337,6 @@ class ProductController extends Controller
                     }
                 }
                 // Status of product is Approve then color/brand status approved END.
-
             }
 
             \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'New Product updated successfully.');
@@ -1369,21 +1366,6 @@ class ProductController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-//        if (!empty($model->productImages)) {
-//            foreach ($model->productImages as $key => $imageRow) {
-//                if ($imageRow instanceof ProductImage) {
-//                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
-//                        unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
-//                    }
-//
-//                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
-//                        unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
-//                    }
-//                    $imageRow->delete();
-//                }
-//            }
-//        }
-        //$this->findModel($id)->delete();
         $model->status_id = ProductStatus::STATUS_ARCHIVED;
         $model->save(false);
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Product deleted successfully.');
@@ -1400,21 +1382,6 @@ class ProductController extends Controller
     public function actionNewProductDelete($id)
     {
         $model = $this->findModel($id);
-//        if (!empty($model->productImages)) {
-//            foreach ($model->productImages as $key => $imageRow) {
-//                if ($imageRow instanceof ProductImage) {
-//                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
-//                        unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
-//                    }
-//
-//                    if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
-//                        unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
-//                    }
-//                    $imageRow->delete();
-//                }
-//            }
-//        }
-//        $this->findModel($id)->delete();
         $model->status_id = ProductStatus::STATUS_ARCHIVED;
         $model->save(false);
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'New product deleted successfully.');
@@ -1575,38 +1542,6 @@ class ProductController extends Controller
         if (!empty($models)) {
             foreach ($models as $model) {
                 if (!empty($model) && $model instanceof Product) {
-//                    if (!empty($model->productImages)) {
-//                        foreach ($model->productImages as $key => $imageRow) {
-//                            if ($imageRow instanceof ProductImage) {
-//                                if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name)) {
-//                                    unlink(Yii::getAlias('@productImageRelativePath') . "/" . $imageRow->name);
-//                                }
-//
-//                                if (!empty($imageRow->name) && file_exists(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name)) {
-//                                    unlink(Yii::getAlias('@productImageThumbRelativePath') . "/" . $imageRow->name);
-//                                }
-//                                $imageRow->delete();
-//                            }
-//                        }
-//                    }
-
-//                    if (!empty($model->productReceipt)) {
-//                        foreach ($model->productReceipt as $keys => $dataRow) {
-//                            if (!empty($dataRow) && $dataRow instanceof ProductReceipt) {
-//                                $receiptImagePathRelative = Yii::getAlias('@productReceiptImageRelativePath');
-//                                $receiptThumbImagePathRelative = Yii::getAlias('@productReceiptImageThumbRelativePath');
-//
-//                                if (!empty($dataRow->file) && file_exists($receiptImagePathRelative . "/" . $dataRow->file)) {
-//                                    unlink($receiptImagePathRelative . "/" . $dataRow->file);
-//                                }
-//
-//                                if (!empty($dataRow->file) && file_exists($receiptThumbImagePathRelative . "/" . $dataRow->file)) {
-//                                    unlink($receiptThumbImagePathRelative . "/" . $dataRow->file);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    $model->delete();
                     $model->status_id = ProductStatus::STATUS_ARCHIVED;
                     $model->save(false);
                 }
