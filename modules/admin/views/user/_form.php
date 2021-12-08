@@ -18,7 +18,6 @@ echo Dialog::widget(
         <?php $form = ActiveForm::begin(['enableAjaxValidation' => false, 'options' => ['autocomplete' => 'off']]); ?>
         <div class="users-form">
 
-
             <div class="row">
                 <div class="col col-md-6">
                     <?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?>
@@ -103,16 +102,14 @@ echo Dialog::widget(
                         <div class="col col-md-4">
                             <?= $form->field($model, 'user_status')->widget(\kartik\select2\Select2::classname(), [
                                 'data' => [\app\modules\admin\models\User::USER_STATUS_ACTIVE => 'Active', \app\modules\admin\models\User::USER_STATUS_IN_ACTIVE => 'Inactive'],
-                                // 'lable' => 'Customer Status',
                                 'options' => ['placeholder' => 'Select customer status'],
                                 'pluginOptions' => [
                                     'allowClear' => true
                                 ],
-                                ])->label('Customer Status'); ?>
+                            ])->label('Customer Status'); ?>
                         </div>
                     <?php } ?>
                 <?php } ?>
-
             </div>
 
             <div id="shop-details" class="shop-personal-details">
@@ -198,9 +195,7 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_address_zip_code')->textInput(['type' => 'number'])->label('Shop Address Zip Code <spna class="red">*</span>'); ?>
                     </div>
                 </div>
-
             </div>
-
         </div>
         <div class="form-group ">
             <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
@@ -233,7 +228,6 @@ echo Dialog::widget(
                 $('#shop-details').hide();
             }
         });
-
     });
     //image popup
     $('.shop_logo-delete-link').on('click', function (e) {
@@ -241,16 +235,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.shop-image-class').hide();
                 $('#user-is_shop_logo_empty').val('1');
-                // });
             }
         });
     });
@@ -261,16 +247,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this profile ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.image-class').hide();
                 $('#user-is_profile_picture_empty').val('1');
-                // });
             }
         });
     });

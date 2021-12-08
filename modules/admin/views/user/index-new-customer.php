@@ -17,13 +17,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
         <div class="filter-div " id="filter-div" style="display: none">
-
             <div class="row">
                 <div class="col-md-12">
                     <?= $this->render('_search_new_customer', ['model' => $searchModel]) ?>
                 </div>
             </div>
-
         </div>
 
         <?php
@@ -35,7 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->first_name;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'last_name',
@@ -43,7 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->last_name;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'email',
@@ -51,7 +47,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->email;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'format' => ['raw'],
@@ -78,7 +73,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '50px', 'width' => '50px']);
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [
                 'attribute' => 'mobile',
@@ -86,7 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return (!empty($model) && !empty($model->mobile)) ? $model->mobile : "-";
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'is_newsletter_subscription',
@@ -108,7 +101,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => 'Is Newsletter',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -123,9 +115,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
-//            'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
-//            'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-//            'filterRowOptions' => ['class' => 'kartik-sheet-style'],
 
             'exportConfig' => [
                 GridView::CSV => ['label' => 'Export as CSV', 'filename' => "new_customers_" . date('d_m_Y_His')],
@@ -138,8 +127,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'export' => [
                 'fontAwesome' => true,
                 'showConfirmAlert' => false,
-                //'target'=>GridView::TARGET_BLANK,
-
             ],
             'toolbar' => [
                 [
@@ -176,10 +163,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => true,
+            'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'User',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],

@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 use yii\bootstrap\Modal;
 use app\models\Brand;
@@ -20,9 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box box-default">
     <div class="box-header"></div>
     <div class="box-body">
-
         <div class="brand-view">
-
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
@@ -79,18 +75,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
-                    // [
-                    //     'attribute' => 'is_top_brand',
-                    //     'value' => function ($model) {
-                    //         $is_top_brand = '';
-                    //         if ($model instanceof Brand) {
-                    //             $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
-                    //         }
-                    //         return $is_top_brand;
-                    //     },
-                    //     'header' => '',
-                    //     'headerOptions' => ['class' => 'kartik-sheet-style']
-                    // ],
                 ],
             ]) ?>
             <p>

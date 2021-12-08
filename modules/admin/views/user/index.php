@@ -4,10 +4,8 @@ use app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
 use GridView\ExportMenu;
 use yii\bootstrap\Modal;
-use yii\data\ArrayDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii2tech\csvgrid\CsvGrid;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\search\UserSearch */
@@ -36,7 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->first_name;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'last_name',
@@ -44,7 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->last_name;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'email',
@@ -52,7 +48,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->email;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'format' => ['raw'],
@@ -79,7 +74,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '50px', 'width' => '50px']);
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [
                 'attribute' => 'mobile',
@@ -87,7 +81,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return (!empty($model) && !empty($model->mobile)) ? $model->mobile : "-";
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'is_shop_owner',
@@ -103,7 +96,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'is_newsletter_subscription',
@@ -125,7 +117,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => 'Is Newsletter',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -148,8 +139,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'export' => [
                 'fontAwesome' => true,
                 'showConfirmAlert' => false,
-                //'target'=>GridView::TARGET_BLANK,
-
             ],
             'toolbar' => [
                 [
@@ -186,18 +175,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => true,
+            'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'User',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
             'itemLabelSingle' => 'customer',
             'itemLabelPlural' => 'Customers',
-
         ]);
-
         ?>
     </div>
 </div>
@@ -220,7 +206,6 @@ $this->params['breadcrumbs'][] = $this->title;
         var filterDiv = $('.range-value');
         filterDiv.next('i').remove();
         filterDiv.css("width", "100% !important");
-
 
         "<?php if(!empty($searchModel->created_at)){ ?>";
         $('#filter-div').show();

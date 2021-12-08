@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */

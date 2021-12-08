@@ -46,9 +46,6 @@ use kartik\daterange\DateRangePicker;
     <?php $form = ActiveForm::begin([
         'action' => ['index-new-shop-owner-customer'],
         'method' => 'get',
-        //        'options' => [
-        //            'data-pjax' => 1
-        //        ],
     ]); ?>
     <div class="users-form custom-style">
         <div class="row">
@@ -67,11 +64,7 @@ use kartik\daterange\DateRangePicker;
 
         <div class="form-group form-inline">
             <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-            <!--        --><?php //echo Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) 
-                            ?>
         </div>
     </div>
     <?php ActiveForm::end(); ?>
-
-
 </div>

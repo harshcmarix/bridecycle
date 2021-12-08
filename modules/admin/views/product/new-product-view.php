@@ -12,10 +12,8 @@ use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
 
-//$this->title = $model->name;
 $this->title = 'View New Product';
 $this->params['breadcrumbs'][] = ['label' => 'New Products', 'url' => ['new-product']];
-//$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'View New Product';
 \yii\web\YiiAsset::register($this);
 ?>
@@ -26,21 +24,9 @@ $this->params['breadcrumbs'][] = 'View New Product';
 
         <div class="products-view">
 
-            <!--    <p>-->
-            <!--        --><?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <!--        --><?php //echo Html::a('Delete', ['delete', 'id' => $model->id], [
-            //            'class' => 'btn btn-danger',
-            //            'data' => [
-            //                'confirm' => 'Are you sure you want to delete this item?',
-            //                'method' => 'post',
-            //            ],
-            //        ]) ?>
-            <!--    </p>-->
-
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    //'id',
                     [
                         'format' => ['raw'],
                         'attribute' => 'user_id',
@@ -59,7 +45,6 @@ $this->params['breadcrumbs'][] = 'View New Product';
                         'attribute' => 'name',
                         'label' => 'Product Name',
                     ],
-                    //'number',
                     [
                         'attribute' => 'category_id',
                         'label' => 'Category',
@@ -97,13 +82,6 @@ $this->params['breadcrumbs'][] = 'View New Product';
                             return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
                         },
                     ],
-                    // 'option_conditions',
-                    // [
-                    //     'attribute' => 'option_show_only',
-                    //     'value' => function ($model) {
-                    //         return (!empty($model->option_show_only) && $model->option_show_only == 1) ? "Yes" : "No";
-                    //     },
-                    // ],
                     'description:ntext',
                     [
                         'attribute' => 'images',
@@ -137,18 +115,6 @@ $this->params['breadcrumbs'][] = 'View New Product';
                         },
                     ],
                     'available_quantity',
-                    // [
-                    //     'attribute' => 'is_top_selling',
-                    //     'value' => function ($model) {
-                    //         return (!empty($model->is_top_selling) && $model->is_top_selling == '1') ? "Yes" : "No";
-                    //     },
-                    // ],
-                    // [
-                    //     'attribute' => 'is_top_trending',
-                    //     'value' => function ($model) {
-                    //         return (!empty($model->is_top_trending) && $model->is_top_trending == '1') ? "Yes" : "No";
-                    //     },
-                    // ],
                     [
                         'attribute' => 'brand_id',
                         'value' => function ($model) {
@@ -261,8 +227,6 @@ $this->params['breadcrumbs'][] = 'View New Product';
                             return (!empty($model) && !empty($model->is_admin_favourite) && $model->is_admin_favourite == Product::IS_ADMIN_FAVOURITE_YES) ? 'Yes' : 'No';
                         },
                     ],
-//            'created_at:datetime',
-//            'updated_at:datetime',
                 ],
             ]) ?>
             <p>

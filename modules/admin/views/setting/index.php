@@ -13,10 +13,10 @@ $this->params['breadcrumbs'][] = 'Update';
     <div class="career-index box box-primary">
         <div class="box-body">
 
-
             <?= $this->render('_form', [
                 'model' => $model,
             ]) ?>
+
         </div>
     </div>
 </div>

@@ -1,10 +1,7 @@
 <?php
 
 use app\models\ProductStatus;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\widgets\Pjax;
-use kartik\select2\Select2;
 use \app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
 use yii\helpers\Url;
@@ -18,7 +15,6 @@ use yii\bootstrap\Modal;
 
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
-
 
 $this->registerCssFile("@web/css/toggle-switch.css");
 $this->registerJsFile("@web/js/toggle-switch.js");
@@ -46,7 +42,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return $model->name;
                 },
                 'header' => 'Name',
-                ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 200px']
             ],
             [
                 'format' => 'raw',
@@ -75,7 +70,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
                         $dataImages[] = [
                             'content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
-                            // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
                             'caption' => '<a href="javascript:void(0);" class="product-index_img_view" onclick="' . $contentmodel . '" ><i class="fa fa-eye"></i></a>',
                             'options' => ['interval' => '600',]
                         ];
@@ -91,17 +85,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return $result;
                 },
                 'header' => 'Images',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 100px'],
-
             ],
-            //        [
-            //            'attribute' => 'number',
-            //            'value' => function ($model) {
-            //                return $model->number;
-            //            },
-            //            'header' => '',
-            //            //'headerOptions' => ['class' => 'kartik-sheet-style']
-            //        ],
             [
                 'attribute' => 'category_id',
                 'value' => function ($model) {
@@ -116,7 +100,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => 'Category',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
             ],
             [
                 'attribute' => 'sub_category_id',
@@ -132,7 +115,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => 'Sub Category',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
             ],
             [
                 'attribute' => 'price',
@@ -140,7 +122,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
             ],
 
             [
@@ -149,43 +130,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
                 },
                 'header' => 'Tax',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 70px'],
             ],
-            //            [
-            //                'attribute' => 'option_conditions',
-            //                'value' => function ($model) {
-            //                    if (empty($model->option_conditions)) {
-            //                        return '';
-            //                    }
-            //                    return $model->option_conditions;
-            //                },
-            //                'header' => '',
-            //                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-            //            ],
-            //            [
-            //                'attribute' => 'option_size',
-            //                'value' => function ($model) {
-            //                    return $model->option_size;
-            //                },
-            //                'header' => '',
-            //                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-            //            ],
-            //            [
-            //                'attribute' => 'option_show_only',
-            //                'value' => function ($model) {
-            //                    return ($model->option_show_only == '1') ? "Yes" : "No";
-            //                },
-            //                'filter' => $searchModel->arrOptionIsShowOnly,
-            //                'filterType' => GridView::FILTER_SELECT2,
-            //                'filterWidgetOptions' => [
-            //                    'options' => ['prompt' => 'Select'],
-            //                    'pluginOptions' => [
-            //                        'allowClear' => true,
-            //                    ],
-            //                ],
-            //                'header' => '',
-            //                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-            //            ],
             [
                 'attribute' => 'available_quantity',
                 'value' => function ($model) {
@@ -193,7 +138,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 },
                 'header' => '',
                 'width' => '5%',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'format' => ['raw'],
@@ -210,43 +154,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
-
-            // [
-            //     'format' => ['raw'],
-            //     'attribute' => 'is_top_selling',
-            //     'value' => function ($model) {
-            //         return Html::checkbox("", $model->is_top_selling, ['class' => 'topSelling', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            //     },
-            //     'filter' => $searchModel->arrIsTopSelling,
-            //     'filterType' => GridView::FILTER_SELECT2,
-            //     'filterWidgetOptions' => [
-            //         'options' => ['prompt' => 'Select'],
-            //         'pluginOptions' => [
-            //             'allowClear' => true,
-            //         ],
-            //     ],
-            //     'header' => '',
-            //     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            // ],
-            // [
-            //     'format' => ['raw'],
-            //     'attribute' => 'is_top_trending',
-            //     'value' => function ($model) {
-            //         return Html::checkbox("", $model->is_top_trending, ['class' => 'topTrending', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
-            //     },
-            //     'filter' => $searchModel->arrIsTopTrending,
-            //     'filterType' => GridView::FILTER_SELECT2,
-            //     'filterWidgetOptions' => [
-            //         'options' => ['prompt' => 'Select'],
-            //         'pluginOptions' => [
-            //             'allowClear' => true,
-            //         ],
-            //     ],
-            //     'header' => '',
-            //     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            // ],
             [
                 'attribute' => 'type',
                 'value' => function ($model) {
@@ -267,13 +175,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ],
                 ],
                 'header' => 'Conditions',
-                ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
 
             [
                 'attribute' => 'is_admin_favourite',
                 'header' => 'Admin Favourite',
-                //'headerOptions' => ['style' => 'text-align: center !important'],
                 'value' => function ($model) {
 
                     return (!empty($model->is_admin_favourite) && $model->is_admin_favourite == \app\models\Product::IS_ADMIN_FAVOURITE_YES) ? 'Yes' : "No";
@@ -294,7 +200,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 },
                 'filter' => "",
                 'header' => '',
-                ////'headerOptions' => ['style' => 'text-align: center !important'],
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -306,9 +211,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
-            //        'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
-            //        'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-            //        'filterRowOptions' => ['class' => 'kartik-sheet-style'],
             'pjax' => true, // pjax is set to always true for this demo
             'toolbar' => [
                 [
@@ -344,7 +246,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             'class' => 'btn btn-danger',
                             'title' => 'Multiple Delete',
                             'id' => "btn-delete_all",
-                            //'onclick' => "window.location.href = '" . Url::to(['product/index']) . "';",
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
@@ -357,7 +258,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'responsive' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Product',
             ],
             'emptyTextOptions' => [
                 'class' => 'empty text-center'
@@ -406,7 +306,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             success: function (data) {
                                 if (data.success) {
                                     location.reload(true);
-                                    //$(this).closest('tr').remove(); //or whatever html you use for displaying rows
                                 }
                             }
                         });
@@ -543,7 +442,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     }
 
     $('document').ready(function () {
-        // $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var input;
         var submit_form = false;

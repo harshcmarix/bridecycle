@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use \app\modules\admin\widgets\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use yii\bootstrap\Modal;
 use app\models\ProductRating;
 use app\models\Product;
 
@@ -28,19 +27,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'columns' => [
-                    // [
-                    //     'attribute' => 'id',
-                    //     'value' => function ($model) {
-                    //         $id = '';
-                    //         if ($model instanceof ProductRating) {
-                    //             $id = $model->id;
-                    //         }
-                    //         return $id;
-                    //     },
-                    //     'width' => '8%',
-                    //     'header' => '',
-                    //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                    // ],
                     ['class' => 'kartik\grid\SerialColumn'],
                     [
                         'attribute' => 'product_id',
@@ -60,7 +46,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Product',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 250px']
                     ],
                     [
                         'attribute' => 'user_id',
@@ -82,7 +67,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'User',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 300px']
                     ],
                     [
                         'attribute' => 'rating',
@@ -90,7 +74,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             return (!empty($model->rating)) ? $model->rating : '';
                         },
                         'header' => '',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 100px']
                     ],
                     [
                         'attribute' => 'review',
@@ -99,7 +82,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'header' => '',
                         'format'=>['html'],
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 300px']
                     ],
                     [
                         'attribute' => 'status',
@@ -123,7 +105,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Status',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important; min-width: 150px']
                     ],
                     [
                         'header' => 'Actions',
@@ -145,7 +126,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     '{toggleData}',
                 ],
                 'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
                 // parameters from the demo form
                 'bordered' => true,
                 'striped' => true,
@@ -153,7 +133,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'responsive' => true,
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
-                    //'heading' => 'Product Ratings',
                 ],
                 'persistResize' => false,
                 'toggleDataOptions' => ['minCount' => 10],
@@ -162,7 +141,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ]);
             ?>
         </div>
-
     </div>
 </div>
 
@@ -299,5 +277,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

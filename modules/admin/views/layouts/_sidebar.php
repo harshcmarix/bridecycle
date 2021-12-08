@@ -33,25 +33,20 @@ use app\modules\admin\models\Module;
             $visible = true;
         }
         $route = $this->context->route;
-        //$modelsModule = Module::find()->where(['is_show' => 1])->orderBy(['in_order' => SORT_ASC])->all();
         $menuList[] = ['label' => 'Dashboard', 'icon' => 'home', 'url' => ['site/index'], 'visible' => $visible];
 
-        //$menuList[] = ['label' => 'Customer', 'icon' => 'users', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')];
         $menuList[] = ['label' => 'Customer', 'icon' => 'users', 'items' => [
             ['label' => 'All Customers', 'icon' => 'fas fa-list', 'url' => ['user/index'], 'visible' => $visible, 'active' => ($route === 'admin/user/index' || $route === 'admin/user/create' || $route === 'admin/user/update' || $route === 'admin/user/view')],
             ['label' => "Customer", 'icon' => 'fas fa-user', 'url' => ['user/index-new-customer'], 'visible' => $visible, 'active' => ($route === 'admin/user/index-new-customer' || $route === 'admin/user/new-customer-create' || $route === 'admin/user/new-customer-update' || $route === 'admin/user/new-customer-view')],
             ['label' => "Shop Owner", 'icon' => 'fas fa-user', 'url' => ['user/index-new-shop-owner-customer'], 'visible' => $visible, 'active' => ($route === 'admin/user/index-new-shop-owner-customer' || $route === 'admin/user/new-shop-owner-customer-create' || $route === 'admin/user/new-shop-owner-customer-update' || $route === 'admin/user/new-shop-owner-customer-view')],
         ],];
-
         $menuList[] = ['label' => 'Order', 'icon' => 'cart-arrow-down', 'url' => ['order/index'], 'visible' => $visible, 'active' => ($route === 'admin/order/index' || $route === 'admin/order/update' || $route === 'admin/order/view')];
         $menuList[] = ['label' => 'Sub-Admin', 'icon' => 'users', 'url' => ['sub-admin/index'], 'visible' => false, 'active' => ($route === 'admin/sub-admin/index' || $route === 'admin/sub-admin/create' || $route === 'admin/sub-admin/update' || $route === 'admin/sub-admin/view')];
         $menuList[] = ['label' => 'Ads', 'icon' => 'film', 'url' => ['ads/index'], 'visible' => $visible, 'active' => ($route === 'admin/ads/index' || $route === 'admin/ads/create' || $route === 'admin/ads/update' || $route === 'admin/ads/view')];
-        // $menuList[] = ['label' => 'Brand', 'icon' => 'tag', 'url' => ['brand/index'], 'visible' => $visible, 'active' => ($route === 'admin/brand/index' || $route === 'admin/brand/create' || $route === 'admin/brand/update' || $route === 'admin/brand/view')];
         $menuList[] = ['label' => 'Brands', 'icon' => 'tag', 'items' => [
             ['label' => 'All Brands', 'icon' => 'fas fa-list', 'url' => ['brand/index'], 'visible' => $visible, 'active' => ($route === 'admin/brand/index' || $route === 'admin/brand/create' || $route === 'admin/brand/update' || $route === 'admin/brand/view')],
             ['label' => "New Brands", 'icon' => 'plus-square', 'url' => ['brand/new-brand'], 'visible' => $visible, 'active' => ($route === 'admin/brand/new-brand' || $route === 'admin/brand/new-brand-create' || $route === 'admin/brand/new-brand-update' || $route === 'admin/brand/new-brand-view')],
         ],];
-        //$menuList[] = ['label' => 'Product', 'icon' => 'product-hunt', 'url' => ['product/index'], 'visible' => $visible, 'active' => ($route === 'admin/product/index' || $route === 'admin/product/create' || $route === 'admin/product/update' || $route === 'admin/product/view')];
         $menuList[] = ['label' => 'Products', 'icon' => 'product-hunt', 'items' => [
             ['label' => 'All Products', 'icon' => 'fas fa-list', 'url' => ['product/index'], 'visible' => $visible, 'active' => ($route === 'admin/product/index' || $route === 'admin/product/create' || $route === 'admin/product/update' || $route === 'admin/product/view')],
             ['label' => "New Products", 'icon' => 'plus-square', 'url' => ['product/new-product'], 'visible' => $visible, 'active' => ($route === 'admin/product/new-product' || $route === 'admin/product/new-product-create' || $route === 'admin/product/new-product-update' || $route === 'admin/product/new-product-view')],

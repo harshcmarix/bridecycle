@@ -27,7 +27,6 @@ use yii\widgets\ActiveForm;
 
             <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
                 'data' => $model->arrStatus,
-                //'options' => ['placeholder' => 'Select'],
                 'pluginOptions' => [
                     'allowClear' => true,
                     'disabled' => $disabled
@@ -40,7 +39,6 @@ use yii\widgets\ActiveForm;
             </div>
 
             <?php ActiveForm::end(); ?>
-
         </div>
     </div>
 </div>

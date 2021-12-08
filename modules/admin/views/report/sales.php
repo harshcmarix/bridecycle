@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -40,8 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
                 ?>
                 <h3 class="text-center mt-5"><u><?php echo $reportTitle; ?></u></h3>
-
-
             </div>
         </div>
     </div>
@@ -86,7 +83,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         </table>
                     </div>
                 </div>
-
             </div>
             <div class="col col-md-6">
                 <div class="box box-primary">

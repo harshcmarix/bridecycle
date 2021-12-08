@@ -98,7 +98,6 @@ $this->title = 'Dashboard';
                 </div>
             </div>
         </a>
-
     </div>
 
     <div class="col-md-3 col-xs-6">
@@ -239,34 +238,6 @@ $this->title = 'Dashboard';
             </div>
         </a>
     </div>
-
-    <!-- <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
-            <div class="small-box bg-lime">
-                <div class="inner">
-                    <h3><?php echo $totalOrderLastMonth ?></h3>
-                    <p>Total Order Last 30 Days</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-shopping-cart"></i>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
-            <div class="small-box bg-lime">
-                <div class="inner">
-                    <h3><?php echo $totalOrderLastWeek ?></h3>
-                    <p>Total Order Last 7 Days</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-shopping-cart"></i>
-                </div>
-            </div>
-        </a>
-    </div> -->
 
 </div>
 

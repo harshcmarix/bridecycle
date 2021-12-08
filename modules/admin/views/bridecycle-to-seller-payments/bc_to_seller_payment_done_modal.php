@@ -30,14 +30,6 @@ use yii\widgets\ActiveForm;
                     <?php ActiveForm::end(); ?>
 
                 </div>
-
-                <!--                <form id="" name="" method="post" action="#" enctype="multipart/form-data" autocomplete="off">-->
-                <!--                    <div class="form-group">-->
-                <!--                        <div class="form-control">-->
-                <!---->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </form>-->
             </div>
             <div class="modal-footer">
                 <button type="button" id="btn-bc_to_seller_payment-update-form-cancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

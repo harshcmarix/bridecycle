@@ -23,8 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
-
-                    //'id',
                     [
                         'attribute' => 'user_id',
                         'value' => function ($model) {
@@ -59,21 +57,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Seller',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
                     ],
                     [
                         'format' => 'html',
                         'attribute' => 'content',
                         'header' => '',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
                     ],
                     [
                         'attribute' => 'created_at',
                         'filter' => false,
                         'header' => '',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
                     ],
-                    //'updated_at',
                     [
                         'class' => 'kartik\grid\ActionColumn',
                         'template' => "{view} {delete}"
@@ -83,15 +77,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'pjax' => true, // pjax is set to always true for this demo
                 // set your toolbar
                 'toolbar' => [
-//                    [
-//                        'content' =>
-//                            Html::button('<i class="fa fa-plus-circle"> Add Abuse Report</i>', [
-//                                'class' => 'btn btn-success',
-//                                'title' => \Yii::t('kvgrid', 'Add Abuse Report'),
-//                                'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/abuse-report/create']) . "';",
-//                            ]),
-//                        'options' => ['class' => 'btn-group mr-2']
-//                    ],
                     [
                         'content' =>
                             Html::button('<i class="fa fa-refresh"> Reset </i>', [
@@ -104,7 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     '{toggleData}',
                 ],
                 'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
                 // parameters from the demo form
                 'bordered' => true,
                 'striped' => true,
@@ -112,15 +96,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'responsive' => true,
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
-                    //'heading' => 'Ads',
                 ],
                 'persistResize' => false,
                 'toggleDataOptions' => ['minCount' => 10],
                 'itemLabelSingle' => 'abuse report',
                 'itemLabelPlural' => 'Abuse Reports'
             ]); ?>
-
-
         </div>
     </div>
 </div>

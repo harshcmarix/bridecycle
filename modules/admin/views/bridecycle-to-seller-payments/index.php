@@ -3,7 +3,8 @@
 use app\models\BridecycleToSellerPayments;
 use app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
-use yii\helpers\{Html, Url};
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\search\BridecycleToSellerPaymentsSearch */
@@ -15,9 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
-
         <?php
-
         $gridColumns = [];
         echo GridView::widget([
             'id' => 'bc_to_seller_payments-grid',
@@ -29,12 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format' => ['raw'],
                     'attribute' => 'order_id',
                     'value' => function ($model) {
-
                         $orderLink = Html::a($model->order_id, \yii\helpers\Url::to(['order/view?id=' . $model->order_id . "&pageType=seller"]), ['class' => '']);
                         return $orderLink;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'order_item_id',
@@ -46,7 +43,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $orderItemName;
                     },
                     'header' => 'Order Item',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'format' => ['raw'],
@@ -54,13 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => function ($model) {
                         $seller = '-';
                         if ($model instanceof BridecycleToSellerPayments && !empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User) {
-                            // $seller = $model->seller->first_name . " " . $model->seller->last_name;
                             $seller = Html::a($model->seller->first_name . " " . $model->seller->last_name, \yii\helpers\Url::to(['user/view?id=' . $model->seller->id . "&pageType=seller"]), ['class' => '']);
                         }
                         return $seller;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'format' => ['raw'],
@@ -73,7 +67,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $buyer;
                     },
                     'header' => 'Buyer',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'amount',
@@ -85,7 +78,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $amount;
                     },
                     'header' => 'Total Amount <br> (Product Price <br> + Tax <br> + Shipping)',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'value' => function ($model) {
@@ -96,7 +88,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Yii::$app->formatter->asCurrency($bridecycleAmount);
                     },
                     'header' => 'BrideCycle<br>Earning',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'value' => function ($model) {
@@ -107,7 +98,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Yii::$app->formatter->asCurrency(($model->amount - $bridecycleEarningAmount));
                     },
                     'header' => 'Seller<br>Earning',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'status',
@@ -127,7 +117,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'format' => ['raw'],
@@ -140,11 +129,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $isPaymentDone;
                     },
                     'header' => 'Is Payment Done?',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
-                    //'template' => '{view}   {delete}',
                     'template' => '{view}   ',
                     'width' => '12%'
                 ],
@@ -166,21 +153,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
             // parameters from the demo form
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => true,
-            // 'hover' => $hover,
-            // 'showPageSummary' => $pageSummary,
+            'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Subscriptions',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            //'exportConfig' => $exportConfig,
             'itemLabelSingle' => 'bridecycle to seller payment',
             'itemLabelPlural' => 'bridecycle to seller payments'
         ]);
@@ -367,5 +349,5 @@ $this->params['breadcrumbs'][] = $this->title;
                 return false;
             }
         });
-    })
+    });
 </script>

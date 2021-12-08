@@ -20,12 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'header' => 'Id',
-                //     'width' => '8%',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'attribute' => 'name',
@@ -33,7 +27,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'vAlign' => 'middle',
                     'format' => 'raw',
                     'width' => '65%',
-                    //'headerOptions' => ['style' => 'text-align: center !important']
                 ],
                 [
                     'format' => ['raw'],
@@ -61,32 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'header' => '',
                     'width' => '20%',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-//                [
-//                    'attribute' => 'status',
-//                    'value' => function ($model) {
-//                        $status = "";
-//                        if ($model->status == \app\models\Color::STATUS_PENDING_APPROVAL) {
-//                            $status = "Pending Approval";
-//                        } elseif ($model->status == \app\models\Color::STATUS_APPROVE) {
-//                            $status = "Approved";
-//                        } elseif ($model->status == \app\models\Color::STATUS_DECLINE) {
-//                            $status = "Decline";
-//                        }
-//                        return $status;
-//                    },
-//                    'filter' => '',
-//                    'filterType' => GridView::FILTER_SELECT2,
-//                    'filterWidgetOptions' => [
-//                        'options' => ['prompt' => 'Select'],
-//                        'pluginOptions' => [
-//                            'allowClear' => true,
-//                        ],
-//                    ],
-//                    'header' => 'Status',
-//                    'headerOptions' => ['class' => 'kartik-sheet-style']
-//                ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'template'=>'{view} {delete}',
@@ -97,15 +65,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'pjax' => true, // pjax is set to always true for this demo
             // set your toolbar
             'toolbar' => [
-//                [
-//                    'content' =>
-//                        Html::button('<i class="fa fa-plus-circle"> Add Dress Type</i>', [
-//                            'class' => 'btn btn-success',
-//                            'title' => \Yii::t('kvgrid', 'Add Dress Type'),
-//                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/dress-type/create']) . "';",
-//                        ]),
-//                    'options' => ['class' => 'btn-group mr-2']
-//                ],
                 [
                     'content' =>
                     Html::button('<i class="fa fa-refresh"> Reset </i>', [
@@ -118,7 +77,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
             // parameters from the demo form
             'bordered' => true,
             'striped' => true,
@@ -126,7 +84,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'responsive' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Dress Types',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
@@ -203,5 +160,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

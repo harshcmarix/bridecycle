@@ -4,7 +4,9 @@ use app\models\ProductCategory;
 use app\modules\admin\widgets\GridView;
 use kartik\editable\Editable;
 use yii\bootstrap\Modal;
-use yii\helpers\{ArrayHelper, Html, Url};
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\BrandSearch */
@@ -17,26 +19,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
-
         <?=
         GridView::widget([
             'id' => 'product-category-grid',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'value' => function ($model) {
-                //         $id = '';
-                //         if ($model instanceof ProductCategory) {
-                //             $id = $model->id;
-                //         }
-                //         return $id;
-                //     },
-                //     'width' => '8%',
-                //     'header' => '',
-                //     ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'format' => ['raw'],
@@ -63,7 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $productcategorymodal, 'height' => '50px', 'width' => '50px']);
                     },
                     'header' => '',
-                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'parent_category_id',
@@ -85,22 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-//                [
-//                    'attribute' => 'name',
-//                    'value' => function ($model) {
-//                        $name = '';
-//                        if ((!empty($model->parent_category_id) && !empty($model->parent) && !empty($model->parent->name)) && $model instanceof ProductCategory) {
-//                            $name = $model->parent->name;
-//                        } else {
-//                            $name = $model->name;
-//                        }
-//                        return $name;
-//                    },
-//                    'header' => 'Parent Category Name',
-//                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-//                ],
                 [
                     'attribute' => 'sub_cat_name',
                     'value' => function ($model) {
@@ -111,7 +83,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $name;
                     },
                     'header' => 'Subcategory',
-                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'status',
@@ -136,7 +107,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => 'Status',
-                    ////'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
@@ -171,7 +141,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
             // parameters from the demo form
             'bordered' => true,
             'striped' => true,
@@ -179,7 +148,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Product Categories',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
@@ -261,7 +229,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
 
@@ -326,5 +294,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

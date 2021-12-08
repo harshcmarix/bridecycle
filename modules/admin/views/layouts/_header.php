@@ -17,15 +17,6 @@ use yii\helpers\Html;
         <div class="navbar-custom-menu">
 
             <ul class="nav navbar-nav">
-                <?php //if (Yii::$app->user->identity->isAdmin() || Yii::$app->user->identity->isSuperAdmin()) { ?>
-                <!--                    <li class="dropdown live-users-menu">-->
-                <!--                        <a href="-->
-                <?php //echo Url::to(['admin-user/online-users']); ?><!--" class="dropdown-toggle"-->
-                <!--                           title="Online Users">-->
-                <!--                            <i class="fa fa-users" id="live-users-count" style="color:greenyellow"></i>-->
-                <!--                        </a>-->
-                <!--                    </li>-->
-                <?php //} ?>
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Cilck to View Profile">

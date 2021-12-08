@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use app\models\SubAdmin;
 use yii\widgets\DetailView;
 
@@ -26,8 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'model' => $model,
                 'attributes' => [
 
-                    // 'profile_picture',
-                    // 'first_name',
                     [
                         'attribute' => 'first_name',
                         'value' => function ($model) {
@@ -84,6 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <p>
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
             </p>
+
         </div>
 
     </div>

@@ -25,17 +25,6 @@ $this->params['breadcrumbs'][] = 'View Product';
 
         <div class="products-view">
 
-            <!--    <p>-->
-            <!--        --><?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <!--        --><?php //echo Html::a('Delete', ['delete', 'id' => $model->id], [
-            //            'class' => 'btn btn-danger',
-            //            'data' => [
-            //                'confirm' => 'Are you sure you want to delete this item?',
-            //                'method' => 'post',
-            //            ],
-            //        ]) ?>
-            <!--    </p>-->
-
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
@@ -58,7 +47,6 @@ $this->params['breadcrumbs'][] = 'View Product';
                         'attribute' => 'name',
                         'label' => 'Product Name',
                     ],
-                    //'number',
                     [
                         'attribute' => 'category_id',
                         'label' => 'Category',
@@ -96,13 +84,6 @@ $this->params['breadcrumbs'][] = 'View Product';
                             return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
                         },
                     ],
-                    // 'option_conditions',
-                    // [
-                    //     'attribute' => 'option_show_only',
-                    //     'value' => function ($model) {
-                    //         return (!empty($model->option_show_only) && $model->option_show_only == 1) ? "Yes" : "No";
-                    //     },
-                    // ],
                     'description:ntext',
                     [
                         'attribute' => 'images',
@@ -136,18 +117,6 @@ $this->params['breadcrumbs'][] = 'View Product';
                         },
                     ],
                     'available_quantity',
-                    // [
-                    //     'attribute' => 'is_top_selling',
-                    //     'value' => function ($model) {
-                    //         return (!empty($model->is_top_selling) && $model->is_top_selling == '1') ? "Yes" : "No";
-                    //     },
-                    // ],
-                    // [
-                    //     'attribute' => 'is_top_trending',
-                    //     'value' => function ($model) {
-                    //         return (!empty($model->is_top_trending) && $model->is_top_trending == '1') ? "Yes" : "No";
-                    //     },
-                    // ],
                     [
                         'attribute' => 'brand_id',
                         'value' => function ($model) {
@@ -260,8 +229,6 @@ $this->params['breadcrumbs'][] = 'View Product';
                             return (!empty($model) && !empty($model->is_admin_favourite) && $model->is_admin_favourite == Product::IS_ADMIN_FAVOURITE_YES) ? 'Yes' : 'No';
                         },
                     ],
-//            'created_at:datetime',
-//            'updated_at:datetime',
                 ],
             ]) ?>
             <p>

@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 use app\models\CmsPage;
 
@@ -22,7 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="cms-page-view">
 
-
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
@@ -36,7 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $title;
                         },
                     ],
-                    // 'slug',
                     [
                         'attribute' => 'description',
                         'value' => function ($model) {
@@ -57,6 +53,5 @@ $this->params['breadcrumbs'][] = $this->title;
             </p>
 
         </div>
-
     </div>
 </div>

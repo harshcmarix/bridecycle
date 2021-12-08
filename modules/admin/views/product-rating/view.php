@@ -20,7 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    //  'id',
                     [
                         'attribute' => 'user_id',
                         'label' => 'User',
@@ -58,8 +57,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
-//                    'created_at',
-//                    'updated_at',
                 ],
             ]) ?>
 
@@ -68,6 +65,5 @@ $this->params['breadcrumbs'][] = $this->title;
             </p>
 
         </div>
-
     </div>
 </div>

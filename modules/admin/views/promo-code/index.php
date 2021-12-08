@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use \app\modules\admin\widgets\GridView;
 use app\models\PromoCode;
 
@@ -16,8 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">
     <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
         <?= GridView::widget([
             'id' => 'promo-code-grid',
@@ -36,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '20%',
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'type',
@@ -49,7 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '10%',
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'value',
@@ -62,7 +56,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '10%',
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'start_date',
@@ -75,7 +68,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '10%',
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'end_date',
@@ -88,7 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'width' => '10%',
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'status',
@@ -103,17 +94,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         return $status;
                     },
-//                    'filter' => ArrayHelper::map($parent_category, 'id', 'name'),
-//                    'filterType' => GridView::FILTER_SELECT2,
-//                    'filterWidgetOptions' => [
-//                        'options' => ['prompt' => 'Select'],
-//                        'pluginOptions' => [
-//                            'allowClear' => true,
-//                        ],
-//                    ],
                     'width' => '10%',
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
@@ -144,7 +126,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
             // parameters from the demo form
             'bordered' => true,
             'striped' => true,
@@ -152,7 +133,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Promo Codes',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
@@ -225,5 +205,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

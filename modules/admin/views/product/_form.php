@@ -1,7 +1,5 @@
 <?php
 
-use app\models\Color;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
@@ -142,8 +140,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                 $key = $index + 1;
                                 echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick=\"return false;\" onkeydown=\"return false;\" type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
                             }
-
-
                         }
                     ])->label(false) ?>
 
@@ -209,7 +205,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                         $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                                     }
 
-
                                     Modal::begin([
                                         'id' => 'contentmodalProductImgEdit_' . $imageRow->id,
                                         'header' => '<h4>Product Picture</h4>',
@@ -219,8 +214,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                     echo Html::img($image_path, ['width' => '570']);
 
                                     Modal::end();
-                                    // $contentmodel = "contentmodelProductImgEdit('" . $imageRow->id . "');";
-                                    //                                        $data .= "<a href='javascript:void(0);' class='Product-edit_view-peoduct_picture' onclick='contentmodelProductImgEdit(" . $imageRow->id . ")'><i class='fa fa-eye'></i> </a>" . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => '', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . Html::img($image_path, ['alt' => 'some', 'class' => 'update_product_img', 'height' => '100px', 'width' => '100px']);
                                     $productImageModal = 'contentmodelProductImgEdit("' . $imageRow->id . '")';
                                     $data .= "<div class='product-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productImageModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-image-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
                                 }
@@ -229,41 +222,19 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                 echo \kartik\dialog\Dialog::widget([
                                     'libName' => 'krajeeDialog',
                                     'options' => [
-                                        //'class' => 'admin_delete_record',
-                                        //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
                                     ], // default options
                                 ]);
                             } ?>
                         </div>
                     <?php } ?>
                 </div>
-
             </div>
 
-            <!--            <div class="row">-->
-            <!--                <div class="col col-md-6">-->
-            <!--                    --><?php //echo $form->field($model, 'option_conditions')->textInput(['maxlength' => true]) 
-            ?>
-            <!--                </div>-->
-            <!--                <div class="col col-md-6">-->
-            <!--                    --><?php //echo $form->field($model, 'option_show_only')->widget(Select2::classname(), [
-            //                        'data' => $model->arrOptionIsShowOnly,
-            //                        'options' => ['placeholder' => 'Select'],
-            //                        'pluginOptions' => [
-            //                            'allowClear' => true
-            //                        ],
-            //                    ]);
-            ?>
-            <!--                </div>-->
-            <!--            </div>-->
-
             <div class="row">
-
 
                 <div class="col col-md-4">
                     <?= $form->field($model, 'gender')->widget(Select2::classname(), [
                         'data' => $model->arrGender,
-                        //'options' => ['placeholder' => 'Select'],
                         'pluginOptions' => [
                             'allowClear' => false
                         ],
@@ -293,20 +264,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ])->label('Conditions'); ?>
                 </div>
             </div>
-
-            <!--            <div class="row">-->
-            <!--                <div class="col col-md-6  mr-top">-->
-            <!--                    --><?php //echo $form->field($model, 'is_top_selling')
-            //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_selling'), 'id' => 'product-is_top_selling', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            ?>
-            <!--                </div>-->
-            <!--                <div class="col col-md-6  mr-top">-->
-            <!--                    --><?php //echo $form->field($model, 'is_top_trending')
-            //                        ->checkBox(['label' => $model->getAttributeLabel('is_top_trending'), 'id' => 'product-is_top_trending', 'selected' => false, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No"]);
-            //
-            ?>
-            <!--                </div>-->
-            <!--            </div>-->
 
             <div class="row">
                 <div class="col col-md-6">
@@ -383,8 +340,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     echo \kartik\dialog\Dialog::widget([
                         'libName' => 'krajeeDialog',
                         'options' => [
-                            //'class' => 'admin_delete_record',
-                            //'type' => \kartik\dialog\Dialog::TYPE_DANGER,
                         ], // default options
                     ]);
                 } ?>
@@ -476,7 +431,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             } else {
                 $('.receiptUpload').hide();
             }
-
         });
 
         $('#product-type').change(function () {
@@ -510,7 +464,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 });
             }
         });
-
     });
 
     function contentmodelProductImgEdit(id) {
@@ -522,7 +475,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     }
 
     function shippingCost(obj) {
-
         var previousCheckedDataVal = "";
         if ($("#product-shipping_country_ids").val()) {
             previousCheckedDataVal = $("#product-shipping_country_ids").val()
@@ -562,7 +514,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             errDiv.hide();
             "<?php } ?>"
         }
-        //$("input[name=product-shipping_country_ids]").val(updatedString);
         $("#product-shipping_country_ids").val(updatedString);
     }
 

@@ -26,19 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => 'kartik\grid\SerialColumn'],
-                    // [
-                    //     'attribute' => 'id',
-                    //     'value' => function ($model) {
-                    //         $id = '';
-                    //         if ($model instanceof Ads) {
-                    //             $id = $model->id;
-                    //         }
-                    //         return $id;
-                    //     },
-                    //     'width' => '8%',
-                    //     'header' => '',
-                    //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;'],
-                    // ],
                     [
                         'attribute' => 'title',
                         'value' => function ($model) {
@@ -46,7 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->title;
                         },
                         'header' => '',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 250px']
                     ],
                     [
                         'format' => ['raw'],
@@ -73,7 +59,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $adsmodal, 'height' => '50px', 'width' => '50px']);
                         },
                         'header' => '',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 60px']
                     ],
                     [
                         'attribute' => 'url',
@@ -85,7 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $url;
                         },
                         'header' => '',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 250px']
                     ],
                     [
                         'attribute' => 'product_id',
@@ -105,7 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Product',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
                     ],
                     [
                         'attribute' => 'brand_id',
@@ -125,7 +108,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Brand',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 110px']
                     ],
                     [
                         'attribute' => 'status',
@@ -147,7 +129,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Status',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;']
                     ],
                     [
                         'class' => 'kartik\grid\ActionColumn',
@@ -178,7 +159,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     '{toggleData}',
                 ],
                 'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
                 // parameters from the demo form
                 'bordered' => true,
                 'striped' => true,
@@ -186,7 +166,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'responsive' => true,
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
-                    //'heading' => 'Ads',
                 ],
                 'persistResize' => false,
                 'toggleDataOptions' => ['minCount' => 10],
@@ -195,8 +174,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ]);
             ?>
         </div>
-
-
     </div>
 </div>
 
@@ -337,5 +314,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

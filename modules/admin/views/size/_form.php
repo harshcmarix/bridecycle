@@ -35,22 +35,7 @@ use kartik\select2\Select2;
                     ]); ?>
                 </div>
 
-<!--                <div class="col col-md-4">-->
-<!--                    --><?php //echo $form->field($model, 'status')->widget(Select2::classname(), [
-//                        'data' => $model->arrStatus,
-//                        //'options' => ['placeholder' => ''],
-//                        'pluginOptions' => [
-//                            'allowClear' => true,
-//                            'multiple' => false
-//                        ],
-//                    ]);  ?>
-<!--                </div>-->
-
             </div>
-
-            <!--    --><?php //echo $form->field($model, 'created_at')->textInput() ?>
-            <!---->
-            <!--    --><?php //echo $form->field($model, 'updated_at')->textInput() ?>
 
             <div class="form-group">
                 <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>

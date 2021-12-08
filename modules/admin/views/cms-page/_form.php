@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use dosamigos\ckeditor\CKEditor;
 
@@ -22,12 +20,9 @@ use dosamigos\ckeditor\CKEditor;
 
             <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-            <!-- $form->field($model, 'slug')->textInput(['maxlength' => true])  -->
-
             <?= $form->field($model, 'description')->widget(CKEditor::className(), [
                 'options' => ['rows' => 6],
                 'preset' => 'basic',
-                // 'preset' => 'classic',
                 'clientOptions' => [
                     'filebrowserUploadUrl' => yii\helpers\Url::to(['cms-page/ckeditor-image-upload']),
                 ]
@@ -41,6 +36,5 @@ use dosamigos\ckeditor\CKEditor;
             <?php ActiveForm::end(); ?>
 
         </div>
-
     </div>
 </div>

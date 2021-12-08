@@ -1,10 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    ArrayHelper,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use \app\modules\admin\widgets\GridView;
 
 /* @var $this yii\web\View */
@@ -24,15 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'value' => function ($model) {
-                //         return $model->id;
-                //     },
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
-                //     'width' => '8%'
-                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'attribute' => 'first_name',
@@ -40,7 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->first_name;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'last_name',
@@ -48,7 +35,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->last_name;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'email',
@@ -56,7 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->email;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
@@ -93,7 +78,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Sub Admin',
             ],
             'emptyTextOptions' => [
                 'class' => 'empty text-center'
@@ -169,5 +153,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
 
@@ -46,7 +44,7 @@ use kartik\select2\Select2;
                         ],
                     ]); ?>
                 </div>
-                <!-- $form->field($model, 'status')->dropDownList($subscription_status, ['prompt' => ''])  -->
+
             </div>
 
             <div class="form-group">

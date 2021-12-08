@@ -35,7 +35,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->first_name;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'last_name',
@@ -43,7 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->last_name;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'email',
@@ -51,7 +49,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->email;
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'format' => ['raw'],
@@ -78,7 +75,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '50px', 'width' => '50px']);
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [
                 'attribute' => 'mobile',
@@ -86,7 +82,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return (!empty($model) && !empty($model->mobile)) ? $model->mobile : "-";
                 },
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'is_shop_owner',
@@ -102,7 +97,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => '',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'is_newsletter_subscription',
@@ -124,7 +118,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => 'Is Newsletter',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -139,23 +132,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
-//            'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
-//            'headerRowOptions' => ['class' => 'kartik-sheet-style'],
-//            'filterRowOptions' => ['class' => 'kartik-sheet-style'],
-
             'exportConfig' => [
                 GridView::CSV => ['label' => 'Export as CSV', 'filename' => "new_shop_owner_" . date('d_m_Y_His')],
-//                GridView::HTML => ['label' => 'Export as HTML', 'filename' => 'File_Name -' . date('d-M-Y')],
-//                GridView::PDF => ['label' => 'Export as PDF', 'filename' => 'File_Name -' . date('d-M-Y')],
-//                GridView::EXCEL => ['label' => 'Export as EXCEL', 'filename' => 'File_Name -' . date('d-M-Y')],
-//                GridView::TEXT => ['label' => 'Export as TEXT', 'filename' => 'File_Name -' . date('d-M-Y')],
             ],
             'pjax' => true, // pjax is set to always true for this demo
             'export' => [
                 'fontAwesome' => true,
                 'showConfirmAlert' => false,
-                //'target'=>GridView::TARGET_BLANK,
-
             ],
             'toolbar' => [
                 [
@@ -192,10 +175,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => true,
+            'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'User',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],

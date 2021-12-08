@@ -38,12 +38,9 @@ $this->params['breadcrumbs'][] = 'View Customer';
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    // 'id',
                     'first_name',
                     'last_name',
                     'email:email',
-                    //'password_hash',
-                    //'profile_picture',
                     [
                         'format' => 'raw',
                         'attribute' => 'profile_picture',
@@ -64,14 +61,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
                             return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '100px', 'width' => '100px']);
                         },
                     ],
-                    //'temporary_password',
-                    //'access_token',
-                    //'access_token_expired_at',
-                    //'password_reset_token',
                     'mobile',
-                    //'weight',
-                    //'height',
-                    //'personal_information:ntext',
                     [
                         'attribute' => "user_type",
                         "label" => 'Customer Type',
@@ -182,17 +172,16 @@ $this->params['breadcrumbs'][] = 'View Customer';
                                             <th style='text-align: center; border: 1px solid'>Amount</th>
                                             <th style='text-align: center; border: 1px solid'>Start date</th>                              
                                         </thead>
-                                        <tbody>"; //<th style='text-align: center; border: 1px solid'>Month</th> //<th style='text-align: center; border: 1px solid'>End date</th>
+                                        <tbody>";
                             foreach ($userSubscriptions as $subscription) {
                                 if ($subscription instanceof \app\models\UserPurchasedSubscriptions) {
                                     $subscriptionData = $subscription;
-                                    //$endDate = date('Y-m-d h:m:s', strtotime('+3 months', strtotime($subscriptionData->created_at)));
                                     $html .= "<tr style='border: 1px solid'>
                                                     <td style='text-align: center;border: 1px solid'>$subscriptionData->subscription_type</td>                                                    
                                                     <td style='text-align: center;border: 1px solid'>" . Yii::$app->formatter->asCurrency($subscriptionData->amount) . "</td>
                                                     <td style='text-align: center;border: 1px solid'>$subscriptionData->created_at</td>
                                                    
-                                                </tr>"; // <td style='border: 1px solid'>$subscriptionData->month</td> //  <td style='border: 1px solid'>$endDate</td>
+                                                </tr>";
                                 }
                             }
                             $html .= "</tbody>
@@ -225,11 +214,9 @@ $this->params['breadcrumbs'][] = 'View Customer';
                                 'post_code',
                                 'payment_type',
                                 'paypal_email',
-
                             ],
                         ]) ?>
-
-                    <?php
+                        <?php
                     } else {
                         echo "<center><h5>Bank details not available.</h5></center>";
                     }
@@ -237,7 +224,6 @@ $this->params['breadcrumbs'][] = 'View Customer';
                 </div>
             </div>
             <p>
-
                 <?php
                 if ($pageId == '' && empty(Yii::$app->request->get('f')) && $pageType != 'seller') {
                     echo Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']);
@@ -252,11 +238,9 @@ $this->params['breadcrumbs'][] = 'View Customer';
                         echo Html::a('Back', \yii\helpers\Url::to(['bridecycle-to-seller-payments/index']), ['class' => 'btn btn-default']);
                     }
                 }
-
                 ?>
             </p>
         </div>
-
     </div>
 </div>
 

@@ -1,11 +1,11 @@
 <?php
 
 use yii\helpers\Html;
-
 use \app\modules\admin\widgets\GridView;
 use yii\bootstrap\Modal;
 use app\models\Tailor;
 use yii\helpers\Url;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\TailorSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -16,26 +16,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
         <?= GridView::widget([
             'id' => 'tailor-grid',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-            //  [
-            //     'attribute' => 'id',
-            //     'value' => function ($model) {
-            //         $id = '';
-            //         if ($model instanceof Tailor) {
-            //             $id = $model->id;
-            //         }
-            //         return $id;
-            //     },
-            //     'width' => '8%',
-            //     'header' => '',
-            //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'format' => ['raw'],
@@ -62,7 +47,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $tailorimagemodal, 'height' => '50px', 'width' => '50px']);
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'name',
@@ -74,7 +58,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $name;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'shop_name',
@@ -86,7 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $shop_name;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'mobile',
@@ -98,7 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $mobile;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
@@ -137,7 +118,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'responsive' => false,
         'panel' => [
             'type' => GridView::TYPE_DEFAULT,
-            //'heading' => 'Tailors',
         ],
         'persistResize' => false,
         'toggleDataOptions' => ['minCount' => 10],
@@ -213,5 +193,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

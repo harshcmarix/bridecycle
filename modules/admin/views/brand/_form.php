@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use app\models\Brand;
 use kartik\dialog\Dialog;
@@ -99,12 +97,7 @@ echo Dialog::widget(
                         ],
                     ]); ?>
                 </div>
-                <!-- <div class="col col-md-6">
-                    <?php //echo $form->field($model, 'is_top_brand')->checkBox(['label' => $model->getAttributeLabel('is_top_brand'), 'id' => 'brand-is_top_brand', 'data-toggle' => "toggle", 'data-onstyle' => "primary", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No", 'selected' => false]); ?>
-                        
-                </div> -->
             </div>
-
 
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
@@ -125,16 +118,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function(result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.image-class').hide();
                 $('#brand-is_brand_image_empty').val(image_empty);
-                // });
             }
         });
     });

@@ -18,11 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="ads-view">
 
-
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    //'id',
                     'title',
                     [
                         'format' => ['raw'],
@@ -64,8 +62,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
-//                    'created_at',
-//                    'updated_at',
                 ],
             ]) ?>
             <p>

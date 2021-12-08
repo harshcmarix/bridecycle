@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use app\models\ProductCategory;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -104,7 +102,6 @@ echo Dialog::widget(
                             'disabled' => $disabled
                         ],
                     ]); ?>
-
                 </div>
             </div>
 
@@ -117,7 +114,6 @@ echo Dialog::widget(
             ?>
             <?= $form->field($model, 'is_image_empty')->hiddenInput(['value' => $is_image_empty])->label(false) ?>
 
-
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
@@ -126,7 +122,6 @@ echo Dialog::widget(
             <?php ActiveForm::end(); ?>
 
         </div>
-
     </div>
 </div>
 
@@ -137,16 +132,9 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.image-class').hide();
                 $('#productcategory-is_image_empty').val('1');
-                // });
+
             }
         });
     });

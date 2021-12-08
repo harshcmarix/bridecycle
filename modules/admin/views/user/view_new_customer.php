@@ -3,11 +3,9 @@
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use app\models\ShopDetail;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\User */
-
 
 $this->title = 'View Customer';
 $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index-new-customer']];
@@ -20,19 +18,6 @@ $this->params['breadcrumbs'][] = 'View Customer';
     <div class="box-body">
 
         <div class="users-view">
-
-            <!--    <p>-->
-            <!--        --><?php //echo Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) 
-            ?>
-            <!--        --><?php //echo Html::a('Delete', ['delete', 'id' => $model->id], [
-            //            'class' => 'btn btn-danger',
-            //            'data' => [
-            //                'confirm' => 'Are you sure you want to delete this item?',
-            //                'method' => 'post',
-            //            ],
-            //        ])
-            ?>
-            <!--    </p>-->
 
             <?= DetailView::widget([
                 'model' => $model,
@@ -87,63 +72,6 @@ $this->params['breadcrumbs'][] = 'View Customer';
                             return $userStatus;
                         }
                     ],
-                    //                    [
-                    //                        'attribute' => "is_shop_owner",
-                    //                        'value' => function ($model) {
-                    //                            return ($model->is_shop_owner == 1) ? "Yes" : "No";
-                    //                        }
-                    //                    ],
-                    //                    [
-                    //                        'format' => 'raw',
-                    //                        'attribute' => 'shop_logo',
-                    //                        'visible' => ($model->is_shop_owner == 1) ? true : false,
-                    //                        'value' => function ($data) {
-                    //                            $image_path = "";
-                    //                            $shopDetailId = '';
-                    //                            if (!empty($data->shopDetail) && $data->shopDetail instanceof ShopDetail && !empty($data->shopDetail->shop_logo) && file_exists(Yii::getAlias('@shopLogoRelativePath') . '/' . $data->shopDetail->shop_logo)) {
-                    //                                $image_path = Yii::getAlias('@shopLogoAbsolutePath') . '/' . $data->shopDetail->shop_logo;
-                    //                                $shopDetailId = $data->shopDetail->id;
-                    //                            } else {
-                    //                                $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                    //                                $shopDetailId = $data->id;
-                    //                            }
-                    //                            Modal::begin([
-                    //                                'id' => 'contentmodalShopLogo_' . $shopDetailId,
-                    //                                'header' => '<h3>Shop Logo</h3>',
-                    //                            ]);
-                    //                            echo Html::img($image_path, ['width' => '570']);
-                    //                            Modal::end();
-                    //                            $contentmodelShopLogo = "contentmodalShopLogo('" . $shopDetailId . "');";
-                    //                            return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodelShopLogo, 'height' => '100px', 'width' => '100px']);
-                    //                        },
-                    //                    ],
-                    //                    [
-                    //                        'attribute' => 'shop_name',
-                    //                        'visible' => ($model->is_shop_owner == 1) ? true : false,
-                    //                        'value' => function ($model) {
-                    //                            return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_name)) ? $model->shopDetail->shop_name : "";
-                    //                        }
-                    //                    ],
-                    //                    [
-                    //                        'format' => 'email',
-                    //                        'attribute' => 'shop_email',
-                    //                        'visible' => ($model->is_shop_owner == 1) ? true : false,
-                    //                        'value' => function ($model) {
-                    //                            return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_email)) ? $model->shopDetail->shop_email : "";
-                    //                        }
-                    //                    ],
-                    //                    [
-                    //                        'attribute' => 'shop_phone_number',
-                    //                        'visible' => ($model->is_shop_owner == 1) ? true : false,
-                    //                        'value' => function ($model) {
-                    //                            return (!empty($model->shopDetail) && $model->shopDetail instanceof ShopDetail && !empty($model->shopDetail->shop_phone_number)) ? $model->shopDetail->shop_phone_number : "";
-                    //                        }
-                    //                    ],
-                    //                    [
-                    //                        'label' => 'Shop Address',
-                    //                        'visible' => ($model->is_shop_owner == 1) ? true : false,
-                    //                        'value' => (!empty($shopAddress) && $shopAddress instanceof \app\models\UserAddress && !empty($shopAddress->address)) ? $shopAddress->address : "",
-                    //                    ],
                     [
                         'label' => 'Is Newsletter',
                         'attribute' => "is_newsletter_subscription",
@@ -221,12 +149,10 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     ?>
                 </div>
             </div>
-
             <p>
                 <?= Html::a('Back', \yii\helpers\Url::to(['index-new-customer']), ['class' => 'btn btn-default']) ?>
             </p>
         </div>
-
     </div>
 </div>
 

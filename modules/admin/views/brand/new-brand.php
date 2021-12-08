@@ -3,13 +3,10 @@
 use \app\modules\admin\widgets\GridView;
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-
 use yii\bootstrap\Modal;
 use kartik\editable\Editable;
 use app\models\Brand;
-use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\BrandSearch */
@@ -39,7 +36,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'format' => ['raw'],
@@ -66,7 +62,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $brandmodal, 'height' => '50px', 'width' => '50px']);
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'name',
@@ -78,7 +73,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $name;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'format' => ['raw'],
@@ -100,37 +94,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'options' => ['prompt' => ''],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            //'width' => '70%'
                         ],
                     ],
                     'header' => '',
                     'width' => '20%',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-                // [
-                //     'format' => ['raw'],
-                //     'attribute' => 'is_top_brand',
-                //     'value' => function ($model) {
-                //         $is_top_brand = '';
-                //         if ($model instanceof Brand) {
-                //             // $is_top_brand = Brand::IS_TOP_BRAND_OR_NOT[$model->is_top_brand];
-                //             $is_top_brand = Html::checkbox("", $model->is_top_brand, ['class' => 'is-top-brand', 'data-key' => $model->id, 'data-toggle' => "toggle", 'data-onstyle' => "success", 'data-on' => "Yes", 'data-off' => "No",]);
-                //         }
-                //         return $is_top_brand;
-                //     },
-                //     'filter' => Brand::IS_TOP_BRAND_OR_NOT,
-                //     'filterType' => GridView::FILTER_SELECT2,
-                //     'filterWidgetOptions' => [
-                //         'options' => ['prompt' => ''],
-                //         'pluginOptions' => [
-                //             'allowClear' => true,
-                //             'width' => '70%'
-                //         ],
-                //     ],
-
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 [
                     'header' => 'Brand Of The Week',
                     'value' => function ($data) {
@@ -144,19 +112,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'width' => '5%',
 
                 ],
-                // [
-                //     'attribute' => 'created_at',
-                //     'value' => function ($model) {
-                //         $created_at = '';
-                //         if ($model instanceof Brand) {
-                //             $created_at = $model->created_at;
-                //         }
-                //         return $created_at;
-                //     },
-                //     'filter' => false,
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style']
-                // ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'width' => '12%',
@@ -165,7 +120,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
             ],
-
             'pjax' => true, // pjax is set to always true for this demo
             // set your toolbar
             'toolbar' => [
@@ -199,7 +153,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
             // parameters from the demo form
             'bordered' => true,
             'striped' => true,
@@ -207,7 +160,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Brands',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
@@ -414,7 +366,7 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 
     function applyFilterAllCustomer() {
         $('#filter-div').toggle();

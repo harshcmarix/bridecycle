@@ -18,9 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
         <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
-            <?php // echo $this->render('_search', ['model' => $searchModel]); 
-            ?>
-
             <?php $trial = new Trial(); ?>
 
             <?= GridView::widget([
@@ -35,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->name;
                         },
                         'header' => 'Customer',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'product_id',
@@ -54,9 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'allowClear' => true,
                             ],
                         ],
-
                         'header' => 'Product',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'sender_id',
@@ -69,7 +63,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => '',
                         'header' => 'Sender User',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'receiver_id',
@@ -82,38 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => '',
                         'header' => 'Store',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
-                    //                    [
-                    ////                        'format' => ['raw'],
-                    //                        'attribute' => 'status',
-                    //                        'value' => function ($model) {
-                    //                            if ($model instanceof Trial) {
-                    //                                $trial = new Trial();
-                    //
-                    //                                return Html::dropDownList('status', $model->status, [
-                    //                                    Trial::STATUS_PENDING => $trial->arrTrialStatus[Trial::STATUS_PENDING],
-                    //                                    Trial::STATUS_ACCEPT => $trial->arrTrialStatus[Trial::STATUS_ACCEPT],
-                    //                                    Trial::STATUS_REJECT => $trial->arrTrialStatus[Trial::STATUS_REJECT],
-                    //                                ], ['class' => 'form-control trial-status-control', 'onchange' => 'changeStatus(this)', 'data-key' => $model->id]);
-                    //                            }
-                    //                        },
-                    //                        'format' => ['raw'],
-                    //                        'filter' => [
-                    //                            Trial::STATUS_PENDING => $trial->arrTrialStatus[Trial::STATUS_PENDING],
-                    //                            Trial::STATUS_ACCEPT => $trial->arrTrialStatus[Trial::STATUS_ACCEPT],
-                    //                            Trial::STATUS_REJECT => $trial->arrTrialStatus[Trial::STATUS_REJECT]
-                    //                        ],
-                    //                        'filterType' => GridView::FILTER_SELECT2,
-                    //                        'filterWidgetOptions' => [
-                    //                            'options' => ['prompt' => 'Select'],
-                    //                            'pluginOptions' => [
-                    //                                'allowClear' => true,
-                    //                            ],
-                    //                        ],
-                    //                        'header' => 'Status',
-                    //                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                    //                    ],
                     [
                         'attribute' => 'status',
                         'value' => function ($model) {
@@ -139,7 +101,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Status',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'date',
@@ -148,7 +109,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => '',
                         'header' => 'Trial Date',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'time',
@@ -157,7 +117,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'filter' => '',
                         'header' => 'Trial Time',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
                     [
                         'attribute' => 'timezone_id',
@@ -173,12 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ],
                         'header' => 'Trial Timezone',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                     ],
-                    //                    [
-                    //                        'class' => 'kartik\grid\ActionColumn',
-                    //                        'template' => "{delete}"
-                    //                    ],
                 ],
                 'containerOptions' => ['style' => 'overflow: auto'], // only set when $responsive = false
                 'headerRowOptions' => ['class' => 'kartik-sheet-style'],
@@ -206,7 +160,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'responsive' => false,
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
-                    //'heading' => 'Order',
                 ],
                 'persistResize' => false,
                 'toggleDataOptions' => ['minCount' => 10],
@@ -233,7 +186,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'status': $this.value
                     },
                     success: function (response) {
-                        // location.reload(true);
                     }
                 });
             } else {
@@ -374,5 +326,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

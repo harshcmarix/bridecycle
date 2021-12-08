@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use app\models\Tailor;
 use kartik\dialog\Dialog;
@@ -13,10 +11,13 @@ use kartik\file\FileInput;
 /* @var $this yii\web\View */
 /* @var $model app\models\Tailor */
 /* @var $form yii\widgets\ActiveForm */
+
 echo Dialog::widget(
     ['overrideYiiConfirm' => true]
 );
+
 ?>
+
 <div class="box box-default">
     <div class="box-header"></div>
     <div class="box-body">
@@ -28,7 +29,6 @@ echo Dialog::widget(
                 </div>
                 <div class="col-md-6">
                     <?= $form->field($model, 'shop_name')->textInput(['maxlength' => true]) ?>
-
                 </div>
             </div>
             <div class="row">
@@ -52,7 +52,6 @@ echo Dialog::widget(
                     <?= $form->field($model, 'longitude')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-6">
                     <?= $form->field($model, 'shop_image')->widget(FileInput::classname(), [
@@ -61,7 +60,7 @@ echo Dialog::widget(
                             'showPreview' => false,
                             'showUpload' => false
                         ]
-                    ])->label('Shop Image <spna class="red">*</span>',['class'=>'labelModalFormInline']); ?>
+                    ])->label('Shop Image <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
 
                     <!-- image validation code -->
                     <?php
@@ -83,9 +82,7 @@ echo Dialog::widget(
                             'header' => '<h3>Shop Image</h3>',
                             'size' => Modal::SIZE_DEFAULT
                         ]);
-
                         echo Html::img($image_path, ['width' => '570']);
-
                         Modal::end();
                         $tailorimagemodal = "tailorimagemodal('" . $model->id . "');";
                         ?>
@@ -97,7 +94,6 @@ echo Dialog::widget(
                 </div>
 
                 <div class="col-md-6">
-                    <!-- $form->field($model, 'shop_image')->fileInput(['maxlength' => true])  -->
                     <?= $form->field($model, 'voucher')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'tailor-voucher'],
                         'pluginOptions' => [
@@ -138,17 +134,18 @@ echo Dialog::widget(
                         </div>
                     <?php } ?>
                 </div>
-                
+
             </div>
+
+            <div class="form-group">
+                <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
+                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            </div>
+            <?php ActiveForm::end(); ?>
         </div>
-        <div class="form-group">
-            <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
-            <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-        </div>
-        <?php ActiveForm::end(); ?>
     </div>
 </div>
-</div>
+
 <script>
     //image delete using rejax
     var image_empty = <?php echo Tailor::IMAGE_EMPTY?>;
@@ -158,16 +155,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
-                    $('.image-class').hide();
-                    $('#tailor-is_shop_image_empty').val(image_empty);
-                // });
+                $('.image-class').hide();
+                $('#tailor-is_shop_image_empty').val(image_empty);
             }
         });
     });
@@ -177,23 +166,15 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
-                    $('.image-class-voucher').hide();
-                    $('#tailor-is_voucher_image_empty').val(image_empty);
-                // });
+                $('.image-class-voucher').hide();
+                $('#tailor-is_voucher_image_empty').val(image_empty);
             }
         });
     });
 
     $('#tailor-voucher').on('change', function () {
         $('#tailor-is_voucher_image_empty').val(image_not_empty);
-    })
+    });
 
     //image popup
     function tailorimagemodal(id) {

@@ -12,7 +12,6 @@ use Mpdf\Tag\Em;
 /* @var $searchModel app\models\search\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-//$this->title = $model->id;
 $this->title = 'View Order Detail';
 if ($pageType == '') {
     $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
@@ -43,7 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h4><?= Html::encode('Order Status: ') ?><strong><?php echo $status ?></strong></h4>
                 </div>
             </div>
-
 
             <div class="col col-md-6 text-right">
                 <div class="form-group">
@@ -103,9 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $brideEarningAmount = ($orderItem->getBrideEarning($orderItem->product->price));
 
                                 } else {
-
                                     $brideEarningAmount = ($orderItem->getBrideEarning($orderItem->price));
-
                                 }
                             }
                         }
@@ -141,7 +137,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     </h4>
                 </div>
             </div>
-
         </div>
     </div>
     <div class="box-body">
@@ -161,8 +156,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'layout' => "{items}\n{summary}\n{pager}",
                                 'columns' => [
                                     ['class' => 'yii\grid\SerialColumn'],
-
-
                                     [
                                         'format' => 'raw',
                                         'value' => function ($model) {
@@ -222,7 +215,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ],
                                     [
                                         'value' => function ($model) {
-
                                             $productCatName = "";
                                             if (!empty($model->product) && !empty($model->product->category) && !empty($model->product->category->name)) {
                                                 $productCatName = $model->product->category->name;
@@ -417,7 +409,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         },
                                     ],
                                     [
-
                                         'label' => 'First Name',
                                         'value' => function ($model) {
                                             $firstName = "(not-set)";
@@ -450,7 +441,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         },
                                     ],
                                     [
-
                                         'label' => 'IBAN',
                                         'value' => function ($model) {
                                             $iban = "(not-set)";
@@ -461,7 +451,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         },
                                     ],
                                     [
-
                                         'label' => 'Billing Address Line 1',
                                         'value' => function ($model) {
                                             $billingAddress1 = "(not-set)";
@@ -472,7 +461,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         },
                                     ],
                                     [
-
                                         'label' => 'Billing Address Line 2',
                                         'value' => function ($model) {
                                             $billingAddress2 = "(not-set)";
@@ -483,7 +471,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         },
                                     ],
                                     [
-
                                         'label' => 'City',
                                         'value' => function ($model) {
                                             $cityName = "(not-set)";
@@ -505,7 +492,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         },
                                     ],
                                     [
-
                                         'label' => 'Payment Mode',
                                         'value' => function ($model) {
                                             $paymentType = "(not-set)";
@@ -516,7 +502,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         },
                                     ],
                                     [
-
                                         'label' => 'Paypal Email',
                                         'value' => function ($model) {
                                             $paypalEmail = "(not-set)";
@@ -541,8 +526,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= DetailView::widget([
                                 'model' => $model,
                                 'attributes' => [
-                                    //  'id',
-                                    //'user_id',
                                     [
                                         'format' => ['raw'],
                                         'attribute' => 'user_id',
@@ -552,51 +535,24 @@ $this->params['breadcrumbs'][] = $this->title;
                                         },
                                     ],
                                     [
-                                        //'attribute' => 'user_id',
                                         'label' => 'Buyer Email',
                                         'value' => function ($model) {
                                             return $model->user->email;
                                         },
                                     ],
                                     [
-                                        //'attribute' => 'user_id',
                                         'label' => 'Buyer Phone',
                                         'value' => function ($model) {
                                             return $model->user->mobile;
                                         },
                                     ],
-                                    //'user_address_id',
                                     [
                                         'attribute' => 'user_address_id',
                                         'label' => 'Buyer Address',
                                         'value' => function ($model) {
-                                            //return $model->userAddress->address . ", " . $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
                                             return $model->userAddress->address;
                                         },
                                     ],
-                                    //                                    [
-                                    //                                        'attribute' => 'total_amount',
-                                    //                                        'value' => function ($model) {
-                                    //                                            return (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "";
-                                    //                                        },
-                                    //                                    ],
-                                    //                                    [
-                                    //                                        'attribute' => 'status',
-                                    //                                        'value' => function ($model) {
-                                    //                                            $status = 'Pending';
-                                    //                                            if ($model->status == \app\models\Order::STATUS_ORDER_INPROGRESS) {
-                                    //                                                $status = 'In progress';
-                                    //                                            } elseif ($model->status == \app\models\Order::STATUS_ORDER_COMPLETED) {
-                                    //                                                $status = 'Completed';
-                                    //                                            } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCELLED) {
-                                    //                                                $status = 'Cancelled';
-                                    //                                            }
-                                    //                                            return $status;
-                                    //                                        }
-                                    //
-                                    //                                    ],
-                                    //                            'created_at',
-                                    //                            'updated_at',
                                 ],
                             ]) ?>
                         </div>
@@ -741,7 +697,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row">
                 <div class="col col-md-12">
                     <p>
-
                         <?php
                         if ($pageType == '') {
                             echo Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']);
@@ -753,6 +708,5 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-
     </div>
 </div>

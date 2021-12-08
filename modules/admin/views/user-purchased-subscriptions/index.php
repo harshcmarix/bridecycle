@@ -35,22 +35,11 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <?php
-
-        $gridColumns = [
-
-
-        ];
         echo GridView::widget([
             'id' => 'user_purchased_subscriptions-grid',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'width' => '8%',
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'attribute' => 'subscription_type',
@@ -62,7 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $type;
                     },
                     'header' => 'Subscription Type',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'user_id',
@@ -82,7 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                     'header' => 'User',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'amount',
@@ -94,7 +81,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $amount;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'transaction_id',
@@ -106,7 +92,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $transaction_id;
                     },
                     'header' => 'Transaction ID',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'subscription_id',
@@ -118,7 +103,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $subscription_id;
                     },
                     'header' => 'Subscription ID',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'date_time',
@@ -130,7 +114,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $subscription_date_time;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
@@ -138,7 +121,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'width' => '12%'
                 ],
             ],
-
             'pjax' => true, // pjax is set to always true for this demo
             // set your toolbar
             'toolbar' => [
@@ -161,15 +143,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'striped' => true,
             'condensed' => true,
             'responsive' => false,
-            // 'hover' => $hover,
-            // 'showPageSummary' => $pageSummary,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Subscriptions',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            //'exportConfig' => $exportConfig,
             'itemLabelSingle' => 'user subscription',
             'itemLabelPlural' => 'user subscriptions'
         ]);
@@ -313,5 +291,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

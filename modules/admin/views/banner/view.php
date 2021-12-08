@@ -1,12 +1,9 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 use yii\bootstrap\Modal;
-use app\models\Banner;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Banner */
@@ -50,12 +47,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
 
                 ],
-//                [
-//                    'attribute' => 'brand_id',
-//                    'value' => function ($model) {
-//                        return (!empty($model) && $model instanceof Banner && !empty($model->brand_id) && !empty($model->brand) && $model->brand instanceof \app\models\Brand) ? $model->brand->name : "";
-//                    },
-//                ],
             ],
         ]) ?>
     </div>

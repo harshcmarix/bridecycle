@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use \app\modules\admin\widgets\GridView;
 use app\models\CmsPage;
 
@@ -23,19 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'value' => function ($model) {
-                //         $id = '';
-                //         if ($model instanceof CmsPage) {
-                //             $id = $model->id;
-                //         }
-                //         return $id;
-                //     },
-                //     'width' => '8%',
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'attribute' => 'title',
@@ -47,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $title;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
 
@@ -57,29 +41,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         $description = '';
                         if ($model instanceof CmsPage) {
                             $description = strlen($model->description) > CmsPage::MAX_DESCRIPTION_TEXT ? substr($model->description, CmsPage::MIN_DESCRIPTION_TEXT, CmsPage::MAX_DESCRIPTION_TEXT) . "..." : $model->description;
-                            // $description = str_limit($model->description,100);
                         }
                         return $description;
                     },
-                    // 'format' => ['raw'],
                     'filter' => false,
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-
-                // [
-                //     'attribute' => 'created_at',
-                //     'value' => function ($model) {
-                //         $created_at = '';
-                //         if ($model instanceof CmsPage) {
-                //             $created_at = $model->created_at;
-                //         }
-                //         return $created_at;
-                //     },
-                //     'filter' => false,
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style']
-                // ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'width' => '12%'
@@ -117,17 +84,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Contents',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
             'itemLabelSingle' => 'content',
             'itemLabelPlural' => 'Contents'
         ]);
-
-
         ?>
-
     </div>
 </div>
 
@@ -193,5 +156,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

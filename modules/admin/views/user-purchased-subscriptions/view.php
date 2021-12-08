@@ -1,6 +1,7 @@
 <?php
 
-use yii\helpers\{Html, Url};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -20,8 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    //'id',
-                    //'user_id',
                     'subscription_type',
                     [
                         'attribute' => 'user_id',
@@ -41,13 +40,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'date_time',
                         'value' => function ($model) {
-                            //return date('Y M, d H:i:s', strtotime($model->date_time));
                             return $model->date_time;
                         },
                     ],
-                    //'status',
-                    //'created_at',
-                    //'updated_at',
                 ],
             ]) ?>
             <p>

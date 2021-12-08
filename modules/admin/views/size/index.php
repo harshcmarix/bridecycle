@@ -91,7 +91,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'striped' => true,
             'condensed' => true,
             'responsive' => false,
-            'bootstrap' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
             ],

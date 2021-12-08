@@ -11,7 +11,6 @@ if (Yii::$app->controller->action->id === 'login') {
     if (class_exists('backend\assets\AppAsset')) {
         backend\assets\AppAsset::register($this);
     } else {
-        // \app\modules\admin\assets\AdminAsset::register($this);
         app\modules\admin\assets\AdminAsset::register($this);
     }
 
@@ -27,18 +26,15 @@ if (Yii::$app->controller->action->id === 'login') {
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-NXLFFXY4HG"></script>
         <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+
         <script>
             window.dataLayer = window.dataLayer || [];
-
             function gtag() {
                 dataLayer.push(arguments);
             }
-
             gtag('js', new Date());
-
             gtag('config', 'G-NXLFFXY4HG');
         </script>
-
 
         <meta charset="<?= Yii::$app->charset ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -99,7 +95,6 @@ if (Yii::$app->controller->action->id === 'login') {
                     if (localStorage.getItem('currentFolder') !== currentFolder) {
                         localStorage.setItem('sidebarScrollTop', $('.main-sidebar .left-scroll').scrollTop());
                         localStorage.setItem('currentFolder', currentFolder);
-                        // localStorage.removeItem('sidebarScrollTop');
                     }
                 }, 500);
             }

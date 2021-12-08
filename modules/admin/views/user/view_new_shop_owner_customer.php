@@ -23,12 +23,9 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    // 'id',
                     'first_name',
                     'last_name',
                     'email:email',
-                    //'password_hash',
-                    //'profile_picture',
                     [
                         'format' => 'raw',
                         'attribute' => 'profile_picture',
@@ -49,14 +46,7 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
                             return Html::img($image_path, ['alt' => 'some', 'class' => 'your_class', 'onclick' => $contentmodel, 'height' => '100px', 'width' => '100px']);
                         },
                     ],
-                    //'temporary_password',
-                    //'access_token',
-                    //'access_token_expired_at',
-                    //'password_reset_token',
                     'mobile',
-                    //'weight',
-                    //'height',
-                    //'personal_information:ntext',
                     [
                         'attribute' => "user_type",
                         'value' => function ($model) {
@@ -165,17 +155,15 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
                                             <th style='text-align: center; border: 1px solid'>Amount</th>
                                             <th style='text-align: center; border: 1px solid'>Start date</th>                              
                                         </thead>
-                                        <tbody>"; //<th style='text-align: center; border: 1px solid'>Month</th> //<th style='text-align: center; border: 1px solid'>End date</th>
+                                        <tbody>";
                             foreach ($userSubscriptions as $subscription) {
                                 if ($subscription instanceof \app\models\UserPurchasedSubscriptions) {
                                     $subscriptionData = $subscription;
-                                    //$endDate = date('Y-m-d h:m:s', strtotime('+3 months', strtotime($subscriptionData->created_at)));
                                     $html .= "<tr style='border: 1px solid'>
                                                     <td style='text-align: center;border: 1px solid'>$subscriptionData->subscription_type</td>                                                    
                                                     <td style='text-align: center;border: 1px solid'>" . Yii::$app->formatter->asCurrency($subscriptionData->amount) . "</td>
-                                                    <td style='text-align: center;border: 1px solid'>$subscriptionData->created_at</td>
-                                                   
-                                                </tr>"; // <td style='border: 1px solid'>$subscriptionData->month</td> //  <td style='border: 1px solid'>$endDate</td>
+                                                    <td style='text-align: center;border: 1px solid'>$subscriptionData->created_at</td>                                                   
+                                                </tr>";
                                 }
                             }
                             $html .= "</tbody>
@@ -208,7 +196,6 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
                 </div>
             </div>
             <p>
-
                 <?php
                 if ($pageId == '') {
                     echo Html::a('Back', \yii\helpers\Url::to(['index-new-shop-owner-customer']), ['class' => 'btn btn-default']);
@@ -222,7 +209,6 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
                 ?>
             </p>
         </div>
-
     </div>
 </div>
 

@@ -21,7 +21,6 @@ $this->title = 'Forgot Password';
                 <?= Html::submitButton('Send', ['class' => 'btn btn-primary']) ?>
             </div>
             <?php ActiveForm::end(); ?>
-
         </div>
     </div>
 </div>

@@ -19,7 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    //'id',
                     [
                         'attribute' => 'user_id',
                         'label' => 'User',
@@ -40,7 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'content:ntext',
                     'created_at',
-                    //'updated_at',
                 ],
             ]) ?>
             <p>

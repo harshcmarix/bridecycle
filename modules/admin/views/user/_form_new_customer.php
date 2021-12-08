@@ -56,7 +56,6 @@ echo Dialog::widget(
                             'showUpload' => false
                         ]
                     ])->label('Profile Picture <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
-
                     <!-- image validation code -->
                     <?php
                     $is_profile_picture_empty = '1';
@@ -91,13 +90,6 @@ echo Dialog::widget(
                     <?php } ?>
                     <!-- image code end -->
                 </div>
-
-<!--                --><?php //if (empty(Yii::$app->request->get('f'))) { ?>
-<!--                    <div class="col col-md-2">-->
-<!--                        --><?php //echo $form->field($model, 'is_shop_owner')->checkbox(['label' => 'Is Shop Owner', 'uncheck' => null, 'selected' => false])->label(false) ?>
-<!--                    </div>-->
-<!--                --><?php //} ?>
-
                 <?php if (Yii::$app->controller->action->id == 'update') { ?>
                     <?php if (empty(Yii::$app->request->get('f'))) { ?>
                         <div class="col col-md-4">
@@ -111,7 +103,6 @@ echo Dialog::widget(
                         </div>
                     <?php } ?>
                 <?php } ?>
-
             </div>
 
             <div id="shop-details" class="shop-personal-details">
@@ -197,9 +188,7 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_address_zip_code')->textInput(['type' => 'number'])->label('Shop Address Zip Code <spna class="red">*</span>'); ?>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
         <div class="form-group ">
@@ -241,16 +230,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.shop-image-class').hide();
                 $('#user-is_shop_logo_empty').val('1');
-                // });
             }
         });
     });
@@ -261,16 +242,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this profile ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.image-class').hide();
                 $('#user-is_profile_picture_empty').val('1');
-                // });
             }
         });
     });

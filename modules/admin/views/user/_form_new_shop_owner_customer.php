@@ -18,7 +18,6 @@ echo Dialog::widget(
         <?php $form = ActiveForm::begin(['enableAjaxValidation' => false, 'options' => ['autocomplete' => 'off']]); ?>
         <div class="users-form">
 
-
             <div class="row">
                 <div class="col col-md-6">
                     <?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?>
@@ -56,7 +55,6 @@ echo Dialog::widget(
                             'showUpload' => false
                         ]
                     ])->label('Profile Picture <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
-
                     <!-- image validation code -->
                     <?php
                     $is_profile_picture_empty = '1';
@@ -111,7 +109,6 @@ echo Dialog::widget(
                         </div>
                     <?php } ?>
                 <?php } ?>
-
             </div>
 
             <div id="shop-details" class="shop-personal-details">
@@ -197,9 +194,7 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_address_zip_code')->textInput(['type' => 'number'])->label('Shop Address Zip Code <spna class="red">*</span>'); ?>
                     </div>
                 </div>
-
             </div>
-
         </div>
         <div class="form-group ">
             <?= Html::a('Back', \yii\helpers\Url::to(['index-new-shop-owner-customer']), ['class' => 'btn btn-default']) ?>
@@ -240,16 +235,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.shop-image-class').hide();
                 $('#user-is_shop_logo_empty').val('1');
-                // });
             }
         });
     });
@@ -260,16 +247,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this profile ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.image-class').hide();
                 $('#user-is_profile_picture_empty').val('1');
-                // });
             }
         });
     });

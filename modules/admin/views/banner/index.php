@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use \app\modules\admin\widgets\GridView;
-use app\models\Banner;
 use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
@@ -15,7 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box box-default">
     <div class="box-header"></div>
     <div class="box-body">
-
 
         <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
@@ -34,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->name;
                         },
                         'header' => '',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 250px']
                     ],
                     [
                         'format' => ['raw'],
@@ -62,24 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter' => false,
                         'width' => '20%',
                         'header' => '',
-                        //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
                     ],
-//                    [
-//                        'attribute' => 'brand_id',
-//                        'value' => function ($model) {
-//                            return (!empty($model) && $model instanceof Banner && !empty($model->brand_id) && !empty($model->brand) && $model->brand instanceof \app\models\Brand) ? $model->brand->name : "";
-//                        },
-//                        'filter' => \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->all(), 'id', 'name'),
-//                        'filterType' => GridView::FILTER_SELECT2,
-//                        'filterWidgetOptions' => [
-//                            'options' => ['prompt' => 'Select'],
-//                            'pluginOptions' => [
-//                                'allowClear' => true,
-//                            ],
-//                        ],
-//                        'header' => '',
-//                        'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 150px']
-//                    ],
                     [
                         'class' => 'kartik\grid\ActionColumn',
                         'width' => '10%'
@@ -110,7 +90,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     '{toggleData}',
                 ],
                 'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-
                 // parameters from the demo form
                 'bordered' => true,
                 'striped' => true,
@@ -118,19 +97,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'responsive' => true,
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
-
                 ],
                 'persistResize' => false,
                 'toggleDataOptions' => ['minCount' => 10],
                 'itemLabelSingle' => 'banner',
                 'itemLabelPlural' => 'Banners'
             ]);
-
-
             ?>
-
         </div>
-
     </div>
 </div>
 
@@ -257,5 +231,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

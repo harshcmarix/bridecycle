@@ -1,11 +1,8 @@
 <?php
 
 use \app\modules\admin\widgets\GridView;
-use yii\helpers\{
-    Html,
-    ArrayHelper,
-    Url
-};
+use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\editable\Editable;
 use app\models\Subscription;
 
@@ -21,29 +18,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
         <?php
-
-        $gridColumns = [
-
-
-        ];
         echo GridView::widget([
             'id' => 'subscription-grid',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => [
-                // [
-                //     'attribute' => 'id',
-                //     'value' => function ($model) {
-                //         $id = '';
-                //         if ($model instanceof Subscription) {
-                //             $id = $model->id;
-                //         }
-                //         return $id;
-                //     },
-                //     'width' => '8%',
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-                // ],
                 ['class' => 'kartik\grid\SerialColumn'],
                 [
                     'attribute' => 'name',
@@ -55,7 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $name;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'amount',
@@ -67,7 +45,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $amount;
                     },
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'attribute' => 'status',
@@ -78,19 +55,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         return $status;
                     },
-
                     'filter' => Subscription::SUBSCRIPTION_STATUS_ARRAY,
                     'filterType' => GridView::FILTER_SELECT2,
                     'filterWidgetOptions' => [
                         'options' => ['prompt' => ''],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            // 'width'=>'20px'
                         ],
                     ],
                     'width' => '10%',
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
                 [
                     'label' => 'Total Subscribed users',
@@ -103,21 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'filter' => false,
                     'header' => '',
-                    //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
                 ],
-                // [
-                //     'attribute' => 'created_at',
-                //     'value' => function ($model) {
-                //         $created_at = '';
-                //         if ($model instanceof Subscription) {
-                //             $created_at = $model->created_at;
-                //         }
-                //         return $created_at;
-                //     },
-                //     'filter' => false,
-                //     'header' => '',
-                //     'headerOptions' => ['class' => 'kartik-sheet-style']
-                // ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'width' => '12%'
@@ -155,15 +115,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'striped' => true,
             'condensed' => true,
             'responsive' => false,
-            // 'hover' => $hover,
-            // 'showPageSummary' => $pageSummary,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Subscriptions',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
-            //'exportConfig' => $exportConfig,
             'itemLabelSingle' => 'subscription',
             'itemLabelPlural' => 'Subscriptions'
         ]);
@@ -305,5 +261,5 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 </script>

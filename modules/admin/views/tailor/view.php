@@ -1,9 +1,7 @@
 <?php
 
-use yii\helpers\{
-    Html,
-    url
-};
+use yii\helpers\Html;
+use yii\helpers\url;
 use yii\widgets\DetailView;
 use yii\bootstrap\Modal;
 use app\models\Tailor;

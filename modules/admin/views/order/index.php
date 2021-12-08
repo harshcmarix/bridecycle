@@ -26,14 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php
         $gridColumns = [
-            // [
-            //     'attribute' => 'id',
-            //     'value' => function ($model) {
-            //         return $model->id;
-            //     },
-            //     'header' => 'Order ID',
-            //     //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
-            // ],
             ['class' => 'kartik\grid\SerialColumn'],
             [
                 'attribute' => 'created_at',
@@ -42,28 +34,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => '',
                 'header' => 'Order Date',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'value' => function ($model) {
                     return $model->user->first_name . " " . $model->user->last_name;
                 },
                 'header' => 'Customer Name',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'value' => function ($model) {
                     return $model->user->email;
                 },
                 'header' => 'Customer Email',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'value' => function ($model) {
                     return $model->user->mobile;
                 },
                 'header' => 'Customer Phone',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'value' => function ($model) {
@@ -76,7 +64,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $address;
                 },
                 'header' => 'Customer Address',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'format' => 'raw',
@@ -103,7 +90,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         }
 
                                         $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
-                                            // 'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
                                             'options' => ['interval' => '600']
                                         ];
                                     }
@@ -121,7 +107,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 } elseif (!empty($orderItem) && !empty($orderItem->price)) {
                                     $productPrice = Yii::$app->formatter->asCurrency($orderItem->price);
                                 }
-
 
                                 $productName = "";
                                 if (!empty($orderItem) && !empty($orderItem->product) && !empty($orderItem->product->name)) {
@@ -157,7 +142,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $html;
                 },
                 'header' => 'Order Products',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important']
             ],
             [
                 'attribute' => 'total_amount',
@@ -166,7 +150,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => '',
                 'header' => "Total Amount <br>(Product Price <br> + Tax <br> + Shipping)",
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [
                 'value' => function ($model) {
@@ -200,7 +183,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => '',
                 'header' => "BrideCycle <br> Earning",
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [
                 'value' => function ($model) {
@@ -234,7 +216,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'filter' => '',
                 'header' => "Seller <br> Earning",
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important'],
             ],
             [
                 'attribute' => 'status',
@@ -258,7 +239,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => 'Order Status',
-                //'headerOptions' => ['class' => 'kartik-sheet-style', 'style' => 'text-align: center !important;min-width: 130px']
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -303,7 +283,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'responsive' => false,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
-                //'heading' => 'Order',
             ],
             'persistResize' => false,
             'toggleDataOptions' => ['minCount' => 10],
@@ -400,7 +379,7 @@ $this->params['breadcrumbs'][] = $this->title;
         setTimeout(function () {
             $(document).scrollTop($(document).innerHeight());
         }, 200);
-    })
+    });
 
     function applyFilterAllOrder() {
         $('#filter-div-order').toggle();

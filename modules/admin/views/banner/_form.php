@@ -7,8 +7,6 @@ use app\models\Banner;
 use kartik\dialog\Dialog;
 use yii\bootstrap\Modal;
 use kartik\file\FileInput;
-use app\models\Brand;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Banner */
@@ -72,13 +70,6 @@ echo Dialog::widget(
                     <?php } ?>
                 </div>
                 <div class="col col-md-6">
-                    <!--                    --><?php //echo $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::classname(), [
-                    //                        'data' => ArrayHelper::map(Brand::find()->where(['status' => Brand::STATUS_APPROVE])->all(), 'id', 'name'),
-                    //                        'options' => ['placeholder' => 'Select Brand', 'value' => $model->brand_id],
-                    //                        'pluginOptions' => [
-                    //                            'allowClear' => true
-                    //                        ],
-                    //                    ]); ?>
                 </div>
             </div>
             <div class="form-group">
@@ -98,16 +89,8 @@ echo Dialog::widget(
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                // $.ajax({
-                //     url: deleteUrl,
-                //     type: 'post',
-                //     error: function (xhr, status, error) {
-                //         alert('There was an error with your request.' + xhr.responseText);
-                //     }
-                // }).done(function (data) {
                 $('.image-class').hide();
                 $('#banner-is_banner_image_empty').val(image_empty);
-                // });
             }
         });
     });

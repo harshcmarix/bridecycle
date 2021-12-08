@@ -20,7 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-                    //'id',
                     'order_id',
                     [
                         'attribute' => 'order_item_id',
@@ -90,8 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                     ],
                     'note_content:ntext',
-                    //'created_at',
-                    //'updated_at',
                 ],
             ]) ?>
             <p>

@@ -39,7 +39,6 @@ use yii\widgets\ActiveForm;
                 'data' => \app\models\ProductRating::ARR_PRODUCT_RATING_STATUS,
                 'size' => \kartik\select2\Select2::MEDIUM,
                 'options' => [
-                    //'placeholder' => 'Select Parent Category',
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,
