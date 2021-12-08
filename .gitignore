@@ -38,3 +38,5 @@ composer.lock
 
 /runtime/
 /web/assets/
+
+/web/uploads/
