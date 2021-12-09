@@ -6,7 +6,7 @@ use yii\helpers\Html;
 
 <header class="main-header">
 
-    <?= Html::a('<span class="logo-mini">BC</span><span class="logo-lg"><img src="' . Yii::$app->request->baseUrl . '/uploads/logo.png" width="100px" ></span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
+    <?= Html::a('<span class="logo-mini"><img src="' . Yii::$app->request->baseUrl . '/uploads/logo.png" ></span><span class="logo-lg"><img src="' . Yii::$app->request->baseUrl . '/uploads/logo.png" width="100px" ></span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
 
     <nav class="navbar navbar-static-top" role="navigation">
 
@@ -50,7 +50,6 @@ use yii\helpers\Html;
                                     </b>
                                 </p>
                             <?php } ?>
-
                             <p>
                                 <?php
                                 $role = "";

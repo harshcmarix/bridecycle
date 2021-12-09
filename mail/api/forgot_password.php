@@ -11,94 +11,257 @@ if ($user instanceof User && !empty($user->last_name)) {
 }
 ?>
 
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600">
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+
+    <title>Bride Cycle - Email </title>
+    <style type="text/css">
+        body {
+            background: #ebf0f5;
+            line-height: 18px;
+            margin: 0;
+            font-family: "verdana", Helvetica, Arial, sans-serif !important;
+            color: #1b1b1b;
+            font-size: 14px;
+            line-height: 20px;
+            font-weight: 400;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a,
+        img {
+            border: none;
+            outline: none;
+        }
+
+        .strong {
+            font-weight: bold;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse !important;
+        }
+    </style>
 </head>
-<body style=" background: #F5F5F5; line-height: 18px; margin: 0;font-family: 'Poppins', Helvetica, Arial, sans-serif !important; color: #1b1b1b;font-size: 14px;line-height: 20px;font-weight: 400">
-<table width="70%" align="center" cellpadding="0" cellspacing="0" border="0">
-    <tbody>
-    <tr>
-        <td align="center" valign="center" style="background:#8A9673 none repeat scroll 0 0;height:80px">
-            <table width="90%" align="center">
-                <tbody>
-                <tr>
-                    <td><img src="<?= Yii::$app->params['mail_image_base_path'] ?>/uploads/logo.png"
-                             class="CToWUd"></td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td align="left" valign="top" style="border:1px solid #cecece">
-            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                <tbody>
-                <tr>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>
-                        <table align="center" cellpadding="0" cellspacing="0" border="0" width="90%">
-                            <tbody>
-                            <tr>
-                                <td align="left" valign="top" style="font-family:'verdana';font-size:14px;color:#000">
-                                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
-                                        <tbody>
-                                        <tr>
-                                            <td style="border:0px;padding:20px 28px;background-color:#fff" valign="top">
-                                                <table border="0" cellpadding="0" cellspacing="2" width="100%">
-                                                    <tbody style="line-height:25px;font-size:14px">
-                                                    <tr>
-                                                        <td colspan="2">
-                                                            <b>Hello <?php echo $user->first_name . " " . $user->last_name; ?> ,</b></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
 
-                                                            <p>We've received a request to forgot your password.
-                                                                If you didn't make the request, just ignore this
-                                                                email.</p>
+<body>
+<div style="background-color: #ebf0f5">
+    <table
+            style="
+          margin: 0 auto;
+          text-align: center;
+          width: 100%;
+          border: 0;
+          padding: 0;
+          background-color: #ebf0f5;
+        "
+            cellspacing="0"
+            cellpadding="0"
+    >
+        <tr>
+            <td
+                    bgcolor="#ebf0f5"
+                    style="padding: 30px 0; background-color: #ebf0f5"
+            >
+                <table
+                        cellpadding="0"
+                        cellspacing="0"
+                        style="
+                text-align: left;
+                vertical-align: top;
+                width: 640px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                max-width: 640px;
+              "
+                >
+                    <tr>
+                        <td
+                                bgcolor="#899576"
+                                style="
+                    padding: 25px 20px;
+                    text-align: center;
+                    vertical-align: middle;
+                    background: #899576;
+                  "
+                        >
+                            <a
+                                    href="https://bridecycle.com/" target="_blank"
+                                    style="
+                      display: inline-block;
+                      text-decoration: none;
+                      color: #fff;
+                      outline: none;
+                    "
+                            ><img
+                                        src="<?= Yii::$app->params['mail_image_base_path'] ?>/uploads/logo.png"
+                                        style="
+                        margin: 0;
+                        vertical-align: middle;
+                        border: none;
+                        outline: none;
+                        height: 48px;
+                        width: 85px;
+                      "
+                                        alt="Bride Cycle"
+                                        width="85"
+                                        height="48"
+                                /></a>
+                        </td>
+                    </tr>
 
-                                                            <p>Your temporary password is
-                                                                <strong><?= $user->temporary_password ?></strong>.</p>
+                    <tr>
+                        <td
+                                align="left"
+                                valign="top"
+                                bgcolor="#ffffff"
+                                style="
+                    padding: 25px 25px 5px;
+                    text-align: left;
+                    vertical-align: top;
+                    background-color: #ffffff;
+                    font-family: 'verdana', Helvetica, Arial, sans-serif !important;
+                    color: #1b1b1b;
+                    font-size: 14px;
+                    line-height: 22px;
+                    font-weight: 400;
+                  "
+                        >
+                            <strong style="font-size: 14px; font-weight: bold"
+                            >Hello
+                                <?php echo $user->first_name . " " . $user->last_name; ?> </strong
+                            >,
 
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="2">Regards,<br/>Bride Cycle</td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td align="left" height="50" valign="center" bgcolor="#0054a5"
-            style="font-size:12px;color:#ffffff;font-family:'verdana';text-align:center;background-color:#000">
-            Copyright © <?= date("Y"); ?> Bride Cycle. All rights reserved.
-        </td>
-    </tr>
-    </tbody>
-</table>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td
+                                align="left"
+                                valign="top"
+                                width="100%"
+                                style="
+                          padding: 7px 25px;
+                          text-align: left;
+                          vertical-align: top;
+                          font-family: 'verdana', Helvetica, Arial, sans-serif !important;
+                          color: #1b1b1b;
+                          font-size: 14px;
+                          line-height: 22px;
+                          font-weight: 400;
+                          width: 100%;
+                        "
+                        >
+
+
+                            <p
+                                    style="
+                      text-align: left;
+                      vertical-align: top;
+                      font-family: 'verdana', Helvetica, Arial, sans-serif !important;
+                      color: #1b1b1b;
+                      font-size: 14px;
+                      line-height: 22px;
+                      font-weight: 400;
+                      margin: 0;
+                    "
+                            >
+                                We've received a request to forgot your password.
+                                If you didn't make the request, just ignore this
+                                email.
+                            </p>
+
+
+
+                            <p
+                                    style="
+                      text-align: left;
+                      vertical-align: top;
+                      font-family: 'verdana', Helvetica, Arial, sans-serif !important;
+                      color: #1b1b1b;
+                      font-size: 14px;
+                      line-height: 22px;
+                      font-weight: 400;
+                      margin: 0;
+                    "
+                            >
+                                Your temporary password is
+                                <strong style="font-size: 13px; font-weight: bold"><?= $user->temporary_password ?></strong>.
+                            </p>
+
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td
+                                align="left"
+                                valign="top"
+                                width="100%"
+                                style="
+                          padding: 20px 25px 7px 25px;
+                          text-align: left;
+                          vertical-align: top;
+                          font-family: 'verdana', Helvetica, Arial, sans-serif !important;
+                          color: #1b1b1b;
+                          font-size: 14px;
+                          line-height: 22px;
+                          font-weight: 400;
+                          width: 100%;
+                        "
+                        >
+                            Regards,<br/>
+                            <strong style="font-size: 13px; font-weight: bold"
+                            >Bride Cycle</strong
+                            >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td
+                                bgcolor="#27272A"
+                                valign="top"
+                                style="
+                    padding: 20px 15px;
+                    text-align: center;
+                    vertical-align: top;
+                    background-color: #1a1a1a;
+                    font-family: 'verdana', Helvetica, Arial, sans-serif !important;
+                    color: #fff;
+                    font-size: 13px;
+                    line-height: 20px;
+                    font-weight: 400;
+                    text-align: center;
+                  "
+                        >
+                            Copyright &copy;
+                            <?= date("Y"); ?>
+                            <a href="https://bridecycle.com/" target="_blank">Bride Cycle</a>. All rights reserved.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
 </body>
 </html>
