@@ -232,7 +232,7 @@ use yii\helpers\Html;
                         >
                             Copyright &copy;
                             <?= date("Y"); ?>
-                            Bride Cycle. All rights reserved.
+                            <a href="https://bridecycle.com/" target="_blank">Bride Cycle</a>. All rights reserved.
                         </td>
                     </tr>
                 </table>
