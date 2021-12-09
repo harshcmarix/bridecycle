@@ -12,7 +12,7 @@ use yii\helpers\Html;
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon"
-          href="<?php echo str_replace("/web", "", Yii::$app->request->baseUrl); ?>/theme/admin/images/favicon.png"
+          href="<?php echo str_replace("/web", "", Yii::$app->request->baseUrl); ?>/theme/admin/images/favicon.jpg"
           type="image/x-icon"/>
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>

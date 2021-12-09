@@ -42,7 +42,7 @@ if (Yii::$app->controller->action->id === 'login') {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?= Html::csrfMetaTags() ?>
         <link rel="shortcut icon"
-              href="<?php echo str_replace("/web", "", Yii::$app->request->baseUrl); ?>/theme/admin/images/favicon.png"
+              href="<?php echo str_replace("/web", "", Yii::$app->request->baseUrl); ?>/theme/admin/images/favicon.jpg"
               type="image/x-icon"/>
         <title>Admin | <?= Html::encode($this->title) ?></title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.min.css"
