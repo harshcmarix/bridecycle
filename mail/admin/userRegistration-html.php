@@ -1,8 +1,9 @@
-
 <?php
+
 use yii\helpers\Html;
+
 /* @var $this yii\web\View */
-/* @var $first_name  string user name*/
+/* @var $first_name  string user name */
 /* @var $email string user email */
 /* @var $body  string the review */
 ?>
@@ -18,7 +19,7 @@ use yii\helpers\Html;
 <table width="70%" align="center" cellpadding="0" cellspacing="0" border="0">
     <tbody>
     <tr>
-        <td align="center" valign="center" style="background:#3c8dbc none repeat scroll 0 0;height:80px">
+        <td align="center" valign="center" style="background:#8A9673 none repeat scroll 0 0;height:80px">
             <table width="90%" align="center">
                 <tbody>
                 <tr>
@@ -50,21 +51,20 @@ use yii\helpers\Html;
                                                     <tbody style="line-height:25px;font-size:14px">
                                                     <tr>
                                                         <td colspan="2">
-                                                            <b>Hello <?= Html::encode($model->first_name) ?> <?= Html::encode($model->last_name) ?>,</b></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>&nbsp;</td>
+                                                            <b>Hello <?= Html::encode($model->first_name) ?> <?= Html::encode($model->last_name) ?>
+                                                                ,</b></td>
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <p>Thank you for registering in <?= Html::encode(Yii::$app->name) ?>.Please find below your credential.</p>
-                                                            <br />
-                                                            <p><strong>Username:</strong> <?= Html::encode($model->email) ?></p>
+                                                            <p>Thank you for registering
+                                                                in <?= Html::encode(Yii::$app->name) ?>.Please find
+                                                                below your credential.</p>
+                                                            <br/>
+                                                            <p>
+                                                                <strong>Username:</strong> <?= Html::encode($model->email) ?>
+                                                            </p>
                                                             <p><strong>Password:</strong> <?= Html::encode($pwd) ?></p>
                                                         </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>&nbsp;</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="2">Regards,<br/>Bride Cycle</td>

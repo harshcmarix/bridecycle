@@ -29,18 +29,21 @@ if (Yii::$app->controller->action->id === 'login') {
 
         <script>
             window.dataLayer = window.dataLayer || [];
+
             function gtag() {
                 dataLayer.push(arguments);
             }
+
             gtag('js', new Date());
             gtag('config', 'G-NXLFFXY4HG');
         </script>
 
         <meta charset="<?= Yii::$app->charset ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="<?php echo Yii::$app->request->baseUrl; ?>/theme/admin/images/favicon.jpg"
-              type="image/x-icon"/>
         <?= Html::csrfMetaTags() ?>
+        <link rel="shortcut icon"
+              href="<?php echo str_replace("/web", "", Yii::$app->request->baseUrl); ?>/theme/admin/images/favicon.png"
+              type="image/x-icon"/>
         <title>Admin | <?= Html::encode($this->title) ?></title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.min.css"
               crossorigin="anonymous">

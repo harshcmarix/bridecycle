@@ -21,7 +21,7 @@ if ($user instanceof User && !empty($user->last_name)) {
 <table width="70%" align="center" cellpadding="0" cellspacing="0" border="0">
     <tbody>
     <tr>
-        <td align="center" valign="center" style="background:#3c8dbc none repeat scroll 0 0;height:80px">
+        <td align="center" valign="center" style="background:#8A9673 none repeat scroll 0 0;height:80px">
             <table width="90%" align="center">
                 <tbody>
                 <tr>
@@ -56,9 +56,6 @@ if ($user instanceof User && !empty($user->last_name)) {
                                                             <b>Hello <?php echo $user->first_name . " " . $user->last_name; ?> ,</b></td>
                                                     </tr>
                                                     <tr>
-                                                        <td>&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
                                                         <td>
 
                                                             <p>We've received a request to forgot your password.
@@ -69,9 +66,6 @@ if ($user instanceof User && !empty($user->last_name)) {
                                                                 <strong><?= $user->temporary_password ?></strong>.</p>
 
                                                         </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>&nbsp;</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="2">Regards,<br/>Bride Cycle</td>

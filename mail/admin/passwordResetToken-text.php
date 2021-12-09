@@ -12,7 +12,7 @@ $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['admin/site/reset-passwor
 <table width="70%" align="center" cellpadding="0" cellspacing="0" border="0">
     <tbody>
     <tr>
-        <td align="center" valign="center" style="background:#3c8dbc none repeat scroll 0 0;height:80px">
+        <td align="center" valign="center" style="background:#8A9673 none repeat scroll 0 0;height:80px">
             <table width="90%" align="center">
                 <tbody>
                 <tr>
@@ -47,17 +47,11 @@ $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['admin/site/reset-passwor
                                                             <b>Hello <?= $user->first_name ?>,</b></td>
                                                     </tr>
                                                     <tr>
-                                                        <td>&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
                                                         <td>
                                                             <p>Follow the link below to reset your password:
                                                                 <?= $resetLink ?>
                                                             </p>
                                                         </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>&nbsp;</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="2">Regards,<br/>Bride Cycle</td>
