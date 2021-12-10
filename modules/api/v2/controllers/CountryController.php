@@ -134,12 +134,12 @@ class CountryController extends ActiveController
         }
 
         $result = $this->getCountryAndGoogleCodeFromZipCode($postcode);
-        
+
         // Canada = north america
         // usa = south america
         // europe = europe
         // asia = asia
-        // other = all remaining are other
+        // other = all remaining are consider as other
 
         $continent = '';
         if (!empty($result) && !empty($result['continent'])) {
