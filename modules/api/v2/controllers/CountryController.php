@@ -134,7 +134,7 @@ class CountryController extends ActiveController
         }
 
         $result = $this->getCountryAndGoogleCodeFromZipCode($postcode);
-
+        
         // Canada = north america
         // usa = south america
         // europe = europe
@@ -173,7 +173,7 @@ class CountryController extends ActiveController
                 }
             }
         }
-        $data['shipping_cost_symbol'] = mb_substr(Yii::$app->formatter->asCurrency($data['shipping_cost']),0,1);
+        $data['shipping_cost_symbol'] = mb_substr(Yii::$app->formatter->asCurrency($data['shipping_cost']), 0, 1);
         $output[] = $data;
         return $output;
     }
@@ -189,16 +189,17 @@ class CountryController extends ActiveController
             $geocode = file_get_contents('https://maps.google.com/maps/api/geocode/json?key=' . Yii::$app->params['google_map_api_key'] . '&address=' . $address . '&sensor=false');
             $obj = json_decode($geocode);
 
-            if (!empty($obj) && !empty($obj->results) && !empty($obj->results[0]) && !empty($obj->results[0]->address_components) && !empty($obj->results[0]->address_components[4]) && !empty($obj->results[0]->address_components[4]->long_name) && !empty($obj->results[0]->address_components[4]->short_name)) {
-                $data['country_name'] = $obj->results[0]->address_components[4]->long_name;
-                $data['country_google_code'] = $obj->results[0]->address_components[4]->short_name;
-                $data['continent'] = $this->CountryToContinent($obj->results[0]->address_components[4]->short_name);
-            } elseif (!empty($obj) && !empty($obj->results) && !empty($obj->results[0]) && !empty($obj->results[0]->address_components) && !empty($obj->results[0]->address_components[3]) && !empty($obj->results[0]->address_components[3]->long_name) && !empty($obj->results[0]->address_components[3]->short_name)) {
-                $data['country_name'] = $obj->results[0]->address_components[3]->long_name;
-                $data['country_google_code'] = $obj->results[0]->address_components[3]->short_name;
-                $data['continent'] = $this->CountryToContinent($obj->results[0]->address_components[3]->short_name);
-            } else {
-                $data['country_name'] = $data['country_google_code'] = $data['continent'] = "";
+            $data['country_name'] = $data['country_google_code'] = $data['continent'] = "";
+            if (!empty($obj) && !empty($obj->results) && !empty($obj->results[0]) && !empty($obj->results[0]->address_components)) {
+                foreach ($obj->results[0]->address_components as $addressComponentRow) {
+                    if (!empty($addressComponentRow) && !empty($addressComponentRow->types) && is_array($addressComponentRow->types)) {
+                        if (!empty($addressComponentRow->types[0]) && $addressComponentRow->types[0] == 'country') {
+                            $data['country_name'] = $addressComponentRow->long_name;
+                            $data['country_google_code'] = $addressComponentRow->short_name;
+                            $data['continent'] = $this->CountryToContinent($addressComponentRow->short_name);
+                        }
+                    }
+                }
             }
             return $data;
         }
