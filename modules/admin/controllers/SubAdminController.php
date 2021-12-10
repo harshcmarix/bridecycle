@@ -8,6 +8,7 @@ use app\models\SubAdmin;
 use kartik\growl\Growl;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use app\models\search\SubAdminSearch;
 
@@ -86,12 +87,19 @@ class SubAdminController extends Controller
             $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
             if ($model->save()) {
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Sub admin created successfully.");
+
                 //email for sub-admin credentials
-                 Yii::$app->mailer->compose('admin/subAdminRegistration-html', ['model' => $model, 'pwd' => $password])
-                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                    ->setTo($model->email)
-                    ->setSubject('Thank you for Registration!')
-                    ->send();
+                if (!empty($model->email)) {
+                    try {
+                        Yii::$app->mailer->compose('admin/subAdminRegistration-html', ['model' => $model, 'pwd' => $password])
+                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                            ->setTo($model->email)
+                            ->setSubject('Thank you for Registration!')
+                            ->send();
+                    } catch (HttpException $e) {
+                        echo "Error: " . $e->getMessage();
+                    }
+                }
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while creating sub admin.");
             }

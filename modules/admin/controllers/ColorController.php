@@ -11,6 +11,7 @@ use app\models\Color;
 use app\models\search\ColorSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -155,7 +156,7 @@ class ColorController extends Controller
                                                 if ($userDevice->device_platform == 'android') {
                                                     $notificationToken = array($userDevice->notification_token);
                                                     $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
+                                                    $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                 } else {
                                                     $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                     $note->setBadge($badge);
@@ -180,12 +181,16 @@ class ColorController extends Controller
 
                             // Send Email notification Start
                             if (!empty($userModel) && $userModel instanceof User && !empty($userModel->email)) {
-                                $message = "Color has been " . $actionStatus . "d, that has been added by you.";
-                                Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
-                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                    ->setTo($userModel->email)
-                                    ->setSubject('Color ' . $actionStatus . 'd!')
-                                    ->send();
+                                try {
+                                    $message = "Color has been " . $actionStatus . "d, that has been added by you.";
+                                    Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
+                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                        ->setTo($userModel->email)
+                                        ->setSubject('Color ' . $actionStatus . 'd!')
+                                        ->send();
+                                } catch (HttpException $e) {
+                                    echo "Error: " . $e->getMessage();
+                                }
                             }
                             // Send Email notification End
                         }

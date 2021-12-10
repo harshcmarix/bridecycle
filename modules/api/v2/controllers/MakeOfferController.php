@@ -9,6 +9,7 @@ use Yii;
 use app\models\MakeOffer;
 use Exception;
 use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
@@ -244,7 +245,7 @@ class MakeOfferController extends ActiveController
                                                 ->setTo($userROW->email)
                                                 ->setSubject($subject)
                                                 ->send();
-                                        } catch (httpException $e) {
+                                        } catch (HttpException $e) {
                                             echo "Error: " . $e->getMessage();
                                         }
                                     }
@@ -359,7 +360,7 @@ class MakeOfferController extends ActiveController
                                             ->setTo($userROW->email)
                                             ->setSubject($subject)
                                             ->send();
-                                    } catch (Exception $e) {
+                                    } catch (HttpException $e) {
                                         echo "Error: " . $e->getMessage();
                                     }
                                 }

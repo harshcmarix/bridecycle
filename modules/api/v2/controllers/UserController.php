@@ -20,9 +20,11 @@ use yii\imagine\Image;
 use yii\rest\ActiveController;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UploadedFile;
+use Exception;
 
 /**
  * Class UserController
@@ -296,11 +298,15 @@ class UserController extends ActiveController
                 }
 
                 if (empty($postData['is_login_from'])) {
-                    Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $model])
-                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                        ->setTo($model->email)
-                        ->setSubject('Profile verification code!')
-                        ->send();
+                    try {
+                        Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $model])
+                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                            ->setTo($model->email)
+                            ->setSubject('Profile verification code!')
+                            ->send();
+                    } catch (HttpException $e) {
+                        echo "Error: " . $e->getMessage();
+                    }
                 }
 
                 // shop owner detail end
@@ -604,11 +610,15 @@ class UserController extends ActiveController
                 $modelUser->save(false);
 
                 if (!empty($modelUser->email)) {
-                    Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
-                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                        ->setTo($modelUser->email)
-                        ->setSubject('Profile verification code!')
-                        ->send();
+                    try {
+                        Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
+                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                            ->setTo($modelUser->email)
+                            ->setSubject('Profile verification code!')
+                            ->send();
+                    } catch (HttpException $e) {
+                        echo "Error: " . $e->getMessage();
+                    }
                 }
             }
             $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user]);
@@ -827,11 +837,15 @@ class UserController extends ActiveController
         $modelUser->save(false);
 
         if (!empty($modelUser->email)) {
-            Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
-                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                ->setTo($modelUser->email)
-                ->setSubject('Profile verification code!')
-                ->send();
+            try {
+                Yii::$app->mailer->compose('api/userRegistrationVerificationCode-html', ['model' => $modelUser])
+                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                    ->setTo($modelUser->email)
+                    ->setSubject('Profile verification code!')
+                    ->send();
+            } catch (HttpException $e) {
+                echo "Error: " . $e->getMessage();
+            }
         }
     }
 

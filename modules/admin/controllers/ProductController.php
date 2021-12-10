@@ -22,6 +22,7 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\imagine\Image;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use kartik\growl\Growl;
@@ -817,12 +818,16 @@ class ProductController extends Controller
 
                                             // Send Email notification Start
                                             if (!empty($userModel) && $userModel instanceof User && !empty($userModel->email)) {
-                                                $message = "Color has been approved, that has been added by you.";
-                                                Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
-                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                                    ->setTo($userModel->email)
-                                                    ->setSubject('Color approved!')
-                                                    ->send();
+                                                try {
+                                                    $message = "Color has been approved, that has been added by you.";
+                                                    Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
+                                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                        ->setTo($userModel->email)
+                                                        ->setSubject('Color approved!')
+                                                        ->send();
+                                                } catch (HttpException $e) {
+                                                    echo "Error: " . $e->getMessage();
+                                                }
                                             }
                                             // Send Email notification End
                                         }
@@ -896,12 +901,16 @@ class ProductController extends Controller
 
                                     // Send Email notification Start
                                     if (!empty($userDataModel) && $userDataModel instanceof User && !empty($userDataModel->email)) {
-                                        $message = "Brand has been approved, Which you have selected for your product.";
-                                        Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
-                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                            ->setTo($userDataModel->email)
-                                            ->setSubject('Brand approved!')
-                                            ->send();
+                                        try {
+                                            $message = "Brand has been approved, Which you have selected for your product.";
+                                            Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
+                                                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                ->setTo($userDataModel->email)
+                                                ->setSubject('Brand approved!')
+                                                ->send();
+                                        } catch (HttpException $e) {
+                                            echo "Error: " . $e->getMessage();
+                                        }
                                     }
                                     // Send Email notification End
                                 }
@@ -1246,12 +1255,16 @@ class ProductController extends Controller
 
                                             // Send Email notification Start
                                             if (!empty($userModel) && $userModel instanceof User && !empty($userModel->email)) {
-                                                $message = "Color has been approved, that has been added by you.";
-                                                Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
-                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                                    ->setTo($userModel->email)
-                                                    ->setSubject('Color approved!')
-                                                    ->send();
+                                                try {
+                                                    $message = "Color has been approved, that has been added by you.";
+                                                    Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userModel, 'message' => $message])
+                                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                        ->setTo($userModel->email)
+                                                        ->setSubject('Color approved!')
+                                                        ->send();
+                                                } catch (HttpException $e) {
+                                                    echo "Error: " . $e->getMessage();
+                                                }
                                             }
                                             // Send Email notification End
                                         }
@@ -1323,12 +1336,16 @@ class ProductController extends Controller
 
                                     // Send Email notification Start
                                     if (!empty($userDataModel) && $userDataModel instanceof User && !empty($userDataModel->email)) {
-                                        $message = "Brand has been approved, Which you have selected for your product.";
-                                        Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
-                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                            ->setTo($userDataModel->email)
-                                            ->setSubject('Brand approved!')
-                                            ->send();
+                                        try {
+                                            $message = "Brand has been approved, Which you have selected for your product.";
+                                            Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
+                                                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                ->setTo($userDataModel->email)
+                                                ->setSubject('Brand approved!')
+                                                ->send();
+                                        } catch (HttpException $e) {
+                                            echo "Error: " . $e->getMessage();
+                                        }
                                     }
                                     // Send Email notification End
                                 }

@@ -15,6 +15,7 @@ use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\imagine\Image;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -240,13 +241,18 @@ class UserController extends Controller
                 }
 
                 \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Customer created successfully.');
+                if (!empty($model->email)) {
+                    try {
+                        Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
+                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                            ->setTo($model->email)
+                            ->setSubject('Thank you for Registration!')
+                            ->send();
+                    } catch (HttpException $e) {
+                        echo "Error: " . $e->getMessage();
 
-                Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
-                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                    ->setTo($model->email)
-                    ->setSubject('Thank you for Registration!')
-                    ->send();
-
+                    }
+                }
                 return $this->redirect(['index']);
             }
         }
@@ -340,13 +346,17 @@ class UserController extends Controller
                 }
 
                 \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'New Customer created successfully.');
-
-                Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
-                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                    ->setTo($model->email)
-                    ->setSubject('Thank you for Registration!')
-                    ->send();
-
+                if (!empty($model->email)) {
+                    try {
+                        Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
+                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                            ->setTo($model->email)
+                            ->setSubject('Thank you for Registration!')
+                            ->send();
+                    } catch (HttpException $e) {
+                        echo "Error: " . $e->getMessage();
+                    }
+                }
                 return $this->redirect(['index-new-customer']);
             }
         }
@@ -440,13 +450,17 @@ class UserController extends Controller
                 }
 
                 \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'New Shop Owner created successfully.');
-
-                Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
-                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                    ->setTo($model->email)
-                    ->setSubject('Thank you for Registration!')
-                    ->send();
-
+                if (!empty($model->email)) {
+                    try {
+                        Yii::$app->mailer->compose('admin/userRegistration-html', ['model' => $model, 'pwd' => $password])
+                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                            ->setTo($model->email)
+                            ->setSubject('Thank you for Registration!')
+                            ->send();
+                    } catch (HttpException $e) {
+                        echo "Error: " . $e->getMessage();
+                    }
+                }
                 return $this->redirect(['index-new-shop-owner-customer']);
             }
         }

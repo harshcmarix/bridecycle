@@ -284,7 +284,6 @@ class ChatHistoryController extends ActiveController
                                         'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
                                     ]);
                                 $response = Yii::$app->fcm->send($message);
-
                             }
                         }
 

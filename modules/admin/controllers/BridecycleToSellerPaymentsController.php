@@ -9,6 +9,7 @@ use app\models\BridecycleToSellerPayments;
 use app\modules\admin\models\search\BridecycleToSellerPaymentsSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -107,11 +108,17 @@ class BridecycleToSellerPaymentsController extends Controller
                 $productModel = $model->product;
 
                 if (!empty($sellerModel) && $sellerModel instanceof User && (!empty($sellerModel->is_payment_done_email_notification_on) || $sellerModel->is_payment_done_email_notification_on == User::IS_EMAIL_NOTIFICATION_ON)) {
-                    Yii::$app->mailer->compose('admin/BCtoSellerPaymentDone-html', ['sellerModel' => $sellerModel, 'productModel' => $productModel, 'model' => $model])
-                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                        ->setTo($sellerModel->email)
-                        ->setSubject('Bride Cycle Payment!')
-                        ->send();
+                    if (!empty($sellerModel->email)) {
+                        try {
+                            Yii::$app->mailer->compose('admin/BCtoSellerPaymentDone-html', ['sellerModel' => $sellerModel, 'productModel' => $productModel, 'model' => $model])
+                                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                ->setTo($sellerModel->email)
+                                ->setSubject('Bride Cycle Payment!')
+                                ->send();
+                        } catch (HttpException $e) {
+                            echo "Error: " . $e->getMessage();
+                        }
+                    }
                 }
                 $response = ['success' => true];
             } else {

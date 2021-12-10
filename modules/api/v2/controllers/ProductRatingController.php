@@ -7,6 +7,7 @@ use app\models\Product;
 use app\modules\api\v2\models\User;
 use Yii;
 use app\models\ProductRating;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\rest\ActiveController;
@@ -15,6 +16,7 @@ use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
+use Exception;
 
 /**
  * ProductRatingController implements the CRUD actions for ProductRating model.
@@ -207,7 +209,7 @@ class ProductRatingController extends ActiveController
                             if ($userDevice->device_platform == 'android') {
                                 $notificationToken = array($userDevice->notification_token);
                                 $senderName = $model->user->first_name . " " . $model->user->last_name;
-                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
+                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                             } else {
                                 $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                 $note->setBadge($badge);
@@ -228,11 +230,15 @@ class ProductRatingController extends ActiveController
                         if ($userROW->is_new_message_email_notification_on == User::IS_NOTIFICATION_ON) {
                             $message = $model->user->first_name . " " . $model->user->last_name . " has added rate or review for your product";
                             if (!empty($userROW->email)) {
-                                Yii::$app->mailer->compose('api/addNewProductRateReview', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
-                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                    ->setTo($userROW->email)
-                                    ->setSubject('Added rate or review for your product!')
-                                    ->send();
+                                try {
+                                    Yii::$app->mailer->compose('api/addNewProductRateReview', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
+                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                        ->setTo($userROW->email)
+                                        ->setSubject('Added rate or review for your product!')
+                                        ->send();
+                                } catch (HttpException $e) {
+                                    echo "Error: " . $e->getMessage();
+                                }
                             }
                         }
                     }

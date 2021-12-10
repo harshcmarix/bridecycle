@@ -10,6 +10,7 @@ use Yii;
 use app\models\Brand;
 use app\models\search\BrandSearch;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 use yii\web\Response;
@@ -315,7 +316,7 @@ class BrandController extends Controller
                                                     if ($userDevice->device_platform == 'android') {
                                                         $notificationToken = array($userDevice->notification_token);
                                                         $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
+                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                     } else {
                                                         $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                         $note->setBadge($badge);
@@ -340,12 +341,16 @@ class BrandController extends Controller
 
                                 // Send Email notification Start
                                 if (!empty($userDataModel) && $userDataModel instanceof User && !empty($userDataModel->email)) {
-                                    $message = "Brand has been " . $actionStatus . "d, Which you have selected for your product.";
-                                    Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
-                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                        ->setTo($userDataModel->email)
-                                        ->setSubject('Brand ' . $actionStatus . 'd!')
-                                        ->send();
+                                    try {
+                                        $message = "Brand has been " . $actionStatus . "d, Which you have selected for your product.";
+                                        Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
+                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                            ->setTo($userDataModel->email)
+                                            ->setSubject('Brand ' . $actionStatus . 'd!')
+                                            ->send();
+                                    } catch (HttpException $e) {
+                                        echo "Error: " . $e->getMessage();
+                                    }
                                 }
                                 // Send Email notification End
                             }
@@ -461,7 +466,7 @@ class BrandController extends Controller
                                                     if ($userDevice->device_platform == 'android') {
                                                         $notificationToken = array($userDevice->notification_token);
                                                         $senderName = Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name;
-                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
+                                                        $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                                                     } else {
                                                         $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                         $note->setBadge($badge);
@@ -486,12 +491,16 @@ class BrandController extends Controller
 
                                 // Send Email notification Start
                                 if (!empty($userDataModel) && $userDataModel instanceof User && !empty($userDataModel->email)) {
-                                    $message = "Brand has been " . $actionStatus . "d, Which you have selected for your product.";
-                                    Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
-                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                        ->setTo($userDataModel->email)
-                                        ->setSubject('Brand ' . $actionStatus . 'd!')
-                                        ->send();
+                                    try {
+                                        $message = "Brand has been " . $actionStatus . "d, Which you have selected for your product.";
+                                        Yii::$app->mailer->compose('admin/general-info-send-to-user-html', ['userModel' => $userDataModel, 'message' => $message])
+                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                            ->setTo($userDataModel->email)
+                                            ->setSubject('Brand ' . $actionStatus . 'd!')
+                                            ->send();
+                                    } catch (HttpException $e) {
+                                        echo "Error: " . $e->getMessage();
+                                    }
                                 }
                                 // Send Email notification End
                             }

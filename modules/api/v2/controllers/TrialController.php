@@ -343,7 +343,7 @@ class TrialController extends ActiveController
                                             ->setTo($userROW->email)
                                             ->setSubject('Request for trial has ' . $isAccept)
                                             ->send();
-                                    } catch (Exception $e) {
+                                    } catch (httpException $e) {
                                         echo "Error: " . $e->getMessage();
                                     }
                                 }
