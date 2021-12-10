@@ -73,8 +73,9 @@ return [
      *
      */
 
-    // Live // client
-    //'google_map_api_key'=>'AIzaSyBuITv7RS9RWyEoZkJ1df6-zrw6ZT_C36Q',
+    // Live // client - BC
+    //'google_map_api_key'=>'AIzaSyBuITv7RS9RWyEoZkJ1df6-zrw6ZT_C36Q', // Not working Now
+    // Live // client -BT
     'google_map_api_key' => 'AIzaSyAO1tfGWm30RyXQbiaVGvKxo0M5h9-4bP8',
 
     'bridecycle_product_sell_charges_percentage' => '5%',
