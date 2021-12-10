@@ -138,7 +138,7 @@ class Brand extends ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['brand_id' => 'id']);
+        return $this->hasMany(Product::class, ['brand_id' => 'id']);
     }
 
     /**

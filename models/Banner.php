@@ -67,7 +67,7 @@ class Banner extends ActiveRecord
                                     }
             }",],
             [['image'], 'file', 'extensions' => 'jpg, png'],
-            [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
+            [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
         ];
     }
 

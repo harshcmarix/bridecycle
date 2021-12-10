@@ -46,8 +46,8 @@ class Notification extends \yii\db\ActiveRecord
             [['ref_id', 'notification_text', 'action', 'ref_type'], 'required'],
             [['is_read', 'created_at'], 'safe'],
             [['notification_text', 'action', 'ref_type'], 'string', 'max' => 255],
-            [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['owner_id' => 'id']],
-            [['notification_receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['notification_receiver_id' => 'id']],
+            [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['owner_id' => 'id']],
+            [['notification_receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['notification_receiver_id' => 'id']],
         ];
     }
 
@@ -87,7 +87,7 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getOwner()
     {
-        return $this->hasOne(User::className(), ['id' => 'owner_id']);
+        return $this->hasOne(User::class, ['id' => 'owner_id']);
     }
 
     /**
@@ -97,7 +97,7 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getNotificationReceiver()
     {
-        return $this->hasOne(User::className(), ['id' => 'notification_receiver_id']);
+        return $this->hasOne(User::class, ['id' => 'notification_receiver_id']);
     }
 
     /**

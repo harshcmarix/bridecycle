@@ -67,7 +67,7 @@ class PromoCode extends ActiveRecord
             [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 100],
             [['value'], 'double'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
             [['start_date','end_date'], 'date', 'format' => 'php:Y-m-d'],
             [['start_date', 'end_date'],'validateDates'],
         ];
@@ -105,6 +105,6 @@ class PromoCode extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

@@ -152,7 +152,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['first_name', 'last_name'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 60],
             [['shop_name', 'shop_email'], 'string', 'max' => 100],
-            [['shop_email'], 'unique', 'targetClass' => ShopDetail::ClassName(), 'targetAttribute' => ['shop_email'], 'filter' => ['!=', 'user_id', Yii::$app->request->get('id')], 'message' => 'Shop email already exist.'],
+            [['shop_email'], 'unique', 'targetClass' => ShopDetail::class, 'targetAttribute' => ['shop_email'], 'filter' => ['!=', 'user_id', Yii::$app->request->get('id')], 'message' => 'Shop email already exist.'],
             [['email'], 'unique', 'message' => 'Email already exist.'],
             [['shop_logo'], 'file'],
             [['password', 'confirm_password'], 'string', 'min' => 6],
@@ -233,7 +233,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getShopDetail()
     {
-        return $this->hasOne(ShopDetail::className(), ['user_id' => 'id']);
+        return $this->hasOne(ShopDetail::class, ['user_id' => 'id']);
     }
 
 
@@ -458,7 +458,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserSubscription()
     {
-        return $this->hasOne(UserSubscription::className(), ['user_id' => 'id']);
+        return $this->hasOne(UserSubscription::class, ['user_id' => 'id']);
     }
 
     public function is13NumbersOnly($attribute)

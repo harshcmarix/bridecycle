@@ -152,7 +152,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getFavouriteProducts()
     {
-        return $this->hasMany(FavouriteProducts::className(), ['user_id' => 'id']);
+        return $this->hasMany(FavouriteProducts::class, ['user_id' => 'id']);
     }
 
     /**
@@ -160,7 +160,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Orders::className(), ['user_id' => 'id']);
+        return $this->hasMany(Orders::class, ['user_id' => 'id']);
     }
 
     /**
@@ -168,7 +168,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getProductRatings()
     {
-        return $this->hasMany(ProductRatings::className(), ['user_id' => 'id']);
+        return $this->hasMany(ProductRatings::class, ['user_id' => 'id']);
     }
 
     /**
@@ -176,7 +176,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getUserAddresses()
     {
-        return $this->hasMany(UserAddresses::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserAddresses::class, ['user_id' => 'id']);
     }
 
     /**
@@ -184,7 +184,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getUserSocialIdentities()
     {
-        return $this->hasMany(UserSocialIdentities::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSocialIdentities::class, ['user_id' => 'id']);
     }
 
     /**
@@ -192,6 +192,6 @@ class SubAdmin extends ActiveRecord
      */
     public function getUserSubscriptions()
     {
-        return $this->hasMany(UserSubscriptions::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSubscriptions::class, ['user_id' => 'id']);
     }
 }

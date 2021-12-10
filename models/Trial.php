@@ -110,7 +110,7 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -120,7 +120,7 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getSender()
     {
-        return $this->hasOne(User::className(), ['id' => 'sender_id']);
+        return $this->hasOne(User::class, ['id' => 'sender_id']);
     }
 
     /**
@@ -130,7 +130,7 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getReceiver()
     {
-        return $this->hasOne(User::className(), ['id' => 'receiver_id']);
+        return $this->hasOne(User::class, ['id' => 'receiver_id']);
     }
 
     /**
@@ -148,7 +148,7 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getSender0()
     {
-        //return $this->hasOne(User::className(), ['id' => 'user_id']);
+        //return $this->hasOne(User::class, ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->sender_id])->one();
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -165,7 +165,7 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getReceiver0()
     {
-        //return $this->hasOne(User::className(), ['id' => 'user_id']);
+        //return $this->hasOne(User::class, ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->receiver_id])->one();
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -184,7 +184,7 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getProduct0()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -194,7 +194,7 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getProductImages0()
     {
-        // return $this->hasMany(ProductImage::className(), ['product_id' => 'id']);
+        // return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
         $productImages = ProductImage::find()->where(['product_id' => $this->product_id])->all();
         if (!empty($productImages)) {
             foreach ($productImages as $key => $value) {
@@ -236,7 +236,7 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getSubCategory0()
     {
-        // return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+        // return $this->hasOne(ProductCategory::class, ['id' => 'sub_category_id']);
         $productSubCategory = ProductCategory::find()->where(['id' => $this->product->sub_category_id])->one();
         if ($productSubCategory instanceof ProductCategory) {
             $subCategoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

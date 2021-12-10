@@ -72,9 +72,9 @@ class ChatHistory extends \yii\db\ActiveRecord
             [['message', 'message_type', 'chat_type'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['file'], 'file', 'maxFiles' => 1, 'extensions' => 'png, jpg, jpeg, gif, bmp, raw, psd, webp'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['from_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['from_user_id' => 'id']],
-            [['to_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['to_user_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['from_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['from_user_id' => 'id']],
+            [['to_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['to_user_id' => 'id']],
 
 
             [['message'], 'required', 'when' => function ($model) {
@@ -136,7 +136,7 @@ class ChatHistory extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -146,7 +146,7 @@ class ChatHistory extends \yii\db\ActiveRecord
      */
     public function getFromUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'from_user_id']);
+        return $this->hasOne(User::class, ['id' => 'from_user_id']);
     }
 
     /**
@@ -156,7 +156,7 @@ class ChatHistory extends \yii\db\ActiveRecord
      */
     public function getToUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'to_user_id']);
+        return $this->hasOne(User::class, ['id' => 'to_user_id']);
     }
 
     /////////////////////// For API use only /////////////////////////////////////
@@ -168,7 +168,7 @@ class ChatHistory extends \yii\db\ActiveRecord
      */
     public function getProduct0()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**

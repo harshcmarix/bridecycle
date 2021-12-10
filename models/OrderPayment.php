@@ -75,7 +75,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             [['card_number'], 'string', 'max' => 25],
             [['expiry_month_year'], 'string', 'max' => 7],
             [['payment_id'], 'string', 'max' => 250],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
         ];
     }
 
@@ -106,6 +106,6 @@ class OrderPayment extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
 }

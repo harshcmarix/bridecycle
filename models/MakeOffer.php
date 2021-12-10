@@ -64,9 +64,9 @@ class MakeOffer extends \yii\db\ActiveRecord
             [['product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
             [['offer_amount'], 'number'],
             [['offered_count', 'created_at', 'updated_at'], 'safe'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['sender_id' => 'id']],
-            [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['receiver_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['sender_id' => 'id']],
+            [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['receiver_id' => 'id']],
         ];
     }
 
@@ -107,7 +107,7 @@ class MakeOffer extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -117,7 +117,7 @@ class MakeOffer extends \yii\db\ActiveRecord
      */
     public function getSender()
     {
-        return $this->hasOne(User::className(), ['id' => 'sender_id']);
+        return $this->hasOne(User::class, ['id' => 'sender_id']);
     }
 
     /**
@@ -127,7 +127,7 @@ class MakeOffer extends \yii\db\ActiveRecord
      */
     public function getReceiver()
     {
-        return $this->hasOne(User::className(), ['id' => 'receiver_id']);
+        return $this->hasOne(User::class, ['id' => 'receiver_id']);
     }
 
 
@@ -140,7 +140,7 @@ class MakeOffer extends \yii\db\ActiveRecord
      */
     public function getProduct0()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**

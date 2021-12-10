@@ -47,7 +47,7 @@ class ProductReceipt extends \yii\db\ActiveRecord
             [['product_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['file'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -72,6 +72,6 @@ class ProductReceipt extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 }

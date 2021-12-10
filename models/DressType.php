@@ -72,6 +72,6 @@ class DressType extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['dress_type_id' => 'id']);
+        return $this->hasMany(Product::class, ['dress_type_id' => 'id']);
     }
 }

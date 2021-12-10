@@ -115,7 +115,7 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
@@ -125,7 +125,7 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
 
     }
 
@@ -136,7 +136,7 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getColor()
     {
-        return $this->hasOne(Color::className(), ['id' => 'color']);
+        return $this->hasOne(Color::class, ['id' => 'color']);
 
     }
 

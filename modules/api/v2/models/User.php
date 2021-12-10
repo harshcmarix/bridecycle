@@ -288,7 +288,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getFavouriteProducts()
     {
-        return $this->hasMany(FavouriteProducts::className(), ['user_id' => 'id']);
+        return $this->hasMany(FavouriteProducts::class, ['user_id' => 'id']);
     }
 
     /**
@@ -298,7 +298,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getShopDetails()
     {
-        // $data = $this->hasMany(ShopDetail::className(), ['user_id' => 'id']);
+        // $data = $this->hasMany(ShopDetail::class, ['user_id' => 'id']);
 
         $data = ShopDetail::find()->where(['user_id' => $this->id])->all();
         if (!empty($data)) {
@@ -327,7 +327,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['user_id' => 'id']);
+        return $this->hasMany(Order::class, ['user_id' => 'id']);
     }
 
     /**
@@ -337,7 +337,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getProductRatings()
     {
-        return $this->hasMany(ProductRating::className(), ['user_id' => 'id']);
+        return $this->hasMany(ProductRating::class, ['user_id' => 'id']);
     }
 
     /**
@@ -347,7 +347,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserAddresses()
     {
-        //return $this->hasMany(UserAddress::className(), ['user_id' => 'id']);
+        //return $this->hasMany(UserAddress::class, ['user_id' => 'id']);
         $result = UserAddress::find()->where(['user_id' => $this->id])->orderBy(['is_primary_address' => SORT_DESC])->all();
 
         if (!empty($result)) {
@@ -367,7 +367,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserSocialIdentities()
     {
-        return $this->hasMany(UserSocialIdentities::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSocialIdentities::class, ['user_id' => 'id']);
     }
 
     /**
@@ -377,7 +377,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserSubscriptions()
     {
-        return $this->hasMany(UserSubscription::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserSubscription::class, ['user_id' => 'id']);
     }
 
     /**
@@ -387,7 +387,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserPurchasedSubscriptions()
     {
-        return $this->hasMany(UserPurchasedSubscriptions::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserPurchasedSubscriptions::class, ['user_id' => 'id']);
     }
 
     /**
@@ -397,7 +397,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserDevices()
     {
-        return $this->hasMany(UserDevice::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserDevice::class, ['user_id' => 'id']);
     }
 
     /**
@@ -475,7 +475,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getShopDetail()
     {
-        return $this->hasOne(ShopDetail::className(), ['user_id' => 'id']);
+        return $this->hasOne(ShopDetail::class, ['user_id' => 'id']);
     }
 
     /**
@@ -483,7 +483,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getBankDetail()
     {
-        return $this->hasOne(UserBankDetails::className(), ['user_id' => 'id']);
+        return $this->hasOne(UserBankDetails::class, ['user_id' => 'id']);
     }
 
 

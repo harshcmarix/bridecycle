@@ -89,10 +89,10 @@ class Subscription extends ActiveRecord
      */
     public function getUserSubscriptions()
     {
-        return $this->hasMany(UserSubscription::className(), ['subscription_id' => 'id']);
+        return $this->hasMany(UserSubscription::class, ['subscription_id' => 'id']);
     }
     public function getSubscribedUsersCount()
     {
-        return $this->hasMany(UserSubscription::className(), ['subscription_id' => 'id'])->count();
+        return $this->hasMany(UserSubscription::class, ['subscription_id' => 'id'])->count();
     }
 }

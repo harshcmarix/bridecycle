@@ -186,13 +186,13 @@ class Product extends \yii\db\ActiveRecord
             [['images', 'receipt'], 'file', 'maxFiles' => 5],
 
             [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
-            [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::className(), 'targetAttribute' => ['dress_type_id' => 'id']],
-            [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
-            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductStatus::className(), 'targetAttribute' => ['status_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['address_id' => 'id']],
+            [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::class, 'targetAttribute' => ['dress_type_id' => 'id']],
+            [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['category_id' => 'id']],
+            [['sub_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['sub_category_id' => 'id']],
+            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductStatus::class, 'targetAttribute' => ['status_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::class, 'targetAttribute' => ['address_id' => 'id']],
 
             [
                 ['images'], 'required', 'when' => function ($model) {
@@ -289,7 +289,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getFavouriteProducts()
     {
-        return $this->hasMany(FavouriteProduct::className(), ['product_id' => 'id']);
+        return $this->hasMany(FavouriteProduct::class, ['product_id' => 'id']);
     }
 
     /**
@@ -299,7 +299,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['product_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['product_id' => 'id']);
     }
 
     /**
@@ -309,7 +309,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductRatings()
     {
-        return $this->hasMany(ProductRating::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductRating::class, ['product_id' => 'id']);
     }
 
     /**
@@ -319,7 +319,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductImages()
     {
-        return $this->hasMany(ProductImage::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
     }
 
     /**
@@ -329,7 +329,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getBrand()
     {
-        return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+        return $this->hasOne(Brand::class, ['id' => 'brand_id']);
     }
 
     /**
@@ -339,7 +339,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getDressType()
     {
-        return $this->hasOne(DressType::className(), ['id' => 'dress_type_id']);
+        return $this->hasOne(DressType::class, ['id' => 'dress_type_id']);
     }
 
     /**
@@ -349,7 +349,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getColor0()
     {
-        return $this->hasOne(Color::className(), ['id' => 'option_color']);
+        return $this->hasOne(Color::class, ['id' => 'option_color']);
     }
 
     /**
@@ -359,7 +359,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
@@ -369,7 +369,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getAddress()
     {
-        return $this->hasOne(UserAddress::className(), ['id' => 'address_id']);
+        return $this->hasOne(UserAddress::class, ['id' => 'address_id']);
     }
 
     /**
@@ -379,7 +379,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getStatus()
     {
-        return $this->hasOne(ProductStatus::className(), ['id' => 'status_id']);
+        return $this->hasOne(ProductStatus::class, ['id' => 'status_id']);
     }
 
     /**
@@ -389,7 +389,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getCategory()
     {
-        return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
+        return $this->hasOne(ProductCategory::class, ['id' => 'category_id']);
     }
 
     /**
@@ -399,7 +399,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getSubCategory()
     {
-        return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+        return $this->hasOne(ProductCategory::class, ['id' => 'sub_category_id']);
     }
 
     /**
@@ -409,7 +409,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductReceipt()
     {
-        return $this->hasMany(ProductReceipt::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductReceipt::class, ['product_id' => 'id']);
     }
 
     /**
@@ -419,7 +419,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getShippingCost()
     {
-        return $this->hasMany(ShippingPrice::className(), ['product_id' => 'id']);
+        return $this->hasMany(ShippingPrice::class, ['product_id' => 'id']);
     }
 
     /**
@@ -429,7 +429,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductSizes()
     {
-        return $this->hasMany(ProductSizes::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductSizes::class, ['product_id' => 'id']);
     }
 
 
@@ -462,7 +462,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductImages0()
     {
-        // return $this->hasMany(ProductImage::className(), ['product_id' => 'id']);
+        // return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
         $productImages = ProductImage::find()->where(['product_id' => $this->id])->all();
         if (!empty($productImages)) {
             foreach ($productImages as $key => $value) {
@@ -485,7 +485,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getCategory0()
     {
-        // return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
+        // return $this->hasOne(ProductCategory::class, ['id' => 'category_id']);
         $productCategory = ProductCategory::find()->where(['id' => $this->category_id])->one();
         if ($productCategory instanceof ProductCategory) {
             $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -505,7 +505,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getSubCategory0()
     {
-        // return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+        // return $this->hasOne(ProductCategory::class, ['id' => 'sub_category_id']);
         $productSubCategory = ProductCategory::find()->where(['id' => $this->sub_category_id])->one();
         if ($productSubCategory instanceof ProductCategory) {
             $subCategoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -524,7 +524,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getBrand0()
     {
-        // return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+        // return $this->hasOne(Brand::class, ['id' => 'brand_id']);
         $brand = Brand::find()->where(['id' => $this->brand_id])->one();
         if ($brand instanceof Brand) {
             $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -650,7 +650,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductReceipt0()
     {
-        //return $this->hasMany(ProductReceipt::className(), ['product_id' => 'id']);
+        //return $this->hasMany(ProductReceipt::class, ['product_id' => 'id']);
         $productReceipts = ProductReceipt::find()->where(['product_id' => $this->id])->all();
         if (!empty($productReceipts)) {
             foreach ($productReceipts as $key => $value) {
@@ -692,7 +692,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductTrackings()
     {
-        return $this->hasMany(ProductTracking::className(), ['product_id' => 'id']);
+        return $this->hasMany(ProductTracking::class, ['product_id' => 'id']);
     }
 
     /**
@@ -702,8 +702,8 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductTracking()
     {
-        //return $this->hasOne(ProductTracking::className(), ['id' => 'product_tracking_id']);
-        //return $this->hasOne(ProductTracking::className(), ['id' => 'product_tracking_id'])->joinWith('product_tracking AS pt',['pt.parent_id' => 'ProductTracking.product_tracking_id']);
+        //return $this->hasOne(ProductTracking::class, ['id' => 'product_tracking_id']);
+        //return $this->hasOne(ProductTracking::class, ['id' => 'product_tracking_id'])->joinWith('product_tracking AS pt',['pt.parent_id' => 'ProductTracking.product_tracking_id']);
         //$result->joinWith('productTrackingChild As child');
         //return $result;
 
@@ -716,7 +716,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductSizes0()
     {
-        //return $this->hasMany(ProductSizes::className(), ['product_id' => 'id']);
+        //return $this->hasMany(ProductSizes::class, ['product_id' => 'id']);
 
         $ProductSizes = ProductSizes::find()->where(['product_id' => $this->id])->all();
         $data = [];

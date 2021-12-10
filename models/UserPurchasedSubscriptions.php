@@ -63,7 +63,7 @@ class UserPurchasedSubscriptions extends \yii\db\ActiveRecord
             [['amount'], 'number'],
             [['date_time', 'device_platform', 'subscription_response', 'created_at', 'updated_at'], 'safe'],
             [['status', 'subscription_type'], 'string', 'max' => 250],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -105,7 +105,7 @@ class UserPurchasedSubscriptions extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     ///////////////////////For api use only /////////////////////////////////////////////

@@ -88,7 +88,7 @@ class ProductCategory extends \yii\db\ActiveRecord
                                     return $('#productcategory-image').val() == '';                                    
                                     }
                                 }",],
-            [['parent_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['parent_category_id' => 'id']],
+            [['parent_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['parent_category_id' => 'id']],
             [['image'], 'file', 'extensions' => 'jpg, png'],
         ];
     }
@@ -116,7 +116,7 @@ class ProductCategory extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['category_id' => 'id']);
+        return $this->hasMany(Product::class, ['category_id' => 'id']);
     }
 
     /**
@@ -126,7 +126,7 @@ class ProductCategory extends \yii\db\ActiveRecord
      */
     public function getProducts0()
     {
-        return $this->hasMany(Product::className(), ['sub_category_id' => 'id']);
+        return $this->hasMany(Product::class, ['sub_category_id' => 'id']);
     }
     /**
      * Gets query for [[ProductCategories]].
@@ -135,11 +135,11 @@ class ProductCategory extends \yii\db\ActiveRecord
      */
     // public function getProductCategories()
     // {
-    //     return $this->hasOne(ProductCategory::className(), ['id' => 'parent_category_id']);
+    //     return $this->hasOne(ProductCategory::class, ['id' => 'parent_category_id']);
     // }
     public function getChildren()
     {
-        return $this->hasMany(self::className(), ['parent_category_id' => 'id']);
+        return $this->hasMany(self::class, ['parent_category_id' => 'id']);
     }
 
     /**
@@ -147,6 +147,6 @@ class ProductCategory extends \yii\db\ActiveRecord
      */
     public function getParent()
     {
-        return $this->hasOne(self::className(), ['id' => 'parent_category_id']);
+        return $this->hasOne(self::class, ['id' => 'parent_category_id']);
     }
 }

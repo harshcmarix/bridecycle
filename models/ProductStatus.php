@@ -62,6 +62,6 @@ class ProductStatus extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['status_id' => 'id']);
+        return $this->hasMany(Product::class, ['status_id' => 'id']);
     }
 }
