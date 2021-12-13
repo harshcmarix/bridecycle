@@ -72,8 +72,8 @@ class UserSubscription extends \yii\db\ActiveRecord
             [['user_id', 'subscription_id'], 'integer'],
             [['card_number', 'cvv'], 'integer'],
             [['card_holder_name', 'payment_response', 'payment_status', 'transaction_id', 'card_type', 'expiry_month_year', 'created_at', 'updated_at'], 'safe'],
-            [['subscription_id'], 'exist', 'skipOnError' => true, 'targetClass' => Subscription::className(), 'targetAttribute' => ['subscription_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['subscription_id'], 'exist', 'skipOnError' => true, 'targetClass' => Subscription::class, 'targetAttribute' => ['subscription_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -98,7 +98,7 @@ class UserSubscription extends \yii\db\ActiveRecord
      */
     public function getSubscription()
     {
-        return $this->hasOne(Subscription::className(), ['id' => 'subscription_id']);
+        return $this->hasOne(Subscription::class, ['id' => 'subscription_id']);
     }
 
     /**
@@ -108,6 +108,6 @@ class UserSubscription extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

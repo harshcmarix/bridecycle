@@ -43,7 +43,9 @@ class SellerRating extends \yii\db\ActiveRecord
         ];
     }
 
-
+    /**
+     *
+     */
     const FIVE_STAR_RATE = '5';
     const FOUR_STAR_RATE = '4';
     const THREE_STAR_RATE = '3';

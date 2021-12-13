@@ -67,7 +67,7 @@ class UserAddress extends \yii\db\ActiveRecord
             [['created_at', 'updated_at', 'address'], 'safe'],
             [['address', 'zip_code'], 'string', 'max' => 100],
             [['street', 'city', 'state', 'country'], 'string', 'max' => 50],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -98,7 +98,7 @@ class UserAddress extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['user_address_id' => 'id']);
+        return $this->hasMany(Order::class, ['user_address_id' => 'id']);
     }
 
     /**
@@ -108,6 +108,6 @@ class UserAddress extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

@@ -2,11 +2,8 @@
 
 namespace app\modules\admin\models;
 
-use yii\base\{
-    Model,
-    InvalidParamException
-};
-
+use yii\base\Model;
+use yii\base\InvalidParamException;
 
 /**
  * Class ResetPasswordForm

@@ -50,7 +50,7 @@ class SearchHistory extends ActiveRecord
             [['user_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['search_text'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -84,6 +84,6 @@ class SearchHistory extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

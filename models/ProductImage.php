@@ -52,7 +52,7 @@ class ProductImage extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             //[['name','images'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             [['name','images'], 'file', 'maxFiles' => 5],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -78,6 +78,6 @@ class ProductImage extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 }

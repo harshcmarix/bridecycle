@@ -43,9 +43,9 @@ class ProductTracking extends \yii\db\ActiveRecord
             [['price'], 'number'],
             [['resale_date', 'created_at', 'updated_at'], 'safe'],
             [['location'], 'string', 'max' => 255],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -75,7 +75,7 @@ class ProductTracking extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
 
     /**
@@ -85,7 +85,7 @@ class ProductTracking extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -95,7 +95,7 @@ class ProductTracking extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
@@ -105,7 +105,7 @@ class ProductTracking extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::className(), ['product_tracking_id' => 'id']);
+        return $this->hasMany(Product::class, ['product_tracking_id' => 'id']);
     }
 
     /**
@@ -115,6 +115,6 @@ class ProductTracking extends \yii\db\ActiveRecord
      */
     public function getProductTrackingChild()
     {
-        return $this->hasMany(ProductTracking::className(), ['id' => 'parent_id']);
+        return $this->hasMany(ProductTracking::class, ['id' => 'parent_id']);
     }
 }

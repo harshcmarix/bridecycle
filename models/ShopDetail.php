@@ -54,7 +54,7 @@ class ShopDetail extends \yii\db\ActiveRecord
             //[['shop_logo','shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
             [[ 'shop_name', 'shop_email', 'website'], 'string', 'max' => 255],
             [['shop_phone_number'], 'string', 'max' => 15],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -84,6 +84,6 @@ class ShopDetail extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

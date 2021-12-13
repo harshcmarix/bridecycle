@@ -53,7 +53,7 @@ class AbuseReport extends \yii\db\ActiveRecord
             [['content'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['seller_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['seller_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -91,7 +91,7 @@ class AbuseReport extends \yii\db\ActiveRecord
      */
     public function getSeller()
     {
-        return $this->hasOne(User::className(), ['id' => 'seller_id']);
+        return $this->hasOne(User::class, ['id' => 'seller_id']);
     }
 
     /**
@@ -101,7 +101,7 @@ class AbuseReport extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /////////api use only/////////////
@@ -113,7 +113,7 @@ class AbuseReport extends \yii\db\ActiveRecord
      */
     public function getUser0()
     {
-        //return $this->hasOne(User::className(), ['id' => 'user_id']);
+        //return $this->hasOne(User::class, ['id' => 'user_id']);
         $user = User::find()->where(['id' => $this->user_id])->one();
         if ($user instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -132,7 +132,7 @@ class AbuseReport extends \yii\db\ActiveRecord
      */
     public function getSeller0()
     {
-        //return $this->hasOne(User::className(), ['id' => 'seller_id']);
+        //return $this->hasOne(User::class, ['id' => 'seller_id']);
         $seller = User::find()->where(['id' => $this->seller_id])->one();
         if ($seller instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

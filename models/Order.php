@@ -66,8 +66,8 @@ class Order extends \yii\db\ActiveRecord
             [['user_id', 'user_address_id', 'total_amount'], 'integer'],
             [['status'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['user_address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::className(), 'targetAttribute' => ['user_address_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::class, 'targetAttribute' => ['user_address_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -107,7 +107,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     /**
@@ -117,7 +117,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getUserAddress()
     {
-        return $this->hasOne(UserAddress::className(), ['id' => 'user_address_id']);
+        return $this->hasOne(UserAddress::class, ['id' => 'user_address_id']);
     }
 
     /**
@@ -127,7 +127,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
 /////////////////////////////////// For API Use //////////////////////////////////////////

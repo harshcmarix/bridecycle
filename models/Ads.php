@@ -92,10 +92,10 @@ class Ads extends \yii\db\ActiveRecord
                         }
                     }",],
 
-                [['category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
-                [['sub_category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['sub_category_id' => 'id']],
-                [['product_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-                [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::className(), 'targetAttribute' => ['brand_id' => 'id']],
+                [['category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['category_id' => 'id']],
+                [['sub_category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['sub_category_id' => 'id']],
+                [['product_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+                [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
                 [['image'], 'file', 'extensions' => 'jpg, png'],
             ];
         }
@@ -140,7 +140,7 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getCategory()
     {
-        return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
+        return $this->hasOne(ProductCategory::class, ['id' => 'category_id']);
     }
 
     /**
@@ -150,7 +150,7 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getSubCategory()
     {
-        return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+        return $this->hasOne(ProductCategory::class, ['id' => 'sub_category_id']);
     }
 
     /**
@@ -160,7 +160,7 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -170,7 +170,7 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getBrand()
     {
-        return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+        return $this->hasOne(Brand::class, ['id' => 'brand_id']);
     }
 
     ///////////////////////// For API uses /////////////////////////////////////
@@ -182,7 +182,7 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getCategory0()
     {
-        return $this->hasOne(ProductCategory::className(), ['id' => 'category_id']);
+        return $this->hasOne(ProductCategory::class, ['id' => 'category_id']);
     }
 
     /**
@@ -192,7 +192,7 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getSubCategory0()
     {
-        return $this->hasOne(ProductCategory::className(), ['id' => 'sub_category_id']);
+        return $this->hasOne(ProductCategory::class, ['id' => 'sub_category_id']);
     }
 
     /**
@@ -202,7 +202,7 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getProduct0()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -212,7 +212,7 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getBrand0()
     {
-        return $this->hasOne(Brand::className(), ['id' => 'brand_id']);
+        return $this->hasOne(Brand::class, ['id' => 'brand_id']);
     }
 
 }

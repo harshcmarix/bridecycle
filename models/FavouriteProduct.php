@@ -50,8 +50,8 @@ class FavouriteProduct extends ActiveRecord
             [['user_id', 'product_id'], 'required'],
             [['user_id', 'product_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -86,7 +86,7 @@ class FavouriteProduct extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
@@ -96,7 +96,7 @@ class FavouriteProduct extends ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
     // api use only
     /**
@@ -106,7 +106,7 @@ class FavouriteProduct extends ActiveRecord
      */
     public function getUser0()
     {
-        //return $this->hasOne(User::className(), ['id' => 'user_id']);
+        //return $this->hasOne(User::class, ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->user_id])->one();
         if($data instanceof User){
             $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

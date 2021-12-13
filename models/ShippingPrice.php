@@ -51,8 +51,8 @@ class ShippingPrice extends \yii\db\ActiveRecord
             [['product_id', 'shipping_cost_id'], 'integer'],
             [['price'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
-            [['shipping_cost_id'], 'exist', 'skipOnError' => true, 'targetClass' => ShippingCost::className(), 'targetAttribute' => ['shipping_cost_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['shipping_cost_id'], 'exist', 'skipOnError' => true, 'targetClass' => ShippingCost::class, 'targetAttribute' => ['shipping_cost_id' => 'id']],
         ];
     }
 
@@ -78,7 +78,7 @@ class ShippingPrice extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -88,6 +88,6 @@ class ShippingPrice extends \yii\db\ActiveRecord
      */
     public function getShippingCost()
     {
-        return $this->hasOne(ShippingCost::className(), ['id' => 'shipping_cost_id']);
+        return $this->hasOne(ShippingCost::class, ['id' => 'shipping_cost_id']);
     }
 }

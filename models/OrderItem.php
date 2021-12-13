@@ -107,7 +107,7 @@ class OrderItem extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
 
     /**
@@ -117,7 +117,7 @@ class OrderItem extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**

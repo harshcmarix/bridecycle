@@ -67,10 +67,10 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
             [['amount', 'product_price', 'tax'], 'number'],
             [['note_content'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
-            [['order_item_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderItem::className(), 'targetAttribute' => ['order_item_id' => 'id']],
-            [['seller_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['seller_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
+            [['order_item_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderItem::class, 'targetAttribute' => ['order_item_id' => 'id']],
+            [['seller_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['seller_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -115,7 +115,7 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
 
     /**
@@ -125,7 +125,7 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
      */
     public function getOrderItem()
     {
-        return $this->hasOne(OrderItem::className(), ['id' => 'order_item_id']);
+        return $this->hasOne(OrderItem::class, ['id' => 'order_item_id']);
     }
 
     /**
@@ -135,7 +135,7 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
      */
     public function getSeller()
     {
-        return $this->hasOne(User::className(), ['id' => 'seller_id']);
+        return $this->hasOne(User::class, ['id' => 'seller_id']);
     }
 
     /**
@@ -145,7 +145,7 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace app\modules\admin\models;
 
 use Yii;
 use yii\base\Model;
+use yii\web\HttpException;
 
 /**
  * Class ForgotPasswordForm
@@ -60,12 +61,17 @@ class ForgotPasswordForm extends Model
             }
         }
 
-        $sendMail = Yii::$app->mailer->compose('admin/passwordResetToken-html',['user' => $user])
-            ->setFrom([Yii::$app->params['support_email'] => Yii::$app->name . ' robot'])
-            ->setTo($this->email)
-            ->setSubject('Password Reset For ' . Yii::$app->name)
-            ->send();
-
-        return $sendMail;
+        if (!empty($this->email)) {
+            try {
+                $sendMail = Yii::$app->mailer->compose('admin/passwordResetToken-html', ['user' => $user])
+                    ->setFrom([Yii::$app->params['support_email'] => Yii::$app->name . ' robot'])
+                    ->setTo($this->email)
+                    ->setSubject('Password Reset For ' . Yii::$app->name)
+                    ->send();
+                return $sendMail;
+            } catch (HttpException $e) {
+                echo "Error: " . $e->getMessage();
+            }
+        }
     }
 }
