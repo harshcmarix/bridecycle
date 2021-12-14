@@ -85,6 +85,7 @@ class UserBankDetailsController extends ActiveController
         unset($actions['create']);
         unset($actions['view']);
         unset($actions['delete']);
+
         return $actions;
     }
 
@@ -162,8 +163,7 @@ class UserBankDetailsController extends ActiveController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public
-    function actionDelete($id)
+    public function actionDelete($id)
     {
         $model = UserBankDetails::find()->where(['id' => $id])->one();
         if (!$model instanceof UserBankDetails || $model->user_id != Yii::$app->user->identity->id) {
@@ -180,8 +180,7 @@ class UserBankDetailsController extends ActiveController
      * @return UserBankDetails the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected
-    function findModel($id)
+    protected function findModel($id)
     {
         if (($model = UserBankDetails::findOne($id)) !== null) {
             return $model;

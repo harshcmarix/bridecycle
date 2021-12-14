@@ -78,7 +78,6 @@ echo Dialog::widget(
                 </div>
             </div>
 
-
             <div class="row">
                 <div class="col col-md-6">
                     <?= $form->field($model, 'url')->textInput() ?>

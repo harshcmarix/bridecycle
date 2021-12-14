@@ -45,6 +45,7 @@ class SiteController extends ActiveController
         unset($actions['update']);
         unset($actions['view']);
         unset($actions['delete']);
+
         return $actions;
     }
 

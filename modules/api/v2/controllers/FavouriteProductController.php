@@ -82,7 +82,6 @@ class FavouriteProductController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
-        //unset($actions['index-list']);
         unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);

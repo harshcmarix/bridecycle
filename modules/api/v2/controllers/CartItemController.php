@@ -115,8 +115,6 @@ class CartItemController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
-        //unset($actions['delete']);
-
         return $actions;
     }
 
@@ -316,11 +314,14 @@ class CartItemController extends ActiveController
             return $modelAddress;
         }
 
-        $modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::BILLING])->one();
+        //$modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::BILLING,'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
+        $modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
         if (empty($modelAddressBillingFind)) {
             $modelAddressBillingFind = $modelAddress;
             $modelAddressBillingFind->type = UserAddress::BILLING;
             $modelAddressBillingFind->save();
+        } else {
+            $modelOrder->user_address_id = $modelAddressBillingFind->id;
         }
 
         $productIds = explode(",", $post['product_id']);
@@ -512,7 +513,6 @@ class CartItemController extends ActiveController
 
                                             if ($userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
                                                 $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
-
                                             }
                                         }
                                     }
@@ -521,7 +521,6 @@ class CartItemController extends ActiveController
                             }
                         }
                     }
-                    //$modelOrder->status = Order::STATUS_ORDER_INPROGRESS;                    
 
                     if (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') {
                         $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
@@ -535,7 +534,6 @@ class CartItemController extends ActiveController
                             }
                         }
                     }
-
                     $modelOrder->save(false);
                 }
                 $modelOrderPayment->payment_response = (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') ? $response : "";
@@ -667,12 +665,8 @@ class CartItemController extends ActiveController
             $payment = Payment::get($response->getId(), $apiContext);
             return $payment;
         } catch (PayPalConnectionException $pce) {
-//            // Don't spit out errors or use "exit" like this in production code
-//            return json_decode($pce->getData());
-            //echo $pce->getCode();
-            //echo $pce->getData();
-            //die($pce);
-            return $pce;
+            // Don't spit out errors or use "exit" like this in production code
+            echo "Error: " . $pce->getMessage();
         }
     }
 
@@ -720,8 +714,10 @@ class CartItemController extends ActiveController
         }
 
         $buyerUser = User::findOne($modelOrder->user_id);
-        $buyerUserAddress = UserAddress::find()->where(['user_id' => $modelOrder->user_id])->one();
-        $sellerAddress = UserAddress::find()->where(['user_id' => $modelseller->id])->one();
+        //$buyerUserAddress = UserAddress::find()->where(['user_id' => $modelOrder->user_id])->one();
+        $buyerUserAddress = UserAddress::find()->where(['id' => $modelOrder->user_address_id])->one();
+        //$sellerAddress = UserAddress::find()->where(['user_id' => $modelseller->id])->one();
+        $sellerAddress = UserAddress::find()->where(['id' => $modelOrderItem->product->address_id])->one();
         $currentDate = date('d-m-Y H:i');
 
         // Start - Generate Ordre Tracking Number
@@ -759,11 +755,14 @@ class CartItemController extends ActiveController
         $modelOrderItem->save(false);
 
         return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;
+        
     }
 
     /**
+     *
      * @return array|\yii\db\ActiveRecord[]
      * @throws BadRequestHttpException
+     *
      */
     public function actionAddProductToCheckout()
     {
@@ -778,7 +777,6 @@ class CartItemController extends ActiveController
         $productSold = 0;
         if (!empty($modelProducts)) {
             foreach ($modelProducts as $prodKey => $modelProductRow) {
-                //if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 && in_array($modelProductRow->status_id, [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
                 if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 || in_array($modelProductRow->status_id, [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
                     $productSold++;
                 }

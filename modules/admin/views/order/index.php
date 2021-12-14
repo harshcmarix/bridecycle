@@ -82,13 +82,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $dataImages = [];
                                 if (!empty($images)) {
                                     foreach ($images as $imageRow) {
-
                                         if (!empty($imageRow) && $imageRow instanceof ProductImage && !empty($imageRow->name) && file_exists(Yii::getAlias('@productImageRelativePath') . '/' . $imageRow->name)) {
                                             $image_path = Yii::getAlias('@productImageAbsolutePath') . '/' . $imageRow->name;
                                         } else {
                                             $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                                         }
-
                                         $dataImages[] = ['content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),
                                             'options' => ['interval' => '600']
                                         ];
@@ -135,10 +133,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     } else {
                         $html .= "<tr><td colspan='5'><p>Product data not found.</p></td></tr>";
-
                     }
                     $html .= "</table>";
-
                     return $html;
                 },
                 'header' => 'Order Products',
@@ -157,28 +153,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (!empty($model->orderItems)) {
                         foreach ($model->orderItems as $key => $orderItem) {
                             if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
-
                                 $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->tax)));
-
                             } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
-
                                 if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
-
                                     $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price)));
-
                                 } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
-
                                     $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->product->price));
-
                                 } else {
-
                                     $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->price));
-
                                 }
                             }
                         }
                     }
-
                     return $brideEarning;
                 },
                 'filter' => '',
@@ -190,28 +176,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (!empty($model->orderItems)) {
                         foreach ($model->orderItems as $key => $orderItem) {
                             if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
-
                                 $brideEarning = $orderItem->getBrideEarning(($orderItem->price - $orderItem->tax));
-
                             } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
-
                                 if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
-
                                     $brideEarning = $orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price));
-
                                 } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
-
                                     $brideEarning = $orderItem->getBrideEarning($orderItem->product->price);
-
                                 } else {
-
                                     $brideEarning = $orderItem->getBrideEarning($orderItem->price);
-
                                 }
                             }
                         }
                     }
-
                     return Yii::$app->formatter->asCurrency($model->total_amount - $brideEarning);
                 },
                 'filter' => '',
@@ -290,11 +266,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'itemLabelPlural' => 'Orders',
         ]);
         ?>
-
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
     function clearFilter(element) {
         element.previousSibling.value = '';
         var e = $.Event('keyup');
@@ -371,7 +346,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     setTimeout(function () {
                         $(document).scrollTop($(document).innerHeight());
                     }, 200);
-                })
+                });
             });
     });
 

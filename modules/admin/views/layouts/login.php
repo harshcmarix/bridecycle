@@ -1,6 +1,5 @@
 <?php
 
-
 use yii\helpers\Html;
 
 \dmstr\web\AdminLteAsset::register($this);

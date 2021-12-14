@@ -97,6 +97,7 @@ class UserSubscriptionController extends ActiveController
         unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);
+
         return $actions;
     }
 
@@ -179,7 +180,7 @@ class UserSubscriptionController extends ActiveController
                     'card_exp_month' => $expMontYear[0],
                     'card_exp_year' => $expMontYear[1],
                     'card_first_name' => $cardHoderName[0],
-                    'card_last_name' => (!empty($cardHoderName[1])) ? $cardHoderName[1] : "Seller", //Yii::$app->name
+                    'card_last_name' => (!empty($cardHoderName[1])) ? $cardHoderName[1] : "Seller",
                     'sub_total' => $modelSubscriptionPackage->amount,
                     'user' => Yii::$app->user->identity,
                     'user_Address' => $modelAddress,
@@ -231,21 +232,6 @@ class UserSubscriptionController extends ActiveController
 
         return $this->redirect(['index']);
     }
-
-//    /**
-//     * @param null $is_success
-//     * @param null $subscription_package_id
-//     * @param null $owner_id
-//     * @param null $user_subdcription_id
-//     */
-//    public function actionPaypalPaymentResponse($is_success = null, $subscription_package_id = null, $owner_id = null, $user_subdcription_id = null)
-//    {
-//        if (!empty($is_success) && $is_success == true || $is_success == '1') {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
 
     /**
      * @param $request
@@ -364,7 +350,8 @@ class UserSubscriptionController extends ActiveController
             //echo $pce->getCode();
             //echo $pce->getData();
             //die($pce);
-            return $pce;
+            //return $pce;
+            echo "Error: " . $pce->getMessage();
         }
     }
 

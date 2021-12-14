@@ -10,12 +10,13 @@ use app\models\PromoCode;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <div class="box box-default">
-    <div class="box-header"></div>
+<!--    <div class="box-header"></div>-->
     <div class="box-body">
 
         <div class="promo-code-form">
 
             <?php $form = ActiveForm::begin(['enableAjaxValidation' => true]); ?>
+
             <div class="row">
                 <div class="col-md-6">
                     <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
@@ -60,7 +61,8 @@ use app\models\PromoCode;
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
+
     $('#promocode-type').on('change', function () {
         if (this.value == 'discount') {
             $('#promocodeDiscount').removeClass('d-none');
@@ -76,4 +78,5 @@ use app\models\PromoCode;
             $('#promocodeDiscount').addClass('d-none');
         }
     });
+
 </script>

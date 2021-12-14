@@ -34,7 +34,7 @@ class UserController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index', 'create', 'update', 'view', 'delete', 'index-new-customer', 'new-customer-create', 'new-customer-update', 'new-customer-view', 'new-customer-delete', 'index-new-shop-owner-customer', 'new-shop-owner-customer-create', 'new-shop-owner-customer-update', 'new-shop-owner-customer-view', 'new-shop-owner-customer-delete'],
                 'rules' => [
                     [

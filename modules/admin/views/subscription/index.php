@@ -6,7 +6,6 @@ use yii\helpers\Url;
 use kartik\editable\Editable;
 use app\models\Subscription;
 
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\SubscriptionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -83,7 +82,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'width' => '12%'
                 ],
             ],
-
             'pjax' => true, // pjax is set to always true for this demo
             // set your toolbar
             'toolbar' => [
@@ -105,7 +103,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]),
                     'options' => ['class' => 'btn-group mr-2']
                 ],
-
                 '{toggleData}',
             ],
             'toggleDataContainer' => ['class' => 'btn-group mr-2'],
@@ -128,7 +125,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
+
     function clearFilter(element) {
         element.previousSibling.value = '';
         var e = $.Event('keyup');
@@ -196,7 +194,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
 
@@ -252,7 +250,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
     });
@@ -262,4 +260,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

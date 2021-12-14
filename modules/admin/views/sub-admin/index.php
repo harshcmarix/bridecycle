@@ -91,7 +91,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
+
     function clearFilter(element) {
         element.previousSibling.value = '';
         var e = $.Event('keyup');
@@ -99,24 +100,24 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function(){
+    $('document').ready(function () {
         $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var input;
         var submit_form = false;
         var filter_selector = '#sub-admin-grid-filters input';
 
-        $("body").on('beforeFilter', "#sub-admin-grid" , function(event) {
+        $("body").on('beforeFilter', "#sub-admin-grid", function (event) {
             return submit_form;
         });
 
-        $("body").on('afterFilter', "#sub-admin-grid" , function(event) {
+        $("body").on('afterFilter', "#sub-admin-grid", function (event) {
             submit_form = false;
         });
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-            .on('keyup', filter_selector, function(e) {
+            .on('keyup', filter_selector, function (e) {
                 input = $(this).attr('name');
                 var keyCode = e.keyCode ? e.keyCode : e.which;
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
@@ -126,8 +127,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             })
-            .on('pjax:success', function() {
-                var i = $("[name='"+input+"']");
+            .on('pjax:success', function () {
+                var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);
 
@@ -154,4 +155,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

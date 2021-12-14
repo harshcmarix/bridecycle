@@ -47,6 +47,7 @@ use kartik\daterange\DateRangePicker;
         'method' => 'get',
     ]);
     ?>
+
     <div class="users-form custom-style">
         <div class="row">
             <div class="col col-md-12 form-inline">
@@ -66,6 +67,7 @@ use kartik\daterange\DateRangePicker;
             <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
+
     <?php ActiveForm::end(); ?>
 
 </div>

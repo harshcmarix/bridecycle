@@ -16,7 +16,6 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
-use Exception;
 
 /**
  * SellerRatingController implements the CRUD actions for SellerRating model.
@@ -90,6 +89,7 @@ class SellerRatingController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
+
         return $actions;
     }
 

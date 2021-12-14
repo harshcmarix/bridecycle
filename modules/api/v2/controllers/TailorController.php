@@ -85,6 +85,7 @@ class TailorController extends ActiveController
         unset($actions['view']);
         unset($actions['delete']);
         unset($actions['create']);
+
         return $actions;
     }
 

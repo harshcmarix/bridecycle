@@ -22,7 +22,7 @@ class ProductRatingController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index', 'view', 'update', 'delete'],
                 'rules' => [
                     [

@@ -85,6 +85,7 @@ class SearchHistoryController extends ActiveController
         unset($actions['view']);
         unset($actions['create']);
         unset($actions['delete']);
+
         return $actions;
     }
 

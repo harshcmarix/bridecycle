@@ -15,8 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="box box-default">
-    <div class="box-header"></div>
+
     <div class="box-body">
+
         <?= DetailView::widget([
             'model' => $model,
             'attributes' => [
@@ -88,13 +89,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
         ]) ?>
+
     </div>
+
     <div class="box-footer">
+
         <p>
             <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
         </p>
+
     </div>
+
 </div>
+
 <script type="text/javascript">
     function tailorimagemodal(id) {
         $('#tailorimagemodal_' + id).modal('show');

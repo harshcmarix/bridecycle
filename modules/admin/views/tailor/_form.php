@@ -19,8 +19,9 @@ echo Dialog::widget(
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
+
     <div class="box-body">
+
         <div class="tailor-form">
             <?php $form = ActiveForm::begin(); ?>
             <div class="row">
@@ -143,10 +144,13 @@ echo Dialog::widget(
             </div>
             <?php ActiveForm::end(); ?>
         </div>
+
     </div>
+
 </div>
 
-<script>
+<script type="text/javascript">
+
     //image delete using rejax
     var image_empty = <?php echo Tailor::IMAGE_EMPTY?>;
     var image_not_empty = <?php echo Tailor::IMAGE_NOT_EMPTY?>;
@@ -185,4 +189,5 @@ echo Dialog::widget(
     function tailorimagevouchermodal(id) {
         $('#tailorimagevouchermodal_' + id).modal('show');
     }
+
 </script>

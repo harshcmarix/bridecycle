@@ -18,7 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
-
         <?=
         GridView::widget([
             'id' => 'product-category-grid',
@@ -157,7 +156,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </div>
 </div>
+
 <script type="text/javascript">
+
     function productcategorymodal(id) {
         $('#productcategorymodal_' + id).modal('show');
     }
@@ -295,4 +296,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

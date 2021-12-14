@@ -14,7 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
     <div class="box-body">
         <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
@@ -170,7 +169,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
+
     function changeStatus($this) {
         var id = $this.getAttribute('data-key');
         var status = $($this.selectedOptions).text();
@@ -261,7 +261,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
 
@@ -274,14 +274,17 @@ $this->params['breadcrumbs'][] = $this->title;
         $('select').on('change', function () {
             isSelect = true;
         });
+
         $('input').on('keypress', function () {
             isSelect = false;
         });
+
         $("body").on('beforeFilter', "#trial-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
+
         $("body").on('afterFilter', "#trial-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
@@ -317,7 +320,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
     });
@@ -327,4 +330,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

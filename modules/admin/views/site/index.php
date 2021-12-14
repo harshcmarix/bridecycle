@@ -242,6 +242,7 @@ $this->title = 'Dashboard';
 </div>
 
 <div class="row">
+
     <div class="col-md-6 col-xl-6">
         <div class="box box-basic chart-shadow">
             <div class="box-header">
@@ -302,6 +303,7 @@ $this->title = 'Dashboard';
             </div>
         </div>
     </div>
+
     <div class="col-md-6 col-xl-6">
         <div class="box box-basic chart-shadow">
             <div class="box-header">
@@ -362,4 +364,5 @@ $this->title = 'Dashboard';
             </div>
         </div>
     </div>
+
 </div>

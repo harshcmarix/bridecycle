@@ -84,11 +84,14 @@ echo Dialog::widget(
             <div class="row">
                 <div class="col col-md-6">
                     <?php
+
                     $disabled = false;
+
                     if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status) && in_array($model->status, [Brand::STATUS_APPROVE, Brand::STATUS_DECLINE])) {
                         $disabled = true;
                     }
                     ?>
+
                     <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
                         'data' => Brand::ARR_BRAND_STATUS,
                         'pluginOptions' => [
@@ -96,6 +99,7 @@ echo Dialog::widget(
                             'disabled' => $disabled
                         ],
                     ]); ?>
+
                 </div>
             </div>
 
@@ -107,11 +111,11 @@ echo Dialog::widget(
             <?php ActiveForm::end(); ?>
 
         </div>
-
     </div>
 </div>
 
 <script>
+
     var image_empty = <?php echo Brand::IMAGE_EMPTY ?>;
     $('.pjax-delete-link').on('click', function(e) {
         e.preventDefault();
@@ -127,4 +131,5 @@ echo Dialog::widget(
     function brandmodal(id) {
         $('#brandmodal_' + id).modal('show');
     }
+
 </script>

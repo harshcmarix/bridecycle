@@ -93,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
             ]) ?>
+
             <p>
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
             </p>
@@ -103,7 +104,9 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <script type="text/javascript">
+
     function productcategorymodal(id) {
         $('#productcategorymodal_' + id).modal('show');
     }
+
 </script>

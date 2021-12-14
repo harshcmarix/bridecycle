@@ -84,6 +84,7 @@ class SubscriptionController extends ActiveController
         unset($actions['update']);
         unset($actions['create']);
         unset($actions['view']);
+
         return $actions;
     }
 

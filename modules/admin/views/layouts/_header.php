@@ -30,16 +30,17 @@ use yii\helpers\Html;
                         <img src="<?= $profilePic ?>" class="user-image" alt="User Image"/>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="user-header" onclick="event.stopPropagation()">
-                            <?php
 
+                        <li class="user-header" onclick="event.stopPropagation()">
+
+                            <?php
                             if (!empty(Yii::$app->user->identity->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . Yii::$app->user->identity->profile_picture)) {
                                 $profilePicInner = Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . Yii::$app->user->identity->profile_picture;
                             } else {
                                 $profilePicInner = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                             }
-
                             ?>
+
                             <img src="<?= $profilePicInner ?>" class="img-circle" alt="User Image"/>
 
                             <?php if (!Yii::$app->user->isGuest) { ?>
@@ -50,6 +51,7 @@ use yii\helpers\Html;
                                     </b>
                                 </p>
                             <?php } ?>
+
                             <p>
                                 <?php
                                 $role = "";
@@ -64,6 +66,7 @@ use yii\helpers\Html;
                                 }
                                 ?>
                             </p>
+
                         </li>
 
                         <li class="user-footer" onclick="event.stopPropagation()">
@@ -82,9 +85,11 @@ use yii\helpers\Html;
                                 ) ?>
                             </div>
                         </li>
+
                     </ul>
                 </li>
             </ul>
+            
         </div>
     </nav>
 </header>

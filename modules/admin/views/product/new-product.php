@@ -123,7 +123,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 },
                 'header' => '',
             ],
-
             [
                 'attribute' => 'option_price',
                 'value' => function ($model) {
@@ -176,7 +175,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 ],
                 'header' => 'Conditions',
             ],
-
             [
                 'attribute' => 'is_admin_favourite',
                 'header' => 'Admin Favourite',
@@ -270,9 +268,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'itemLabelPlural' => 'New Products',
         ]);
         ?>
+
     </div>
 </div>
+
 <script type="text/javascript">
+    
     $(document).ready(function () {
 
         $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
@@ -319,6 +320,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 krajeeDialog.alert("Please select atleast one new product to perform this action");
             }
         });
+
     });
 
     $(document).on('change', '#productsearch-category_id', function () {
@@ -430,6 +432,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 }
             });
         }
+
     });
 
     function contentmodelProductImgIndex(id) {
@@ -573,4 +576,5 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     function applyFilterAllCustomer() {
         $('#filter-div').toggle();
     }
+
 </script>

@@ -9,16 +9,17 @@ use kartik\dialog\Dialog;
 echo Dialog::widget(
     ['overrideYiiConfirm' => true]
 );
+
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
 
     <div class="box-body">
 
         <?php $form = ActiveForm::begin(['enableAjaxValidation' => false, 'options' => ['autocomplete' => 'off']]); ?>
 
         <div class="users-form">
+
             <div class="row">
                 <div class="col col-md-6">
                     <?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?>
@@ -27,6 +28,7 @@ echo Dialog::widget(
                     <?= $form->field($model, 'last_name')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col col-md-6">
                     <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'autocomplete' => "off"]) ?>
@@ -189,6 +191,7 @@ echo Dialog::widget(
                     </div>
                 </div>
             </div>
+
         </div>
 
         <div class="form-group ">
@@ -201,6 +204,7 @@ echo Dialog::widget(
 </div>
 
 <script type="text/javascript">
+
     $(document).ready(function () {
 
         $('#shop-details').hide();
@@ -224,6 +228,7 @@ echo Dialog::widget(
         });
 
     });
+
     //image popup
     $('.shop_logo-delete-link').on('click', function (e) {
         e.preventDefault();
@@ -255,4 +260,5 @@ echo Dialog::widget(
     function profilePicturemodal(id) {
         $('#profilemodal_' + id).modal('show');
     }
+
 </script>

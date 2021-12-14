@@ -4,7 +4,6 @@ namespace app\modules\api\v2\controllers;
 
 use Yii;
 use app\models\AbuseReport;
-use app\modules\api\v2\models\search\AbuseReportSearch;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
@@ -95,7 +94,6 @@ class AbuseReportController extends ActiveController
      */
     public function actionIndex()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 

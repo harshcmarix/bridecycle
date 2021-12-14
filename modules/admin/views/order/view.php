@@ -20,10 +20,13 @@ if ($pageType == '') {
 }
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
 ?>
+
 <div class="box box-default">
     <div class="box-header">
         <div class="row">
+
             <div class="col col-md-6">
                 <div class="form-group">
                     <h4><?= Html::encode('Order ID: ') ?><strong><?php echo $model->id ?></strong></h4>
@@ -137,8 +140,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     </h4>
                 </div>
             </div>
+
         </div>
     </div>
+
     <div class="box-body">
 
         <div class="order-view">
@@ -708,5 +713,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
+
     </div>
 </div>

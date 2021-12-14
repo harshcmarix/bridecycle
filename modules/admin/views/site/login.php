@@ -20,11 +20,14 @@ $fieldOptions2 = [
 ];
 
 ?>
+
 <div class="login-box">
+
     <div class="login-logo">
         <a href="#"><img src="<?php echo Yii::$app->request->baseUrl . '/uploads/logo.png'; ?>"></a>
     </div>
     <!-- /.login-logo -->
+
     <div class="login-box-body">
 
         <p class="login-box-msg">Please fill out the following fields to login:</p>
@@ -38,15 +41,19 @@ $fieldOptions2 = [
         <?= $form->field($model, 'password', $fieldOptions2)->passwordInput() ?>
 
         <div class="row">
+
             <div class="col-xs-4">
                 <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
             </div>
+
             <div class="col-xs-8">
                 <div class="col-lg-offset-1" style="color:#999;">
                 </div>
             </div>
-            <?php ActiveForm::end(); ?>
+
         </div>
+
+        <?php ActiveForm::end(); ?>
 
     </div>
 </div>

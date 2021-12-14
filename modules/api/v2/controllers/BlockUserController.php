@@ -4,7 +4,6 @@ namespace app\modules\api\v2\controllers;
 
 use Yii;
 use app\models\BlockUser;
-use app\modules\api\v2\models\search\BlockUserSearch;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;

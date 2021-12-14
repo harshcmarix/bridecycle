@@ -91,7 +91,6 @@ class User extends ActiveRecord implements IdentityInterface
     public $shop_email;
     public $is_shop_logo_empty;
 
-
     /**
      * @return string
      */
@@ -123,9 +122,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['first_name', 'last_name', 'email', 'mobile'], 'required'],
-
             [['first_name', 'last_name', 'email', 'mobile', 'password', 'confirm_password', 'profile_picture'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
-
             [['first_name', 'last_name', 'email', 'mobile'], 'required', 'on' => [self::SCENARIO_UPDATE_NORMAL_USER]],
 
             [['profile_picture'], 'required', 'when' => function ($model) {
@@ -139,14 +136,9 @@ class User extends ActiveRecord implements IdentityInterface
                 }",],
 
             [['email', 'shop_email'], 'email'],
-
             [['user_status', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
-
-            // [['mobile', 'shop_phone_number'], 'match', 'pattern' => '/^[6-9][0-9]{9}$/'],
-            // [['mobile', 'shop_phone_number'], 'is13NumbersOnly'],
             [['mobile', 'shop_phone_number'], 'string', 'max' => 13, 'min' => 10],
-
-            [['weight', 'height','is_newsletter_subscription'], 'number'],
+            [['weight', 'height', 'is_newsletter_subscription'], 'number'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
             [['profile_picture', 'password_hash', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 50],
@@ -161,15 +153,10 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['shop_address_zip_code'], 'string', 'max' => 6],
 
-            // [['shop_phone_number', 'shop_name', 'shop_email', 'shop_address_street', 'shop_address_city', 'shop_address_state', 'shop_address_country', 'shop_address_zip_code'], 'required' ],
-
-            // [['shop_logo',], 'required', 'on' => self::SCENARIO_CREATE],
-
             [['shop_logo'], 'required', 'when' => function ($model) {
-                // return $model->scenario == self::SCENARIO_CREATE;
-            }, 'whenClient' => "function (attribute, value) {
-                        if ($('#user-is_shop_logo_empty').val() == 1 && $('#user-is_shop_owner').prop('checked') == true) {   
 
+            }, 'whenClient' => "function (attribute, value) {
+                        if ($('#user-is_shop_logo_empty').val() == 1 && $('#user-is_shop_owner').prop('checked') == true) {
                             return $('#user-shop_logo').val() == '';                                    
                         }
                     }",],
@@ -235,7 +222,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->hasOne(ShopDetail::class, ['user_id' => 'id']);
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
@@ -456,11 +442,17 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getUserSubscription()
     {
         return $this->hasOne(UserSubscription::class, ['user_id' => 'id']);
     }
 
+    /**
+     * @param $attribute
+     */
     public function is13NumbersOnly($attribute)
     {
         if (!preg_match('/^[0-9]{10,13}$/', $this->$attribute)) {

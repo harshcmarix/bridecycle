@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="box box-default">
-    <div class="box-header"></div>
+<!--    <div class="box-header"></div>-->
     <div class="box-body">
 
         <div class="promo-code-view">
@@ -99,10 +99,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
             ]) ?>
+
             <p>
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
             </p>
+
         </div>
 
     </div>
+
 </div>

@@ -87,6 +87,7 @@ class UserPurchasedSubscriptionsController extends ActiveController
         unset($actions['create']);
         unset($actions['fail-subscription']);
         unset($actions['view']);
+
         return $actions;
     }
 

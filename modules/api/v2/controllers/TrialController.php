@@ -8,7 +8,6 @@ use app\models\Timezone;
 use app\modules\api\v2\models\User;
 use Yii;
 use app\models\Trial;
-use Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -94,7 +93,6 @@ class TrialController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
-        //unset($actions['get-timezone-list']);
         return $actions;
     }
 
@@ -166,9 +164,7 @@ class TrialController extends ActiveController
                     $getUtcTime = $this->getUTCTimeBasedOnTimeZone($model->timezone_id, $model->time);
 
                     if (!empty($getUtcTime)) {
-
                         $model->timezone_utc_time = (string)$getUtcTime;
-
                     }
 
                     $model->save(false);
@@ -419,12 +415,6 @@ class TrialController extends ActiveController
 
         date_default_timezone_set("$modelTimeZone->time_zone");
 
-        //p(date('Y-m-d H:i:s', strtotime('now')) . "\n", 0);
-
-        //date_default_timezone_set('Asia/Kolkata');
-
-        //$utcTime =  date('Y-m-d H:i:s', strtotime($time . ' UTC'));
-
         $utcTime = date('H:i:s', strtotime($time . ' UTC'));
         return (string)$utcTime;
     }
@@ -451,9 +441,7 @@ class TrialController extends ActiveController
         }
 
         date_default_timezone_set("$modelTimeZoneSeller->time_zone");
-
         $utcTimeFromSeller = date('Y-m-d H:i:s', strtotime($buyer_selected_time . ' UTC'));
-
         $modelTimeZoneSelectedFromBuyer = Timezone::findOne($buyer_selected_timezone);
 
         if (!$modelTimeZoneSelectedFromBuyer instanceof Timezone) {
@@ -461,7 +449,6 @@ class TrialController extends ActiveController
         }
 
         date_default_timezone_set("$modelTimeZoneSelectedFromBuyer->time_zone");
-
         $utcTimeFromBuyer = date('Y-m-d H:i:s', strtotime($buyer_selected_time . ' UTC'));
 
         $sellerTimeString = strtotime($utcTimeFromSeller);

@@ -112,6 +112,7 @@ echo Dialog::widget(
                 $is_image_empty = ProductCategory::IMAGE_NOT_EMPTY;
             }
             ?>
+
             <?= $form->field($model, 'is_image_empty')->hiddenInput(['value' => $is_image_empty])->label(false) ?>
 
             <div class="form-group">
@@ -122,6 +123,7 @@ echo Dialog::widget(
             <?php ActiveForm::end(); ?>
 
         </div>
+
     </div>
 </div>
 
@@ -134,7 +136,6 @@ echo Dialog::widget(
             if (result) {
                 $('.image-class').hide();
                 $('#productcategory-is_image_empty').val('1');
-
             }
         });
     });
@@ -143,4 +144,5 @@ echo Dialog::widget(
     function productcategorymodal(id) {
         $('#productcategorymodal_' + id).modal('show');
     }
+
 </script>

@@ -9,9 +9,8 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
+<!--    <div class="box-header"></div>-->
     <div class="box-body">
-
         <div class="product-rating-form">
 
             <?php $form = ActiveForm::begin(); ?>
@@ -54,6 +53,5 @@ use yii\widgets\ActiveForm;
             <?php ActiveForm::end(); ?>
 
         </div>
-
     </div>
 </div>

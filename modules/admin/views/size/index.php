@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
 
     function clearFilter(element) {
         element.previousSibling.value = '';

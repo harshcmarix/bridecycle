@@ -140,11 +140,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'itemLabelPlural' => 'Product Ratings'
             ]);
             ?>
+
         </div>
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
+
     function clearFilter(element) {
         element.previousSibling.value = '';
         var e = $.Event('keyup');
@@ -153,6 +155,7 @@ $this->params['breadcrumbs'][] = $this->title;
     }
 
     $('document').ready(function(){
+
         $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var input;
@@ -212,7 +215,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     setTimeout(function () {
                         $(document).scrollTop($(document).innerHeight());
                     }, 200);
-                })
+                });
             }
         });
 
@@ -225,14 +228,17 @@ $this->params['breadcrumbs'][] = $this->title;
         $('select').on('change', function () {
             isSelect = true;
         });
+
         $('input').on('keypress', function () {
             isSelect = false;
         });
+
         $("body").on('beforeFilter', "#product-rating" , function(event) {
             if (isSelect) {
                 return submit_form;
             }
         });
+
         $("body").on('afterFilter', "#product-rating" , function(event) {
             if (isSelect) {
                 submit_form = false;
@@ -278,4 +284,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

@@ -4,6 +4,7 @@ use yii\widgets\Breadcrumbs;
 use dmstr\widgets\Alert;
 
 ?>
+
 <style>
     button.growl-close {
         margin-right: -313px;
@@ -13,6 +14,7 @@ use dmstr\widgets\Alert;
         border: none;
     }
 </style>
+
 <div class="content-wrapper">
     <section class="content-header">
         <?php if (isset($this->blocks['content-header'])) { ?>
@@ -34,6 +36,7 @@ use dmstr\widgets\Alert;
             ]
         )
         ?>
+
     </section>
 
     <section class="content">
@@ -50,8 +53,8 @@ use dmstr\widgets\Alert;
                     $icon = "fa fa-exclamation-circle";
                 } else {
                     $icon = "glyphicon glyphicon-ok-sign";
-
                 }
+
                 echo \kartik\growl\Growl::widget([
                     'type' => $flash_message_type,
                     'icon' => $icon,

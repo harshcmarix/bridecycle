@@ -25,26 +25,32 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'order_item_id',
                         'label' => 'Order Item',
                         'value' => function ($model) {
+                            $item = "";
                             if (!empty($model->orderItem) && $model->orderItem instanceof \app\models\OrderItem && !empty($model->orderItem->product) && $model->orderItem->product instanceof \app\models\Product) {
-                                return (!empty($model->orderItem->product->name)) ? $model->orderItem->product->name : "";
+                                $item = (!empty($model->orderItem->product->name)) ? $model->orderItem->product->name : "";
                             }
+                            return $item;
                         },
                     ],
                     [
                         'attribute' => 'seller_id',
                         'value' => function ($model) {
+                            $seller = "";
                             if (!empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User) {
-                                return (!empty($model->seller->first_name)) ? $model->seller->first_name . " " . $model->seller->last_name : "Seller";
+                                $seller = (!empty($model->seller->first_name)) ? $model->seller->first_name . " " . $model->seller->last_name : "Seller";
                             }
+                            return $seller;
                         },
                     ],
                     [
                         'attribute' => 'buyer_id',
                         'label' => 'Buyer',
                         'value' => function ($model) {
+                            $buyer = "";
                             if ($model instanceof \app\models\BridecycleToSellerPayments && !empty($model->order) && $model->order instanceof \app\models\Order && !empty($model->order->user) && $model->order->user instanceof \app\modules\admin\models\User) {
-                                return (!empty($model->order->user->first_name)) ? $model->order->user->first_name . " " . $model->order->user->last_name : "Buyer";
+                                $buyer = (!empty($model->order->user->first_name)) ? $model->order->user->first_name . " " . $model->order->user->last_name : "Buyer";
                             }
+                            return $buyer;
                         },
                     ],
                     [

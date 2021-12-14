@@ -86,48 +86,50 @@ $this->params['breadcrumbs'][] = $this->title;
                     'width' => '12%'
                 ],
             ],
-         'pjax' => true, // pjax is set to always true for this demo
-        // set your toolbar
-         'toolbar' => [
-            [
-                'content' =>
-                Html::button('<i class="fa fa-plus-circle"> Add Tailor</i>', [
-                    'class' => 'btn btn-success',
-                    'title' => \Yii::t('kvgrid', 'Add Tailor'),
-                    'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/tailor/create']) . "';",
-                ]),
-                'options' => ['class' => 'btn-group mr-2']
+            'pjax' => true, // pjax is set to always true for this demo
+            // set your toolbar
+            'toolbar' => [
+                [
+                    'content' =>
+                        Html::button('<i class="fa fa-plus-circle"> Add Tailor</i>', [
+                            'class' => 'btn btn-success',
+                            'title' => \Yii::t('kvgrid', 'Add Tailor'),
+                            'onclick' => "window.location.href = '" . \Yii::$app->urlManager->createUrl(['/admin/tailor/create']) . "';",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                [
+                    'content' =>
+                        Html::button('<i class="fa fa-refresh"> Reset </i>', [
+                            'class' => 'btn btn-basic',
+                            'title' => 'Reset Filter',
+                            'onclick' => "window.location.href = '" . Url::to(['tailor/index']) . "';",
+                        ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                '{toggleData}',
             ],
-            [
-                'content' =>
-                Html::button('<i class="fa fa-refresh"> Reset </i>', [
-                    'class' => 'btn btn-basic',
-                    'title' => 'Reset Filter',
-                    'onclick' => "window.location.href = '" . Url::to(['tailor/index']) . "';",
-                ]),
-                'options' => ['class' => 'btn-group mr-2']
+            'toggleDataContainer' => ['class' => 'btn-group mr-2'],
+
+            // parameters from the demo form
+            'bordered' => true,
+            'striped' => true,
+            'condensed' => true,
+            'responsive' => false,
+            'panel' => [
+                'type' => GridView::TYPE_DEFAULT,
             ],
-            '{toggleData}',
-        ],
-        'toggleDataContainer' => ['class' => 'btn-group mr-2'],
+            'persistResize' => false,
+            'toggleDataOptions' => ['minCount' => 10],
+            'itemLabelSingle' => 'tailor',
+            'itemLabelPlural' => 'Tailors'
+        ]); ?>
 
-        // parameters from the demo form
-        'bordered' => true,
-        'striped' => true,
-        'condensed' => true,
-        'responsive' => false,
-        'panel' => [
-            'type' => GridView::TYPE_DEFAULT,
-        ],
-        'persistResize' => false,
-        'toggleDataOptions' => ['minCount' => 10],
-        'itemLabelSingle' => 'tailor',
-        'itemLabelPlural' => 'Tailors'
-    ]); ?>
+    </div>
+</div>
 
-</div>
-</div>
 <script type="text/javascript">
+
     function tailorimagemodal(id) {
         $('#tailorimagemodal_' + id).modal('show');
     }
@@ -139,37 +141,37 @@ $this->params['breadcrumbs'][] = $this->title;
         $(element).prev().trigger(e);
     }
 
-    $('document').ready(function(){
+    $('document').ready(function () {
         $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
 
         var input;
         var submit_form = false;
         var filter_selector = '#tailor-grid-filters input';
 
-        $("body").on('beforeFilter', "#tailor-grid" , function(event) {
+        $("body").on('beforeFilter', "#tailor-grid", function (event) {
             return submit_form;
         });
 
-        $("body").on('afterFilter', "#tailor-grid" , function(event) {
+        $("body").on('afterFilter', "#tailor-grid", function (event) {
             submit_form = false;
         });
 
         $(document)
-        .off('keydown.yiiGridView change.yiiGridView', filter_selector)
-        .on('keyup', filter_selector, function(e) {
-            input = $(this).attr('name');
-            var keyCode = e.keyCode ? e.keyCode : e.which;
-            if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
-                if (submit_form === false) {
-                    submit_form = true;
-                    $("#tailor-grid").yiiGridView("applyFilter");
+            .off('keydown.yiiGridView change.yiiGridView', filter_selector)
+            .on('keyup', filter_selector, function (e) {
+                input = $(this).attr('name');
+                var keyCode = e.keyCode ? e.keyCode : e.which;
+                if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
+                    if (submit_form === false) {
+                        submit_form = true;
+                        $("#tailor-grid").yiiGridView("applyFilter");
+                    }
                 }
-            }
-        })
-        .on('pjax:success', function() {
-            var i = $("[name='"+input+"']");
-            var val = i.val();
-            i.focus().val(val);
+            })
+            .on('pjax:success', function () {
+                var i = $("[name='" + input + "']");
+                var val = i.val();
+                i.focus().val(val);
 
                 var searchInput = $(i);
                 if (searchInput.length > 0) {
@@ -185,7 +187,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     setTimeout(function () {
                         $(document).scrollTop($(document).innerHeight());
                     }, 200);
-                })
+                });
             });
     });
 
@@ -194,4 +196,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

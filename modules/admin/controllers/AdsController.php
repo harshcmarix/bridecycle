@@ -11,14 +11,12 @@ use kartik\growl\Growl;
 use Yii;
 use app\models\Ads;
 use app\models\search\AdsSearch;
-use yii\base\BaseObject;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\imagine\Image;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
@@ -33,7 +31,7 @@ class AdsController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index', 'view', 'create', 'update', 'delete'],
                 'rules' => [
                     [

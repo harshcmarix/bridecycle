@@ -193,7 +193,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     location.reload(true);
                 }
             });
-
         } else {
             krajeeDialog.confirm('Are you sure you want to remove this new brand from top brand?', function (out) {
                 if (out) {
@@ -215,7 +214,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     location.reload(true);
                 }
             });
-
         }
     });
 
@@ -300,7 +298,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
 
@@ -357,7 +355,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
     });

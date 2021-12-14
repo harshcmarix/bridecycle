@@ -2,9 +2,6 @@
 
 namespace app\modules\api\v2\controllers;
 
-use app\models\Ads;
-use app\models\Banner;
-use app\modules\api\v2\models\search\BannerSearch;
 use Yii;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
@@ -12,8 +9,6 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * AdsController implements the CRUD actions for Ads model.
@@ -48,7 +43,7 @@ class AdsController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['view'],//index
+            'only' => ['view'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -96,13 +91,6 @@ class AdsController extends ActiveController
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
         return $model->search($requestParams);
-
-//        $modelAds = Ads::find()->joinWith('brand0')->joinWith('product0')->orderBy(['created_at' => SORT_DESC])->groupBy('id')->asArray()->all();
-//        $modelBanners = Banner::find()->joinWith('brand')->orderBy(['created_at' => SORT_DESC])->groupBy('id')->asArray()->all();
-//        $data['ads'] = $modelAds;
-//        $data['banners'] = $modelBanners;
-//        return $data;
-
     }
 
 }

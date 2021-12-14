@@ -154,7 +154,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     setTimeout(function () {
                         $(document).scrollTop($(document).innerHeight());
                     }, 200);
-                })
+                });
             });
     });
 
@@ -211,7 +211,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     setTimeout(function () {
                         $(document).scrollTop($(document).innerHeight());
                     }, 200);
-                })
+                });
             }
         });
     })

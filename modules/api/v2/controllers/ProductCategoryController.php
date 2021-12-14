@@ -14,7 +14,6 @@ use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 
-
 /**
  * ProductCategoryController implements the CRUD actions for ProductCategory model.
  */
@@ -188,7 +187,6 @@ class ProductCategoryController extends ActiveController
                 }
 
                 $ext = $image->extension;
-                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $image->saveAs($uploadDirPath . '/' . $fileName);
@@ -279,7 +277,6 @@ class ProductCategoryController extends ActiveController
                 }
 
                 $ext = $image->extension;
-                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $image->saveAs($uploadDirPath . '/' . $fileName);

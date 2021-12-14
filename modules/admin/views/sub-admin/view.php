@@ -15,7 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
     <div class="box-body">
 
         <div class="sub-admin-view">
@@ -23,7 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
-
                     [
                         'attribute' => 'first_name',
                         'value' => function ($model) {

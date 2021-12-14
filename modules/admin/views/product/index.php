@@ -81,7 +81,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             ['items' => $dataImages]
                         );
                     }
-
                     return $result;
                 },
                 'header' => 'Images',
@@ -123,7 +122,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 },
                 'header' => '',
             ],
-
             [
                 'attribute' => 'option_price',
                 'value' => function ($model) {
@@ -176,7 +174,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 ],
                 'header' => 'Conditions',
             ],
-
             [
                 'attribute' => 'is_admin_favourite',
                 'header' => 'Admin Favourite',
@@ -270,7 +267,9 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         ?>
     </div>
 </div>
+
 <script type="text/javascript">
+    
     $(document).ready(function () {
 
         $('input[type=text]').after('<i class="fa fa-times" onclick="clearFilter(this)"></i>');
@@ -294,7 +293,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         $('input[name="selection[]"]:checked').each(function (index, obj) {
                             ids.push(obj.value);
                         });
-
                         $.ajax({
                             type: 'POST',
                             url: "<?php echo Url::to(['product/delete-multiple']); ?>",
@@ -317,6 +315,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 krajeeDialog.alert("Please select atleast one product to perform this action");
             }
         });
+
     });
 
     $(document).on('change', '#productsearch-category_id', function () {
@@ -331,7 +330,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     $('#productsearch-sub_category_id').html(response.dataList);
                 }
             }
-        })
+        });
     });
 
     $(document).on('change', '.topSelling', function () {
@@ -380,6 +379,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 }
             });
         }
+
     });
 
     $(document).on('change', '.topTrending', function () {
@@ -513,14 +513,17 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         $('select').on('change', function () {
             isSelect = true;
         });
+
         $('input').on('keypress', function () {
             isSelect = false;
         });
+
         $("body").on('beforeFilter', "#product-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
+
         $("body").on('afterFilter', "#product-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
@@ -571,4 +574,5 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     function applyFilterAllCustomer() {
         $('#filter-div').toggle();
     }
+
 </script>

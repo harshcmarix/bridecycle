@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
 
-                'pjax' => true, // pjax is set to always true for this demo
+                'pjax' => true,
                 // set your toolbar
                 'toolbar' => [
                     [

@@ -232,6 +232,7 @@ $this->params['breadcrumbs'][] = 'View New Product';
             <p>
                 <?= Html::a('Back', \yii\helpers\Url::to(['new-product']), ['class' => 'btn btn-default']) ?>
             </p>
+
         </div>
 
     </div>

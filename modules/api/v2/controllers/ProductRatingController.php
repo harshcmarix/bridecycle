@@ -16,7 +16,6 @@ use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
-use Exception;
 
 /**
  * ProductRatingController implements the CRUD actions for ProductRating model.
@@ -184,7 +183,6 @@ class ProductRatingController extends ActiveController
         if ($model->load($productRating) && $model->validate()) {
             $model->save();
 
-
             // Send Push notification start
             $getUsers[] = $model->product->user;
 
@@ -249,5 +247,4 @@ class ProductRatingController extends ActiveController
 
         return $model;
     }
-
 }

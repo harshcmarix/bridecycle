@@ -10,7 +10,7 @@ use kartik\select2\Select2;
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
+<!--    <div class="box-header"></div>-->
     <div class="box-body">
 
         <div class="sizes-form">
@@ -22,10 +22,11 @@ use kartik\select2\Select2;
                 <div class="col col-md-6">
 
                     <?= $form->field($model, 'size')->textInput(['maxlength' => true]) ?>
+
                 </div>
 
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'product_category_id')->widget(Select2::classname(), [
+                    <?= $form->field($model, 'product_category_id')->widget(Select2::class, [
                         'data' => $productCategories,
                         'options' => ['placeholder' => 'Select Category'],
                         'pluginOptions' => [

@@ -169,6 +169,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 })
             });
 
+
         //select box filter
         var select;
         var submit_form = false;
@@ -181,12 +182,12 @@ $this->params['breadcrumbs'][] = $this->title;
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#banners-grid" , function(event) {
+        $("body").on('beforeFilter', "#banners-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#banners-grid" , function(event) {
+        $("body").on('afterFilter', "#banners-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -194,14 +195,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $(document)
             .off('keydown.yiiGridView change.yiiGridView', select_filter_selector)
-            .on('change', select_filter_selector, function(e) {
+            .on('change', select_filter_selector, function (e) {
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
                     $("#banners-grid").yiiGridView("applyFilter");
                 }
             })
-            .on('pjax:success', function() {
+            .on('pjax:success', function () {
                 var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);
@@ -224,7 +225,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     })
                 }
             });
-
     });
 
     $('.pagination').find('li a').on('click', function () {
@@ -232,4 +232,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

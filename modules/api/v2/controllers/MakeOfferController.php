@@ -7,7 +7,6 @@ use app\models\Product;
 use app\modules\api\v2\models\User;
 use Yii;
 use app\models\MakeOffer;
-use Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -17,7 +16,6 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
-
 
 /**
  * MakeOfferController implements the CRUD actions for MakeOffer model.

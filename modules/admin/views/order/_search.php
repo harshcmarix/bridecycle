@@ -9,7 +9,7 @@ use kartik\daterange\DateRangePicker;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<style>
+<style type="text/css">
     .form-inline .form-control {
         width: 100%;
     }
@@ -32,7 +32,7 @@ use kartik\daterange\DateRangePicker;
     }
 
     .custom-style .kv-drp-dropdown .kv-clear {
-        padding: 0 0.3 rem;
+        padding: 0 0.3rem;
         font-size: 1.1rem;
         cursor: pointer;
         right: 2.5rem;

@@ -9,11 +9,13 @@ use yii\widgets\DetailView;
 $this->title = 'View Size';
 $this->params['breadcrumbs'][] = ['label' => 'Sizes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
 \yii\web\YiiAsset::register($this);
+
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
+<!--    <div class="box-header"></div>-->
     <div class="box-body">
 
         <div class="sizes-view">
@@ -38,6 +40,5 @@ $this->params['breadcrumbs'][] = $this->title;
             </p>
 
         </div>
-
     </div>
 </div>

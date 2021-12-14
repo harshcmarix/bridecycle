@@ -21,7 +21,7 @@ class DressTypeController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index', 'view', 'delete'],//'update',
                 'rules' => [
                     [

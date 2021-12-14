@@ -143,7 +143,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
+
     function clearFilter(element) {
         element.previousSibling.value = '';
         var e = $.Event('keyup');
@@ -197,7 +198,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     setTimeout(function () {
                         $(document).scrollTop($(document).innerHeight());
                     }, 200);
-                })
+                });
             });
     });
 
@@ -206,4 +207,5 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).scrollTop($(document).innerHeight());
         }, 200);
     });
+
 </script>

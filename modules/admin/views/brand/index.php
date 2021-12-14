@@ -49,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         } else {
                             $image_path = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                         }
+
                         Modal::begin([
                             'id' => 'brandmodal_' . $model->id,
                             'header' => '<h3>Brand Image</h3>',
@@ -110,7 +111,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $isBrandOfTheWeek;
                     },
                     'width' => '5%',
-
                 ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
@@ -190,7 +190,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     location.reload(true);
                 }
             });
-
         } else {
             krajeeDialog.confirm('Are you sure you want to remove this brand from top brand?', function (out) {
                 if (out) {
@@ -296,7 +295,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
 

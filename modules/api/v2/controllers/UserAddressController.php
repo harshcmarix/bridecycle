@@ -208,5 +208,4 @@ class UserAddressController extends ActiveController
         $profileAddress->is_primary_address = (string)$profileAddress->is_primary_address;
         return $profileAddress;
     }
-
 }

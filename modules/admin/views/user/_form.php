@@ -9,6 +9,7 @@ use kartik\dialog\Dialog;
 echo Dialog::widget(
     ['overrideYiiConfirm' => true]
 );
+
 ?>
 
 <div class="box box-default">
@@ -26,6 +27,7 @@ echo Dialog::widget(
                     <?= $form->field($model, 'last_name')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col col-md-6">
                     <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'autocomplete' => "off"]) ?>
@@ -48,7 +50,7 @@ echo Dialog::widget(
 
             <div class="row">
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'profile_picture')->widget(FileInput::classname(), [
+                    <?= $form->field($model, 'profile_picture')->widget(FileInput::class, [
                         'options' => ['accept' => 'image/*', 'id' => 'user-profile_picture'],
                         'pluginOptions' => [
                             'showPreview' => false,
@@ -113,6 +115,7 @@ echo Dialog::widget(
             </div>
 
             <div id="shop-details" class="shop-personal-details">
+
                 <div class="row">
                     <div class="col col-md-6">
                         <?= $form->field($model, 'shop_name')->textInput(['maxlength' => true])->label('Shop Name <spna class="red">*</span>'); ?>
@@ -195,18 +198,22 @@ echo Dialog::widget(
                         <?= $form->field($model, 'shop_address_zip_code')->textInput(['type' => 'number'])->label('Shop Address Zip Code <spna class="red">*</span>'); ?>
                     </div>
                 </div>
+
             </div>
+
         </div>
+
         <div class="form-group ">
             <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
         </div>
+        <?php ActiveForm::end(); ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
 </div>
 
 <script type="text/javascript">
+
     $(document).ready(function () {
 
         $('#shop-details').hide();
@@ -228,7 +235,9 @@ echo Dialog::widget(
                 $('#shop-details').hide();
             }
         });
+
     });
+
     //image popup
     $('.shop_logo-delete-link').on('click', function (e) {
         e.preventDefault();
@@ -260,4 +269,5 @@ echo Dialog::widget(
     function profilePicturemodal(id) {
         $('#profilemodal_' + id).modal('show');
     }
+
 </script>

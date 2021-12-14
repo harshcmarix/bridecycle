@@ -33,7 +33,7 @@ class BrandController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index', 'new-brand', 'create', 'new-brand-create', 'update', 'new-brand-update', 'view', 'new-brand-view', 'delete', 'new-brand-delete', 'update-top-brand'],
                 'rules' => [
                     [

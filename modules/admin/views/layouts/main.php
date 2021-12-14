@@ -27,7 +27,7 @@ if (Yii::$app->controller->action->id === 'login') {
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-NXLFFXY4HG"></script>
         <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
 
-        <script>
+        <script type="text/javascript">
             window.dataLayer = window.dataLayer || [];
 
             function gtag() {
@@ -53,7 +53,6 @@ if (Yii::$app->controller->action->id === 'login') {
     <?php $this->beginBody() ?>
 
     <div class="wrapper">
-
         <?=
         $this->render(
             '_header.php', ['directoryAsset' => $directoryAsset]
@@ -71,11 +70,10 @@ if (Yii::$app->controller->action->id === 'login') {
             'content.php', ['content' => $content, 'directoryAsset' => $directoryAsset]
         )
         ?>
-
     </div>
 
     <?php $this->endBody() ?>
-    <script>
+    <script type="text/javascript">
         setTimeout(function () {
             $('.alert').fadeOut('fast');
         }, 5000); // time in milliseconds

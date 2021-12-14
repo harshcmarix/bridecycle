@@ -17,11 +17,10 @@ $this->registerCssFile("@web/css/toggle-switch.css");
 $this->registerJsFile("@web/js/toggle-switch.js");
 ?>
 <div class="box box-default">
+
     <div class="box-header"></div>
     <div class="box-body">
-
         <div class="products-form">
-
             <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
             <div class="row">
@@ -121,11 +120,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?= $form->field($model, 'other_info')->textarea(['rows' => 3]) ?>
                 </div>
             </div>
-            <!-- image validation -->
 
+            <!-- image validation -->
             <div class="row">
 
                 <div class="col col-md-3 ship-country">
+
                     <lable><strong>Shipping Country</strong></lable>
 
                     <?php
@@ -144,9 +144,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ])->label(false) ?>
 
                     <?php echo $form->field($model, 'shipping_country_ids')->hiddenInput()->label(false) ?>
+
                 </div>
 
                 <div class="col col-md-3">
+
                     <label>Shipping Cost</label>
                     <div class="shipping_cost_price_tex_boxes">
                         <?php
@@ -173,10 +175,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             ])->label(false) ?>
                         <?php } ?>
                     </div>
+
                 </div>
 
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'images[]')->widget(FileInput::classname(), [
+
+                    <?= $form->field($model, 'images[]')->widget(FileInput::class, [
                         'options' => ['accept' => 'image/*', 'id' => 'product-images', 'multiple' => true],
                         'pluginOptions' => [
                             'showPreview' => false,
@@ -184,7 +188,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             'maxFileCount' => 5,
                         ]
                     ])->label('Image <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
-                    <!-- </div> -->
+
 
                     <?php if (Yii::$app->controller->action->id == 'update') { ?>
                         <?php
@@ -217,6 +221,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                     $productImageModal = 'contentmodelProductImgEdit("' . $imageRow->id . '")';
                                     $data .= "<div class='product-image-block'>" . Html::img($image_path, ['class' => 'file-preview-image your_class', 'width' => '570', 'onclick' => $productImageModal]) . Html::a('<i class="fa fa-times"> </i>', ['delete-product-image', 'id' => $imageRow->id, 'product_id' => $model->id], ['class' => 'product-image-remove', 'data' => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],]) . "</div>";
                                 }
+
                                 echo "<div>" . $data . "</div>";
 
                                 echo \kartik\dialog\Dialog::widget([
@@ -224,6 +229,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                                     'options' => [
                                     ], // default options
                                 ]);
+
                             } ?>
                         </div>
                     <?php } ?>
@@ -240,6 +246,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
+
                 <div class="col col-md-4">
                     <?= $form->field($model, 'is_admin_favourite')->widget(Select2::classname(), [
                         'data' => ['0' => 'No', '1' => 'Yes'],
@@ -248,6 +255,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
+
                 <div class="col col-md-4">
                     <?php
                     $disabledProductType = false;
@@ -263,9 +271,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ])->label('Conditions'); ?>
                 </div>
+
             </div>
 
             <div class="row">
+
                 <div class="col col-md-6">
                     <?= $form->field($model, 'is_cleaned')->widget(Select2::classname(), [
                         'data' => $model->arrIsCleaned,
@@ -275,6 +285,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
+
                 <div class="col col-md-6">
                     <?php
                     $disabled = false;
@@ -290,9 +301,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
+
             </div>
 
             <div class="row">
+
                 <div class="col col-md-6 receiptUpload"
                      style="display: <?php echo (Yii::$app->controller->action->id == 'update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
                     <?php
@@ -314,9 +327,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ]
                     ])->label('Receipt <spna class="red">*</span>', ['class' => 'labelModalFormInline']); ?>
                 </div>
+
             </div>
 
             <div class="row">
+
                 <?php if ((Yii::$app->controller->action->id == 'update') && !empty($model->productReceipt)) {
                     $data = "";
                     foreach ($model->productReceipt as $imageRow) {
@@ -343,18 +358,22 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ], // default options
                     ]);
                 } ?>
+
             </div>
 
             <div class="form-group">
                 <?= Html::a('Back', Url::to(['index']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             </div>
+
             <?php ActiveForm::end(); ?>
         </div>
     </div>
+
 </div>
 
 <script type="text/javascript">
+    
     $(document).ready(function () {
 
         var isProductType = $('#product-type').val();

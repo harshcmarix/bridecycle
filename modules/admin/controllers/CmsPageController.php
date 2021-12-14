@@ -22,7 +22,7 @@ class CmsPageController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index', 'create', 'update', 'view', 'delete'],
                 'rules' => [
                     [

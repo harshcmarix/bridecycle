@@ -29,7 +29,6 @@ class ForgotPasswordForm extends Model
             ['email', 'email'],
             ['email', 'exist',
                 'targetClass' => 'app\modules\admin\models\User',
-                // 'filter' => ['status' => User::STATUS_ACTIVE],
                 'filter' => ['user_type' => User::USER_TYPE_ADMIN],
                 'message' => 'User does not exist.'
             ],

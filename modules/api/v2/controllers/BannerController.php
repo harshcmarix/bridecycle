@@ -4,14 +4,12 @@ namespace app\modules\api\v2\controllers;
 
 use Yii;
 use app\models\Banner;
-use app\modules\api\v2\models\search\BannerSearch;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
 
 /**
@@ -48,7 +46,7 @@ class BannerController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['view'],//index
+            'only' => ['view'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -89,7 +87,6 @@ class BannerController extends ActiveController
      */
     public function actionIndex()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
@@ -111,7 +108,6 @@ class BannerController extends ActiveController
         if (($model = Banner::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

@@ -100,7 +100,6 @@ class BrandController extends ActiveController
      */
     public function actionIndex()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
@@ -110,9 +109,12 @@ class BrandController extends ActiveController
         return $model->search($requestParams);
     }
 
+    /**
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionIndexList()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
@@ -158,7 +160,6 @@ class BrandController extends ActiveController
                 }
 
                 $ext = $brand_image->extension;
-                $fileName = pathinfo($brand_image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
 
                 // Upload profile picture
@@ -247,9 +248,7 @@ class BrandController extends ActiveController
                     mkdir($uploadThumbDirPath, 0777);
                 }
 
-
                 $ext = $image->extension;
-                $fileName = pathinfo($image->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 $image->saveAs($uploadDirPath . '/' . $fileName);
                 $actualImagePath = $uploadDirPath . '/' . $fileName;

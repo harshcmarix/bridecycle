@@ -218,6 +218,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?php } ?>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col col-md-4">
                     <?= $form->field($model, 'gender')->widget(Select2::classname(), [
@@ -336,12 +337,15 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <?= Html::a('Back', Url::to(['new-product']), ['class' => 'btn btn-default']) ?>
                 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
             </div>
+
             <?php ActiveForm::end(); ?>
+
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
+
     $(document).ready(function () {
 
         var isProductType = $('#product-type').val();
@@ -451,6 +455,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 });
             }
         });
+
     });
 
     function contentmodelProductImgEdit(id) {
@@ -487,4 +492,5 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             "<?php } ?>"
         }
     }
+
 </script>

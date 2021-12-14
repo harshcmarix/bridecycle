@@ -9,10 +9,10 @@ use kartik\dialog\Dialog;
 echo Dialog::widget(
     ['overrideYiiConfirm' => true]
 );
+
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
 
     <div class="box-body">
         <?php $form = ActiveForm::begin(['enableAjaxValidation' => false, 'options' => ['autocomplete' => 'off']]); ?>

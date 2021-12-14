@@ -17,15 +17,16 @@ use app\modules\admin\models\Module;
                     $profilePic = Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 }
                 ?>
-
                 <img src="<?= $profilePic ?>" alt="User Image" class="sidebar-profile"/>
             </div>
+
             <?php if (!Yii::$app->user->isGuest) { ?>
                 <div class="pull-left info">
                     <p class=""><?= Yii::$app->user->identity->first_name ?> <?= Yii::$app->user->identity->last_name ?></p>
                     <a href="#"><i class="fa fa-circle text-success"></i>Online</a>
                 </div>
             <?php } ?>
+
         </div>
         <?php
         $visible = false;

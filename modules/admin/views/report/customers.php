@@ -9,6 +9,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="box box-basic">
+
     <div class="box-header">
         <div class="row text-center">
             <div class="col col-md-4">
@@ -42,10 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+
     <div class="box-body">
         <div class="row">
             <div class="col col-md-12">
+
                 <div class="box box-primary">
+
                     <div class="box-header">
                         <div class="row">
                             <div class="col col-md-6">
@@ -61,6 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </div>
                         </div>
                     </div>
+
                     <div class="box-body">
                         <table id="customer" border="1" width="100%">
                             <tr>
@@ -81,7 +86,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php } ?>
                         </table>
                     </div>
+
                 </div>
+
             </div>
         </div>
     </div>

@@ -24,7 +24,6 @@ use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UploadedFile;
-use Exception;
 
 /**
  * Class UserController
@@ -110,6 +109,7 @@ class UserController extends ActiveController
         unset($actions['update']);
         unset($actions['delete']);
         unset($actions['view']);
+
         return $actions;
     }
 
@@ -194,7 +194,6 @@ class UserController extends ActiveController
                 }
 
                 $ext = $model->profile_picture->extension;
-                //$fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);
@@ -255,7 +254,6 @@ class UserController extends ActiveController
                             }
 
                             $logoExt = $shopDetailModel->shop_logo->extension;
-                            //$shopLogoFileName = pathinfo($shopDetailModel->shop_logo->name, PATHINFO_FILENAME);
                             $shopLogoFileName = time() . rand(99999, 88888) . '.' . $logoExt;
                             // Upload shop logo
                             $shopDetailModel->shop_logo->saveAs($uploadDirPathLogo . '/' . $shopLogoFileName);
@@ -282,7 +280,6 @@ class UserController extends ActiveController
                             }
 
                             $shopCoverPictureExt = $shopDetailModel->shop_cover_picture->extension;
-                            //$shopCoverPictureFileName = pathinfo($shopDetailModel->shop_cover_picture->name, PATHINFO_FILENAME);
                             $shopCoverPictureFileName = time() . rand(99999, 88888) . '.' . $shopCoverPictureExt;
                             // Upload shop cover picture
                             $shopDetailModel->shop_cover_picture->saveAs($uploadDirPathCoverPicture . '/' . $shopCoverPictureFileName);
@@ -477,7 +474,6 @@ class UserController extends ActiveController
                     unlink($uploadThumbDirPath . '/' . $old_image);
                 }
                 $ext = $model->profile_picture->extension;
-                //$fileName = pathinfo($model->profile_picture->name, PATHINFO_FILENAME);
                 $fileName = time() . rand(99999, 88888) . '.' . $ext;
                 // Upload profile picture
                 $model->profile_picture->saveAs($uploadDirPath . '/' . $fileName);
@@ -557,8 +553,9 @@ class UserController extends ActiveController
             if (empty($postData) || empty($postData['apple_id'])) {
                 throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "apple_id"');
             }
+
             $modelPostData = User::find()->where(['apple_id' => $postData['apple_id']])->one();
-            //p($modelPostData);
+
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;
                 $model->email = $modelPostData->email;

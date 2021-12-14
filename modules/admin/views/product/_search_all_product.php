@@ -9,7 +9,7 @@ use kartik\daterange\DateRangePicker;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<style>
+<style type="text/css">
     .form-inline .form-control {
         width: 100%;
     }
@@ -47,7 +47,9 @@ use kartik\daterange\DateRangePicker;
         'method' => 'get',
     ]);
     ?>
+
     <div class="users-form custom-style">
+
         <div class="row">
             <div class="col col-md-12 form-inline">
 
@@ -65,7 +67,9 @@ use kartik\daterange\DateRangePicker;
         <div class="form-group form-inline">
             <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         </div>
+
     </div>
+
     <?php ActiveForm::end(); ?>
 
 </div>

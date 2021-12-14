@@ -231,15 +231,18 @@ $this->params['breadcrumbs'][] = 'View Product';
                     ],
                 ],
             ]) ?>
+
             <p>
                 <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
             </p>
+
         </div>
 
     </div>
 </div>
 
 <script type="text/javascript">
+
     function contentmodelProductImg(id) {
         $('#contentmodalProductImg_' + id).modal('show');
     }
@@ -247,4 +250,5 @@ $this->params['breadcrumbs'][] = 'View Product';
     function productReceiptModal(id) {
         $('#productReceiptModal_' + id).modal('show');
     }
+
 </script>

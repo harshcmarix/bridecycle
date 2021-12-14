@@ -12,7 +12,6 @@ use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\web\NotFoundHttpException;
 
-
 /**
  * ShippingCostController implements the CRUD actions for ShippingCost model.
  */
@@ -86,6 +85,7 @@ class ShippingCostController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
+
         return $actions;
     }
 
