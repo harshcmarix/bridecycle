@@ -30,7 +30,6 @@ class BrandController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\BrandSearch';
 
-
     /**
      * @return array
      */
@@ -91,6 +90,7 @@ class BrandController extends ActiveController
         unset($actions['update']);
         unset($actions['delete']);
         unset($actions['view']);
+
         return $actions;
     }
 
@@ -318,4 +318,5 @@ class BrandController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

@@ -86,6 +86,7 @@ class FavouriteProductController extends ActiveController
         unset($actions['create']);
         unset($actions['view']);
         unset($actions['delete']);
+
         return $actions;
     }
 
@@ -158,4 +159,5 @@ class FavouriteProductController extends ActiveController
         }
         $model->delete();
     }
+
 }

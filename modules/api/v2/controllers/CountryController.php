@@ -88,6 +88,7 @@ class CountryController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
+
         return $actions;
     }
 

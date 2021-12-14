@@ -825,4 +825,5 @@ class CartItemController extends ActiveController
         }
         return $modelCartItems;
     }
+    
 }

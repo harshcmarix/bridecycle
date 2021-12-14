@@ -12,7 +12,6 @@ use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\web\NotFoundHttpException;
 
-
 /**
  * AbuseReportController implements the CRUD actions for AbuseReport model.
  */
@@ -27,7 +26,6 @@ class AbuseReportController extends ActiveController
      * @var string
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\AbuseReportSearch';
-
 
     /**
      * @return array
@@ -85,6 +83,7 @@ class AbuseReportController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
+
         return $actions;
     }
 
@@ -165,4 +164,5 @@ class AbuseReportController extends ActiveController
         }
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    
 }

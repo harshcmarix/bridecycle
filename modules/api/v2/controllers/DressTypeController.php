@@ -27,7 +27,6 @@ class DressTypeController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\DressTypeSearch';
 
-
     /**
      * @return array
      */
@@ -183,4 +182,5 @@ class DressTypeController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

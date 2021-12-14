@@ -27,7 +27,6 @@ class ColorController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\ColorSearch';
 
-
     /**
      * @return array
      */
@@ -85,6 +84,7 @@ class ColorController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['view']);
+
         return $actions;
     }
 
@@ -179,4 +179,5 @@ class ColorController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

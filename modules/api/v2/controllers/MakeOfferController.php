@@ -109,7 +109,6 @@ class MakeOfferController extends ActiveController
         return $model->search($requestParams, Yii::$app->user->identity->id);
     }
 
-
     /**
      * Lists all Maked offer models for seller.
      * @return mixed
@@ -403,4 +402,5 @@ class MakeOfferController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }
