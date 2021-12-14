@@ -33,6 +33,9 @@ class Notification extends \yii\db\ActiveRecord
         return 'notification';
     }
 
+    /**
+     *
+     */
     const NOTIFICATION_IS_READ_NO = '0';
     const NOTIFICATION_IS_READ_YES = '1';
 

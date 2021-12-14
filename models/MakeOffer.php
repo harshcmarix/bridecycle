@@ -60,7 +60,7 @@ class MakeOffer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'sender_id', 'receiver_id', 'status'], 'required'],
+            [['product_id', 'sender_id', 'receiver_id', 'status', 'offer_amount'], 'required'],
             [['product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
             [['offer_amount'], 'number'],
             [['offered_count', 'created_at', 'updated_at'], 'safe'],

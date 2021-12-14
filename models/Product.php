@@ -183,7 +183,8 @@ class Product extends \yii\db\ActiveRecord
             [['option_show_only'], 'string', 'max' => 20],
             [['is_receipt', 'is_admin_favourite'], 'safe'],
             [['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['images', 'receipt'], 'file', 'maxFiles' => 5],
+            [['images'], 'file', 'maxFiles' => 5, 'message' => 'You can upload a maximum of 5 product images only.'],
+            [['receipt'], 'file', 'maxFiles' => 5, 'message' => 'You can upload a maximum of 5 receipt only.'],
 
             [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
             [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::class, 'targetAttribute' => ['dress_type_id' => 'id']],
