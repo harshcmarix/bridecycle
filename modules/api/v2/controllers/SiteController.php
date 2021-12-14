@@ -58,4 +58,5 @@ class SiteController extends ActiveController
             'message' => "You may customize this page by editing the following file:" . __FILE__,
         ];
     }
+
 }

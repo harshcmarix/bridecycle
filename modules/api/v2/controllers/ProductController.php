@@ -336,6 +336,7 @@ class ProductController extends ActiveController
                 if (!empty($productData['Product']['is_profile_address']) && ($productData['Product']['is_profile_address'] == 1 || $productData['Product']['is_profile_address'] == "1")) {
                     $modelAddress = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
                 }
+
                 if (empty($modelAddress)) {
                     $modelAddress = new UserAddress();
                     $addressData['UserAddress'] = $postData;
@@ -368,6 +369,7 @@ class ProductController extends ActiveController
                     }
                 }
             }
+
         }
 
         return $model;

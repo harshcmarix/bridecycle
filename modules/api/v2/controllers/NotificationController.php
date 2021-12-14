@@ -87,6 +87,7 @@ class NotificationController extends ActiveController
         unset($actions['update']);
         unset($actions['view']);
         unset($actions['delete']);
+
         return $actions;
     }
 
@@ -186,4 +187,5 @@ class NotificationController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    
 }

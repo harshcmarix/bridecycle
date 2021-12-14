@@ -914,4 +914,5 @@ class UserController extends ActiveController
         }
         return $model;
     }
+
 }

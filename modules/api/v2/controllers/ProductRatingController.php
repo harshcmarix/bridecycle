@@ -90,6 +90,7 @@ class ProductRatingController extends ActiveController
         unset($actions['view']);
         unset($actions['update']);
         unset($actions['delete']);
+
         return $actions;
     }
 
@@ -247,4 +248,5 @@ class ProductRatingController extends ActiveController
 
         return $model;
     }
+
 }

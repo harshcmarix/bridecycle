@@ -29,7 +29,6 @@ class ProductImageController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\ProductSearch';
 
-
     /**
      * @return array
      */
@@ -87,6 +86,7 @@ class ProductImageController extends ActiveController
         unset($actions['update']);
         unset($actions['delete']);
         unset($actions['view']);
+
         return $actions;
     }
 
@@ -197,4 +197,5 @@ class ProductImageController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

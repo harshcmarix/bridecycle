@@ -33,7 +33,6 @@ class TrialController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\TrialSearch';
 
-
     /**
      * @return array
      */

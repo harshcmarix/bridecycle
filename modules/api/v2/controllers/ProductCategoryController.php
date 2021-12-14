@@ -89,6 +89,7 @@ class ProductCategoryController extends ActiveController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['delete']);
+
         return $actions;
     }
 
@@ -98,7 +99,6 @@ class ProductCategoryController extends ActiveController
      */
     public function actionIndex()
     {
-
         $model = new $this->searchModelClass;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
@@ -357,4 +357,5 @@ class ProductCategoryController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

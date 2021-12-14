@@ -27,7 +27,6 @@ class RecentSearchProductsController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\RecentSearchProductsSearch';
 
-
     /**
      * @return array
      */
@@ -185,4 +184,5 @@ class RecentSearchProductsController extends ActiveController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

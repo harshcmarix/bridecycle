@@ -80,6 +80,7 @@ class UserAddressController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
+
         return $actions;
     }
 
@@ -208,4 +209,5 @@ class UserAddressController extends ActiveController
         $profileAddress->is_primary_address = (string)$profileAddress->is_primary_address;
         return $profileAddress;
     }
+
 }

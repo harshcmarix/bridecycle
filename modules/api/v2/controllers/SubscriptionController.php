@@ -27,7 +27,6 @@ class SubscriptionController extends ActiveController
      */
     public $searchModelClass = 'app\modules\api\v2\models\search\SubscriptionsSearch';
 
-
     /**
      * @return \string[][]
      */
@@ -74,6 +73,7 @@ class SubscriptionController extends ActiveController
 
         return $behaviors;
     }
+
     /**
      * @return array
      */
