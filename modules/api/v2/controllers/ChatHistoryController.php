@@ -226,7 +226,6 @@ class ChatHistoryController extends ActiveController
                         mkdir($uploadThumbDirPath, 0777);
                     }
                     $ext = $imgFile->extension;
-                    $fileName = pathinfo(str_replace(" ", "", $imgFile->name), PATHINFO_FILENAME);
                     $fileName = time() . rand(99999, 88888) . '.' . $ext;
 
                     // Upload file

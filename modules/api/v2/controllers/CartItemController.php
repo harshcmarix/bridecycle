@@ -698,6 +698,7 @@ class CartItemController extends ActiveController
     {
         $this->layout = "";
         $modelOrderItem = OrderItem::findOne($order_item_id);
+
         $modelProduct = '';
         $modelseller = '';
         $modelsellerDetail = '';
@@ -711,51 +712,51 @@ class CartItemController extends ActiveController
             } else {
                 $modelsellerDetail = $modelOrderItem->product->user;
             }
-        }
 
-        $buyerUser = User::findOne($modelOrder->user_id);
-        //$buyerUserAddress = UserAddress::find()->where(['user_id' => $modelOrder->user_id])->one();
-        $buyerUserAddress = UserAddress::find()->where(['id' => $modelOrder->user_address_id])->one();
-        //$sellerAddress = UserAddress::find()->where(['user_id' => $modelseller->id])->one();
-        $sellerAddress = UserAddress::find()->where(['id' => $modelOrderItem->product->address_id])->one();
-        $currentDate = date('d-m-Y H:i');
 
-        // Start - Generate Ordre Tracking Number
-        $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
-        $existTrackingId = OrderItem::find()->where(['order_tracking_id' => $uniqueNumber])->one();
-        if ($existTrackingId instanceof OrderItem) {
+            $buyerUser = User::findOne($modelOrder->user_id);
+            //$buyerUserAddress = UserAddress::find()->where(['user_id' => $modelOrder->user_id])->one();
+            $buyerUserAddress = UserAddress::find()->where(['id' => $modelOrder->user_address_id])->one();
+            //$sellerAddress = UserAddress::find()->where(['user_id' => $modelseller->id])->one();
+            $sellerAddress = UserAddress::find()->where(['id' => $modelOrderItem->product->address_id])->one();
+            $currentDate = date('d-m-Y H:i');
+
+            // Start - Generate Ordre Tracking Number
             $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
+            $existTrackingId = OrderItem::find()->where(['order_tracking_id' => $uniqueNumber])->one();
+            if ($existTrackingId instanceof OrderItem) {
+                $uniqueNumber = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 6, 12);
+            }
+            $modelOrderItem->order_tracking_id = $uniqueNumber;
+            // End - Generate Ordre Tracking Number
+
+            //$transactionFees = Setting::find()->where(['option_key' => 'transaction_fees'])->one();
+            $transactionFeesAmount = 0;
+            // if ($transactionFees instanceof Setting) {
+            //     $transactionFeesAmount = $transactionFees->option_value;
+            // }
+
+            if (!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->option_price)) {
+                $transactionFeesAmount = $modelProduct->option_price;
+            }
+
+            $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail, 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser, 'buyerUserAddress' => $buyerUserAddress, 'transactionFeesAmount' => $transactionFeesAmount]);
+
+            $options = new Options();
+            $options->set('isRemoteEnabled', true);
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4');
+            $dompdf->render();
+            $output = $dompdf->output();
+            $fileName = "order-" . time() . "-" . $modelOrder->id . ".pdf";
+
+            file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName, $output);
+            $modelOrderItem->invoice = $fileName;
+            $modelOrderItem->save(false);
+
+            return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;
         }
-        $modelOrderItem->order_tracking_id = $uniqueNumber;
-        // End - Generate Ordre Tracking Number
-
-        //$transactionFees = Setting::find()->where(['option_key' => 'transaction_fees'])->one();
-        $transactionFeesAmount = 0;
-        // if ($transactionFees instanceof Setting) {
-        //     $transactionFeesAmount = $transactionFees->option_value;
-        // }
-
-        if (!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->option_price)) {
-            $transactionFeesAmount = $modelProduct->option_price;
-        }
-
-        $html = $this->renderPartial('/order/invoice', ['model' => $modelOrderItem, 'order' => $modelOrder, 'product' => $modelProduct, 'seller' => $modelseller, 'sellerDetail' => $modelsellerDetail, 'sellerAddress' => $sellerAddress, 'currentDate' => $currentDate, 'buyerUser' => $buyerUser, 'buyerUserAddress' => $buyerUserAddress, 'transactionFeesAmount' => $transactionFeesAmount]);
-
-        $options = new Options();
-        $options->set('isRemoteEnabled', true);
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4');
-        $dompdf->render();
-        $output = $dompdf->output();
-        $fileName = "order-" . time() . "-" . $modelOrder->id . ".pdf";
-
-        file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName, $output);
-        $modelOrderItem->invoice = $fileName;
-        $modelOrderItem->save(false);
-
-        return Yii::getAlias('@orderInvoiceRelativePath') . "/" . $fileName;
-        
     }
 
     /**
