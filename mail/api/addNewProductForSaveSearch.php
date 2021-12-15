@@ -195,7 +195,7 @@ use yii\helpers\Html;
                                 valign="top"
                                 width="100%"
                                 style="
-                          padding: 20px 25px 7px 40px;
+                          padding: 20px 25px 40px 25px;
                           text-align: left;
                           vertical-align: top;
                           font-family: 'verdana', Helvetica, Arial, sans-serif !important;
