@@ -207,10 +207,10 @@ class Product extends \yii\db\ActiveRecord
 
             [
                 ['receipt'], 'required', 'when' => function ($model) {
-                //return $model->is_cleaned == '1';
+                return $model->is_receipt == '1';
             },
                 'whenClient' => "function (attribute, value) {
-                    if ($('#product-is_cleaned').val() == 1 && $('#product-is_product_receipt_images_empty').val() ==1) {            
+                    if ($('#product-is_receipt').val() == 1 && $('#product-is_product_receipt_images_empty').val() ==1) {            
                         return $('#product-receipt').val() == '';                                    
                     }
                 }",
