@@ -156,7 +156,6 @@ class UserBankDetailsController extends ActiveController
         $data['UserBankDetails'] = $postData;
         $model->user_id = Yii::$app->user->identity->id;
 
-
         if (!empty($data['UserBankDetails']) && !empty($data['UserBankDetails']['payment_type']) && strtolower($data['UserBankDetails']['payment_type']) == UserBankDetails::PAYMENT_TYPE_PAYPAL) {
             $model->scenario = UserBankDetails::PAYMENT_TYPE_PAYPAL;
         } elseif (!empty($data['UserBankDetails']) && !empty($data['UserBankDetails']['payment_type']) && strtolower($data['UserBankDetails']['payment_type']) == UserBankDetails::PAYMENT_TYPE_BANK) {
