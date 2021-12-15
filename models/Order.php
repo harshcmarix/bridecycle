@@ -17,8 +17,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property OrderItems[] $orderItems
- * @property UserAddresses $userAddress
+ * @property OrderItem[] $orderItems
+ * @property UserAddress $userAddress
  * @property User $user
  */
 class Order extends \yii\db\ActiveRecord

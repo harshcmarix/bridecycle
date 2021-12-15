@@ -168,7 +168,6 @@ class Notification extends \yii\db\ActiveRecord
         return $result;
     }
 
-
     /**
      * Gets query for [[Owner]].
      *
@@ -214,4 +213,5 @@ class Notification extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Product::class, ['id' => 'ref_id']);
     }
+    
 }

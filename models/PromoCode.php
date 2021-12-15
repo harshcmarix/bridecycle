@@ -16,7 +16,7 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Users $user
+ * @property User $user
  */
 class PromoCode extends ActiveRecord
 {
@@ -27,6 +27,7 @@ class PromoCode extends ActiveRecord
     {
         return 'promo_codes';
     }
+
      /**
      * @return array[]
      */
@@ -73,6 +74,9 @@ class PromoCode extends ActiveRecord
         ];
     }
 
+    /**
+     *
+     */
     public function validateDates(){
         if(strtotime($this->end_date) <= strtotime($this->start_date)) {
             $this->addError('end_date','End date should not less than or equal to start date');
@@ -107,4 +111,5 @@ class PromoCode extends ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
 }

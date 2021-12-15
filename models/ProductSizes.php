@@ -73,4 +73,5 @@ class ProductSizes extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Sizes::class, ['id' => 'size_id']);
     }
+
 }

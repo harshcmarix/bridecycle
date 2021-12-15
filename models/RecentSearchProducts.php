@@ -45,9 +45,6 @@ class RecentSearchProducts extends \yii\db\ActiveRecord
      * @var null
      */
     public $price = null;
-//    public $productImages0 = [];
-//    public $category0 = [];
-//    public $brand0 = [];
 
     /**
      * {@inheritdoc}

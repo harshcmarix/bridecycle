@@ -128,15 +128,12 @@ class ProductCategory extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Product::class, ['sub_category_id' => 'id']);
     }
+
     /**
      * Gets query for [[ProductCategories]].
      *
      * @return \yii\db\ActiveQuery
      */
-    // public function getProductCategories()
-    // {
-    //     return $this->hasOne(ProductCategory::class, ['id' => 'parent_category_id']);
-    // }
     public function getChildren()
     {
         return $this->hasMany(self::class, ['parent_category_id' => 'id']);

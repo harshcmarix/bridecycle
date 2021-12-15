@@ -51,9 +51,9 @@ use app\modules\api\v2\models\User;
  * @property Brand $brand
  * @property Brand $brand0
  * @property Color $color
- * @property Category $category
- * @property Category $category0
- * @property SubCategory $subCategory
+ * @property ProductCategory $category
+ * @property ProductCategory $category0
+ * @property ProductCategory $subCategory
  * @property UserAddress $address
  * @property ProductReceipt $productReceipt
  * @property ProductReceipt $productReceipt0
@@ -204,7 +204,6 @@ class Product extends \yii\db\ActiveRecord
                     }
                 }",
             ],
-            //[['images'], 'file', 'extensions' => 'jpg, png, jpeg'],
 
             [
                 ['receipt'], 'required', 'when' => function ($model) {
@@ -216,7 +215,6 @@ class Product extends \yii\db\ActiveRecord
                     }
                 }",
             ],
-            //[['receipt'], 'file', 'extensions' => 'jpg, png, jpeg'],
         ];
     }
 

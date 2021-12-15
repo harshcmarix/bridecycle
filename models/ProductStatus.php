@@ -64,4 +64,5 @@ class ProductStatus extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Product::class, ['status_id' => 'id']);
     }
+
 }

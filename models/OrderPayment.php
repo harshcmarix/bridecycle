@@ -20,7 +20,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $created_at
  * @property string $updated_at
  *
- * @property Orders $order
+ * @property Order $order
  */
 class OrderPayment extends \yii\db\ActiveRecord
 {

@@ -53,7 +53,6 @@ class MakeOffer extends \yii\db\ActiveRecord
 
     const USER_ALLOWED_OFFER = 3;
 
-
     /**
      * {@inheritdoc}
      */
@@ -130,7 +129,6 @@ class MakeOffer extends \yii\db\ActiveRecord
         return $this->hasOne(User::class, ['id' => 'receiver_id']);
     }
 
-
     //////    API USES //////////////////////////////////////////////////////////
 
     /**
@@ -189,4 +187,5 @@ class MakeOffer extends \yii\db\ActiveRecord
         }
         return $data;
     }
+
 }

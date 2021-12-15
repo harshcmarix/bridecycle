@@ -110,7 +110,7 @@ class CronjobController extends Controller
 
                                 echo "Error: " . $e->getMessage();
 
-                                \Yii::info("\n------------Fail Subscription ----------------\n" . "userId:" . $userSubscriptionRow->user_id . "\n" . $e->getMessage(), 'notifyUserBasedOnAndroidGooglePlaySubscription');
+                               // \Yii::info("\n------------Fail Subscription ----------------\n" . "userId:" . $userSubscriptionRow->user_id . "\n" . $e->getMessage(), 'notifyUserBasedOnAndroidGooglePlaySubscription');
                             }
                         }
                         // End Android subscription check
@@ -236,7 +236,7 @@ class CronjobController extends Controller
                                                         $notificationToken = array($userDevice->notification_token);
                                                         $senderName = $model->user->first_name . " " . $model->user->last_name;
                                                         $notification = $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
-                                                        \Yii::info("\n------------android notification ----------------\n" . "userId:" . $userROW->id . "\n" . $notification, 'notifyUserBasedOnsaveSearch');
+                                                       // \Yii::info("\n------------android notification ----------------\n" . "userId:" . $userROW->id . "\n" . $notification, 'notifyUserBasedOnsaveSearch');
                                                     } else {
                                                         $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                         $note->setBadge($badge);
@@ -252,7 +252,7 @@ class CronjobController extends Controller
                                                             ]);
                                                         $response = Yii::$app->fcm->send($message);
                                                         $result = $response->getStatusCode();
-                                                        \Yii::info("\n------------ios notification ----------------\n" . "userId:" . $userROW->id . "\n" . $result, 'notifyUserBasedOnsaveSearch');
+                                                       // \Yii::info("\n------------ios notification ----------------\n" . "userId:" . $userROW->id . "\n" . $result, 'notifyUserBasedOnsaveSearch');
                                                     }
                                                 }
                                             }
@@ -289,7 +289,7 @@ class CronjobController extends Controller
             }
         }
 
-        die("Notification sent. \n");
+        //die("Notification sent. \n");
 
     }
 

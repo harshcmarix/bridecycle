@@ -132,7 +132,6 @@ class ProductRating extends ActiveRecord
      */
     public function getUser0()
     {
-        //return $this->hasOne(User::className(), ['id' => 'user_id']);
         $user = User::find()->where(['id' => $this->user_id])->one();
         if ($user instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -143,4 +142,5 @@ class ProductRating extends ActiveRecord
         }
         return $user;
     }
+    
 }

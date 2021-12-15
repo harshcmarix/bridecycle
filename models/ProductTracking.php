@@ -117,4 +117,5 @@ class ProductTracking extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ProductTracking::class, ['id' => 'parent_id']);
     }
+
 }

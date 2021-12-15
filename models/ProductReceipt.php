@@ -25,6 +25,7 @@ class ProductReceipt extends \yii\db\ActiveRecord
     {
         return 'product_receipt';
     }
+
     /**
      * @return array[]
      */
@@ -37,6 +38,7 @@ class ProductReceipt extends \yii\db\ActiveRecord
             ],
         ];
     }
+
     /**
      * {@inheritdoc}
      */
@@ -74,4 +76,5 @@ class ProductReceipt extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
+
 }
