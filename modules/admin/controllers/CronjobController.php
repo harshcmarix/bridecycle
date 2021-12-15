@@ -33,8 +33,6 @@ class CronjobController extends Controller
          *  rm -r vendor/google/apiclient-services
          *  composer update
          *
-         * Start Actual Execution of cronjob from here.
-         *
          *  WHERE `device_platform` = 'android'
          */
         $query = UserPurchasedSubscriptions::find();
@@ -73,7 +71,6 @@ class CronjobController extends Controller
                                     $product_id = $subscriptionRespose->productId;
                                 }
                             }
-
                         }
 
                         // Start Android subscription check
@@ -161,7 +158,6 @@ class CronjobController extends Controller
             }
 
         }
-
     }
 
     /**
