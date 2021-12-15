@@ -112,7 +112,7 @@ class UserBankDetailsController extends ActiveController
     public function actionCreate()
     {
         $model = new UserBankDetails();
-        $model->scenario = UserBankDetails::SCENARIO_CREATE;
+        //$model->scenario = UserBankDetails::SCENARIO_CREATE;
         $postData = \Yii::$app->request->post();
         $userBankDetailData['UserBankDetails'] = $postData;
         $model->user_id = Yii::$app->user->identity->id;
@@ -123,6 +123,12 @@ class UserBankDetailsController extends ActiveController
             $oldData->delete();
         }
         // Delete Old record end
+
+        if (!empty($userBankDetailData['UserBankDetails']) && !empty($userBankDetailData['UserBankDetails']['payment_type']) && strtolower($userBankDetailData['UserBankDetails']['payment_type']) == UserBankDetails::PAYMENT_TYPE_PAYPAL) {
+            $model->scenario = UserBankDetails::PAYMENT_TYPE_PAYPAL;
+        } elseif (!empty($userBankDetailData['UserBankDetails']) && !empty($userBankDetailData['UserBankDetails']['payment_type']) && strtolower($userBankDetailData['UserBankDetails']['payment_type']) == UserBankDetails::PAYMENT_TYPE_BANK) {
+            $model->scenario = UserBankDetails::PAYMENT_TYPE_BANK;
+        }
 
         if ($model->load($userBankDetailData) && $model->validate()) {
             $model->save();
@@ -149,6 +155,13 @@ class UserBankDetailsController extends ActiveController
         $postData = \Yii::$app->request->post();
         $data['UserBankDetails'] = $postData;
         $model->user_id = Yii::$app->user->identity->id;
+
+
+        if (!empty($data['UserBankDetails']) && !empty($data['UserBankDetails']['payment_type']) && strtolower($data['UserBankDetails']['payment_type']) == UserBankDetails::PAYMENT_TYPE_PAYPAL) {
+            $model->scenario = UserBankDetails::PAYMENT_TYPE_PAYPAL;
+        } elseif (!empty($data['UserBankDetails']) && !empty($data['UserBankDetails']['payment_type']) && strtolower($data['UserBankDetails']['payment_type']) == UserBankDetails::PAYMENT_TYPE_BANK) {
+            $model->scenario = UserBankDetails::PAYMENT_TYPE_BANK;
+        }
 
         if ($model->load($data) && $model->validate()) {
             $model->save();

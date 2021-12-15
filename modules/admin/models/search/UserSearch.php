@@ -20,7 +20,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'mobile'], 'integer'],
-            [['profile_picture', 'first_name', 'last_name', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'personal_information', 'user_type', 'is_shop_owner', 'is_newsletter_subscription', 'created_at', 'updated_at'], 'safe'],
+            [['profile_picture', 'first_name', 'last_name', 'username', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'personal_information', 'user_type', 'is_shop_owner', 'is_newsletter_subscription', 'created_at', 'updated_at'], 'safe'],
             [['weight', 'height'], 'number'],
         ];
     }
@@ -117,6 +117,7 @@ class UserSearch extends User
         $query->andFilterWhere(['like', 'profile_picture', $this->profile_picture])
             ->andFilterWhere(['like', 'first_name', $this->first_name])
             ->andFilterWhere(['like', 'last_name', $this->last_name])
+            ->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'mobile', $this->mobile])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'password_hash', $this->password_hash])

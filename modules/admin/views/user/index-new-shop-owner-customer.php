@@ -44,6 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
             ],
             [
+                'attribute' => 'username',
+                'value' => function ($model) {
+                    return $model->username;
+                },
+                'header' => '',
+            ],
+            [
                 'attribute' => 'email',
                 'value' => function ($model) {
                     return $model->email;

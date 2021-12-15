@@ -18,6 +18,7 @@ use yii\web\IdentityInterface;
  * @property string|null $profile_picture
  * @property string|null $first_name
  * @property string|null $last_name
+ * @property string $username
  * @property string|null $email
  * @property string|null $password_hash
  * @property string|null $temporary_password
@@ -122,8 +123,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['first_name', 'last_name', 'email', 'mobile'], 'required'],
-            [['first_name', 'last_name', 'email', 'mobile', 'password', 'confirm_password', 'profile_picture'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
-            [['first_name', 'last_name', 'email', 'mobile'], 'required', 'on' => [self::SCENARIO_UPDATE_NORMAL_USER]],
+            [['first_name', 'last_name', 'email', 'mobile', 'password', 'confirm_password', 'profile_picture', 'username'], 'required', 'on' => [self::SCENARIO_CREATE_NORMAL_USER]],
+            [['first_name', 'last_name', 'email', 'mobile', 'username'], 'required', 'on' => [self::SCENARIO_UPDATE_NORMAL_USER]],
 
             [['profile_picture'], 'required', 'when' => function ($model) {
 
@@ -192,6 +193,7 @@ class User extends ActiveRecord implements IdentityInterface
             'profile_picture' => 'Profile Picture',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
+            'username' => 'Username',
             'email' => 'Email',
             'password_hash' => 'Password Hash',
             'password' => 'Password',

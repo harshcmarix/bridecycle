@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
                 'attributes' => [
                     'first_name',
                     'last_name',
+                    'username',
                     'email:email',
                     [
                         'format' => 'raw',

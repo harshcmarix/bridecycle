@@ -27,11 +27,14 @@ echo Dialog::widget(
                 </div>
             </div>
             <div class="row">
-                <div class="col col-md-6">
+                <div class="col col-md-4">
+                    <?= $form->field($model, 'username', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'autocomplete' => "off"]) ?>
+                </div>
+                <div class="col col-md-4">
                     <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['maxlength' => true, 'autocomplete' => "off"]) ?>
                 </div>
                 <?php if (empty(Yii::$app->request->get('f'))) { ?>
-                    <div class="col col-md-6">
+                    <div class="col col-md-4">
                         <?= $form->field($model, 'mobile', ['enableAjaxValidation' => true])->textInput(['type' => 'number']) ?>
                     </div>
                 <?php } ?>

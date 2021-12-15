@@ -67,24 +67,49 @@ class UserBankDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code', 'payment_type'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code', 'payment_type'], 'required', 'on' => self::SCENARIO_UPDATE],
+            [['user_id', 'payment_type'], 'required'],
+            //[['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code', 'payment_type'], 'required', 'on' => self::SCENARIO_CREATE],
+            //[['user_id', 'debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code', 'payment_type'], 'required', 'on' => self::SCENARIO_UPDATE],
+            [['user_id', 'payment_type'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['user_id', 'payment_type'], 'required', 'on' => self::SCENARIO_UPDATE],
             [['user_id', 'post_code'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['debit_card', 'first_name', 'last_name', 'country', 'billing_address_line_1', 'billing_address_line_2', 'city', 'paypal_email'], 'string', 'max' => 255],
             [['iban'], 'string', 'max' => 100],
             //['confirm_account_number', 'compare', 'compareAttribute' => 'account_number', 'message' => "Confirm Account Number don't match!"],
+            [['debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'on' => [self::PAYMENT_TYPE_BANK]],
+            [['paypal_email'], 'required', 'on' => [self::PAYMENT_TYPE_PAYPAL]],
 
-            [
-                ['paypal_email'], 'required', 'when' => function ($model) {
-                return $model->payment_type == self::PAYMENT_TYPE_PAYPAL;
-            },
-                'whenClient' => "function (attribute, value) {
-                    if ($('#userbankdetails-payment_type').val() == " . self::PAYMENT_TYPE_PAYPAL . ") {            
-                        return $('#userbankdetails-paypal_email').val() == '';                                    
-                    }
-                }",
-            ],
+//            [
+//                ['paypal_email'], 'required', 'when' => function ($model) {
+//                return $model->payment_type == self::PAYMENT_TYPE_PAYPAL;
+//            },
+//                'whenClient' => "function (attribute, value) {
+//                    if ($('#userbankdetails-payment_type').val() == " . self::PAYMENT_TYPE_PAYPAL . ") {
+//                        return $('#userbankdetails-paypal_email').val() == '';
+//                    }
+//                }",
+//            ],
+
+
+//            [
+//                ['debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'when' => function ($model) {
+//                return $model->payment_type == self::PAYMENT_TYPE_BANK;
+//            },
+//                'whenClient' => "function (attribute, value) {
+//                    if ($('#userbankdetails-payment_type').val() == " . self::PAYMENT_TYPE_BANK . ") {
+//                        return $('#userbankdetails-debit_card').val() == '';
+//                        return $('#userbankdetails-first_name').val() == '';
+//                        return $('#userbankdetails-last_name').val() == '';
+//                        return $('#userbankdetails-country').val() == '';
+//                        return $('#userbankdetails-iban').val() == '';
+//                        return $('#userbankdetails-billing_address_line_1').val() == '';
+//                        return $('#userbankdetails-billing_address_line_2').val() == '';
+//                        return $('#userbankdetails-city').val() == '';
+//                        return $('#userbankdetails-post_code').val() == '';
+//                    }
+//                }",
+//            ],
 
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']]
 

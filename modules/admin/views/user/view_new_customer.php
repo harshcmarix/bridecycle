@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
                 'attributes' => [
                     'first_name',
                     'last_name',
+                    'username',
                     'email:email',
                     [
                         'format' => 'raw',

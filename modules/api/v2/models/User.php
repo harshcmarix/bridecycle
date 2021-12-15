@@ -27,6 +27,7 @@ use yii\web\UnauthorizedHttpException;
  * @property string|null $profile_picture
  * @property string|null $first_name
  * @property string|null $last_name
+ * @property string $username
  * @property string|null $email
  * @property string|null $password_hash
  * @property string|null $temporary_password
@@ -189,7 +190,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             // [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
-            [['email', 'timezone_id'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
+            [['email', 'timezone_id', 'username'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
             // [['first_name'], 'required', 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]], // 'last_name'
             [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
             [['top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size', 'height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER],
@@ -245,6 +246,7 @@ class User extends ActiveRecord implements IdentityInterface
             'profile_picture' => 'Profile Picture',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
+            'username' => 'Username',
             'email' => 'Email',
             'password_hash' => 'Password Hash',
             'temporary_password' => 'Temporary Password',
