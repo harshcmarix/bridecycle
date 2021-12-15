@@ -16,10 +16,10 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
     <div class="box-body">
 
         <div class="users-view">
+
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
@@ -196,6 +196,7 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
                     ]) ?>
                 </div>
             </div>
+
             <p>
                 <?php
                 if ($pageId == '') {
@@ -209,6 +210,7 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
                 }
                 ?>
             </p>
+
         </div>
     </div>
 </div>

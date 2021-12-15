@@ -431,7 +431,6 @@ class Product extends \yii\db\ActiveRecord
         return $this->hasMany(ProductSizes::class, ['product_id' => 'id']);
     }
 
-
     /**
      * Uses for admin panel view pages
      *
@@ -484,7 +483,6 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getCategory0()
     {
-        // return $this->hasOne(ProductCategory::class, ['id' => 'category_id']);
         $productCategory = ProductCategory::find()->where(['id' => $this->category_id])->one();
         if ($productCategory instanceof ProductCategory) {
             $categoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -612,7 +610,6 @@ class Product extends \yii\db\ActiveRecord
     public function getSeller()
     {
         $data = User::find()->where(['id' => $this->user_id])->one();
-
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
@@ -649,7 +646,6 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductReceipt0()
     {
-        //return $this->hasMany(ProductReceipt::class, ['product_id' => 'id']);
         $productReceipts = ProductReceipt::find()->where(['product_id' => $this->id])->all();
         if (!empty($productReceipts)) {
             foreach ($productReceipts as $key => $value) {
@@ -701,11 +697,6 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductTracking()
     {
-        //return $this->hasOne(ProductTracking::class, ['id' => 'product_tracking_id']);
-        //return $this->hasOne(ProductTracking::class, ['id' => 'product_tracking_id'])->joinWith('product_tracking AS pt',['pt.parent_id' => 'ProductTracking.product_tracking_id']);
-        //$result->joinWith('productTrackingChild As child');
-        //return $result;
-
         $modelProductTracking = ProductTracking::find()->where(['id' => $this->product_tracking_id])->orWhere(['parent_id' => $this->product_tracking_id])->orderBy(['id' => SORT_ASC])->all();
         return $modelProductTracking;
     }
@@ -715,8 +706,6 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductSizes0()
     {
-        //return $this->hasMany(ProductSizes::class, ['product_id' => 'id']);
-
         $ProductSizes = ProductSizes::find()->where(['product_id' => $this->id])->all();
         $data = [];
         if (!empty($ProductSizes)) {
@@ -728,4 +717,5 @@ class Product extends \yii\db\ActiveRecord
         }
         return $ProductSizes;
     }
+    
 }

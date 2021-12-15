@@ -14,7 +14,6 @@ $this->params['breadcrumbs'][] = 'View Customer';
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
     <div class="box-body">
 
         <div class="users-view">
@@ -150,9 +149,11 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     ?>
                 </div>
             </div>
+
             <p>
                 <?= Html::a('Back', \yii\helpers\Url::to(['index-new-customer']), ['class' => 'btn btn-default']) ?>
             </p>
+
         </div>
     </div>
 </div>

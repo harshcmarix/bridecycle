@@ -31,10 +31,10 @@ $this->params['breadcrumbs'][] = 'View Customer';
 ?>
 
 <div class="box box-default">
-    <div class="box-header"></div>
     <div class="box-body">
 
         <div class="users-view">
+
             <?= DetailView::widget([
                 'model' => $model,
                 'attributes' => [
@@ -224,6 +224,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     ?>
                 </div>
             </div>
+
             <p>
                 <?php
                 if ($pageId == '' && empty(Yii::$app->request->get('f')) && $pageType != 'seller') {
@@ -241,6 +242,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
                 }
                 ?>
             </p>
+
         </div>
     </div>
 </div>

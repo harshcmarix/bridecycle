@@ -191,7 +191,6 @@ if ($user instanceof User && !empty($user->last_name)) {
                             </p>
 
 
-
                             <p
                                     style="
                       text-align: left;
@@ -205,7 +204,7 @@ if ($user instanceof User && !empty($user->last_name)) {
                     "
                             >
                                 Your temporary password is
-                                <strong style="font-size: 13px; font-weight: bold"><?= $user->temporary_password ?></strong>.
+                                <strong style="font-size: 13px; font-weight: bold"><?= $user->temporary_password ?></strong>
                             </p>
 
 
