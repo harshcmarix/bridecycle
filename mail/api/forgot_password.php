@@ -25,7 +25,6 @@ if ($user instanceof User && !empty($user->last_name)) {
     <style type="text/css">
         body {
             background: #ebf0f5;
-            line-height: 18px;
             margin: 0;
             font-family: "verdana", Helvetica, Arial, sans-serif !important;
             color: #1b1b1b;
@@ -219,7 +218,7 @@ if ($user instanceof User && !empty($user->last_name)) {
                                 valign="top"
                                 width="100%"
                                 style="
-                          padding: 20px 25px 7px 25px;
+                          padding: 20px 25px 7px 40px;
                           text-align: left;
                           vertical-align: top;
                           font-family: 'verdana', Helvetica, Arial, sans-serif !important;
