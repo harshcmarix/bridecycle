@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $first_name  string user name */
 /* @var $email string user email */
 /* @var $body  string the review */
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -187,6 +188,7 @@ use yii\helpers\Html;
                                 below your varification code to verify your
                                 profile.
                             </p>
+
                             <div
                                     style="
                       height: 15px;
@@ -264,7 +266,6 @@ use yii\helpers\Html;
                 </table>
             </td>
         </tr>
-
     </table>
 </div>
 </body>
