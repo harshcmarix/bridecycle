@@ -190,6 +190,14 @@ if ($user instanceof User && !empty($user->last_name)) {
                                 email.
                             </p>
 
+                            <div
+                                    style="
+                      height: 15px;
+                      width: 100%;
+                      line-height: 15px;
+                      clear: both;
+                    "
+                            ></div>
 
                             <p
                                     style="
