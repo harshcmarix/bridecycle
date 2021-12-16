@@ -71,7 +71,7 @@ class ChatHistory extends \yii\db\ActiveRecord
             [['product_id', 'from_user_id', 'to_user_id', 'is_read'], 'integer'],
             [['message', 'message_type', 'chat_type'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['file'], 'file', 'maxFiles' => 1, 'extensions' => 'png, jpg, jpeg, gif, bmp, raw, psd, webp'],
+            [['file'], 'file', 'maxFiles' => 1], // 'extensions' => 'png, jpg, jpeg, gif, bmp, raw, psd, webp'
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['from_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['from_user_id' => 'id']],
             [['to_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['to_user_id' => 'id']],
