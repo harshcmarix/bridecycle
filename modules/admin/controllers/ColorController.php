@@ -2,8 +2,11 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Brand;
 use app\models\Notification;
 use app\models\Product;
+use app\models\ProductSizes;
+use app\models\ProductStatus;
 use app\modules\api\v2\models\User;
 use kartik\growl\Growl;
 use Yii;
@@ -126,7 +129,19 @@ class ColorController extends Controller
 
                 if (!empty($modelProductsBasedOnColor)) {
                     foreach ($modelProductsBasedOnColor as $keyProd => $modelProductsBasedOnColorRow) {
+
                         if (!empty($modelProductsBasedOnColorRow) && $modelProductsBasedOnColorRow instanceof Product) {
+
+                            // Product approval start
+                            if (!empty($modelProductsBasedOnColorRow->brand) && $modelProductsBasedOnColorRow->brand instanceof Brand && $modelProductsBasedOnColorRow->brand->status == Brand::STATUS_APPROVE && $model->status == Color::STATUS_APPROVE) {
+                                $modelProductsBasedOnColorRow->status_id = ProductStatus::STATUS_APPROVED;
+                                $modelProductsBasedOnColorRow->save(false);
+                            } else {
+                                //$modelProductsBasedOnColorRow->status_id = ProductStatus::STATUS_ARCHIVED;
+                                //$modelProductsBasedOnColorRow->save(false);
+                            }
+                            // Product approval end
+
                             $userModel = $modelProductsBasedOnColorRow->user;
 
                             $actionStatus = ($model->status == Color::STATUS_APPROVE) ? 'approve' : 'decline';

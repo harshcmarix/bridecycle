@@ -2,8 +2,10 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Color;
 use app\models\Notification;
 use app\models\Product;
+use app\models\ProductStatus;
 use app\modules\api\v2\models\User;
 use Imagine\Image\Box;
 use Yii;
@@ -286,6 +288,26 @@ class BrandController extends Controller
                     if (!empty($productsModel)) {
                         foreach ($productsModel as $key => $productsModelRow) {
                             if (!empty($productsModelRow) && $productsModelRow instanceof Product) {
+
+                                // Product approval start
+                                $allColorIsApproved = [];
+                                if (!empty($productsModelRow->getColor()) && $model->status == Brand::STATUS_APPROVE) {
+                                    foreach ($productsModelRow->getColor() as $keyColor => $colorRow) {
+                                        if (!empty($colorRow) && $colorRow instanceof Color && $colorRow->status == Color::STATUS_APPROVE) {
+                                            $allColorIsApproved[] = 1;
+                                        } else {
+                                            $allColorIsApproved[] = 0;
+                                        }
+                                    }
+                                }
+                                if (!in_array(0, $allColorIsApproved)) {
+                                    $productsModelRow->status_id = ProductStatus::STATUS_APPROVED;
+                                    $productsModelRow->save(false);
+                                } else {
+                                    //$productsModelRow->status_id = ProductStatus::STATUS_ARCHIVED;
+                                    //$productsModelRow->save(false);
+                                }
+                                // Product approval end
 
                                 $actionStatus = ($model->status == Brand::STATUS_APPROVE) ? 'approve' : 'decline';
 

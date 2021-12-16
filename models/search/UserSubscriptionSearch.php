@@ -68,5 +68,5 @@ class UserSubscriptionSearch extends UserSubscription
 
         return $dataProvider;
     }
-    
+
 }
