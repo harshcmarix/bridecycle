@@ -5,7 +5,6 @@ namespace app\models;
 use \yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use app\modules\admin\models\User;
-use Yii;
 
 /**
  * This is the model class for table "promo_codes".
@@ -28,7 +27,7 @@ class PromoCode extends ActiveRecord
         return 'promo_codes';
     }
 
-     /**
+    /**
      * @return array[]
      */
     public function behaviors()
@@ -41,7 +40,7 @@ class PromoCode extends ActiveRecord
         ];
     }
 
-    //Promo code type
+    //Promo code type Constants
     const TYPE_FLAT = 'flat';
     const TYPE_DISCOUNT = 'discount';
     const ARR_PROMOCODE_TYPE = [
@@ -49,7 +48,7 @@ class PromoCode extends ActiveRecord
         self::TYPE_DISCOUNT => 'Discount'
     ];
 
-    //Promo code status
+    //Promo code status Constants
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
     const ARR_PROMOCODE_STATUS = [
@@ -69,17 +68,18 @@ class PromoCode extends ActiveRecord
             [['code'], 'string', 'max' => 100],
             [['value'], 'double'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
-            [['start_date','end_date'], 'date', 'format' => 'php:Y-m-d'],
-            [['start_date', 'end_date'],'validateDates'],
+            [['start_date', 'end_date'], 'date', 'format' => 'php:Y-m-d'],
+            [['start_date', 'end_date'], 'validateDates'],
         ];
     }
 
     /**
-     *
+     * Date validation function
      */
-    public function validateDates(){
-        if(strtotime($this->end_date) <= strtotime($this->start_date)) {
-            $this->addError('end_date','End date should not less than or equal to start date');
+    public function validateDates()
+    {
+        if (strtotime($this->end_date) <= strtotime($this->start_date)) {
+            $this->addError('end_date', 'End date should not less than or equal to start date');
         }
     }
 

@@ -34,7 +34,6 @@ class ProductCategory extends \yii\db\ActiveRecord
     public $is_image_empty;
     public $sub_cat_name;
 
-
     const STATUS_PENDING_APPROVAL = 1;
     const STATUS_APPROVE = 2;
     const STATUS_DECLINE = 3;
@@ -79,7 +78,7 @@ class ProductCategory extends \yii\db\ActiveRecord
             [['name'], 'unique'],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
-            //[['image'], 'string', 'max' => 255],
+
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_image_empty == '1';
             },
@@ -88,6 +87,7 @@ class ProductCategory extends \yii\db\ActiveRecord
                                     return $('#productcategory-image').val() == '';                                    
                                     }
                                 }",],
+
             [['parent_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['parent_category_id' => 'id']],
             [['image'], 'file', 'extensions' => 'jpg, png'],
         ];

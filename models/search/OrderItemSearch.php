@@ -2,7 +2,6 @@
 
 namespace app\models\search;
 
-use yii\base\BaseObject;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\OrderItem;
@@ -108,4 +107,5 @@ class OrderItemSearch extends OrderItem
 
         return $dataProvider;
     }
+
 }

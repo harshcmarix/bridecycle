@@ -57,17 +57,19 @@ use app\modules\api\v2\models\User;
  * @property UserAddress $address
  * @property ProductReceipt $productReceipt
  * @property ProductReceipt $productReceipt0
+ *
  */
 class Product extends \yii\db\ActiveRecord
 {
+
     /**
      * used for create
      */
     const SCENARIO_CREATE = 'create';
+
     /**
      * used to check image empty or not
      */
-
     const IMAGE_EMPTY = 1;
     const IMAGE_NOT_EMPTY = 0;
     public $is_product_images_empty;
@@ -460,7 +462,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductImages0()
     {
-        // return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
+
         $productImages = ProductImage::find()->where(['product_id' => $this->id])->all();
         if (!empty($productImages)) {
             foreach ($productImages as $key => $value) {
@@ -502,7 +504,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getSubCategory0()
     {
-        // return $this->hasOne(ProductCategory::class, ['id' => 'sub_category_id']);
+
         $productSubCategory = ProductCategory::find()->where(['id' => $this->sub_category_id])->one();
         if ($productSubCategory instanceof ProductCategory) {
             $subCategoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -521,7 +523,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getBrand0()
     {
-        // return $this->hasOne(Brand::class, ['id' => 'brand_id']);
+
         $brand = Brand::find()->where(['id' => $this->brand_id])->one();
         if ($brand instanceof Brand) {
             $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -717,5 +719,5 @@ class Product extends \yii\db\ActiveRecord
         }
         return $ProductSizes;
     }
-    
+
 }

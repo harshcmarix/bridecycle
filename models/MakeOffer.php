@@ -32,6 +32,9 @@ class MakeOffer extends \yii\db\ActiveRecord
         return 'make_offer';
     }
 
+    /**
+     * @var
+     */
     public $offered_count;
 
     /**
@@ -47,6 +50,9 @@ class MakeOffer extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     *  Constants
+     */
     const STATUS_PENDING = 1;
     const STATUS_ACCEPT = 2;
     const STATUS_REJECT = 3;

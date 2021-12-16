@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -51,7 +50,6 @@ class ProductImage extends \yii\db\ActiveRecord
             [['product_id', 'images'], 'required', 'on' => 'update_api'],
             [['product_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            //[['name','images'], 'file', 'maxFiles' => 5, 'extensions' => 'png, jpg'],
             [['name', 'images'], 'file', 'maxFiles' => 5, 'message' => 'You can upload a maximum of 5 product images only.'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
@@ -81,4 +79,5 @@ class ProductImage extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
+
 }

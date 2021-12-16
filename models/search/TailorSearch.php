@@ -69,8 +69,8 @@ class TailorSearch extends Tailor
             ->andFilterWhere(['like', 'shop_image', $this->shop_image])
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'mobile', $this->mobile]);
-            
 
         return $dataProvider;
     }
+
 }

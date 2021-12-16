@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -29,7 +28,7 @@ class Sizes extends \yii\db\ActiveRecord
     }
 
     /**
-     *
+     * Constants
      */
     const STATUS_ACTIVE = '1';
     const STATUS_INACTIVE = '0';
@@ -100,4 +99,5 @@ class Sizes extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ProductCategory::class, ['id' => 'product_category_id']);
     }
+
 }

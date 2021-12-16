@@ -16,17 +16,17 @@ use \yii\db\ActiveRecord;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property UserSubscriptions[] $userSubscriptions
+ * @property UserSubscription[] $userSubscriptions
  */
 class Subscription extends ActiveRecord
 {
     /**
-     * use to identify subscription is active or not
+     * use to identify subscription is active or not constants
      */
     const ACTIVE = '1';
     const INACTIVE = '0';
     /**
-     * used for dropdown
+     * used for dropdown constants
      */
     const SUBSCRIPTION_STATUS_ARRAY = [
         self::ACTIVE =>'Active',
@@ -91,8 +91,13 @@ class Subscription extends ActiveRecord
     {
         return $this->hasMany(UserSubscription::class, ['subscription_id' => 'id']);
     }
+
+    /**
+     * @return int|string|null
+     */
     public function getSubscribedUsersCount()
     {
         return $this->hasMany(UserSubscription::class, ['subscription_id' => 'id'])->count();
     }
+
 }

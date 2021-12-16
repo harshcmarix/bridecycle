@@ -71,4 +71,5 @@ class PromoCodeSearch extends PromoCode
 
         return $dataProvider;
     }
+
 }

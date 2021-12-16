@@ -70,4 +70,5 @@ class BannerSearch extends Banner
 
         return $dataProvider;
     }
+
 }

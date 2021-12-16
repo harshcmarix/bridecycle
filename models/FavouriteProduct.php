@@ -16,8 +16,8 @@ use app\modules\api\v2\models\User;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Users $user
- * @property Products $product
+ * @property User $user
+ * @property Product $product
  */
 class FavouriteProduct extends ActiveRecord
 {
@@ -28,11 +28,12 @@ class FavouriteProduct extends ActiveRecord
     {
         return 'favourite_products';
     }
-     /**
+
+    /**
      * @return array[]
      */
-     public function behaviors()
-     {
+    public function behaviors()
+    {
         return [
             [
                 'class' => TimestampBehavior::class,
@@ -68,16 +69,17 @@ class FavouriteProduct extends ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
-   /**
+
+    /**
      * @return array|false
      */
-   public function extraFields()
-   {
-    return [
-        'user0'=>'user0',
-        'product'=>'product'
-    ];
-}
+    public function extraFields()
+    {
+        return [
+            'user0' => 'user0',
+            'product' => 'product'
+        ];
+    }
 
     /**
      * Gets query for [[User]].
@@ -98,17 +100,18 @@ class FavouriteProduct extends ActiveRecord
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
-    // api use only
+
     /**
+     * API use only
+     *
      * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getUser0()
     {
-        //return $this->hasOne(User::class, ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->user_id])->one();
-        if($data instanceof User){
+        if ($data instanceof User) {
             $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
                 $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $data->profile_picture;
@@ -117,4 +120,5 @@ class FavouriteProduct extends ActiveRecord
         }
         return $data;
     }
+
 }

@@ -44,7 +44,7 @@ class SellerRating extends \yii\db\ActiveRecord
     }
 
     /**
-     *
+     * Constants
      */
     const FIVE_STAR_RATE = '5';
     const FOUR_STAR_RATE = '4';
@@ -126,7 +126,6 @@ class SellerRating extends \yii\db\ActiveRecord
      */
     public function getUser0()
     {
-        //return $this->hasOne(User::class, ['id' => 'user_id']);
         $user = User::find()->where(['id' => $this->user_id])->one();
         if ($user instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -145,7 +144,6 @@ class SellerRating extends \yii\db\ActiveRecord
      */
     public function getSeller0()
     {
-        //return $this->hasOne(User::class, ['id' => 'seller_id']);
         $seller = User::find()->where(['id' => $this->seller_id])->one();
         if ($seller instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -156,4 +154,5 @@ class SellerRating extends \yii\db\ActiveRecord
         }
         return $seller;
     }
+    
 }

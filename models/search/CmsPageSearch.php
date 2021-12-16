@@ -70,4 +70,5 @@ class CmsPageSearch extends CmsPage
 
         return $dataProvider;
     }
+
 }

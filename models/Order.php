@@ -44,13 +44,16 @@ class Order extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Constants
+     */
     const STATUS_ORDER_PENDING = '1';
     const STATUS_ORDER_INPROGRESS = '2';
     const STATUS_ORDER_COMPLETED = '3';
     const STATUS_ORDER_CANCELLED = '4';
 
     public $arrOrderStatus = [
-       // self::STATUS_ORDER_PENDING => 'Pending',
+        // self::STATUS_ORDER_PENDING => 'Pending',
         self::STATUS_ORDER_INPROGRESS => 'In Progress',
         self::STATUS_ORDER_COMPLETED => 'Completed',
         self::STATUS_ORDER_CANCELLED => 'Cancelled',
@@ -139,7 +142,6 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getOrderItems0()
     {
-
         $modelOrderItems = OrderItem::find()->where(['order_id' => $this->id])->one();
         if ($modelOrderItems instanceof OrderItem) {
 
@@ -149,4 +151,5 @@ class Order extends \yii\db\ActiveRecord
         }
         return $modelOrderItems;
     }
+
 }

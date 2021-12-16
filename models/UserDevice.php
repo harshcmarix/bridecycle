@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "user_device".
  *
@@ -14,7 +12,7 @@ use Yii;
  * @property string $created_at
  * @property string|null $updated_at
  *
- * @property Users $user
+ * @property User $user
  */
 class UserDevice extends \yii\db\ActiveRecord
 {
@@ -65,4 +63,5 @@ class UserDevice extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
 }

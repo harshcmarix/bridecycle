@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -52,10 +51,11 @@ class Ads extends \yii\db\ActiveRecord
     const IMAGE_NOT_EMPTY = 0;
     public $is_ads_image_empty;
 
-
+    /**
+     * Constants
+     */
     const STATUS_INACTIVE = 1;
     const STATUS_ACTIVE = 2;
-
 
     const ARR_ADS_STATUS = [
         self::STATUS_INACTIVE => 'Inactive',
@@ -76,29 +76,31 @@ class Ads extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['title'], 'string', 'max' => 255],
             [['image',], 'required', 'on' => self::SCENARIO_CREATE],
+
             [['image'], 'required', 'when' => function ($model) {
                 return $model->scenario == self::SCENARIO_CREATE;
-                }, 'whenClient' => "function (attribute, value) {
+            }, 'whenClient' => "function (attribute, value) {
                     if ($('#ads-is_ads_image_empty').val() == 1) {   
                         
                         return $('#ads-image').val() == '';                                    
                     }
                 }",],
-                [['url'], 'required', 'message' => '{attribute} cannot be blank or (Product or Brand cannot be blank).','when' => function ($model) {
-                    return ($model->product_id == "" && $model->category_id == "");
-                    }, 'whenClient' => "function (attribute, value) {
+
+            [['url'], 'required', 'message' => '{attribute} cannot be blank or (Product or Brand cannot be blank).', 'when' => function ($model) {
+                return ($model->product_id == "" && $model->category_id == "");
+            }, 'whenClient' => "function (attribute, value) {
                         if ($('#ads-product_id').val() == '' && $('#ads-brand_id').val() == '') {
                             return $('#ads-url').val() == '';   
                         }
                     }",],
 
-                [['category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['category_id' => 'id']],
-                [['sub_category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['sub_category_id' => 'id']],
-                [['product_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
-                [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
-                [['image'], 'file', 'extensions' => 'jpg, png'],
-            ];
-        }
+            [['category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['category_id' => 'id']],
+            [['sub_category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['sub_category_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
+            [['image'], 'file', 'extensions' => 'jpg, png'],
+        ];
+    }
 
     /**
      * {@inheritdoc}

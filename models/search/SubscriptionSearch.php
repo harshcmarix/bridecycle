@@ -71,4 +71,5 @@ class SubscriptionSearch extends Subscription
 
         return $dataProvider;
     }
+
 }

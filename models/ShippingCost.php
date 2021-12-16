@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -37,6 +36,9 @@ class ShippingCost extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     *  Constants
+     */
     const CONTINENT_ASIA = 'Asia';
     const CONTINENT_CANADA = 'Canada';
     const CONTINENT_EUROPE = 'Europe';

@@ -86,7 +86,6 @@ class ChatHistory extends \yii\db\ActiveRecord
                                     }
                                 }",],
 
-
             [['file'], 'required', 'when' => function ($model) {
                 return $model->message_type == self::MESSAGE_TYPE_IMAGE;
             },
@@ -178,7 +177,6 @@ class ChatHistory extends \yii\db\ActiveRecord
      */
     public function getFromUser0()
     {
-
         $userDetails = User::find()->where(['id' => $this->from_user_id])->one();
         if ($userDetails instanceof User) {
             $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

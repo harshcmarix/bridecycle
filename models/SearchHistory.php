@@ -5,7 +5,6 @@ namespace app\models;
 use \yii\db\ActiveRecord;
 use app\modules\api\v2\models\User;
 use yii\behaviors\TimestampBehavior;
-use Yii;
 
 /**
  * This is the model class for table "searches".
@@ -16,7 +15,7 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property Users $user
+ * @property User $user
  */
 class SearchHistory extends ActiveRecord
 {
@@ -86,4 +85,5 @@ class SearchHistory extends ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
 }

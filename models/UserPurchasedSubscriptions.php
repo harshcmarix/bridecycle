@@ -47,6 +47,9 @@ class UserPurchasedSubscriptions extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Constants
+     */
     const DEVICE_PLATFORM_ANDROID = "android";
     const DEVICE_PLATFORM_IOS= "ios";
 
@@ -130,4 +133,5 @@ class UserPurchasedSubscriptions extends \yii\db\ActiveRecord
         }
         return $data;
     }
+
 }

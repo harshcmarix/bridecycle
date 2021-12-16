@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use \yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use app\modules\api\v2\models\User;
 use Yii;
@@ -63,7 +62,7 @@ class CartItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            //[['user_id', 'product_id', 'quantity', 'price'], 'required'],
+
             [['user_id', 'product_id', 'quantity', 'shipping_cost'], 'required'],
             [['user_id', 'product_id', 'quantity', 'seller_id', 'size_id'], 'integer'],
             [['shipping_cost', 'price', 'tax'], 'number'],

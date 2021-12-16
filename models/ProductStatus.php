@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "product_statuses".
  *
@@ -24,6 +22,9 @@ class ProductStatus extends \yii\db\ActiveRecord
         return 'product_statuses';
     }
 
+    /**
+     * Constants
+     */
     const STATUS_PENDING_APPROVAL = '1';
     const STATUS_APPROVED = '2';
     const STATUS_IN_STOCK = '3';

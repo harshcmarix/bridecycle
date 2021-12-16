@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use app\modules\admin\models\User;
 use yii\behaviors\TimestampBehavior;
 
@@ -48,6 +47,9 @@ class UserAddress extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Constants
+     */
     const TYPE_BILLING = '1';
     const TYPE_SHIPPING = '2';
     const TYPE_SHOP = '3';
@@ -110,4 +112,5 @@ class UserAddress extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
 }

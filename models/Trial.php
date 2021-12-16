@@ -35,6 +35,9 @@ class Trial extends \yii\db\ActiveRecord
         return 'trials';
     }
 
+    /**
+     * Constants
+     */
     const STATUS_PENDING = '1';
     const STATUS_ACCEPT = '2';
     const STATUS_REJECT = '3';
@@ -53,7 +56,6 @@ class Trial extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            //[['product_id', 'sender_id', 'receiver_id', 'status', 'date', 'time'], 'required'],
             [['product_id', 'name', 'date', 'time', 'timezone_id'], 'required'],
             [['status'], 'required', 'on' => self::SCENARIO_ACCEPT_REJECT],
             [['product_id', 'sender_id', 'receiver_id', 'status', 'timezone_id'], 'integer'],
@@ -95,7 +97,6 @@ class Trial extends \yii\db\ActiveRecord
             'productImages0' => 'productImages0',
             'category0' => 'category0',
             'brand0' => 'brand0',
-            //'color' => 'color',
             'subCategory0' => 'subCategory0',
             'sender0' => 'sender0',
             'receiver0' => 'receiver0',
@@ -148,7 +149,6 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getSender0()
     {
-        //return $this->hasOne(User::class, ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->sender_id])->one();
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -165,7 +165,6 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getReceiver0()
     {
-        //return $this->hasOne(User::class, ['id' => 'user_id']);
         $data = User::find()->where(['id' => $this->receiver_id])->one();
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -194,7 +193,6 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getProductImages0()
     {
-        // return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
         $productImages = ProductImage::find()->where(['product_id' => $this->product_id])->all();
         if (!empty($productImages)) {
             foreach ($productImages as $key => $value) {
@@ -236,7 +234,6 @@ class Trial extends \yii\db\ActiveRecord
      */
     public function getSubCategory0()
     {
-        // return $this->hasOne(ProductCategory::class, ['id' => 'sub_category_id']);
         $productSubCategory = ProductCategory::find()->where(['id' => $this->product->sub_category_id])->one();
         if ($productSubCategory instanceof ProductCategory) {
             $subCategoryImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -273,4 +270,5 @@ class Trial extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Timezone::class, ['id' => 'timezone_id']);
     }
+    
 }

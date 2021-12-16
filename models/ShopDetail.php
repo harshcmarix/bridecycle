@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 use app\modules\admin\models\User;
 
@@ -51,7 +50,6 @@ class ShopDetail extends \yii\db\ActiveRecord
             [['shop_email'], 'email'],
             [['shop_email'], 'unique'],
             [['created_at', 'updated_at'], 'safe'],
-            //[['shop_logo','shop_cover_picture'], 'file', 'extensions' => 'png,jpg'],
             [[ 'shop_name', 'shop_email', 'website'], 'string', 'max' => 255],
             [['shop_phone_number'], 'string', 'max' => 15],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
@@ -86,4 +84,5 @@ class ShopDetail extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
 }

@@ -129,4 +129,5 @@ class OrderItem extends \yii\db\ActiveRecord
         $earnPrice = (($price * Yii::$app->params['bridecycle_product_order_charge_percentage']) / 100);
         return $earnPrice;
     }
+
 }

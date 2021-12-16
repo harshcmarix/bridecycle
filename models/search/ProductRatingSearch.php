@@ -73,4 +73,5 @@ class ProductRatingSearch extends ProductRating
 
         return $dataProvider;
     }
+
 }

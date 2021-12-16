@@ -72,4 +72,5 @@ class ProductCategorySearch extends ProductCategory
 
         return $dataProvider;
     }
+
 }

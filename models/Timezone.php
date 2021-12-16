@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "timezones".
  *
@@ -46,4 +44,5 @@ class Timezone extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+
 }

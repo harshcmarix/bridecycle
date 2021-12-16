@@ -55,6 +55,9 @@ class UserBankDetails extends \yii\db\ActiveRecord
      */
     public $confirm_account_number;
 
+    /**
+     * Constants
+     */
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
 
@@ -74,10 +77,8 @@ class UserBankDetails extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['debit_card', 'first_name', 'last_name', 'country', 'billing_address_line_1', 'billing_address_line_2', 'city', 'paypal_email'], 'string', 'max' => 255],
             [['iban'], 'string', 'max' => 100],
-            //['confirm_account_number', 'compare', 'compareAttribute' => 'account_number', 'message' => "Confirm Account Number don't match!"],
             [['debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'on' => [self::PAYMENT_TYPE_BANK]],
             [['paypal_email'], 'required', 'on' => [self::PAYMENT_TYPE_PAYPAL]],
-
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']]
 
         ];
@@ -144,4 +145,5 @@ class UserBankDetails extends \yii\db\ActiveRecord
         }
         return $data;
     }
+
 }

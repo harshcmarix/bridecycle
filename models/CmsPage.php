@@ -4,7 +4,6 @@ namespace app\models;
 
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-use Yii;
 
 /**
  * This is the model class for table "cms_pages".

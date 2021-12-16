@@ -4,7 +4,6 @@ namespace app\models;
 
 use \yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
-use Yii;
 
 /**
  * This is the model class for table "tailors".
@@ -29,7 +28,7 @@ class Tailor extends ActiveRecord
      */
     const SCENARIO_CREATE = 'create';
     /**
-     * used to check image is empty or not in validation
+     * used to check image is empty or not in validation constants
      */
     const IMAGE_EMPTY = 1;
     const IMAGE_NOT_EMPTY = 0;
@@ -69,12 +68,14 @@ class Tailor extends ActiveRecord
             [['zip_code'], 'string', 'max' => 6],
             [['mobile'], 'string', 'max' => 13, 'min' => 5],
             [['shop_image', 'voucher'], 'file', 'extensions' => 'png,jpg'],
+
             [['shop_image'], 'required', 'when' => function ($model) {
                 }, 'whenClient' => "function (attribute, value) {
                     if ($('#tailor-is_shop_image_empty').val() == 1) {
                         return $('#tailor-shop_image').val() == '';
                     }
                 }",],
+
                 [['created_at', 'updated_at'], 'safe'],
                 [['name', 'shop_image', 'voucher'], 'string', 'max' => 255],
                 [['shop_name'], 'string', 'max' => 50],

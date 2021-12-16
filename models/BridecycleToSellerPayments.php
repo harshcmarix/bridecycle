@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use app\models\Order;
-use app\models\Product;
-use app\models\OrderItem;
 use app\modules\api\v2\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;

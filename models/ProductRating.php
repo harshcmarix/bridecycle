@@ -32,6 +32,9 @@ class ProductRating extends ActiveRecord
         return 'product_ratings';
     }
 
+    /**
+     * Constants
+     */
     const FIVE_STAR_RATE = '5';
     const FOUR_STAR_RATE = '4';
     const THREE_STAR_RATE = '3';
@@ -123,6 +126,7 @@ class ProductRating extends ActiveRecord
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
+
     /////////api use only/////////////
 
     /**
@@ -142,5 +146,5 @@ class ProductRating extends ActiveRecord
         }
         return $user;
     }
-    
+
 }

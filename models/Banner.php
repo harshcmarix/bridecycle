@@ -54,11 +54,12 @@ class Banner extends ActiveRecord
     public function rules()
     {
         return [
+            [['name'], 'required'],
             [['name', 'brand_id', 'created_at', 'updated_at'], 'safe'],
-            [['name',], 'required'], //'brand_id'
             [['image',], 'string', 'max' => 255],
             [['image'], 'file', 'extensions' => 'png,jpg'],
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
+
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
             }, 'whenClient' => "function (attribute, value) {
@@ -66,6 +67,7 @@ class Banner extends ActiveRecord
                                     return $('#banner-image').val() == '';                                    
                                     }
             }",],
+
             [['image'], 'file', 'extensions' => 'jpg, png'],
             [['brand_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
         ];

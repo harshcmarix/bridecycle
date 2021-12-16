@@ -2,7 +2,6 @@
 
 namespace app\models\search;
 
-use app\models\Order;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Brand;
@@ -15,6 +14,7 @@ class BrandSearch extends Brand
 {
 
     public $total_sold_product;
+
     /**
      * {@inheritdoc}
      */
@@ -22,7 +22,7 @@ class BrandSearch extends Brand
     {
         return [
             [['id'], 'integer'],
-            [['name', 'image', 'is_top_brand', 'created_at', 'updated_at','status'], 'safe'],
+            [['name', 'image', 'is_top_brand', 'created_at', 'updated_at', 'status'], 'safe'],
         ];
     }
 
@@ -91,8 +91,7 @@ class BrandSearch extends Brand
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'status'=>$this->status,
-            // 'created_at' => $this->created_at,
+            'status' => $this->status,
             'updated_at' => $this->updated_at,
         ]);
 
@@ -102,4 +101,5 @@ class BrandSearch extends Brand
 
         return $dataProvider;
     }
+
 }

@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use \yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
@@ -31,29 +30,29 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $created_at
  * @property string|null $updated_at
  *
- * @property FavouriteProducts[] $favouriteProducts
- * @property Orders[] $orders
- * @property ProductRatings[] $productRatings
- * @property UserAddresses[] $userAddresses
+ * @property FavouriteProduct[] $favouriteProducts
+ * @property Order[] $orders
+ * @property ProductRating[] $productRatings
+ * @property UserAddress[] $userAddresses
  * @property UserSocialIdentities[] $userSocialIdentities
- * @property UserSubscriptions[] $userSubscriptions
+ * @property UserSubscription[] $userSubscriptions
  */
 class SubAdmin extends ActiveRecord
 {
     /**
-     * Used for create
+     * Used for create constant
      */
     const SCENARIO_CREATE = 'create';
 
     /**
-     * Identify user type
+     * Identify user type constants
      */
     const USER_TYPE_ADMIN = '1';
     const USER_TYPE_SUB_ADMIN = '2';
     const USER_TYPE_NORMAL = '3';
 
     /**
-     * Used for user type dropdown
+     * Used for user type dropdown constants
      */
     const USER_TYPE = [
         self::USER_TYPE_ADMIN => 'Admin',
@@ -152,7 +151,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getFavouriteProducts()
     {
-        return $this->hasMany(FavouriteProducts::class, ['user_id' => 'id']);
+        return $this->hasMany(FavouriteProduct::class, ['user_id' => 'id']);
     }
 
     /**
@@ -160,7 +159,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Orders::class, ['user_id' => 'id']);
+        return $this->hasMany(Order::class, ['user_id' => 'id']);
     }
 
     /**
@@ -168,7 +167,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getProductRatings()
     {
-        return $this->hasMany(ProductRatings::class, ['user_id' => 'id']);
+        return $this->hasMany(ProductRating::class, ['user_id' => 'id']);
     }
 
     /**
@@ -176,7 +175,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getUserAddresses()
     {
-        return $this->hasMany(UserAddresses::class, ['user_id' => 'id']);
+        return $this->hasMany(UserAddress::class, ['user_id' => 'id']);
     }
 
     /**
@@ -192,6 +191,7 @@ class SubAdmin extends ActiveRecord
      */
     public function getUserSubscriptions()
     {
-        return $this->hasMany(UserSubscriptions::class, ['user_id' => 'id']);
+        return $this->hasMany(UserSubscription::class, ['user_id' => 'id']);
     }
+
 }

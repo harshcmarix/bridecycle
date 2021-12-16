@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -90,4 +89,5 @@ class ShippingPrice extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ShippingCost::class, ['id' => 'shipping_cost_id']);
     }
+
 }

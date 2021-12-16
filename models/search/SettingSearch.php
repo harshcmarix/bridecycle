@@ -69,4 +69,5 @@ class SettingSearch extends Setting
 
         return $dataProvider;
     }
+
 }

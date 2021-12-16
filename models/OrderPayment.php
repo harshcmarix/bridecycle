@@ -47,18 +47,19 @@ class OrderPayment extends \yii\db\ActiveRecord
 
     public $cvv;
 
+    /**
+     * Constants
+     */
     const  CARD_TYPE_VISA_NUMBER = '4';
     const  CARD_TYPE_MASTER_NUMBER_ONE = '5';
     const  CARD_TYPE_MASTER_NUMBER_TWO = '2';
     const  CARD_TYPE_AMEX_NUMBER = '3';
     const  CARD_TYPE_DISCOVER_NUMBER = '6';
-    //const  CARD_TYPE_MAESTRO_NUMBER = 'maestro';
 
     const  CARD_TYPE_VISA = 'visa';
     const  CARD_TYPE_MASTER = 'mastercard';
     const  CARD_TYPE_AMEX = 'amex';
     const  CARD_TYPE_DISCOVER = 'discover';
-    //const  CARD_TYPE_MAESTRO = 'maestro';
 
     /**
      * {@inheritdoc}
@@ -108,4 +109,5 @@ class OrderPayment extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
+
 }

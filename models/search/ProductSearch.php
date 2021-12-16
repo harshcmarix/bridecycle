@@ -93,16 +93,12 @@ class ProductSearch extends Product
             'number' => $this->number,
             'category_id' => $this->category_id,
             'sub_category_id' => $this->sub_category_id,
-//            'price' => $this->price,
-//            'option_price' => $this->option_price,
-//            'available_quantity' => $this->available_quantity,
             'brand_id' => $this->brand_id,
             'height' => $this->height,
             'weight' => $this->weight,
             'width' => $this->width,
             'is_admin_favourite' => $this->is_admin_favourite,
             'type' => $this->type,
-            // 'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status_id' => $this->status_id,
         ]);
@@ -119,8 +115,8 @@ class ProductSearch extends Product
             ->andFilterWhere(['like', 'option_price', $this->option_price . "%", false])
             ->andFilterWhere(['like', 'available_quantity', $this->available_quantity . "%", false])
             ->andFilterWhere(['like', 'is_cleaned', $this->is_cleaned]);
-        //->andFilterWhere(['like', 'receipt', $this->receipt]);
 
         return $dataProvider;
     }
+    
 }

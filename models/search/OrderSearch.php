@@ -76,8 +76,6 @@ class OrderSearch extends Order
             'id' => $this->id,
             'user_id' => $this->user_id,
             'user_address_id' => $this->user_address_id,
-            //'total_amount' => $this->total_amount,
-            //'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
@@ -86,4 +84,5 @@ class OrderSearch extends Order
 
         return $dataProvider;
     }
+
 }

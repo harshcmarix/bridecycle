@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -81,4 +80,5 @@ class Country extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+
 }

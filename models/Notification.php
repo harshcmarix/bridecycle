@@ -4,7 +4,6 @@ namespace app\models;
 
 use Yii;
 use app\modules\api\v2\models\User;
-use yii\web\Response;
 
 /**
  * This is the model class for table "notification".
@@ -158,13 +157,10 @@ class Notification extends \yii\db\ActiveRecord
 
         $result = curl_exec($ch);
         if ($result === false) {
-            //die('Curl failed ' . curl_error());
-            //die('Curl failed.');
             return curl_error();
         }
 
         curl_close($ch);
-        //p($result);
         return $result;
     }
 
@@ -175,7 +171,6 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getOwner0()
     {
-
         $data = User::find()->where(['id' => $this->owner_id])->one();
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -194,7 +189,6 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getNotificationReceiver0()
     {
-
         $data = User::find()->where(['id' => $this->notification_receiver_id])->one();
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';

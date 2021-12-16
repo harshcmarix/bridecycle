@@ -73,4 +73,5 @@ class AdsSearch extends Ads
 
         return $dataProvider;
     }
+
 }

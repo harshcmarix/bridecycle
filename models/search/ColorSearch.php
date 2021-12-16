@@ -70,4 +70,5 @@ class ColorSearch extends Color
 
         return $dataProvider;
     }
+
 }

@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -14,7 +13,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $created_at
  * @property string|null $updated_at
  *
- * @property Products[] $products
+ * @property Product[] $products
  */
 class DressType extends \yii\db\ActiveRecord
 {
@@ -74,4 +73,5 @@ class DressType extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Product::class, ['dress_type_id' => 'id']);
     }
+
 }

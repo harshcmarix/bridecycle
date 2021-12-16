@@ -39,6 +39,7 @@ class Brand extends ActiveRecord
      */
     const TOP_BRAND = '1';
     const NOT_TOP_BRAND = '0';
+
     /**
      * used for dropdown
      */
@@ -89,10 +90,9 @@ class Brand extends ActiveRecord
             [['created_at', 'updated_at', 'status'], 'safe'],
             [['name'], 'string', 'max' => 50],
             [['name'], 'unique', 'message' => $this->name . ' is already in review, after approval from admin it will be display. Please wait for some time.'],
-            // [['image'], 'string', 'max' => 250],
-            // [['image'], 'file', 'extensions' => 'png, jpg'],
+
             [['image'], 'required', 'on' => self::SCENARIO_CREATE],
-            //[['image'], 'required', 'on' => self::SCENARIO_CREATE_API],
+
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';
                 return $model->scenario == self::SCENARIO_CREATE;
@@ -101,7 +101,7 @@ class Brand extends ActiveRecord
                                     return $('#brand-image').val() == '';                                    
                                     }
             }",],
-            //[['image'], 'file', 'extensions' => 'jpg, png'],
+
         ];
     }
 
