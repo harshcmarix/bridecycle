@@ -133,12 +133,9 @@ class ColorController extends Controller
                         if (!empty($modelProductsBasedOnColorRow) && $modelProductsBasedOnColorRow instanceof Product) {
 
                             // Product approval start
-                            if (!empty($modelProductsBasedOnColorRow->brand) && $modelProductsBasedOnColorRow->brand instanceof Brand && $modelProductsBasedOnColorRow->brand->status == Brand::STATUS_APPROVE && $model->status == Color::STATUS_APPROVE) {
+                            if (!empty($modelProductsBasedOnColorRow->brand) && $modelProductsBasedOnColorRow->brand instanceof Brand && $modelProductsBasedOnColorRow->brand->status == Brand::STATUS_APPROVE && $model->status == Color::STATUS_APPROVE && $modelProductsBasedOnColorRow->status_id == ProductStatus::STATUS_PENDING_APPROVAL) {
                                 $modelProductsBasedOnColorRow->status_id = ProductStatus::STATUS_APPROVED;
                                 $modelProductsBasedOnColorRow->save(false);
-                            } else {
-                                //$modelProductsBasedOnColorRow->status_id = ProductStatus::STATUS_ARCHIVED;
-                                //$modelProductsBasedOnColorRow->save(false);
                             }
                             // Product approval end
 

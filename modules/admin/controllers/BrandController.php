@@ -300,12 +300,9 @@ class BrandController extends Controller
                                         }
                                     }
                                 }
-                                if (!in_array(0, $allColorIsApproved)) {
+                                if (!empty($allColorIsApproved) && !in_array(0, $allColorIsApproved) && $productsModelRow->status_id == ProductStatus::STATUS_PENDING_APPROVAL) {
                                     $productsModelRow->status_id = ProductStatus::STATUS_APPROVED;
                                     $productsModelRow->save(false);
-                                } else {
-                                    //$productsModelRow->status_id = ProductStatus::STATUS_ARCHIVED;
-                                    //$productsModelRow->save(false);
                                 }
                                 // Product approval end
 
