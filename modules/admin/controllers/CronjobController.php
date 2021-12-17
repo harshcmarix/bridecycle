@@ -61,12 +61,12 @@ class CronjobController extends Controller
 
                             if (!empty($subscriptionRespose)) {
 
-                                // Set Purchase token.
+                                // Set Purchase token data.
                                 if (!empty($subscriptionRespose) && !empty($subscriptionRespose->purchaseToken)) {
                                     $purchaseToken = $subscriptionRespose->purchaseToken;
                                 }
 
-                                // Set product ID.
+                                // Set product ID data.
                                 if (!empty($subscriptionRespose) && !empty($subscriptionRespose->productId)) {
                                     $product_id = $subscriptionRespose->productId;
                                 }
@@ -96,24 +96,27 @@ class CronjobController extends Controller
                             $validator = new PlayValidator($googleAndroidPublisher);
 
                             try {
+
                                 $response = $validator->setPackageName(Yii::$app->params['google_play_store_subscription_package_name'])
                                     ->setProductId($product_id)
                                     ->setPurchaseToken($purchaseToken)
                                     ->validateSubscription();
                                 $googlePlayResponseSuccess = $response;
+                                
                             } catch (\Exception $e) {
 
                                 $googlePlayResponseFail = $e->getMessage();
 
                                 echo "Error: " . $e->getMessage();
 
-                               // \Yii::info("\n------------Fail Subscription ----------------\n" . "userId:" . $userSubscriptionRow->user_id . "\n" . $e->getMessage(), 'notifyUserBasedOnAndroidGooglePlaySubscription');
+                                // \Yii::info("\n------------Fail Subscription ----------------\n" . "userId:" . $userSubscriptionRow->user_id . "\n" . $e->getMessage(), 'notifyUserBasedOnAndroidGooglePlaySubscription');
                             }
                         }
                         // End Android subscription check
 
                         // Update User subscription data (in our DATABASE) start.
                         if (!empty($googlePlayResponseSuccess) && (empty($googlePlayResponseFail) || $googlePlayResponseFail == "")) {
+
                             if ($googlePlayResponseSuccess instanceof SubscriptionResponse && !empty($googlePlayResponseSuccess->getExpiryTimeMillis())) {
 
                                 // Expire time from google play store
@@ -143,20 +146,16 @@ class CronjobController extends Controller
                             $userSubscriptionRow->user->save(false);
                         }
                         // Update User subscription data (in our DATABASE) end.
-
                     }
                     // Check for Android User subscription end.
 
                     // Check for Ios User subscription start.
-                    if(strtolower($userSubscriptionRow->device_platform) == UserPurchasedSubscriptions::DEVICE_PLATFORM_IOS){
+                    if (strtolower($userSubscriptionRow->device_platform) == UserPurchasedSubscriptions::DEVICE_PLATFORM_IOS) {
 
                     }
                     // Check for Ios User subscription end.
-
                 }
-
             }
-
         }
     }
 
@@ -232,7 +231,7 @@ class CronjobController extends Controller
                                                         $notificationToken = array($userDevice->notification_token);
                                                         $senderName = $model->user->first_name . " " . $model->user->last_name;
                                                         $notification = $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
-                                                       // \Yii::info("\n------------android notification ----------------\n" . "userId:" . $userROW->id . "\n" . $notification, 'notifyUserBasedOnsaveSearch');
+                                                        // \Yii::info("\n------------android notification ----------------\n" . "userId:" . $userROW->id . "\n" . $notification, 'notifyUserBasedOnsaveSearch');
                                                     } else {
                                                         $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                                         $note->setBadge($badge);
@@ -248,7 +247,7 @@ class CronjobController extends Controller
                                                             ]);
                                                         $response = Yii::$app->fcm->send($message);
                                                         $result = $response->getStatusCode();
-                                                       // \Yii::info("\n------------ios notification ----------------\n" . "userId:" . $userROW->id . "\n" . $result, 'notifyUserBasedOnsaveSearch');
+                                                        // \Yii::info("\n------------ios notification ----------------\n" . "userId:" . $userROW->id . "\n" . $result, 'notifyUserBasedOnsaveSearch');
                                                     }
                                                 }
                                             }
