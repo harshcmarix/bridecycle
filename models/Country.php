@@ -37,6 +37,9 @@ class Country extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Constants
+     */
     const CONTINENT_ASIA = 'asia';
     const CONTINENT_AUSTRALIA = 'australia';
     const CONTINENT_ANTARCTICA = 'antarctica';
