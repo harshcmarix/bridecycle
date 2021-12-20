@@ -19,7 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $billing_address_line_1
  * @property string|null $billing_address_line_2
  * @property string $city
- * @property int $post_code
+ * @property string $post_code
  * @property string $payment_type
  * @property string|null $paypal_email
  * @property string $created_at
@@ -80,7 +80,6 @@ class UserBankDetails extends \yii\db\ActiveRecord
             [['debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'on' => [self::PAYMENT_TYPE_BANK]],
             [['paypal_email'], 'required', 'on' => [self::PAYMENT_TYPE_PAYPAL]],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']]
-
         ];
     }
 
