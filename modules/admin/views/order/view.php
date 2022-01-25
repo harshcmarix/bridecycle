@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col col-md-6 text-right">
                 <div class="form-group">
                     <h4><?= Html::encode('Order Amount (Product Price + Tax + Shipping) : ') ?>
-                        <strong><?php echo (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency($model->total_amount) : "" ?></strong>
+                        <strong><?php echo (!empty($model->total_amount)) ? str_replace('.',',',Yii::$app->formatter->asCurrency($model->total_amount)) : "" ?></strong>
                     </h4>
                 </div>
                 <div class="form-group">
@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                     ?>
                     <h4><?= Html::encode('BrideCycle Earning : ') ?>
-                        <strong><?php echo $brideEarning ?></strong>
+                        <strong><?php echo str_replace('.',',',$brideEarning) ?></strong>
                     </h4>
                 </div>
                 <div class="form-group">
@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                     ?>
                     <h4><?= Html::encode('Seller Earning : ') ?>
-                        <strong><?php echo (!empty($model->total_amount)) ? Yii::$app->formatter->asCurrency(($model->total_amount - $brideEarningAmount)) : "-" ?></strong>
+                        <strong><?php echo (!empty($model->total_amount)) ? str_replace('.',',',Yii::$app->formatter->asCurrency(($model->total_amount - $brideEarningAmount))) : "-" ?></strong>
                     </h4>
                 </div>
                 <div class="form-group">
@@ -233,26 +233,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ],
                                     [
                                         'value' => function ($model) {
-                                            $productPrice = "";
+                                            $productPrice = "0.00";
                                             if (!empty($model->product->price)) {
                                                 $productPrice = Yii::$app->formatter->asCurrency($model->product->price);
                                             } elseif (!empty($model) && !empty($model->price)) {
                                                 $productPrice = Yii::$app->formatter->asCurrency($model->price);
                                             }
-                                            return $productPrice;
+                                            return str_replace('.',',',$productPrice);
                                         },
                                         'header' => 'Product Price',
                                         'headerOptions' => ['class' => 'kartik-sheet-style']
                                     ],
                                     [
                                         'value' => function ($model) {
-                                            $productTaxPrice = "";
+                                            $productTaxPrice = "0.00";
                                             if (!empty($model->product->option_price)) {
                                                 $productTaxPrice = Yii::$app->formatter->asCurrency($model->product->option_price);
                                             } elseif (!empty($model) && !empty($model->tax)) {
                                                 $productTaxPrice = Yii::$app->formatter->asCurrency($model->tax);
                                             }
-                                            return $productTaxPrice;
+                                            return str_replace('.',',',$productTaxPrice);
                                         },
                                         'header' => 'Product Tax',
                                         'headerOptions' => ['class' => 'kartik-sheet-style']

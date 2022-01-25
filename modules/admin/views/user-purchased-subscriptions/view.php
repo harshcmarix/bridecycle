@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'amount',
                         'value' => function ($model) {
-                            return Yii::$app->formatter->asCurrency($model->amount);
+                            return str_replace('.',',',Yii::$app->formatter->asCurrency($model->amount));
                         },
                     ],
                     [

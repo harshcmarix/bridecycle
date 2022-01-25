@@ -118,14 +118,14 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             [
                 'attribute' => 'price',
                 'value' => function ($model) {
-                    return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
+                    return (!empty($model->price)) ? str_replace('.',',',Yii::$app->formatter->asCurrency($model->price)) : "";
                 },
                 'header' => '',
             ],
             [
                 'attribute' => 'option_price',
                 'value' => function ($model) {
-                    return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
+                    return (!empty($model->option_price)) ? str_replace('.',',',Yii::$app->formatter->asCurrency($model->option_price)) : "";
                 },
                 'header' => 'Tax',
             ],

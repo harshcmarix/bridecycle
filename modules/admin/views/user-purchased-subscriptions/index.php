@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="small-box" style="background-color: #8A9673 !important;"
                              id="tot_income_from_subscription_box">
                             <div class="inner">
-                                <h3><?php echo Yii::$app->formatter->asCurrency($totalEarn); ?></h3>
+                                <h3><?php echo str_replace('.',',',Yii::$app->formatter->asCurrency($totalEarn)); ?></h3>
                                 <p>Total Subscription Income</p>
                             </div>
                             <div class="icon">
@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         if ($model instanceof UserPurchasedSubscriptions) {
                             $amount = Yii::$app->formatter->asCurrency($model->amount);
                         }
-                        return $amount;
+                        return str_replace('.',',',$amount);
                     },
                     'header' => '',
                 ],

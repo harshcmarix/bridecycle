@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         if ($model instanceof BridecycleToSellerPayments) {
                             $amount = Yii::$app->formatter->asCurrency($model->amount);
                         }
-                        return $amount;
+                        return str_replace('.',',',$amount);
                     },
                     'header' => 'Total Amount <br> (Product Price <br> + Tax <br> + Shipping)',
                 ],
@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         if ($model instanceof BridecycleToSellerPayments) {
                             $bridecycleAmount = $model->getBrideEarning($model->product_price);
                         }
-                        return Yii::$app->formatter->asCurrency($bridecycleAmount);
+                        return str_replace('.',',',Yii::$app->formatter->asCurrency($bridecycleAmount));
                     },
                     'header' => 'BrideCycle<br>Earning',
                 ],
@@ -95,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         if ($model instanceof BridecycleToSellerPayments) {
                             $bridecycleEarningAmount = $model->getBrideEarning($model->product_price);
                         }
-                        return Yii::$app->formatter->asCurrency(($model->amount - $bridecycleEarningAmount));
+                        return str_replace('.',',',Yii::$app->formatter->asCurrency(($model->amount - $bridecycleEarningAmount)));
                     },
                     'header' => 'Seller<br>Earning',
                 ],

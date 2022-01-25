@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = 'View Product';
                     [
                         'attribute' => 'price',
                         'value' => function ($model) {
-                            return (!empty($model->price)) ? Yii::$app->formatter->asCurrency($model->price) : "";
+                            return (!empty($model->price)) ? str_replace('.',',',Yii::$app->formatter->asCurrency($model->price)) : "";
                         },
                     ],
                     [
@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = 'View Product';
                         'attribute' => 'option_price',
                         'label' => 'Tax',
                         'value' => function ($model) {
-                            return (!empty($model->option_price)) ? Yii::$app->formatter->asCurrency($model->option_price) : "";
+                            return (!empty($model->option_price)) ? str_replace('.',',',Yii::$app->formatter->asCurrency($model->option_price)) : "";
                         },
                     ],
                     'description:ntext',

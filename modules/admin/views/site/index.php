@@ -229,7 +229,7 @@ $this->title = 'Dashboard';
         <a href="<?php echo Yii::$app->request->baseUrl . '/admin/order/index' ?>" class="small-box-footer">
             <div class="small-box" id="tot_income_box" style="background-color: #8A9673 !important">
                 <div class="inner">
-                    <h3><?php echo Yii::$app->formatter->asCurrency($totalIncome); ?></h3>
+                    <h3><?php echo str_replace('.',',',Yii::$app->formatter->asCurrency($totalIncome)); ?></h3>
                     <p>Total Sales</p>
                 </div>
                 <div class="icon">

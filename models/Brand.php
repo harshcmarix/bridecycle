@@ -120,7 +120,6 @@ class Brand extends ActiveRecord
         ];
     }
 
-
     /**
      * @return array|false
      */
@@ -159,4 +158,5 @@ class Brand extends ActiveRecord
         $subQuery = $query1->where(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_COMPLETED])->asArray()->one();
         return $subQuery;
     }
+
 }
