@@ -107,9 +107,9 @@
                 <td class="text-right col-08"
                     style="text-align: right;border: 0;border-collapse: collapse;text-align: right;padding: 7px 0px;"><?php echo number_format($model->quantity, 2); ?></td>
                 <td class="text-right col-20"
-                    style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 0px;"><?php echo number_format($product->price, 2); ?></td>
+                    style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 0px;"><?php echo str_replace(".", ',', number_format($product->price, 2)); ?></td>
                 <td class="text-right col-20"
-                    style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 15px 7px 0px;"><?php echo number_format($product->price * $model->quantity, 2); ?></td>
+                    style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 15px 7px 0px;"><?php echo str_replace(".", ',', number_format($product->price * $model->quantity, 2)); ?></td>
             </tr>
 
             <tr class="total-amount sub-total" style="border: 0;border-collapse: collapse;background: #f9f9f9;">
@@ -120,7 +120,7 @@
                 </td>
                 <td class="col-20 text-right"
                     style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;">
-                    <p style="padding-top: 20px;margin:0px;padding-right: 15px;"><?php echo number_format($product->price * $model->quantity, 2); ?></p>
+                    <p style="padding-top: 20px;margin:0px;padding-right: 15px;"><?php echo str_replace(".", ',', number_format($product->price * $model->quantity, 2)); ?></p>
                 </td>
             </tr>
 
@@ -133,7 +133,7 @@
                 </td>
                 <td class="col-20 text-right"
                     style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
-                    <p style="padding:3px 0px 3px;margin:0px;text-align: right;padding-right: 15px;"><?php echo number_format($model->shipping_cost, 2); ?></p>
+                    <p style="padding:3px 0px 3px;margin:0px;text-align: right;padding-right: 15px;"><?php echo str_replace(".", ',', number_format($model->shipping_cost, 2)); ?></p>
                 </td>
             </tr>
 
@@ -147,7 +147,7 @@
                     </td>
                     <td class="col-20 text-right"
                         style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
-                        <p style="padding:3px 0px 3px;margin:0px;text-align: right;padding-right: 15px;"><?php echo number_format($transactionFeesAmount, 2); ?></p>
+                        <p style="padding:3px 0px 3px;margin:0px;text-align: right;padding-right: 15px;"><?php echo str_replace(".", ',', number_format($transactionFeesAmount, 2)); ?></p>
                     </td>
                 </tr>
             <?php } ?>
@@ -161,9 +161,9 @@
                 <td class="col-20 text-right"
                     style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
                     <?php if (!empty($product) && $product instanceof \app\models\Product && $product->type == \app\models\Product::PRODUCT_TYPE_NEW) { ?>
-                        <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo number_format(($order->total_amount - $product->option_price) + $transactionFeesAmount, 2); ?></p>
+                        <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo str_replace(".", ',', number_format(($order->total_amount - $product->option_price) + $transactionFeesAmount, 2)); ?></p>
                     <?php } else { ?>
-                        <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo number_format($order->total_amount, 2); ?></p>
+                        <p style="padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:18px;"><?php echo str_replace(".", ',', number_format($order->total_amount, 2)); ?></p>
                     <?php } ?>
                 </td>
             </tr>
@@ -177,11 +177,12 @@
                 </td>
                 <td class="col-20 text-right"
                     style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: center;">
-<!--                    <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;">--><?php //echo number_format($order->total_amount + $transactionFeesAmount, 2); ?><!--</p>-->
+                    <!--                    <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;">-->
+                    <?php //echo number_format($order->total_amount + $transactionFeesAmount, 2); ?><!--</p>-->
                     <?php if (!empty($product) && $product instanceof \app\models\Product && $product->type == \app\models\Product::PRODUCT_TYPE_NEW) { ?>
-                        <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo number_format(($order->total_amount - $product->option_price) + $transactionFeesAmount, 2); ?></p>
+                        <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo str_replace(".", ',', number_format(($order->total_amount - $product->option_price) + $transactionFeesAmount, 2)); ?></p>
                     <?php } else { ?>
-                        <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo number_format($order->total_amount, 2); ?></p>
+                        <p style="padding-top: 50px;padding-bottom: 10px;margin:0px;text-align: right;padding-right: 15px;font-size:20px;color: #2d2d2d;font-weight: bold;"><?php echo str_replace(".", ',', number_format($order->total_amount, 2)); ?></p>
                     <?php } ?>
                 </td>
             </tr>

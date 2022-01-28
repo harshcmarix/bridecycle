@@ -18,6 +18,7 @@ use app\modules\api\v2\models\User;
  * @property int $price
  * @property string|null $option_size
  * @property float|null $option_price
+ * @property double|null $refer_price
  * @property string|null $option_conditions
  * @property string|null $option_show_only
  * @property string|null $description
@@ -110,6 +111,7 @@ class Product extends \yii\db\ActiveRecord
     public $shipping_country_id;
     public $shipping_country;
     public $shipping_country_price;
+    public $refer_price;
 
     const IS_TOP_SELLING_YES = '1';
     const IS_TOP_SELLING_NO = '0';
@@ -177,7 +179,7 @@ class Product extends \yii\db\ActiveRecord
             [['category_id', 'sub_category_id', 'available_quantity', 'brand_id', 'status_id', 'user_id', 'address_id', 'dress_type_id', 'product_tracking_id'], 'integer'],
             [['price', 'height', 'weight', 'width'], 'number', 'on' => self::SCENARIO_CREATE],
             [['price', 'height', 'weight', 'width'], 'number'],
-            [['option_price'], 'number'],
+            [['option_price', 'shipping_country_price', 'refer_price'], 'number'],
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
             [['number', 'other_info', 'created_at', 'updated_at', 'is_saved_search_notification_sent'], 'safe'],
             [['name'], 'string', 'max' => 50], //'option_size'
@@ -188,7 +190,8 @@ class Product extends \yii\db\ActiveRecord
             [['images'], 'file', 'maxFiles' => 5, 'message' => 'You can upload a maximum of 5 product images only.'],
             [['receipt'], 'file', 'maxFiles' => 5, 'message' => 'You can upload a maximum of 5 receipt only.'],
 
-            [['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
+            //[['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
+            [['shipping_country_id', 'option_color'], 'safe'],
             [['dress_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DressType::class, 'targetAttribute' => ['dress_type_id' => 'id']],
             [['brand_id'], 'exist', 'skipOnError' => true, 'targetClass' => Brand::class, 'targetAttribute' => ['brand_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['category_id' => 'id']],
@@ -237,6 +240,7 @@ class Product extends \yii\db\ActiveRecord
             'product_tracking_id' => 'Product Tracking',
             'option_size' => 'Option Size',
             'option_price' => 'Option Price',
+            'refer_price' => 'Refer Price',
             'option_conditions' => 'Option Conditions',
             'option_show_only' => 'Option Show Only',
             // 'option_color' => 'Option Color',
@@ -280,7 +284,8 @@ class Product extends \yii\db\ActiveRecord
             'shippingCountry0' => 'shippingCountry0',
             'productTracking' => 'productTracking',
             'productTrackingChild' => 'productTrackingChild',
-            'productSizes0' => 'productSizes0'
+            'productSizes0' => 'productSizes0',
+            'referPrice'=>'referPrice'
         ];
     }
 
@@ -719,6 +724,41 @@ class Product extends \yii\db\ActiveRecord
             $ProductSizes = $data;
         }
         return $ProductSizes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMakeOffers()
+    {
+        $models = MakeOffer::find()->where(['product_id' => $this->id])->andWhere(['sender_id' => Yii::$app->user->identity->id])->all();
+        return $models;
+    }
+
+    public function getReferPrice(){
+
+        $dataResult['ref_price'] = $this->price;
+p($this);
+        if ($this->type == Product::PRODUCT_TYPE_USED && Yii::$app->user->identity->id != $this->user_id) {
+            $isOfferAcceptedCount = 0;
+            $offers = $this->makeOffers;
+            p($offers);
+            if (!empty($offers)) {
+                foreach ($offers as $key => $offersRow) {
+                    if (!empty($offersRow) && $offersRow instanceof MakeOffer && $offersRow->status == MakeOffer::STATUS_ACCEPT) {
+                        $isOfferAcceptedCount++;
+                    }
+                }
+            }
+p($isOfferAcceptedCount);
+            if ($isOfferAcceptedCount > 0) {
+                $dataResult['ref_price'] = $offers[$isOfferAcceptedCount]['offer_amount'];
+            }
+        }
+
+        $this->refer_price = $dataResult['ref_price'];
+
+        return $this->refer_price;
     }
 
 }

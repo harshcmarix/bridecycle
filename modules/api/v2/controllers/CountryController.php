@@ -171,7 +171,7 @@ class CountryController extends ActiveController
     }
 
     /**
-     * Finds the Country model based on its primary key value.
+     * Finds the Country model based on its primary key  value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
      * @return Country the loaded model
@@ -220,21 +220,22 @@ class CountryController extends ActiveController
         // asia = asia
         // other = all remaining are consider as other
 
-        $continent = '';
-        if (!empty($result) && !empty($result['continent'])) {
-
-            if ($result['continent'] == 'North America') {
-                $continent = ShippingCost::CONTINENT_CANADA;
-            } elseif ($result['continent'] == 'South America') {
-                $continent = ShippingCost::CONTINENT_USA;
-            } elseif ($result['continent'] == 'Europe') {
-                $continent = ShippingCost::CONTINENT_EUROPE;
-            } elseif ($result['continent'] == 'Asia') {
-                $continent = ShippingCost::CONTINENT_ASIA;
-            } else {
-                $continent = ShippingCost::CONTINENT_OTHER;
-            }
-        }
+        $continent = 'Europe';
+//        if (!empty($result) && !empty($result['continent'])) {
+//
+//            if ($result['continent'] == 'North America') {
+//                $continent = ShippingCost::CONTINENT_CANADA;
+//            } elseif ($result['continent'] == 'South America') {
+//                $continent = ShippingCost::CONTINENT_USA;
+//            } elseif ($result['continent'] == 'Europe') {
+//                $continent = ShippingCost::CONTINENT_EUROPE;
+//            } elseif ($result['continent'] == 'Asia') {
+//                $continent = ShippingCost::CONTINENT_ASIA;
+//            } else {
+//                $continent = ShippingCost::CONTINENT_OTHER;
+//            }
+//        }
+        
 
         $data['is_feasible'] = 0;
         $data['shipping_cost'] = 0.0;

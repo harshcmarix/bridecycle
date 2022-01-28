@@ -4,6 +4,7 @@ namespace app\modules\api\v2\controllers;
 
 use app\models\Brand;
 use app\models\Color;
+use app\models\MakeOffer;
 use app\models\Product;
 use app\models\ProductImage;
 use app\models\ProductSizes;
@@ -145,11 +146,13 @@ class ProductController extends ActiveController
      */
     public function actionView($id)
     {
+
         $model = Product::findOne($id);
 
         if (!$model instanceof Product) {
             throw new NotFoundHttpException('Product doesn\'t exist.');
         }
+
         return $model;
     }
 
