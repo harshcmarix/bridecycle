@@ -235,7 +235,7 @@ class CountryController extends ActiveController
 //                $continent = ShippingCost::CONTINENT_OTHER;
 //            }
 //        }
-        
+
 
         $data['is_feasible'] = 0;
         $data['shipping_cost'] = 0.0;

@@ -738,11 +738,11 @@ class Product extends \yii\db\ActiveRecord
     public function getReferPrice(){
 
         $dataResult['ref_price'] = $this->price;
-p($this);
+
         if ($this->type == Product::PRODUCT_TYPE_USED && Yii::$app->user->identity->id != $this->user_id) {
             $isOfferAcceptedCount = 0;
             $offers = $this->makeOffers;
-            p($offers);
+
             if (!empty($offers)) {
                 foreach ($offers as $key => $offersRow) {
                     if (!empty($offersRow) && $offersRow instanceof MakeOffer && $offersRow->status == MakeOffer::STATUS_ACCEPT) {
@@ -750,9 +750,9 @@ p($this);
                     }
                 }
             }
-p($isOfferAcceptedCount);
+
             if ($isOfferAcceptedCount > 0) {
-                $dataResult['ref_price'] = $offers[$isOfferAcceptedCount]['offer_amount'];
+                $dataResult['ref_price'] = $offers[$isOfferAcceptedCount-1]['offer_amount'];
             }
         }
 
