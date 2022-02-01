@@ -221,6 +221,7 @@ class CountryController extends ActiveController
         // other = all remaining are consider as other
 
         $continent = 'Europe';
+
 //        if (!empty($result) && !empty($result['continent'])) {
 //
 //            if ($result['continent'] == 'North America') {

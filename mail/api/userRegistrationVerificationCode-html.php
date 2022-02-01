@@ -185,7 +185,7 @@ use yii\helpers\Html;
                             >
                                 Thank you for registering
                                 in <?= Html::encode(Yii::$app->name) ?>.Please enter
-                                below your varification code to verify your
+                                below your verification code to verify your
                                 profile.
                             </p>
 
