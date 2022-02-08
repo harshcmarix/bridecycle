@@ -2,17 +2,17 @@
 
 namespace app\modules\api\v2\controllers;
 
-use Yii;
 use app\models\ProductImage;
-use yii\web\NotFoundHttpException;
-use yii\web\UploadedFile;
-use yii\filters\auth\HttpBasicAuth;
+use Yii;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
+use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * ProductImageController implements the CRUD actions for ProductImage model.
@@ -167,9 +167,9 @@ class ProductImageController extends ActiveController
      */
     public function actionDelete($id)
     {
-        $model = ProductImage::findOne($id);
+        $model = ProductImage::find()->where(['id' => $id])->one();
         if (empty($model) && !$model instanceof ProductImage) {
-            throw new NotFoundHttpException('Product image doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_image_not_exist', Yii::$app->language));
         }
 
         if (!empty($model->name) && file_exists(Yii::getAlias('@productImageRelativePath') . "/" . $model->name)) {
@@ -195,7 +195,7 @@ class ProductImageController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }

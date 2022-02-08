@@ -46,9 +46,14 @@ class ShippingPrice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'shipping_cost_id', 'price'], 'required'],
-            [['product_id', 'shipping_cost_id'], 'integer'],
-            [['price'], 'number'],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', \Yii::$app->language)],
+            [['shipping_cost_id'], 'required', 'message' => getValidationErrorMsg('shipping_cost_required', \Yii::$app->language)],
+            [['price'], 'required', 'message' => getValidationErrorMsg('shipping_country_price_required', \Yii::$app->language)],
+
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', \Yii::$app->language)],
+            [['shipping_cost_id'], 'integer', 'message' => getValidationErrorMsg('shipping_cost_integer_validation', \Yii::$app->language)],
+
+            [['price'], 'number', 'message' => getValidationErrorMsg('price_number_validation', \Yii::$app->language)],
             [['created_at', 'updated_at'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['shipping_cost_id'], 'exist', 'skipOnError' => true, 'targetClass' => ShippingCost::class, 'targetAttribute' => ['shipping_cost_id' => 'id']],

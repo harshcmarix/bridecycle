@@ -2,9 +2,9 @@
 
 namespace app\models;
 
+use app\modules\api\v2\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use app\modules\api\v2\models\User;
 
 /**
  * This is the model class for table "products".
@@ -175,20 +175,55 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'category_id', 'price', 'available_quantity', 'gender', 'is_cleaned', 'status_id', 'option_color'], 'required'], //'is_top_selling', 'is_top_trending', 'number'
-            [['category_id', 'sub_category_id', 'available_quantity', 'brand_id', 'status_id', 'user_id', 'address_id', 'dress_type_id', 'product_tracking_id'], 'integer'],
-            [['price', 'height', 'weight', 'width'], 'number', 'on' => self::SCENARIO_CREATE],
-            [['price', 'height', 'weight', 'width'], 'number'],
-            [['option_price', 'shipping_country_price', 'refer_price'], 'number'],
+            [['name'], 'required', 'message' => getValidationErrorMsg('name_required', Yii::$app->language)], //'is_top_selling', 'is_top_trending', 'number'
+            [['category_id'], 'required', 'message' => getValidationErrorMsg('category_id_required', Yii::$app->language)],
+            [['price'], 'required', 'message' => getValidationErrorMsg('price_required', Yii::$app->language)],
+            [['available_quantity'], 'required', 'message' => getValidationErrorMsg('available_quantity_required', Yii::$app->language)],
+            [['gender'], 'required', 'message' => getValidationErrorMsg('gender_required', Yii::$app->language)],
+            [['is_cleaned'], 'required', 'message' => getValidationErrorMsg('is_cleaned_required', Yii::$app->language)],
+            [['status_id'], 'required', 'message' => getValidationErrorMsg('status_required', Yii::$app->language)],
+            [['option_color'], 'required', 'message' => getValidationErrorMsg('option_color_required', Yii::$app->language)],
+
+            [['category_id'], 'integer', 'message' => getValidationErrorMsg('category_id_integer_validation', Yii::$app->language)],
+            [['sub_category_id'], 'integer', 'message' => getValidationErrorMsg('sub_category_id_integer_validation', Yii::$app->language)],
+            [['available_quantity'], 'integer', 'message' => getValidationErrorMsg('available_quantity_integer_validation', Yii::$app->language)],
+            [['brand_id'], 'integer', 'message' => getValidationErrorMsg('brand_id_integer_validation', Yii::$app->language)],
+            [['status_id'], 'integer', 'message' => getValidationErrorMsg('status_id_integer_validation', Yii::$app->language)],
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', Yii::$app->language)],
+            [['address_id'], 'integer', 'message' => getValidationErrorMsg('address_id_integer_validation', Yii::$app->language)],
+            [['dress_type_id'], 'integer', 'message' => getValidationErrorMsg('address_type_id_integer_validation', Yii::$app->language)],
+            [['product_tracking_id'], 'integer', 'message' => getValidationErrorMsg('product_tracking_id_integer_validation', Yii::$app->language)],
+
+            [['price'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('price_number_validation', Yii::$app->language)],
+            [['height'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
+            [['weight'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('weight_number_validation', Yii::$app->language)],
+            [['width'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('width_number_validation', Yii::$app->language)],
+
+            [['price'], 'number', 'message' => getValidationErrorMsg('price_number_validation', Yii::$app->language)],
+            [['height'], 'number', 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
+            [['weight'], 'number', 'message' => getValidationErrorMsg('weight_number_validation', Yii::$app->language)],
+            [['width'], 'number', 'message' => getValidationErrorMsg('width_number_validation', Yii::$app->language)],
+
+            [['shipping_country_price'], 'safe'],
+
+            [['option_price'], 'number', 'message' => getValidationErrorMsg('option_price_number_validation', Yii::$app->language)],
+            [['refer_price'], 'number', 'message' => getValidationErrorMsg('refer_price_number_validation', Yii::$app->language)],
+
             [['description', 'is_top_selling', 'is_top_trending', 'gender', 'is_cleaned'], 'string'],
             [['number', 'other_info', 'created_at', 'updated_at', 'is_saved_search_notification_sent'], 'safe'],
-            [['name'], 'string', 'max' => 50], //'option_size'
+
+            [['name'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('name_max_50_character_length', Yii::$app->language)], //'option_size'
+
             [['option_conditions'], 'string', 'max' => 100],
             [['option_show_only'], 'string', 'max' => 20],
+
             [['is_receipt', 'is_admin_favourite'], 'safe'],
-            [['images', 'shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['images'], 'file', 'maxFiles' => 5, 'message' => 'You can upload a maximum of 5 product images only.'],
-            [['receipt'], 'file', 'maxFiles' => 5, 'message' => 'You can upload a maximum of 5 receipt only.'],
+
+            [['images'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('product_images_required', Yii::$app->language)],
+            [['shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('shipping_country_price_required', Yii::$app->language)],
+
+            [['images'], 'file', 'maxFiles' => 5, 'message' => getValidationErrorMsg('product_max_file_upload_validation', Yii::$app->language)],
+            [['receipt'], 'file', 'maxFiles' => 5, 'message' => getValidationErrorMsg('product_receipt_max_file_upload_validation', Yii::$app->language)],
 
             //[['shipping_country_id', 'shipping_country_price', 'option_color'], 'safe'],
             [['shipping_country_id', 'option_color'], 'safe'],
@@ -201,7 +236,7 @@ class Product extends \yii\db\ActiveRecord
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::class, 'targetAttribute' => ['address_id' => 'id']],
 
             [
-                ['images'], 'required', 'when' => function ($model) {
+                ['images'], 'required', 'message' => getValidationErrorMsg('product_images_required', Yii::$app->language), 'when' => function ($model) {
             },
                 'whenClient' => "function (attribute, value) {
                     if ($('#product-is_product_images_empty').val() == 1) {            
@@ -211,7 +246,7 @@ class Product extends \yii\db\ActiveRecord
             ],
 
             [
-                ['receipt'], 'required', 'when' => function ($model) {
+                ['receipt'], 'required', 'message' => getValidationErrorMsg('product_receipt_required', Yii::$app->language), 'when' => function ($model) {
                 return $model->is_receipt == '1';
             },
                 'whenClient' => "function (attribute, value) {
@@ -285,7 +320,7 @@ class Product extends \yii\db\ActiveRecord
             'productTracking' => 'productTracking',
             'productTrackingChild' => 'productTrackingChild',
             'productSizes0' => 'productSizes0',
-            'referPrice'=>'referPrice'
+            'referPrice' => 'referPrice'
         ];
     }
 
@@ -735,7 +770,8 @@ class Product extends \yii\db\ActiveRecord
         return $models;
     }
 
-    public function getReferPrice(){
+    public function getReferPrice()
+    {
 
         $dataResult['ref_price'] = $this->price;
 
@@ -752,7 +788,7 @@ class Product extends \yii\db\ActiveRecord
             }
 
             if ($isOfferAcceptedCount > 0) {
-                $dataResult['ref_price'] = $offers[$isOfferAcceptedCount-1]['offer_amount'];
+                $dataResult['ref_price'] = $offers[$isOfferAcceptedCount - 1]['offer_amount'];
             }
         }
 

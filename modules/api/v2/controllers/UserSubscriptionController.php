@@ -368,7 +368,7 @@ class UserSubscriptionController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist',Yii::$app->language));
     }
 
 }

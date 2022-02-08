@@ -32,10 +32,14 @@ class ChangePassword extends User
     public function rules()
     {
         return [
-            [['old_password', 'password', 'confirm_password'], 'required'],
-            [['password', 'confirm_password'], 'string','min'=> 6],
+            [['old_password'], 'required', 'message' => getValidationErrorMsg('old_password_required', Yii::$app->language)],
+            [['password'], 'required', 'message' => getValidationErrorMsg('password_required', Yii::$app->language)],
+            [['confirm_password'], 'required', 'message' => getValidationErrorMsg('confirm_password_required', Yii::$app->language)],
+            //[['password', 'confirm_password'], 'string', 'min' => 6],
+            [['password'], 'string', 'min' => 6, 'tooShort' => getValidationErrorMsg('password_min_character_length', Yii::$app->language)],
+            [['confirm_password'], 'string', 'min' => 6, 'tooShort' => getValidationErrorMsg('confirm_password_min_character_length', Yii::$app->language)],
             ['old_password', 'validateOldPassword'],
-            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"]
+            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => getValidationErrorMsg('password_confirm_password_match_required', Yii::$app->language)]
         ];
     }
 
@@ -48,7 +52,7 @@ class ChangePassword extends User
     {
         $userModel = Yii::$app->user->identity;
         if (!$userModel->validatePassword($this->old_password)) {
-            $this->addError($attribute, 'Old Password has been wrong!');
+            $this->addError($attribute, getValidationErrorMsg('old_password_wrong', Yii::$app->language));
         }
     }
 

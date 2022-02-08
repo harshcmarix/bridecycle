@@ -5,18 +5,18 @@ namespace app\modules\api\v2\controllers;
 use app\models\Notification;
 use app\models\Product;
 use app\models\Timezone;
+use app\models\Trial;
 use app\modules\api\v2\models\User;
 use Yii;
-use app\models\Trial;
-use yii\web\BadRequestHttpException;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
+use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * TrialController implements the CRUD actions for Trial model.
@@ -150,7 +150,7 @@ class TrialController extends ActiveController
             if (!empty($createdTrialsData) && !empty($createdTrialsData[count($createdTrialsData) - 1])) {
                 $data = $createdTrialsData[count($createdTrialsData) - 1];
                 if (!empty($data) && $data instanceof Trial && $data->status == Trial::STATUS_PENDING) {
-                    throw new HttpException(403, "Sorry, You have already made the trial booking for this product, the seller will take action on it first, then you will be performed this action!");
+                    throw new HttpException(403, getValidationErrorMsg('trial_already_made', Yii::$app->language));
                 }
             }
             // Check seller has accepted/rejected trial booking if no then it throw exception end.
@@ -233,7 +233,7 @@ class TrialController extends ActiveController
                     // Send Push notification and email notification end
                 }
             } else {
-                throw new HttpException('Please select another timezone for this trial booking.');
+                throw new HttpException(getValidationErrorMsg('select_another_timezone', Yii::$app->language));
             }
         }
 
@@ -252,7 +252,7 @@ class TrialController extends ActiveController
         $model = Trial::findOne($id);
 
         if (!$model instanceof Trial) {
-            throw new NotFoundHttpException('Trial doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('trial_not_exist', Yii::$app->language));
         }
 
         $model->scenario = Trial::SCENARIO_ACCEPT_REJECT;
@@ -365,7 +365,7 @@ class TrialController extends ActiveController
         if (($model = Trial::findOne($id)) !== null) {
             return $model;
         }
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
     /**
@@ -377,7 +377,7 @@ class TrialController extends ActiveController
         $postData = Yii::$app->request->post();
 
         if (empty($postData) || empty($postData['receiver_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "receiver_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('receiver_id_required', Yii::$app->language));
         }
         $models = Trial::find()->where(['receiver_id' => $postData['receiver_id']])->orderBy(['created_at' => SORT_DESC])->all();
         return $models;
@@ -392,7 +392,7 @@ class TrialController extends ActiveController
         $postData = Yii::$app->request->post();
 
         if (empty($postData) || empty($postData['sender_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "sender_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('sender_id_required', Yii::$app->language));
         }
         $models = Trial::find()->where(['sender_id' => $postData['sender_id']])->orderBy(['created_at' => SORT_DESC])->all();
         return $models;
@@ -409,7 +409,7 @@ class TrialController extends ActiveController
         $modelTimeZone = Timezone::findOne($timezone_id);
 
         if (!$modelTimeZone instanceof Timezone) {
-            throw new NotFoundHttpException('The requested timezone does not exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('timezone_not_exist', Yii::$app->language));
         }
 
         date_default_timezone_set("$modelTimeZone->time_zone");
@@ -436,7 +436,7 @@ class TrialController extends ActiveController
         $modelTimeZoneSeller = Timezone::findOne($seller_timezone);
 
         if (!$modelTimeZoneSeller instanceof Timezone) {
-            throw new NotFoundHttpException('The requested seller timezone does not exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('seller_timezone_not_exist', Yii::$app->language));
         }
 
         date_default_timezone_set("$modelTimeZoneSeller->time_zone");
@@ -444,7 +444,7 @@ class TrialController extends ActiveController
         $modelTimeZoneSelectedFromBuyer = Timezone::findOne($buyer_selected_timezone);
 
         if (!$modelTimeZoneSelectedFromBuyer instanceof Timezone) {
-            throw new NotFoundHttpException('The requested buyer selected timezone does not exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('buyer_timezone_not_exist', Yii::$app->language));
         }
 
         date_default_timezone_set("$modelTimeZoneSelectedFromBuyer->time_zone");

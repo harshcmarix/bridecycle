@@ -46,9 +46,13 @@ class ProductImage extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id'], 'required'],
-            [['product_id', 'images'], 'required', 'on' => 'update_api'],
-            [['product_id'], 'integer'],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', \Yii::$app->language)],
+
+            [['product_id'], 'required', 'on' => 'update_api', 'message' => getValidationErrorMsg('product_id_required', \Yii::$app->language)],
+            [['images'], 'required', 'on' => 'update_api', 'message' => getValidationErrorMsg('product_images_required', \Yii::$app->language)],
+
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', \Yii::$app->language)],
+
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'images'], 'file', 'maxFiles' => 5, 'message' => 'You can upload a maximum of 5 product images only.'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],

@@ -131,7 +131,7 @@ class SearchHistoryController extends ActiveController
     {
         $model = SearchHistory::find()->where(['id' => $id])->one();
         if (!$model instanceof SearchHistory) {
-            throw new NotFoundHttpException('Search History doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('search_history_not_exist', \Yii::$app->language));
         }
 
         $modelSearchHistories = SearchHistory::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['LIKE', 'search_text', $model->search_text])->all();

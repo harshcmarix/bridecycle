@@ -4,27 +4,26 @@ namespace app\modules\api\v2\controllers;
 
 use app\models\Brand;
 use app\models\Color;
-use app\models\MakeOffer;
 use app\models\Product;
 use app\models\ProductImage;
+use app\models\ProductReceipt;
 use app\models\ProductSizes;
 use app\models\ProductStatus;
-use app\models\UserAddress;
-use app\models\ProductReceipt;
 use app\models\ShippingPrice;
+use app\models\UserAddress;
 use app\modules\admin\models\search\SizesSearch;
 use app\modules\api\v2\models\User;
 use Yii;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\imagine\Image;
 use yii\rest\ActiveController;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
-use yii\web\HttpException;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -150,7 +149,7 @@ class ProductController extends ActiveController
         $model = Product::findOne($id);
 
         if (!$model instanceof Product) {
-            throw new NotFoundHttpException('Product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
 
         return $model;
@@ -166,7 +165,7 @@ class ProductController extends ActiveController
     {
         $model = Product::findOne($id);
         if (!$model instanceof Product) {
-            throw new NotFoundHttpException('Product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
         return $model;
     }
@@ -185,7 +184,7 @@ class ProductController extends ActiveController
 
         // check for user is subscriber or not
         if (!empty(Yii::$app->user->identity) && (!empty(Yii::$app->user->identity->is_shop_owner) || Yii::$app->user->identity->is_shop_owner == User::SHOP_OWNER_YES) && (Yii::$app->user->identity->is_subscribed_user == '0' || Yii::$app->user->identity->is_subscribed_user == "" || empty(Yii::$app->user->identity->is_subscribed_user))) {
-            throw new HttpException(403, Yii::t('app', "Please take first subscription to perform this action!"));
+            throw new HttpException(403, getValidationErrorMsg('subscription_required_validation', Yii::$app->language));
         }
 
         $model->gender = Product::GENDER_FOR_FEMALE;
@@ -389,7 +388,7 @@ class ProductController extends ActiveController
     {
         $model = Product::findOne($id);
         if (!$model instanceof Product) {
-            throw new NotFoundHttpException('Product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
         $postData = Yii::$app->request->post();
         $productData['Product'] = $postData;
@@ -600,7 +599,7 @@ class ProductController extends ActiveController
     {
         $model = Product::findOne($id);
         if (!$model instanceof Product) {
-            throw new NotFoundHttpException('Product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
 
         $model->status_id = ProductStatus::STATUS_ARCHIVED;
@@ -620,7 +619,7 @@ class ProductController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
     /**
@@ -696,7 +695,7 @@ class ProductController extends ActiveController
         $model = ProductReceipt::findOne($id);
 
         if (empty($model) && !$model instanceof ProductReceipt) {
-            throw new NotFoundHttpException('Product receipt doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_receipt_not_exist',Yii::$app->language));
         }
 
         if (!empty($model->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $model->file)) {

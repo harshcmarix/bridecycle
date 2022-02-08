@@ -52,8 +52,12 @@ class RecentSearchProducts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'product_id'], 'required'],
-            [['user_id', 'product_id'], 'integer'],
+            [['user_id'], 'required', 'message' => getValidationErrorMsg('user_id_required', Yii::$app->language)],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', Yii::$app->language)],
+
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', Yii::$app->language)],
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', Yii::$app->language)],
+
             [['created_at', 'updated_at'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],

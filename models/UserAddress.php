@@ -63,12 +63,19 @@ class UserAddress extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['street', 'city', 'state', 'country', 'zip_code', 'user_id'], 'required'],
-            [['user_id'], 'integer'],
+            [['street'], 'required', 'message' => getValidationErrorMsg('street_required', \Yii::$app->language)],
+            [['city'], 'required', 'message' => getValidationErrorMsg('city_required', \Yii::$app->language)],
+            [['state'], 'required', 'message' => getValidationErrorMsg('state_required', \Yii::$app->language)],
+            [['country'], 'required', 'message' => getValidationErrorMsg('country_required', \Yii::$app->language)],
+            [['zip_code'], 'required', 'message' => getValidationErrorMsg('post_code_required', \Yii::$app->language)],
+            [['user_id'], 'required', 'message' => getValidationErrorMsg('user_id_required', \Yii::$app->language)],
+
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', \Yii::$app->language)],
             [['is_primary_address', 'type'], 'string'],
             [['created_at', 'updated_at', 'address'], 'safe'],
             [['address', 'zip_code'], 'string', 'max' => 100],
-            [['street', 'city', 'state', 'country'], 'string', 'max' => 50],
+            [['street'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('street_max_50_character_length', \Yii::$app->language)],
+            [['city', 'state', 'country'], 'string', 'max' => 50],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }

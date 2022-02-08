@@ -2,10 +2,10 @@
 
 namespace app\models;
 
-use \yii\db\ActiveRecord;
-use yii\behaviors\TimestampBehavior;
 use app\modules\api\v2\models\User;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "product_ratings".
@@ -70,10 +70,16 @@ class ProductRating extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'product_id', 'review'], 'required'],
-            [['user_id', 'product_id'], 'integer'],
-            [['rating'], 'number'],
+            [['user_id'], 'required', 'message' => getValidationErrorMsg('user_id_required', Yii::$app->language)],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', Yii::$app->language)],
+            [['review'], 'required', 'message' => getValidationErrorMsg('review_required', Yii::$app->language)],
+
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', Yii::$app->language)],
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', Yii::$app->language)],
+
+            [['rating'], 'number', 'message' => getValidationErrorMsg('rating_number_validation', Yii::$app->language)],
             [['review'], 'string'],
+
             [['status', 'created_at', 'updated_at'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],

@@ -4,18 +4,18 @@ namespace app\modules\api\v2\controllers;
 
 use app\models\Notification;
 use app\models\Product;
+use app\models\ProductRating;
 use app\modules\api\v2\models\User;
 use Yii;
-use app\models\ProductRating;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\ForbiddenHttpException;
-use yii\rest\ActiveController;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
+use yii\rest\ActiveController;
+use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * ProductRatingController implements the CRUD actions for ProductRating model.
@@ -121,11 +121,11 @@ class ProductRatingController extends ActiveController
 
         $modelProduct = Product::findOne($id);
         if (!$modelProduct instanceof Product) {
-            throw new NotFoundHttpException('Product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
 
         if (empty($model)) {
-            throw new NotFoundHttpException('Product rating doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_rating_not_exist', Yii::$app->language));
         }
 
         $totalRatings = count($model);
@@ -179,7 +179,7 @@ class ProductRatingController extends ActiveController
         $productRating['ProductRating']['status'] = ProductRating::STATUS_PENDING;
         $alreadyExist = ProductRating::find()->where(['product_id' => $productRating['ProductRating']['product_id'], 'user_id' => $productRating['ProductRating']['user_id']])->all();
         if (!empty($alreadyExist)) {
-            throw new ForbiddenHttpException('You have already reviewed this product');
+            throw new ForbiddenHttpException(getValidationErrorMsg('product_already_rate_reviewed', Yii::$app->language));
         }
         if ($model->load($productRating) && $model->validate()) {
             $model->save();

@@ -2,10 +2,10 @@
 
 namespace app\modules\api\v2\controllers;
 
-use Yii;
 use app\models\BlockUser;
-use yii\filters\auth\HttpBasicAuth;
+use Yii;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
@@ -144,7 +144,7 @@ class BlockUserController extends ActiveController
     {
         $model = BlockUser::findOne($id);
         if (!$model instanceof BlockUser) {
-            throw new NotFoundHttpException('Blocked user doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('block_user_not_exist',Yii::$app->language));
         }
         $model->delete();
     }
@@ -162,7 +162,7 @@ class BlockUserController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }

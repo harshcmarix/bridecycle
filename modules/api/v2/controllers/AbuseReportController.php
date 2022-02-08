@@ -2,10 +2,10 @@
 
 namespace app\modules\api\v2\controllers;
 
-use Yii;
 use app\models\AbuseReport;
-use yii\filters\auth\HttpBasicAuth;
+use Yii;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
@@ -143,9 +143,9 @@ class AbuseReportController extends ActiveController
      */
     public function actionDelete($id)
     {
-        $model = AbuseReport::findOne($id);
+        $model = AbuseReport::find()->where(['id' => $id])->one();
         if (!$model instanceof AbuseReport) {
-            throw new NotFoundHttpException('Abuse report doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('abuse_report_not_exist', Yii::$app->language));
         }
         $model->delete();
     }
@@ -162,7 +162,7 @@ class AbuseReportController extends ActiveController
         if (($model = AbuseReport::findOne($id)) !== null) {
             return $model;
         }
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
     
 }

@@ -4,9 +4,8 @@ namespace app\modules\api\v2\models;
 
 use app\models\Order;
 use Yii;
-use app\modules\api\v2\models\User;
-use \yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "user_addresses".
@@ -63,12 +62,22 @@ class UserAddress extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id'], 'integer'],
-            [['is_primary_address','type'], 'string'],
-            [['address', 'street', 'city', 'state', 'country', 'zip_code'], 'required'],
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', Yii::$app->language)],
+            [['is_primary_address', 'type'], 'string'],
+
+            [['address'], 'required', 'message' => getValidationErrorMsg('address_required', Yii::$app->language)],
+            [['street'], 'required', 'message' => getValidationErrorMsg('street_required', Yii::$app->language)],
+            [['city'], 'required', 'message' => getValidationErrorMsg('city_required', Yii::$app->language)],
+            [['state'], 'required', 'message' => getValidationErrorMsg('state_required', Yii::$app->language)],
+            [['country'], 'required', 'message' => getValidationErrorMsg('country_required', Yii::$app->language)],
+            [['zip_code'], 'required', 'message' => getValidationErrorMsg('post_code_required', Yii::$app->language)],
+
             [['created_at', 'updated_at'], 'safe'],
             [['address', 'zip_code'], 'string', 'max' => 100],
-            [['street', 'city', 'state', 'country'], 'string', 'max' => 50],
+
+            [['street'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('street_max_50_character_length', Yii::$app->language)],
+
+            [['city', 'state', 'country'], 'string', 'max' => 50],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }

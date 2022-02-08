@@ -27,8 +27,8 @@ class ForgotPassword extends User
     public function rules()
     {
         return [
-            [['email'], 'required'],
-            [['email'], 'email'],
+            [['email'], 'required', 'message' => getValidationErrorMsg('email_required', Yii::$app->language)],
+            [['email'], 'email', 'message' => getValidationErrorMsg('email_not_valid', Yii::$app->language)],
             [['email'], 'validateUser'],
         ];
     }
@@ -47,7 +47,8 @@ class ForgotPassword extends User
         $user = $this->getUser();
         // Display message if password is blank in database (This case will happen when user signed up using facebook or google)
         if (!$user instanceof User) {
-            $this->addError($attribute, 'User does not exist');
+            //$this->addError($attribute, 'User does not exist');
+            $this->addError($attribute, getValidationErrorMsg('email_user_not_exist', Yii::$app->language));
         }
     }
 

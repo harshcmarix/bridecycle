@@ -63,9 +63,23 @@ class CartItem extends \yii\db\ActiveRecord
     {
         return [
 
-            [['user_id', 'product_id', 'quantity', 'shipping_cost'], 'required'],
-            [['user_id', 'product_id', 'quantity', 'seller_id', 'size_id'], 'integer'],
-            [['shipping_cost', 'price', 'tax'], 'number'],
+            [['user_id'], 'required', 'message' => getValidationErrorMsg('user_id_required', Yii::$app->language)],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', Yii::$app->language)],
+            [['quantity'], 'required', 'message' => getValidationErrorMsg('quantity_required', Yii::$app->language)],
+            [['shipping_cost'], 'required', 'message' => getValidationErrorMsg('shipping_cost_required', Yii::$app->language)],
+            [['color'], 'required', 'message' => getValidationErrorMsg('color_required', Yii::$app->language)],
+            //[['size_id'], 'required', 'message' => getValidationErrorMsg('size_id_required', Yii::$app->language)],
+
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', Yii::$app->language)],
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', Yii::$app->language)],
+            [['quantity'], 'integer', 'message' => getValidationErrorMsg('quantity_integer_validation', Yii::$app->language)],
+            [['seller_id'], 'integer', 'message' => getValidationErrorMsg('seller_id_integer_validation', Yii::$app->language)],
+            [['size_id'], 'integer', 'message' => getValidationErrorMsg('size_id_integer_validation', Yii::$app->language)],
+
+            [['shipping_cost'], 'number', 'message' => getValidationErrorMsg('shipping_cost_number_validation', Yii::$app->language)],
+            [['price'], 'number', 'message' => getValidationErrorMsg('price_number_validation', Yii::$app->language)],
+            [['tax'], 'number', 'message' => getValidationErrorMsg('tax_number_validation', Yii::$app->language)],
+
             [['size', 'is_checkout', 'created_at', 'updated_at'], 'safe'],
             [['product_name', 'category_name', 'subcategory_name'], 'safe'],
             [['color'], 'string', 'max' => 100],
@@ -90,6 +104,7 @@ class CartItem extends \yii\db\ActiveRecord
             'price' => 'Price',
             'color' => 'Color',
             'size' => 'Size',
+            'size_id' => 'Size',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

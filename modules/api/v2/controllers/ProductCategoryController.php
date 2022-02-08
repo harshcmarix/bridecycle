@@ -2,17 +2,17 @@
 
 namespace app\modules\api\v2\controllers;
 
-use Yii;
 use app\models\ProductCategory;
-use yii\imagine\Image;
-use yii\web\NotFoundHttpException;
-use yii\web\UploadedFile;
-use yii\filters\auth\HttpBasicAuth;
+use Yii;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
+use yii\imagine\Image;
 use yii\rest\ActiveController;
+use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * ProductCategoryController implements the CRUD actions for ProductCategory model.
@@ -117,7 +117,7 @@ class ProductCategoryController extends ActiveController
     {
         $model = ProductCategory::findOne($category_id);
         if (!$model instanceof ProductCategory) {
-            throw new NotFoundHttpException('Product sub category doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_sub_cat_not_exist', Yii::$app->language));
         }
         $moldelsSubcategory = [];
         if (!empty($model)) {
@@ -147,7 +147,7 @@ class ProductCategoryController extends ActiveController
     {
         $model = ProductCategory::findOne($id);
         if (!$model instanceof ProductCategory) {
-            throw new NotFoundHttpException('Product category doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_cat_not_exist', Yii::$app->language));
         }
         if (!empty($model) && !empty($model->image) && file_exists(Yii::getAlias('@productCategoryImageRelativePath') . '/' . $model->image)) {
             $model->image = Yii::$app->request->getHostInfo() . Yii::getAlias('@productCategoryImageAbsolutePath') . '/' . $model->image;
@@ -220,7 +220,7 @@ class ProductCategoryController extends ActiveController
     {
         $model = ProductCategory::findOne($id);
         if (!$model instanceof ProductCategory) {
-            throw new NotFoundHttpException('Product category doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_cat_not_exist', Yii::$app->language));
         }
 
         $postData = Yii::$app->request->post();
@@ -248,7 +248,7 @@ class ProductCategoryController extends ActiveController
     {
         $model = ProductCategory::findOne($id);
         if (!$model instanceof ProductCategory) {
-            throw new NotFoundHttpException('Product category doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_cat_not_exist', Yii::$app->language));
         }
         $oldFile = $model->image;
         $postData = Yii::$app->request->post();
@@ -322,7 +322,7 @@ class ProductCategoryController extends ActiveController
     {
         $model = ProductCategory::findOne($id);
         if (!$model instanceof ProductCategory) {
-            throw new NotFoundHttpException('Product category doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_cat_not_exist', Yii::$app->language));
         }
         if (!empty($model) && !empty($model->image)) {
 
@@ -355,7 +355,7 @@ class ProductCategoryController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }

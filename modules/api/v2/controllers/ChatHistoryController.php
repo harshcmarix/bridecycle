@@ -2,10 +2,10 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\ChatHistory;
 use app\models\Notification;
 use app\modules\api\v2\models\User;
 use Yii;
-use app\models\ChatHistory;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
@@ -111,11 +111,11 @@ class ChatHistoryController extends ActiveController
     {
         $post = Yii::$app->request->post();
         if (empty($post) || empty($post['product_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "product_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
 
         if (empty($post) || empty($post['to_user_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "to_user_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('to_user_id_required', Yii::$app->language));
         }
 
         $userModel = User::find()->where(["id" => Yii::$app->user->identity->id])->one();
@@ -190,7 +190,7 @@ class ChatHistoryController extends ActiveController
             }
             return $chatHistory;
         } else {
-            throw new \yii\web\BadRequestHttpException("User does not exist.");
+            throw new \yii\web\BadRequestHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
     }
 
@@ -328,7 +328,7 @@ class ChatHistoryController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist',Yii::$app->language));
     }
 
 }

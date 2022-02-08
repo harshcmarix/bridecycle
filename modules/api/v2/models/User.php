@@ -190,36 +190,92 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             // [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
-            [['email', 'timezone_id', 'username'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
+            [['email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER], 'message' => getValidationErrorMsg('email_required', Yii::$app->language)],
+            [['timezone_id'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER], 'message' => getValidationErrorMsg('timezone_required', Yii::$app->language)],
+            [['username'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER], 'message' => getValidationErrorMsg('username_required', Yii::$app->language)],
             // [['first_name'], 'required', 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]], // 'last_name'
-            [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER]],
-            [['top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size', 'height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER],
-            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => "Confirm Password don't match"],
+            [['password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER], 'message' => getValidationErrorMsg('password_required', Yii::$app->language)],
+            [['confirm_password'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_SHOP_OWNER], 'message' => getValidationErrorMsg('confirm_password_required', Yii::$app->language)],
+
+            [['top_size'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER, 'message' => getValidationErrorMsg('top_size_required', Yii::$app->language)],
+            [['pant_size'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER, 'message' => getValidationErrorMsg('pant_size_required', Yii::$app->language)],
+            [['bust_size'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER, 'message' => getValidationErrorMsg('bust_size_required', Yii::$app->language)],
+            [['waist_size'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER, 'message' => getValidationErrorMsg('waist_size_required', Yii::$app->language)],
+            [['hip_size'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER, 'message' => getValidationErrorMsg('hip_size_required', Yii::$app->language)],
+            [['height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER, 'message' => getValidationErrorMsg('height_required', Yii::$app->language)],
+
+            ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => getValidationErrorMsg('password_confirm_password_match_required', Yii::$app->language)],
             [['facebook_id', 'apple_id', 'google_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
-            [['timezone_id', 'mobile', 'shop_phone_number'], 'integer'],
+
+            [['timezone_id'], 'integer', 'message' => getValidationErrorMsg('timezone_integer_validation', Yii::$app->language)],
+            [['mobile'], 'integer', 'message' => getValidationErrorMsg('mobile_integer_validation', Yii::$app->language)],
+            [['shop_phone_number'], 'integer', 'message' => getValidationErrorMsg('shop_phone_number_integer_validation', Yii::$app->language)],
+
             //[['mobile', 'shop_phone_number'], 'string'],
             [['country_code'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
-            [['first_name', 'last_name'], 'string', 'max' => 50],
-            [['email', 'shop_email'], 'email'],
+
+            [['first_name'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('first_name_max_character_length', Yii::$app->language)],
+            [['last_name'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('last_name_max_character_length', Yii::$app->language)],
+
+            [['email'], 'email', 'message' => getValidationErrorMsg('email_not_valid', Yii::$app->language)],
+            [['shop_email'], 'email', 'message' => getValidationErrorMsg('shop_email_not_valid', Yii::$app->language)],
+
             [['user_status', 'is_verify_user', 'is_subscribed_user', 'latitude', 'longitude'], 'safe'],
-            [['email'], 'unique', 'message' => 'This email is already taken. Please login with this email address.', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE]],
-            [['email'], 'string', 'max' => 60],
+            [['email'], 'unique', 'message' => getValidationErrorMsg('unique_email_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE]],
+            [['email'], 'string', 'max' => 60, 'tooLong' => getValidationErrorMsg('email_max_60_character_length', Yii::$app->language)],
+
+            //[['verification_code'], 'string', 'max' => 6, 'tooLong' => getValidationErrorMsg('verification_code_max_6_character_length', Yii::$app->language)],
             [['verification_code'], 'string', 'max' => 6],
-            [['password_hash', 'temporary_password', 'access_token', 'password_reset_token', 'website'], 'string', 'max' => 255],
-            [['website'], 'url', 'defaultScheme' => ''],
+
+            [['password_hash', 'temporary_password', 'access_token', 'password_reset_token'], 'string', 'max' => 255],
+            [['website'], 'string', 'max' => 255, 'tooLong' => getValidationErrorMsg('website_max_255_character_length', Yii::$app->language)],
+            [['website'], 'url', 'defaultScheme' => '', 'message' => getValidationErrorMsg('website_not_valid', Yii::$app->language)],
             [['temporary_password'], 'string', 'max' => 8],
-            [['shop_logo', 'profile_picture', 'shop_cover_picture'], 'file'],
+
+            [['shop_logo'], 'file'],
+            [['profile_picture'], 'file'],
+            [['shop_cover_picture'], 'file'],
+
             // [['shop_logo', 'profile_picture', 'shop_cover_picture'], 'file', 'extensions' => 'png, jpg, jpeg'],
-            [['shop_name', 'shop_email'], 'string', 'max' => 100],
-            [['profile_picture'], 'required', 'on' => [self::PROFILE_PICTURE_UPDATE]],
+            [['shop_name'], 'string', 'max' => 100, 'tooLong' => getValidationErrorMsg('shop_name_max_100_character_length', Yii::$app->language)],
+            [['shop_email'], 'string', 'max' => 100],
+
+            [['profile_picture'], 'required', 'on' => [self::PROFILE_PICTURE_UPDATE], 'message' => getValidationErrorMsg('profile_picture_required', Yii::$app->language)],
+
             [['shop_name', 'shop_email', 'shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
-            [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'number'],
+
+            [['weight'], 'number', 'message' => getValidationErrorMsg('weight_number_validation', Yii::$app->language)],
+            [['height'], 'number', 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
+            [['top_size'], 'number', 'message' => getValidationErrorMsg('top_size_number_validation', Yii::$app->language)],
+            [['pant_size'], 'number', 'message' => getValidationErrorMsg('pant_size_number_validation', Yii::$app->language)],
+            [['bust_size'], 'number', 'message' => getValidationErrorMsg('bust_size_number_validation', Yii::$app->language)],
+            [['waist_size'], 'number', 'message' => getValidationErrorMsg('waist_size_number_validation', Yii::$app->language)],
+            [['hip_size'], 'number', 'message' => getValidationErrorMsg('hip_size_number_validation', Yii::$app->language)],
+
             // [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'string'],
             [['is_newsletter_subscription'], 'safe'],
             [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on'], 'safe'],
             [['is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'safe'],
-            [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on', 'is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+
+            [['is_new_message_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_offer_update_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_offer_on_favourite_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_saved_searches_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_order_placed_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_payment_done_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_order_delivered_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_click_and_try_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+
+            [['is_new_message_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_offer_update_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_offer_on_favourite_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_saved_searches_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_order_placed_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_payment_done_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_order_delivered_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+            [['is_click_and_try_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
+
             [['shop_email'], 'unique', 'targetClass' => ShopDetail::class, 'targetAttribute' => ['shop_email'], 'on' => [self::SCENARIO_SHOP_OWNER]],
             //[['timezone_id'], 'exist', 'skipOnEmpty' => true,'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['timezone_id' => 'id']],
         ];
@@ -266,6 +322,7 @@ class User extends ActiveRecord implements IdentityInterface
             'user_type' => 'User Type',
             'is_shop_owner' => 'Is Shop Owner',
             'verification_code' => 'Verification Code',
+            'timezone_id' => 'Timezone',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

@@ -42,7 +42,8 @@
     "google/apiclient": "^2.11",
     "kartik-v/yii2-date-range": "dev-master",
     "yii2tech/csv-grid": "^1.0",
-    "aporat/store-receipt-validator": "^4.1"
+    "aporat/store-receipt-validator": "^4.1",
+    "stripe/stripe-php": "^7.112"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

@@ -30,8 +30,12 @@ class ProductSizes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'size_id'], 'required'],
-            [['product_id', 'size_id'], 'integer'],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', \Yii::$app->language)],
+            [['size_id'], 'required', 'message' => getValidationErrorMsg('size_id_required', \Yii::$app->language)],
+
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', \Yii::$app->language)],
+            [['size_id'], 'integer', 'message' => getValidationErrorMsg('size_id_integer_validation', \Yii::$app->language)],
+
             [['created_at', 'updated_at'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['size_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sizes::class, 'targetAttribute' => ['size_id' => 'id']],

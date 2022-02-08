@@ -28,3 +28,5 @@ function p($value, $exit = 1)
         die;
     }
 }
+
+

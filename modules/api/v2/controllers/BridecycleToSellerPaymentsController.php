@@ -2,8 +2,8 @@
 
 namespace app\modules\api\v2\controllers;
 
-use Yii;
 use app\models\BridecycleToSellerPayments;
+use Yii;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
@@ -104,6 +104,7 @@ class BridecycleToSellerPaymentsController extends ActiveController
         return $model->search($requestParams, Yii::$app->user->identity->id);
     }
 
+
     /**
      * Displays a single BridecycleToSellerPayments model.
      * @param integer $id
@@ -181,7 +182,7 @@ class BridecycleToSellerPaymentsController extends ActiveController
         if (($model = BridecycleToSellerPayments::findOne($id)) !== null) {
             return $model;
         }
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }

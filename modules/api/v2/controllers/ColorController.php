@@ -118,7 +118,7 @@ class ColorController extends ActiveController
     {
         $model = Color::findOne($id);
         if (!$model instanceof Color) {
-            throw new NotFoundHttpException('Color doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('color_not_exist',Yii::$app->language));
         }
         return $model;
     }
@@ -153,7 +153,7 @@ class ColorController extends ActiveController
     {
         $model = Color::findOne($id);
         if (!$model instanceof Color) {
-            throw new NotFoundHttpException('Color doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('color_not_exist',Yii::$app->language));
         }
         $postData = Yii::$app->request->post();
         $colorData['Color'] = $postData;
@@ -177,7 +177,7 @@ class ColorController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist',Yii::$app->language));
     }
 
 }

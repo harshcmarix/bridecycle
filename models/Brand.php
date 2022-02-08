@@ -2,9 +2,9 @@
 
 namespace app\models;
 
-use yii\behaviors\TimestampBehavior;
-use \yii\db\ActiveRecord;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "brands".
@@ -85,13 +85,13 @@ class Brand extends ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name'], 'required', 'message' => getValidationErrorMsg('brand_name_required', Yii::$app->language)],
             [['is_top_brand'], 'string'],
             [['created_at', 'updated_at', 'status'], 'safe'],
-            [['name'], 'string', 'max' => 50],
-            [['name'], 'unique', 'message' => $this->name . ' is already in review, after approval from admin it will be display. Please wait for some time.'],
+            [['name'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('brand_name_max_50_character_length', Yii::$app->language)],
+            [['name'], 'unique', 'message' => getValidationErrorMsg('brand_name_unique_validation', Yii::$app->language)],
 
-            [['image'], 'required', 'on' => self::SCENARIO_CREATE],
+            [['image'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('brand_image_required', Yii::$app->language)],
 
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_brand_image_empty == '1';

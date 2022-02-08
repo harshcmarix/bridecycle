@@ -59,9 +59,16 @@ class SellerRating extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['seller_id', 'user_id', 'rate', 'review'], 'required'],
-            [['seller_id', 'user_id'], 'integer'],
-            [['rate'], 'number'],
+            [['seller_id'], 'required', 'message' => getValidationErrorMsg('seller_id_required', Yii::$app->language)],
+            [['user_id'], 'required', 'message' => getValidationErrorMsg('user_id_required', Yii::$app->language)],
+            [['rate'], 'required', 'message' => getValidationErrorMsg('rate_required', Yii::$app->language)],
+            [['review'], 'required', 'message' => getValidationErrorMsg('review_required', Yii::$app->language)],
+
+            [['seller_id'], 'integer', 'message' => getValidationErrorMsg('seller_id_required', Yii::$app->language)],
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_required', Yii::$app->language)],
+
+            [['rate'], 'number', 'message' => getValidationErrorMsg('rate_number_validation', Yii::$app->language)],
+
             [['review'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['seller_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['seller_id' => 'id']],

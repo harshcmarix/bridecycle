@@ -56,12 +56,17 @@ class Color extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['name', 'code'], 'required', 'on' => self::SCENARIO_ADD_COLOR],
-            [['name', 'code'], 'required', 'on' => self::SCENARIO_UPDATE_COLOR],
+            [['name'], 'required', 'message' => getValidationErrorMsg('name_required', \Yii::$app->language)],
+
+            [['name'], 'required', 'on' => self::SCENARIO_ADD_COLOR, 'message' => getValidationErrorMsg('name_required', \Yii::$app->language)],
+            [['code'], 'required', 'on' => self::SCENARIO_ADD_COLOR, 'message' => getValidationErrorMsg('code_required', \Yii::$app->language)],
+
+            [['name'], 'required', 'on' => self::SCENARIO_UPDATE_COLOR, 'message' => getValidationErrorMsg('name_required', \Yii::$app->language)],
+            [['code'], 'required', 'on' => self::SCENARIO_UPDATE_COLOR, 'message' => getValidationErrorMsg('code_required', \Yii::$app->language)],
+
             [['status', 'created_at', 'updated_at'], 'safe'],
-            [['name'], 'string', 'max' => 100],
-            [['code'], 'string', 'max' => 15],
+            [['name'], 'string', 'max' => 100, 'tooLong' => getValidationErrorMsg('name_max_100_character_length', \Yii::$app->language)],
+            [['code'], 'string', 'max' => 15, 'tooLong' => getValidationErrorMsg('code_max_15_character_length', \Yii::$app->language)],
         ];
     }
 

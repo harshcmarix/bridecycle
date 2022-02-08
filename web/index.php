@@ -15,6 +15,35 @@ function p($value, $exit = 1)
     }
 }
 
+/**
+ * @param $attribute
+ * @param string $language
+ * @return mixed|string
+ */
+function getValidationErrorMsg($attribute, $language = 'english')
+{
+    if (\Yii::$app->language == 'en-US') {
+        $language = 'english';
+    }
+
+    if (\Yii::$app->language == 'de-DE') {
+        $language = 'german';
+    }
+    //$messageLanguage = (!empty(\Yii::$app->language)) ? \Yii::$app->language : $language;
+    $messageLanguage = $language;
+
+    $messageLanguageString = $messageLanguage . '_message';
+    $responseResult = "";
+    if (!empty($messageLanguageString)) {
+        $result = \app\models\ErrorMessages::find()->where(['error_key' => $attribute])->all();
+        if (!empty($result[0]) && !empty($result[0][$messageLanguageString])) {
+            $responseResult = $result[0][$messageLanguageString];
+        }
+    }
+    return $responseResult;
+
+}
+
 //$configForGoogle = require __DIR__ . '/../web/uploads/google-app-credentials.json';
 //defined('GOOGLE_APPLICATION_CREDENTIALS') or define('GOOGLE_APPLICATION_CREDENTIALS', $configForGoogle);
 defined('GOOGLE_APPLICATION_CREDENTIALS') or define('GOOGLE_APPLICATION_CREDENTIALS', '/../web/uploads/google-app-credentials.json');

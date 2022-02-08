@@ -154,21 +154,21 @@ class UserController extends ActiveController
 
         if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_FACEBOOK) {
             if (empty($postData) || empty($postData['facebook_id'])) {
-                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "facebook_id"');
+                throw new BadRequestHttpException(getValidationErrorMsg('facebook_id_required', Yii::$app->language));
             }
             $model->facebook_id = $postData['facebook_id'];
         }
 
         if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_APPLE) {
             if (empty($postData) || empty($postData['apple_id'])) {
-                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "apple_id"');
+                throw new BadRequestHttpException(getValidationErrorMsg('apple_id_required', Yii::$app->language));
             }
             $model->apple_id = $postData['apple_id'];
         }
 
         if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_GOOGLE) {
             if (empty($postData) || empty($postData['google_id'])) {
-                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "google_id"');
+                throw new BadRequestHttpException(getValidationErrorMsg('google_id_required', Yii::$app->language));
             }
             $model->google_id = $postData['google_id'];
         }
@@ -219,6 +219,31 @@ class UserController extends ActiveController
             if ($model->save()) {
                 // Insert shop details
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
+
+
+//                    $stripe = new \Stripe\StripeClient();
+//                    p($stripe);
+//                    $result =$stripe->accounts->create([
+//                        'type' => 'custom',
+//                        'country' => 'US',
+//                        'email' => 'jenny.rosen@example.com',
+//                        'capabilities' => [
+//                            'card_payments' => ['requested' => true],
+//                            'transfers' => ['requested' => true],
+//                        ],
+//                    ]);
+
+//                    $result = $stripe->accounts->create([
+//                        'type' => 'custom',
+//                        'country' => 'US',
+//                        'email' => 'jenny.rosen@example.com',
+//                        'capabilities' => [
+//                            'card_payments' => ['requested' => true],
+//                            'transfers' => ['requested' => true],
+//                        ],
+//                    ]);
+
+
                     $userAddressModel = new UserAddress();
                     $userAddressData['UserAddress'] = $postData;
                     if ($userAddressModel->load($userAddressData)) {
@@ -329,7 +354,7 @@ class UserController extends ActiveController
     {
         $model = User::find()->where(['id' => $id])->one();
         if (!$model instanceof User) {
-            throw new NotFoundHttpException('User doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
         $postData = \Yii::$app->request->post();
         $data['User'] = $postData;
@@ -410,7 +435,7 @@ class UserController extends ActiveController
         $model = User::findOne($id);
 
         if (!$model instanceof User) {
-            throw new NotFoundHttpException('User doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
 
         $uploadThumbDirPath = Yii::getAlias('@profilePictureRelativePath');
@@ -442,7 +467,7 @@ class UserController extends ActiveController
         $model = User::findOne($id);
         $model->scenario = User::PROFILE_PICTURE_UPDATE;
         if (!$model instanceof User) {
-            throw new NotFoundHttpException('User doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
 
         $old_image = $model->profile_picture;
@@ -508,7 +533,7 @@ class UserController extends ActiveController
     {
         $model = UserAddress::findOne($id);
         if (!$model instanceof UserAddress) {
-            throw new NotFoundHttpException('Address doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_address_not_exist', Yii::$app->language));
         }
         $model->delete();
     }
@@ -523,35 +548,103 @@ class UserController extends ActiveController
      */
     public function actionLogin()
     {
+
         $model = new Login();
 
         $data['Login'] = Yii::$app->request->post();
 
         $postData = Yii::$app->request->post();
 
+
+//        $stripe = new \Stripe\StripeClient(
+//            Yii::$app->params['stripe_secret_key']
+//        );
+//        $res = $stripe->accounts->create([
+//            'type' => 'express',
+//            'country' => 'DE', // For germany
+//            'email' => $postData['email'],
+////            'capabilities' => [
+////                'card_payments' => ['requested' => true],
+////                'transfers' => ['requested' => true],
+////            ],
+////            'business_type' => 'individual',
+////            'company' => [
+////                'address' => [
+////                    'city' => 'aachen',
+////                    'line1' => 'Pontsheide 31c',
+////                    'postal_code' => '52076',
+////                    'state' => 'Strawberry Pt'
+////                ]
+////            ],
+////            'business_profile' => [
+////                'mcc' => '5691',
+////                'url' => 'https://bridecycle.com',
+////                'name' => 'BCOnE1'
+////            ],
+////            'bank_account' => [
+////                'account_holder_name' => 'performer user',
+////                'account_holder_type' => 'individual',
+////                'bank_name' => 'STRIPE TEST BANK',
+////                'country' => 'DE',
+////                'currency' => 'EUR',
+////                'account_number' => 'DE89370400440532013000',
+////            ],
+////            'individual' => [
+////                'email' => $postData['email'],
+////                'first_name' => 'store',
+////                'last_name' => 'user',
+////                'phone' => '9925400547',
+////                'dob' => [
+////                    'day' => '25',
+////                    'month' => '11',
+////                    'year' => '1992'
+////                ],
+////                'address' => [
+////                    'city' => 'aachen',
+////                    'line1' => 'Pontsheide 31c',
+////                    'postal_code' => '52076',
+////                    'state' => 'Strawberry Pt'
+////                ],
+////                'verification' => [
+////                    'document' => get_fil,
+////                    'additional_document' => '',
+////                ]
+////            ],
+////            'tos_acceptance' => [
+////                'date' => time(),
+////                'ip' => '203.109.113.157'
+////            ],
+//
+//        ]);
+//        p($res);
+
+
         if (empty($postData) || empty($postData['notification_token'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "notification_token"');
+            throw new BadRequestHttpException(getValidationErrorMsg('notification_token_required', Yii::$app->language));
         }
         if (empty($postData) || empty($postData['device_platform'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "device_platform"');
+            throw new BadRequestHttpException(getValidationErrorMsg('device_platform_required', Yii::$app->language));
         }
 
         if (!empty($postData) && !empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_FACEBOOK) {
             if (empty($postData) || empty($postData['facebook_id'])) {
-                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "facebook_id"');
+                throw new BadRequestHttpException(getValidationErrorMsg('facebook_id_required', Yii::$app->language));
             }
             $modelPostData = User::find()->where(['facebook_id' => $postData['facebook_id']])->one();
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
             } else {
-                throw new NotFoundHttpException('User doesn\'t exist.');
+                if (!empty(Yii::$app->language) && in_array(Yii::$app->language, Yii::$app->params['other_support_language'])) {
+                    throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
+                }
+                throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
             }
         }
 
         if (!empty($postData) && !empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_APPLE) {
             if (empty($postData) || empty($postData['apple_id'])) {
-                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "apple_id"');
+                throw new BadRequestHttpException(getValidationErrorMsg('apple_id_required', Yii::$app->language));
             }
 
             $modelPostData = User::find()->where(['apple_id' => $postData['apple_id']])->one();
@@ -560,20 +653,20 @@ class UserController extends ActiveController
                 $data['Login']['email'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
             } else {
-                throw new NotFoundHttpException('User doesn\'t exist.');
+                throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
             }
         }
 
         if (!empty($postData) && !empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_GOOGLE) {
             if (empty($postData) || empty($postData['google_id'])) {
-                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "google_id"');
+                throw new BadRequestHttpException(getValidationErrorMsg('google_id_required', Yii::$app->language));
             }
             $modelPostData = User::find()->where(['google_id' => $postData['google_id']])->one();
             if (!empty($modelPostData) && $modelPostData instanceof User) {
                 $data['Login']['email'] = $modelPostData->email;
                 $model->email = $modelPostData->email;
             } else {
-                throw new NotFoundHttpException('User doesn\'t exist.');
+                throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
             }
         }
 
@@ -584,7 +677,7 @@ class UserController extends ActiveController
         $modelUser = "";
         if ($model->load($data) && $model->validate()) {
             if (!$model->login()) {
-                throw new ForbiddenHttpException('Unable to process your request. Please contact administrator');
+                throw new ForbiddenHttpException(getValidationErrorMsg('forbidden_exception', Yii::$app->language));
             }
 
             //update notification token
@@ -634,7 +727,7 @@ class UserController extends ActiveController
         $postData = Yii::$app->request->get();
 
         if (empty($postData) || empty($postData['notification_token'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "notification_token"');
+            throw new BadRequestHttpException(getValidationErrorMsg('notification_token_required', Yii::$app->language));
         }
 
         $headers = \Yii::$app->getRequest()->getHeaders();
@@ -642,7 +735,7 @@ class UserController extends ActiveController
         if (!empty($authorizationData)) {
             $authorizationArray = explode(" ", $authorizationData);
             if (empty($authorizationArray[\Yii::$app->params['token_segment']])) {
-                throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter bearer token');
+                throw new BadRequestHttpException(getValidationErrorMsg('token_segment_required', Yii::$app->language));
             }
 
             $accessToken = $authorizationArray[\Yii::$app->params['token_segment']];
@@ -658,15 +751,15 @@ class UserController extends ActiveController
                 }
                 \Yii::$app->user->logout();
                 return [
-                    'message' => 'Logged Out Successfully.'
+                    'message' => getValidationErrorMsg('logout_successful', Yii::$app->language)
                 ];
             }
             return [
-                'message' => 'You are already logged Out.'
+                'message' => getValidationErrorMsg('already_logout', Yii::$app->language)
             ];
         }
 
-        throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter bearer token');
+        throw new BadRequestHttpException(getValidationErrorMsg('token_segment_required', Yii::$app->language));
     }
 
     /**
@@ -692,7 +785,7 @@ class UserController extends ActiveController
                         ->setSubject('Forgot your password')
                         ->send();
                     if (!$mail) {
-                        throw new ServerErrorHttpException("Unable to send an email. Please try again later");
+                        throw new ServerErrorHttpException(getValidationErrorMsg('email_not_sent', Yii::$app->language));
                     }
                 }
             }
@@ -710,7 +803,7 @@ class UserController extends ActiveController
     {
         $postData = \Yii::$app->request->post();
         if (empty($postData) || empty($postData['tmp_password'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "tmp_password"');
+            throw new BadRequestHttpException(getValidationErrorMsg('tmp_password_required_exception', Yii::$app->language));
         }
 
         $model = User::find()->where(['temporary_password' => $postData['tmp_password'], 'user_type' => User::USER_TYPE_NORMAL])->one();
@@ -725,7 +818,7 @@ class UserController extends ActiveController
         }
 
         if (!$model instanceof User) {
-            throw new NotFoundHttpException('Temporary password does\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('tmp_password_not_exist', Yii::$app->language));
         }
 
         return $model;
@@ -745,7 +838,7 @@ class UserController extends ActiveController
             $userModel->setPassword($model->password);
             $userModel->temporary_password = null;
             if (!$userModel->save(false)) {
-                throw new ForbiddenHttpException('Unable to process your request. Please contact administrator.');
+                throw new ForbiddenHttpException(getValidationErrorMsg('forbidden_exception', Yii::$app->language));
             }
         }
 
@@ -764,7 +857,7 @@ class UserController extends ActiveController
             $userModel = \Yii::$app->user->identity;
             $userModel->setPassword($model->password);
             if (!$userModel->save()) {
-                throw new ForbiddenHttpException('Unable to process your request. Please contact administrator.');
+                throw new ForbiddenHttpException(getValidationErrorMsg('forbidden_exception', Yii::$app->language));
             }
         }
 
@@ -780,13 +873,13 @@ class UserController extends ActiveController
     {
         $postData = \Yii::$app->request->post();
         if (empty($postData) || empty($postData['verification_code'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "verification_code"');
+            throw new BadRequestHttpException(getValidationErrorMsg('verification_code_required', Yii::$app->language));
         }
 
         $model = User::find()->where(['verification_code' => $postData['verification_code'], 'user_type' => User::USER_TYPE_NORMAL])->one();
 
         if (!$model instanceof User) {
-            throw new NotFoundHttpException('Verification code doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('verification_code_not_exist', Yii::$app->language));
         }
 
         if (!empty($model) && $model instanceof User) {
@@ -822,12 +915,12 @@ class UserController extends ActiveController
     {
         $post = \Yii::$app->request->post();
         if (empty($post) || empty($post['email'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "email"');
+            throw new BadRequestHttpException(getValidationErrorMsg('email_required', Yii::$app->language));
         }
 
         $modelUser = User::findByEmail($post['email']);
         if (empty($modelUser) && !$modelUser instanceof User) {
-            throw new NotFoundHttpException('Email doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('email_not_exist', Yii::$app->language));
         }
 
         $modelUser->verification_code = $modelUser->getVerificationCode();
@@ -856,12 +949,12 @@ class UserController extends ActiveController
         $postData = \Yii::$app->request->post();
 
         if (empty($postData) || empty($postData['user_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "user_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('user_id_required', Yii::$app->language));
         }
 
         $model = User::find()->where(['id' => $postData['user_id'], 'user_type' => User::USER_TYPE_NORMAL, 'is_shop_owner' => User::SHOP_OWNER_NO])->one();
         if (!$model instanceof User) {
-            throw new NotFoundHttpException('User doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
         $model->scenario = User::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER;
         $dataPost['User'] = $postData;
@@ -890,12 +983,12 @@ class UserController extends ActiveController
         $postData = \Yii::$app->request->post();
 
         if (empty($postData) || empty($postData['user_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "user_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('user_id_required', Yii::$app->language));
         }
 
         $model = User::find()->where(['id' => $postData['user_id'], 'user_type' => User::USER_TYPE_NORMAL])->one();
         if (!$model instanceof User) {
-            throw new NotFoundHttpException('User doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
 
         $dataPost['User'] = $postData;

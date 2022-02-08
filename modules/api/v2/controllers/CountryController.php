@@ -2,19 +2,19 @@
 
 namespace app\modules\api\v2\controllers;
 
-use app\models\ShippingPrice;
-use Yii;
+use app\models\Country;
 use app\models\Product;
 use app\models\ShippingCost;
-use app\models\Country;
-use yii\web\BadRequestHttpException;
-use yii\web\NotFoundHttpException;
-use yii\filters\auth\HttpBasicAuth;
+use app\models\ShippingPrice;
+use Yii;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * CountryController implements the CRUD actions for Country model.
@@ -195,16 +195,16 @@ class CountryController extends ActiveController
     {
         $post = \Yii::$app->request->post();
         if (empty($post) || empty($post['product_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "product_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
         if (empty($post) || empty($post['zip_code'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "zip_code"');
+            throw new BadRequestHttpException(getValidationErrorMsg('post_code_required', Yii::$app->language));
         }
 
         $postcode = $post['zip_code'];
         $modelProduct = Product::findOne($post['product_id']);
         if (!$modelProduct instanceof Product) {
-            throw new NotFoundHttpException('Product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
 
         $modelsShippingCountry = [];
@@ -235,6 +235,12 @@ class CountryController extends ActiveController
 //            } else {
 //                $continent = ShippingCost::CONTINENT_OTHER;
 //            }
+//        }
+//        if ($result['continent'] == 'Europe') {
+//            $continent = 'Europe';
+//        }
+//        else{
+//            $continent = ShippingCost::CONTINENT_OTHER;
 //        }
 
 

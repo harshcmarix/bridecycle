@@ -13,7 +13,6 @@ use app\models\Product;
 use app\models\ProductCategory;
 use app\models\ProductStatus;
 use app\models\ProductTracking;
-use app\models\Setting;
 use app\models\Sizes;
 use app\modules\api\v2\models\User;
 use app\modules\api\v2\models\UserAddress;
@@ -40,8 +39,8 @@ use yii\filters\Cors;
 use yii\helpers\Url;
 use yii\rest\ActiveController;
 use yii\web\BadRequestHttpException;
-use yii\web\NotFoundHttpException;
 use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 
 // CartItemController implements the CRUD actions for CartItem model.
 class CartItemController extends ActiveController
@@ -162,13 +161,13 @@ class CartItemController extends ActiveController
 
             $cartIteamAlreadyAdded = CartItem::find()->where(['product_id' => $model->product_id, 'user_id' => $model->user_id, 'is_checkout' => CartItem::IS_CHECKOUT_NO, 'color' => $model->color, 'size' => $model->size])->one();
             if (!empty($cartIteamAlreadyAdded) && $cartIteamAlreadyAdded instanceof CartItem) {
-                throw new BadRequestHttpException('You have already this product added to the cart"');
+                throw new BadRequestHttpException(getValidationErrorMsg('product_already_added_to_cart_exception', Yii::$app->language));
             }
 
             $productData = Product::find()->where(['id' => $model->product_id])->one();
 
             if (!empty($productData) && $productData instanceof Product && in_array($productData->status_id, [ProductStatus::STATUS_ARCHIVED, ProductStatus::STATUS_PENDING_APPROVAL])) {
-                throw new Exception("This product will be available after some time, Please choose another product!");
+                throw new Exception(getValidationErrorMsg('product_not_available_choose_other_exception', Yii::$app->language));
             }
 
             $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
@@ -207,7 +206,7 @@ class CartItemController extends ActiveController
     {
         $model = CartItem::findOne($id);
         if (!$model instanceof CartItem) {
-            throw new NotFoundHttpException('Cart item doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('cart_item_not_exist', Yii::$app->language));
         }
         $postData = Yii::$app->request->post();
         $cartIteam['CartItem'] = $postData;
@@ -239,7 +238,7 @@ class CartItemController extends ActiveController
         $post = Yii::$app->request->post();
 
         if (empty($post) || empty($post['product_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "product_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
 
         $productIds = explode(",", $post['product_id']);
@@ -282,7 +281,7 @@ class CartItemController extends ActiveController
     {
         $post = Yii::$app->request->post();
         if (empty($post) || empty($post['product_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "product_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
 
         $user_id = Yii::$app->user->identity->id;
@@ -335,7 +334,7 @@ class CartItemController extends ActiveController
             }
         }
         if ($productSold > 0) {
-            throw new HttpException(403, $productSold . ' product(s) are out of stock from you have selected product.');
+            throw new HttpException(403, $productSold . ' ' . getValidationErrorMsg('product_out_of_stock_from_selected_products_exception', Yii::$app->language));
         }
 
         $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
@@ -543,7 +542,7 @@ class CartItemController extends ActiveController
                 return $modelOrderPayment;
             }
         } else {
-            throw new NotFoundHttpException('Cart items doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('cart_item_not_exist', Yii::$app->language));
         }
         return $modelOrder;
     }
@@ -769,7 +768,7 @@ class CartItemController extends ActiveController
     {
         $post = Yii::$app->request->post();
         if (empty($post) || empty($post['product_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "product_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
 
         $productIds = explode(",", $post['product_id']);
@@ -784,7 +783,7 @@ class CartItemController extends ActiveController
             }
         }
         if ($productSold > 0) {
-            throw new HttpException(403, $productSold . ' product(s) are out of stock from you have selected product.');
+            throw new HttpException(403, $productSold . ' ' . getValidationErrorMsg('product_out_of_stock_from_selected_products_exception', Yii::$app->language));
         }
 
         $user_id = Yii::$app->user->identity->id;
@@ -806,11 +805,11 @@ class CartItemController extends ActiveController
                     }
                 }
             } else {
-                throw new HttpException(404, "Data not found!");
+                throw new HttpException(404, getValidationErrorMsg('data_not_found_exception', Yii::$app->language));
             }
 
             if ($readyToCheckout != 1 && $readyToCheckout == 0) {
-                throw new HttpException(403, $notReadyToCheckoutProducts . " are sold!");
+                throw new HttpException(403, $notReadyToCheckoutProducts . getValidationErrorMsg('product_sold_exception', Yii::$app->language));
             }
         }
 
@@ -825,5 +824,5 @@ class CartItemController extends ActiveController
         }
         return $modelCartItems;
     }
-    
+
 }

@@ -67,8 +67,16 @@ class ChatHistory extends \yii\db\ActiveRecord
     {
         return [
 
-            [['product_id', 'from_user_id', 'to_user_id', 'message_type'], 'required'],
-            [['product_id', 'from_user_id', 'to_user_id', 'is_read'], 'integer'],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', Yii::$app->language)],
+            [['from_user_id'], 'required', 'message' => getValidationErrorMsg('from_user_id_required', Yii::$app->language)],
+            [['to_user_id'], 'required', 'message' => getValidationErrorMsg('to_user_id_required', Yii::$app->language)],
+            [['message_type'], 'required', 'message' => getValidationErrorMsg('message_type_required', Yii::$app->language)],
+
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', Yii::$app->language)],
+            [['from_user_id'], 'integer', 'message' => getValidationErrorMsg('from_user_id_integer_validation', Yii::$app->language)],
+            [['to_user_id'], 'integer', 'message' => getValidationErrorMsg('to_user_id_integer_validation', Yii::$app->language)],
+            [['is_read'], 'integer'],
+
             [['message', 'message_type', 'chat_type'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['file'], 'file', 'maxFiles' => 1], // 'extensions' => 'png, jpg, jpeg, gif, bmp, raw, psd, webp'
@@ -77,7 +85,7 @@ class ChatHistory extends \yii\db\ActiveRecord
             [['to_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['to_user_id' => 'id']],
 
 
-            [['message'], 'required', 'when' => function ($model) {
+            [['message'], 'required', 'message' => getValidationErrorMsg('message_required', Yii::$app->language), 'when' => function ($model) {
                 return $model->message_type == self::MESSAGE_TYPE_TEXT;
             },
                 'whenClient' => "function (attribute, value) {
@@ -86,7 +94,7 @@ class ChatHistory extends \yii\db\ActiveRecord
                                     }
                                 }",],
 
-            [['file'], 'required', 'when' => function ($model) {
+            [['file'], 'required', 'message' => getValidationErrorMsg('file_required', Yii::$app->language), 'when' => function ($model) {
                 return $model->message_type == self::MESSAGE_TYPE_IMAGE;
             },
                 'whenClient' => "function (attribute, value) {

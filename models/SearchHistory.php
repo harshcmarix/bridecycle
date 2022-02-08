@@ -26,7 +26,8 @@ class SearchHistory extends ActiveRecord
     {
         return 'search_histories';
     }
-     /**
+
+    /**
      * @return array[]
      */
     public function behaviors()
@@ -45,8 +46,9 @@ class SearchHistory extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'search_text'], 'required'],
-            [['user_id'], 'integer'],
+            [['user_id'], 'required', 'message' => getValidationErrorMsg('user_id_required', \Yii::$app->language)],
+            [['search_text'], 'required', 'message' => getValidationErrorMsg('search_text_required', \Yii::$app->language)],
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', \Yii::$app->language)],
             [['created_at', 'updated_at'], 'safe'],
             [['search_text'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
@@ -66,7 +68,8 @@ class SearchHistory extends ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
-     /**
+
+    /**
      * @return array|false
      */
     public function extraFields()
@@ -76,7 +79,7 @@ class SearchHistory extends ActiveRecord
         ];
     }
 
-   /**
+    /**
      * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery

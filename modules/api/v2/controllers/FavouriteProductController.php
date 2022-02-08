@@ -2,18 +2,18 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\FavouriteProduct;
 use app\models\Notification;
 use app\modules\api\v2\models\User;
 use Yii;
-use app\models\FavouriteProduct;
-use yii\web\BadRequestHttpException;
-use yii\web\NotFoundHttpException;
-use yii\rest\ActiveController;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
+use yii\rest\ActiveController;
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * FavouriteProductController implements the CRUD actions for FavouriteProduct model.
@@ -136,7 +136,7 @@ class FavouriteProductController extends ActiveController
 
         $modelFavourite = FavouriteProduct::find()->where(['product_id' => $favouriteProduct['FavouriteProduct']['product_id'], 'user_id' => Yii::$app->user->identity->id])->one();
         if (!empty($modelFavourite)) {
-            throw new BadRequestHttpException('This product has been already favourited!');
+            throw new BadRequestHttpException(getValidationErrorMsg('product_already_favourited', Yii::$app->language));
         }
         if ($model->load($favouriteProduct) && $model->validate()) {
 
@@ -205,7 +205,7 @@ class FavouriteProductController extends ActiveController
         $model = FavouriteProduct::find()->where(['id' => $id])->one();
 
         if (!$model instanceof FavouriteProduct) {
-            throw new NotFoundHttpException('Favourite Product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('favourite_product_not_exist', Yii::$app->language));
         }
         $model->delete();
     }

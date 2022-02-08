@@ -2,9 +2,9 @@
 
 namespace app\models;
 
+use app\modules\api\v2\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use app\modules\api\v2\models\User;
 
 /**
  * This is the model class for table "make_offer".
@@ -65,9 +65,19 @@ class MakeOffer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'sender_id', 'receiver_id', 'status', 'offer_amount'], 'required'],
-            [['product_id', 'sender_id', 'receiver_id', 'status'], 'integer'],
-            [['offer_amount'], 'number'],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', Yii::$app->language)],
+            [['sender_id'], 'required', 'message' => getValidationErrorMsg('sender_id_required', Yii::$app->language)],
+            [['receiver_id'], 'required', 'message' => getValidationErrorMsg('receiver_id_required', Yii::$app->language)],
+            [['status'], 'required', 'message' => getValidationErrorMsg('status_required', Yii::$app->language)],
+            [['offer_amount'], 'required', 'message' => getValidationErrorMsg('offer_amount_required', Yii::$app->language)],
+
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', Yii::$app->language)],
+            [['sender_id'], 'integer', 'message' => getValidationErrorMsg('sender_id_integer_validation', Yii::$app->language)],
+            [['receiver_id'], 'integer', 'message' => getValidationErrorMsg('receiver_id_integer_validation', Yii::$app->language)],
+            [['status'], 'integer', 'message' => getValidationErrorMsg('status_id_integer_validation', Yii::$app->language)],
+
+            [['offer_amount'], 'number', 'message' => getValidationErrorMsg('offer_amount_number_validation', Yii::$app->language)],
+
             [['offered_count', 'created_at', 'updated_at'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['sender_id' => 'id']],

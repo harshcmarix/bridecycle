@@ -134,7 +134,7 @@ class UserAddressController extends ActiveController
     {
         $model = UserAddress::findOne($id);
         if (!$model instanceof UserAddress) {
-            throw new NotFoundHttpException('Address doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_address_not_exist', Yii::$app->language));
         }
         $addressData = \Yii::$app->request->post();
         $address['UserAddress'] = $addressData;
@@ -176,9 +176,10 @@ class UserAddressController extends ActiveController
      */
     public function actionview($id)
     {
-        $model = UserAddress::findOne($id);
+        $model = UserAddress::find()->where(['id' => $id])->one();
+
         if (!$model instanceof UserAddress) {
-            throw new NotFoundHttpException('Address doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_address_not_exist', Yii::$app->language));
         }
         $model->is_primary_address = (string)$model->is_primary_address;
 
@@ -195,16 +196,16 @@ class UserAddressController extends ActiveController
         $postData = Yii::$app->request->post();
 
         if (empty($postData) || empty($postData['is_profile_address'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "is_profile_address"');
+            throw new BadRequestHttpException(getValidationErrorMsg('is_profile_address_required', Yii::$app->language));
         }
 
         if (empty($postData) || empty($postData['user_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "user_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('user_id_required', Yii::$app->language));
         }
 
         $profileAddress = UserAddress::find()->where(['user_id' => $postData['user_id'], 'is_primary_address' => UserAddress::IS_ADDRESS_PRIMARY_YES])->one();
         if (!$profileAddress instanceof UserAddress) {
-            throw new NotFoundHttpException('Primary address doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_primary_address_not_exist', Yii::$app->language));
         }
         $profileAddress->is_primary_address = (string)$profileAddress->is_primary_address;
         return $profileAddress;

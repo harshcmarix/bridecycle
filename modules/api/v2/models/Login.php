@@ -28,7 +28,8 @@ class Login extends Model
     public function rules()
     {
         return [
-            [['email', 'password'], 'required', 'on' => self::SCENARIO_LOGIN_FROM_APP],
+            [['email'], 'required', 'on' => self::SCENARIO_LOGIN_FROM_APP, 'message' => getValidationErrorMsg('email_required', Yii::$app->language)],
+            [['password'], 'required', 'on' => self::SCENARIO_LOGIN_FROM_APP, 'message' => getValidationErrorMsg('password_required', Yii::$app->language)],
             [['access_token_expired_at', 'token_type'], 'safe'],
             [['access_token'], 'string', 'max' => 255],
             // password is validated by validatePassword()
@@ -62,7 +63,9 @@ class Login extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect email or password.');
+
+                $this->addError($attribute, getValidationErrorMsg('password_valid', Yii::$app->language));
+
             }
         }
     }

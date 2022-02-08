@@ -70,15 +70,28 @@ class UserBankDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'payment_type'], 'required'],
-            [['user_id', 'payment_type'], 'required', 'on' => self::SCENARIO_CREATE],
-            [['user_id', 'payment_type'], 'required', 'on' => self::SCENARIO_UPDATE],
-            [['user_id'], 'integer'],
+            [['user_id'], 'required', 'message' => getValidationErrorMsg('user_id_required', Yii::$app->language)],
+            [['payment_type'], 'required', 'message' => getValidationErrorMsg('payment_type_required', Yii::$app->language)],
+            [['user_id'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('user_id_required', Yii::$app->language)],
+            [['payment_type'], 'required', 'on' => self::SCENARIO_UPDATE, 'message' => getValidationErrorMsg('payment_type_required', Yii::$app->language)],
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', Yii::$app->language)],
+
             [['created_at', 'updated_at', 'post_code'], 'safe'],
+
             [['debit_card', 'first_name', 'last_name', 'country', 'billing_address_line_1', 'billing_address_line_2', 'city', 'paypal_email'], 'string', 'max' => 255],
             [['iban'], 'string', 'max' => 100],
-            [['debit_card', 'first_name', 'last_name', 'country', 'iban', 'billing_address_line_1', 'billing_address_line_2', 'city', 'post_code'], 'required', 'on' => [self::PAYMENT_TYPE_BANK]],
-            [['paypal_email'], 'required', 'on' => [self::PAYMENT_TYPE_PAYPAL]],
+
+            [['debit_card'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('debit_card_required', Yii::$app->language)],
+            [['first_name'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('first_name_required', Yii::$app->language)],
+            [['last_name'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('last_name_required', Yii::$app->language)],
+            [['country'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('country_required', Yii::$app->language)],
+            [['iban'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('iban_required', Yii::$app->language)],
+            [['billing_address_line_1'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('billing_address_line_1_required', Yii::$app->language)],
+            [['billing_address_line_2'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('billing_address_line_2_required', Yii::$app->language)],
+            [['city'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('city_required', Yii::$app->language)],
+            [['post_code'], 'required', 'on' => [self::PAYMENT_TYPE_BANK], 'message' => getValidationErrorMsg('post_code_required', Yii::$app->language)],
+
+            [['paypal_email'], 'required', 'on' => [self::PAYMENT_TYPE_PAYPAL], 'message' => getValidationErrorMsg('paypal_email_required', Yii::$app->language)],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']]
         ];
     }

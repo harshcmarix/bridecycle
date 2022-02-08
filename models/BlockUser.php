@@ -47,8 +47,12 @@ class BlockUser extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'seller_id'], 'required'],
-            [['user_id', 'seller_id'], 'integer'],
+            [['user_id'], 'required', 'message' => getValidationErrorMsg('user_id_required', Yii::$app->language)],
+            [['seller_id'], 'required', 'message' => getValidationErrorMsg('seller_id_required', Yii::$app->language)],
+
+            [['user_id'], 'integer', 'message' => getValidationErrorMsg('user_id_integer_validation', Yii::$app->language)],
+            [['seller_id'], 'integer', 'message' => getValidationErrorMsg('seller_id_integer_validation', Yii::$app->language)],
+
             [['created_at', 'updated_at'], 'safe'],
             [['seller_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['seller_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],

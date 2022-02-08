@@ -2,20 +2,20 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\MakeOffer;
 use app\models\Notification;
 use app\models\Product;
 use app\modules\api\v2\models\User;
 use Yii;
-use app\models\MakeOffer;
-use yii\web\BadRequestHttpException;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
+use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * MakeOfferController implements the CRUD actions for MakeOffer model.
@@ -149,12 +149,12 @@ class MakeOfferController extends ActiveController
         $post = Yii::$app->request->post();
         $postData['MakeOffer'] = Yii::$app->request->post();
         if (empty($post) || empty($post['product_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "product_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
         $modelProduct = Product::findOne($postData['MakeOffer']['product_id']);
 
         if (!$modelProduct instanceof Product) {
-            throw new NotFoundHttpException('Requested product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
 
         $postData['MakeOffer']['sender_id'] = Yii::$app->user->identity->id;
@@ -170,7 +170,7 @@ class MakeOfferController extends ActiveController
         }
 
         if ($createdOffers > 0 && $createdOffers >= MakeOffer::USER_ALLOWED_OFFER) {
-            throw new httpException(403, "Sorry, You have exceeded the maximum limit of making an offer for this product!");
+            throw new httpException(403, getValidationErrorMsg('maximum_offer_limit_exceeded', Yii::$app->language));
         }
 
         $createdOffersData = MakeOffer::find()
@@ -180,7 +180,7 @@ class MakeOfferController extends ActiveController
         if (!empty($createdOffersData) && !empty($createdOffersData[count($createdOffersData) - 1])) {
             $data = $createdOffersData[count($createdOffersData) - 1];
             if (!empty($data) && $data instanceof MakeOffer && $data->status == MakeOffer::STATUS_PENDING) {
-                throw new httpException(403, "Sorry, You have already made an offer for this product, the seller will take action on it first, then you will be performed this action!");
+                throw new httpException(403, getValidationErrorMsg('offer_already_made', Yii::$app->language));
             }
         }
 
@@ -271,7 +271,7 @@ class MakeOfferController extends ActiveController
         $model = MakeOffer::findOne($id);
 
         if (!$model instanceof MakeOffer || ($model->receiver_id != Yii::$app->user->identity->id)) {
-            throw new NotFoundHttpException('Offer doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('offer_not_exist', Yii::$app->language));
         }
 
         $postData = Yii::$app->request->post();
@@ -280,7 +280,7 @@ class MakeOfferController extends ActiveController
         $modelProduct = Product::findOne($model->product_id);
 
         if (!$modelProduct instanceof Product) {
-            throw new NotFoundHttpException('Product doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
 
         if ($model->load($offerData) && $model->validate()) {
@@ -400,7 +400,7 @@ class MakeOfferController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }

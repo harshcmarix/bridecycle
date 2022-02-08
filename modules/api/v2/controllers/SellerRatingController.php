@@ -3,11 +3,11 @@
 namespace app\modules\api\v2\controllers;
 
 use app\models\Notification;
+use app\models\SellerRating;
 use app\modules\api\v2\models\User;
 use Yii;
-use app\models\SellerRating;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
@@ -121,11 +121,11 @@ class SellerRatingController extends ActiveController
 
         $modelSeller = User::findOne($id);
         if (!$modelSeller instanceof User) {
-            throw new NotFoundHttpException('Seller doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('seller_not_exist', Yii::$app->language));
         }
 
         if (empty($model)) {
-            throw new NotFoundHttpException('Seller rating doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('seller_rating_not_exist', Yii::$app->language));
         }
 
         $totalRatings = count($model);
@@ -176,7 +176,7 @@ class SellerRatingController extends ActiveController
         $postData = Yii::$app->request->post();
 
         if (empty($postData) || empty($postData['seller_id'])) {
-            throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter "seller_id"');
+            throw new BadRequestHttpException(getValidationErrorMsg('seller_id_required', Yii::$app->language));
         }
 
         $sellerRating['SellerRating'] = $postData;
@@ -184,7 +184,7 @@ class SellerRatingController extends ActiveController
 
         $alreadyExist = SellerRating::find()->where(['seller_id' => $sellerRating['SellerRating']['seller_id'], 'user_id' => $sellerRating['SellerRating']['user_id']])->all();
         if (!empty($alreadyExist)) {
-            throw new ForbiddenHttpException('You have already reviewed this seller');
+            throw new ForbiddenHttpException(getValidationErrorMsg('seller_already_reviewed', Yii::$app->language));
         }
         if ($model->load($sellerRating) && $model->validate()) {
             $model->save();
@@ -301,7 +301,7 @@ class SellerRatingController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }

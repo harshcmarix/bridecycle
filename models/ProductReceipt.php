@@ -44,10 +44,13 @@ class ProductReceipt extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'file'], 'required'],
-            [['product_id'], 'integer'],
+            [['product_id'], 'required', 'message' => getValidationErrorMsg('product_id_required', \Yii::$app->language)],
+            [['file'], 'required', 'message' => getValidationErrorMsg('product_receipt_required', \Yii::$app->language)],
+
+            [['product_id'], 'integer', 'message' => getValidationErrorMsg('product_id_integer_validation', \Yii::$app->language)],
             [['created_at', 'updated_at'], 'safe'],
-            [['file'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png'],
+            //[['file'], 'file', 'maxFiles' => 5, 'extensions' => 'jpg, png'],
+            [['file'], 'file', 'maxFiles' => 5, 'message' => getValidationErrorMsg('product_receipt_max_file_upload_validation', \Yii::$app->language)],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
     }

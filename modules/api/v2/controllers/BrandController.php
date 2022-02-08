@@ -2,17 +2,17 @@
 
 namespace app\modules\api\v2\controllers;
 
-use Yii;
 use app\models\Brand;
-use yii\imagine\Image;
-use yii\web\NotFoundHttpException;
-use yii\web\UploadedFile;
-use yii\filters\auth\HttpBasicAuth;
+use Yii;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\Cors;
+use yii\imagine\Image;
 use yii\rest\ActiveController;
+use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 
 /**
@@ -195,7 +195,7 @@ class BrandController extends ActiveController
     {
         $model = Brand::findOne($id);
         if (!$model instanceof Brand) {
-            throw new NotFoundHttpException('Brand doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('brand_not_exist', Yii::$app->language));
         }
         $postData = \Yii::$app->request->post();
 
@@ -222,12 +222,12 @@ class BrandController extends ActiveController
     {
         $model = Brand::findOne($id);
         if (!$model instanceof Brand) {
-            throw new NotFoundHttpException('Brand doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('brand_not_exist', Yii::$app->language));
         }
         $postData = \Yii::$app->request->post();
 
         $brandData['Brand'] = $postData;
-        $model->scenario = Brand::SCENARIO_CREATE_API;
+        $model->scenario = Brand::SCENARIO_CREATE;
         $oldFile = $model->image;
 
         $image = UploadedFile::getInstanceByName('image');
@@ -287,7 +287,7 @@ class BrandController extends ActiveController
     {
         $model = Brand::findOne($id);
         if (!$model instanceof Brand) {
-            throw new NotFoundHttpException('Brand doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('brand_not_exist', Yii::$app->language));
         }
         $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
         $uploadThumbDirPath = Yii::getAlias('@brandImageThumbRelativePath');
@@ -316,7 +316,7 @@ class BrandController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }

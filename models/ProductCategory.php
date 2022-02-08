@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use yii\behaviors\TimestampBehavior;
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "product_categories".
@@ -71,13 +71,14 @@ class ProductCategory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name'], 'required', 'message' => getValidationErrorMsg('category_name_required', Yii::$app->language)],
             [['parent_category_id'], 'integer'],
             [['status', 'created_at', 'updated_at', 'sub_cat_name'], 'safe'],
-            [['name'], 'string', 'max' => 50],
-            [['name'], 'unique'],
-            [['image'], 'file', 'extensions' => 'png,jpg'],
-            [['image'], 'required', 'on' => self::SCENARIO_CREATE],
+
+            [['name'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('category_name_max_50_character_length', Yii::$app->language)],
+            [['name'], 'unique', 'message' => getValidationErrorMsg('category_name_unique_validation', Yii::$app->language)],
+            //[['image'], 'file', 'extensions' => 'png,jpg'],
+            [['image'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('category_image_required', Yii::$app->language)],
 
             [['image'], 'required', 'when' => function ($model) {
                 //return $model->is_image_empty == '1';
@@ -89,7 +90,7 @@ class ProductCategory extends \yii\db\ActiveRecord
                                 }",],
 
             [['parent_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['parent_category_id' => 'id']],
-            [['image'], 'file', 'extensions' => 'jpg, png'],
+            //[['image'], 'file', 'extensions' => 'jpg, png'],
         ];
     }
 

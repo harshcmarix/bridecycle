@@ -102,7 +102,7 @@ class FavouriteProductSearch extends FavouriteProduct
         $query->joinWith('product.user AS productUser');
         if (!empty($userId)) {
             $modelUser = User::findOne($userId);
-            $query->where(['user_id' => $userId]);
+            $query->where(['favourite_products.user_id' => $userId]);
             $query->andWhere(['NOT IN', 'productUser.id', $modelUser->blockUsersId]);
             $query->andWhere(['NOT IN', 'productUser.id', $modelUser->abuseUsersId]);
         }

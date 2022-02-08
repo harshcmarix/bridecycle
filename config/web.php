@@ -12,6 +12,15 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
     ],
+
+    //'languages' => ['en-EN', 'ru-RU'],
+
+    // set target language to be Russian
+//    'language' => 'de-DE',
+//
+    // set source language to be English
+//    'sourceLanguage' => 'en-US',
+
     'modules' => [
         'admin' => [
             'class' => 'app\modules\admin\Module',
@@ -81,9 +90,14 @@ $config = [
 
         'i18n' => [
             'translations' => [
-                'app' => [
+                'app*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
-                    'basePath' => '@app/messages',
+                    //'basePath' => '@app/messages',
+//                    //'sourceLanguage' => 'en-US',
+//                    'fileMap' => [
+//                        'app' => 'app.php',
+//                        'app/error' => 'error.php',
+//                    ],
                 ],
                 'kvgrid' => [
                     'class' => 'yii\i18n\PhpMessageSource',
@@ -118,24 +132,24 @@ $config = [
         // Logging
         'log' => [
             //'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                // writes to php-fpm output stream
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['info', 'trace', 'error', 'warning'],
-                    'categories' => ['notifyUserBasedOnsaveSearch'],
-                    'logVars' => [],
-                    'logFile' => '@runtime/logs/addproductnotification/' . date('d-m-Y') . 'addProductTonotifyUserBasedOnsaveSearch.log',
-                ],
-                // writes to php-fpm output stream
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['info', 'trace', 'error', 'warning'],
-                    'categories' => ['notifyUserBasedOnAndroidGooglePlaySubscription'],
-                    'logVars' => [],
-                    'logFile' => '@runtime/logs/androidgoogleplaysubscriptionfail/' . date('d-m-Y') . 'androidGooglePlaySubscriptionFailUser.log',
-                ],
-            ],
+//            'targets' => [
+//                // writes to php-fpm output stream
+//                [
+//                    'class' => 'yii\log\FileTarget',
+//                    'levels' => ['info', 'trace', 'error', 'warning'],
+//                    'categories' => ['notifyUserBasedOnsaveSearch'],
+//                    'logVars' => [],
+//                    //'logFile' => '@runtime/logs/addproductnotification/' . date('d-m-Y') . 'addProductTonotifyUserBasedOnsaveSearch.log',
+//                ],
+//                // writes to php-fpm output stream
+//                [
+//                    'class' => 'yii\log\FileTarget',
+//                    'levels' => ['info', 'trace', 'error', 'warning'],
+//                    'categories' => ['notifyUserBasedOnAndroidGooglePlaySubscription'],
+//                    'logVars' => [],
+//                    //'logFile' => '@runtime/logs/androidgoogleplaysubscriptionfail/' . date('d-m-Y') . 'androidGooglePlaySubscriptionFailUser.log',
+//                ],
+//            ],
         ],
         'db' => $db,
         'urlManager' => [

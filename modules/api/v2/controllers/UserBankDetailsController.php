@@ -147,7 +147,7 @@ class UserBankDetailsController extends ActiveController
     {
         $model = UserBankDetails::find()->where(['id' => $id])->one();
         if (!$model instanceof UserBankDetails || $model->user_id != Yii::$app->user->identity->id) {
-            throw new NotFoundHttpException('User bank detail doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_bank_detail_not_exist', Yii::$app->language));
         }
 
         $model->scenario = UserBankDetails::SCENARIO_UPDATE;
@@ -179,7 +179,7 @@ class UserBankDetailsController extends ActiveController
     {
         $model = UserBankDetails::find()->where(['id' => $id])->one();
         if (!$model instanceof UserBankDetails || $model->user_id != Yii::$app->user->identity->id) {
-            throw new NotFoundHttpException('User bank detail doesn\'t exist.');
+            throw new NotFoundHttpException(getValidationErrorMsg('user_bank_detail_not_exist', Yii::$app->language));
         }
 
         $model->delete();
@@ -198,7 +198,7 @@ class UserBankDetailsController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }
