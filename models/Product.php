@@ -740,7 +740,11 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductTracking()
     {
-        $modelProductTracking = ProductTracking::find()->where(['id' => $this->product_tracking_id])->orWhere(['parent_id' => $this->product_tracking_id])->orderBy(['id' => SORT_ASC])->all();
+
+        $modelProductTracking = [];
+        if (!empty($this->product_tracking_id)) {
+            $modelProductTracking = ProductTracking::find()->where(['id' => $this->product_tracking_id])->orWhere(['parent_id' => $this->product_tracking_id])->orderBy(['id' => SORT_ASC])->all();
+        }
         return $modelProductTracking;
     }
 

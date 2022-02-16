@@ -22,14 +22,14 @@ class Module extends BaseModule
 
         parent::init();
 
-        if (!empty(\Yii::$app->request->url) && !in_array(basename(\Yii::$app->request->url), ['login', 'forgot-password', 'verify-reset-password', 'reset-password'])) {
-            if (!isset(\Yii::$app->request->headers['selected_language']) || empty(\Yii::$app->request->headers['selected_language'])) {
-                //throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter in headers "selected_language"');
-                throw new \yii\base\Exception('Invalid parameter passed. Request must required parameter in headers "selected_language"');
-            } else {
-                \Yii::$app->language = \Yii::$app->request->headers['selected_language'];
-            }
-        }
+//        if (!empty(\Yii::$app->request->url) && !in_array(basename(\Yii::$app->request->url), ['login', 'forgot-password', 'verify-reset-password', 'reset-password'])) {
+//            if (!isset(\Yii::$app->request->headers['selected_language']) || empty(\Yii::$app->request->headers['selected_language'])) {
+//                //throw new BadRequestHttpException('Invalid parameter passed. Request must required parameter in headers "selected_language"');
+//                throw new \yii\base\Exception('Invalid parameter passed. Request must required parameter in headers "selected_language"');
+//            } else {
+//                \Yii::$app->language = \Yii::$app->request->headers['selected_language'];
+//            }
+//        }
 
         // Setup module version automatically based on the api request
         $absoluteUrl = explode('/', \Yii::$app->request->absoluteUrl);
