@@ -1005,6 +1005,41 @@ class UserController extends ActiveController
                 $model->profile_picture = $profile_picture;
             }
         }
+
+        $model->is_new_message_notification_on = (int)$model->is_new_message_notification_on;
+        $model->is_offer_update_notification_on = (int)$model->is_offer_update_notification_on;
+        $model->is_offer_on_favourite_notification_on = (int)$model->is_offer_on_favourite_notification_on;
+        $model->is_saved_searches_notification_on = (int)$model->is_saved_searches_notification_on;
+        $model->is_order_placed_notification_on = (int)$model->is_order_placed_notification_on;
+        $model->is_payment_done_notification_on = (int)$model->is_payment_done_notification_on;
+        $model->is_order_delivered_notification_on = (int)$model->is_order_delivered_notification_on;
+        $model->is_click_and_try_notification_on = (int)$model->is_click_and_try_notification_on;
+        $model->is_new_message_email_notification_on = (int)$model->is_new_message_email_notification_on;
+        $model->is_offer_update_email_notification_on = (int)$model->is_offer_update_email_notification_on;
+        $model->is_offer_on_favourite_email_notification_on = (int)$model->is_offer_on_favourite_email_notification_on;
+        $model->is_saved_searches_email_notification_on = (int)$model->is_saved_searches_email_notification_on;
+        $model->is_order_placed_email_notification_on = (int)$model->is_order_placed_email_notification_on;
+        $model->is_payment_done_email_notification_on = (int)$model->is_payment_done_email_notification_on;
+        $model->is_order_delivered_email_notification_on = (int)$model->is_order_delivered_email_notification_on;
+        $model->is_click_and_try_email_notification_on = (int)$model->is_click_and_try_email_notification_on;
+
+//        is_new_message_notification_on
+//        is_offer_update_notification_on
+//        is_offer_on_favourite_notification_on
+//        is_saved_searches_notification_on
+//        is_order_placed_notification_on
+//        is_payment_done_notification_on
+//        is_order_delivered_notification_on
+//        is_click_and_try_notification_on
+//        is_new_message_email_notification_on
+//        is_offer_update_email_notification_on
+//        is_offer_on_favourite_email_notification_on
+//        is_saved_searches_email_notification_on
+//        is_order_placed_email_notification_on
+//        is_payment_done_email_notification_on
+//        is_order_delivered_email_notification_on
+//        is_click_and_try_email_notification_on
+
         return $model;
     }
 
