@@ -373,6 +373,8 @@ class UserController extends ActiveController
 
             if (empty($model->password) && !empty($oldPass)) {
                 $model->password_hash = $oldPass;
+            } elseif (!empty($model->password) && !empty($data['User']) && !empty($data['User']['password'])) {
+                $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
             }
 
             if (!empty($data['User']['email']) && $data['User']['email'] != $model->email) {
