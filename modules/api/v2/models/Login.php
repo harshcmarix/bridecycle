@@ -61,7 +61,9 @@ class Login extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (empty($user) || !$user->validatePassword($this->password)) {
+
+            //p(!Yii::$app->security->validatePassword($this->password, $user->password_hash));
+            if (!$user || !$user->validatePassword($this->password)) {
 
                 $this->addError($attribute, getValidationErrorMsg('password_valid', Yii::$app->language));
 

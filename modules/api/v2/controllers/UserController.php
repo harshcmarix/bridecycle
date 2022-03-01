@@ -362,8 +362,11 @@ class UserController extends ActiveController
         $data['User'] = $postData;
         $model->scenario = User::SCENARIO_USER_UPDATE;
         if ($model->load($data) && $model->validate()) {
-            //$model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
-            $model->password_hash = $oldPass;
+
+            if (!empty($data['User']['password']) && $data['User']['password'] != $model->password) {
+                //$model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+                $model->password_hash = $oldPass;
+            }
 
             if (!empty($data['User']['email']) && $data['User']['email'] != $model->email) {
                 $model->email = $data['User']['email'];
@@ -377,7 +380,7 @@ class UserController extends ActiveController
                 $model->timezone_id = $data['User']['timezone_id'];
             }
 
-            if ($model->save()) {
+            if ($model->save(false)) {
 
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
 
