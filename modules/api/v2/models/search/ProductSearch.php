@@ -139,6 +139,10 @@ class ProductSearch extends Product
             $query->joinWith('category AS category');
             $query->joinWith('subCategory AS subCategory');
             $query->joinWith('brand AS brand');
+
+//            $query->innerJoinWith('category AS category');
+//            $query->innerJoinWith('subCategory AS subCategory');
+//            $query->innerJoinWith('brand AS brand');
         }
 
         $fields = $this->hiddenFields;
@@ -311,7 +315,7 @@ class ProductSearch extends Product
         /** Start for search screen */
 
         if (!empty($requestParams['is_from_search_screen']) && $requestParams['is_from_search_screen'] == 1 && !empty($requestParams['search_keyword'])) {
-            $query->orFilterWhere([
+            $query->FilterWhere([
                 'or',
                 ['LIKE', 'products.name', $requestParams['search_keyword']],
                 ['LIKE', 'category.name', $requestParams['search_keyword'] . "%", false],

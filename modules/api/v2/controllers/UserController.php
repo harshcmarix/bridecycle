@@ -205,7 +205,8 @@ class UserController extends ActiveController
                 $model->profile_picture = $fileName;
             }
             $model->user_type = (string)User::USER_TYPE_NORMAL;
-            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+            //$model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+            $model->password_hash = $model->setPassword($model->password);
 
             if (empty($postData['is_login_from'])) {
                 $model->verification_code = $model->getVerificationCode();

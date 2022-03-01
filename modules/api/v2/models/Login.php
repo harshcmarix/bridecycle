@@ -61,8 +61,7 @@ class Login extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-
-            if (!$user || !$user->validatePassword($this->password)) {
+            if (empty($user) || !$user->validatePassword($this->password)) {
 
                 $this->addError($attribute, getValidationErrorMsg('password_valid', Yii::$app->language));
 
@@ -78,6 +77,7 @@ class Login extends Model
     {
 
         if (!empty(Yii::$app->request->post('is_login_from'))) {
+
             $loginFrom = Yii::$app->request->post('is_login_from');
             if ($this->getUser($loginFrom)) {
 
@@ -113,6 +113,7 @@ class Login extends Model
 
         } else if ($this->validate()) {
             if ($this->getUser()) {
+
                 Yii::$app->request->post('notification_token');
                 Yii::$app->request->post('device_platform');
 
