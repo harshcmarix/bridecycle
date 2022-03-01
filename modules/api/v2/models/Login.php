@@ -89,7 +89,8 @@ class Login extends Model
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 } else {
                     $accessToken = $this->_user->access_token;
-                    $accessTokenExpiredAt = $this->_user->access_token_expired_at;
+                    //$accessTokenExpiredAt = $this->_user->access_token_expired_at;
+                    $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + (3600 * 24 * 365));
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 }
 
@@ -97,7 +98,7 @@ class Login extends Model
 //                $accessTokenExpiredAt = date('Y-m-d h:i:s', time() + Yii::$app->params['token_expire_time']);
 //                $this->_user->access_token_expired_at = $accessTokenExpiredAt;
 
-                $this->_user->save();
+                $this->_user->save(false);
                 Yii::$app->user->login($this->_user, 3600 * 24 * 365);
                 //Yii::$app->user->login($this->_user, 60 * 60 * 24 * 365);
 
@@ -131,7 +132,7 @@ class Login extends Model
                     $this->_user->access_token_expired_at = $accessTokenExpiredAt;
                 }
 
-                $this->_user->save();
+                $this->_user->save(false);
                 //Yii::$app->user->login($this->_user, time() + Yii::$app->params['token_expire_time']);
                 Yii::$app->user->login($this->_user, 3600 * 24 * 365);
 
