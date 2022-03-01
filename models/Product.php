@@ -774,6 +774,9 @@ class Product extends \yii\db\ActiveRecord
         return $models;
     }
 
+    /**
+     * @return float|int|null
+     */
     public function getReferPrice()
     {
 
@@ -785,7 +788,7 @@ class Product extends \yii\db\ActiveRecord
 
             if (!empty($offers)) {
                 foreach ($offers as $key => $offersRow) {
-                    if (!empty($offersRow) && $offersRow instanceof MakeOffer && $offersRow->status == MakeOffer::STATUS_ACCEPT) {
+                    if (!empty($offersRow) && $offersRow instanceof MakeOffer && $offersRow->sender_id == Yii::$app->user->identity->id && $offersRow->status == MakeOffer::STATUS_ACCEPT) {
                         $isOfferAcceptedCount++;
                     }
                 }
