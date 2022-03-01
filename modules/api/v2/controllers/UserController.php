@@ -357,11 +357,13 @@ class UserController extends ActiveController
         if (!$model instanceof User) {
             throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
+        $oldPass = $model->password_hash;
         $postData = \Yii::$app->request->post();
         $data['User'] = $postData;
         $model->scenario = User::SCENARIO_USER_UPDATE;
         if ($model->load($data) && $model->validate()) {
             //$model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+            $model->password_hash = $oldPass;
 
             if (!empty($data['User']['email']) && $data['User']['email'] != $model->email) {
                 $model->email = $data['User']['email'];
