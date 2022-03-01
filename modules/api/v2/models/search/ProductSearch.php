@@ -127,8 +127,6 @@ class ProductSearch extends Product
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
-        $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);
-
         $query->joinWith('user AS user');
         $query->where(['user.user_status' => User::USER_STATUS_ACTIVE]);
 
@@ -346,6 +344,8 @@ class ProductSearch extends Product
         if (!empty($requestParams['user_id']) && !empty($requestParams['is_from_sell_screen']) && $requestParams['is_from_sell_screen'] == 1) {
             $query->andWhere(['user_id' => $requestParams['user_id']]);
             $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
+        }else{
+            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK,ProductStatus::STATUS_SOLD]]);
         }
         /** End for search screen */
 
