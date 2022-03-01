@@ -127,6 +127,7 @@ class ProductSearch extends Product
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+        $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);
 
         $query->joinWith('user AS user');
         $query->where(['user.user_status' => User::USER_STATUS_ACTIVE]);
@@ -366,6 +367,8 @@ class ProductSearch extends Product
             } elseif (strtolower($requestParams['sort_by']) == 'plh') {
                 $query->orderBy(['products.price' => SORT_ASC, 'products.option_price' => SORT_ASC]);
             }
+        } else {
+            $query->orderBy(['products.created_at' => SORT_DESC]);
         }
         /* ########## Prepare Query With custom Filter End ######### */
 
