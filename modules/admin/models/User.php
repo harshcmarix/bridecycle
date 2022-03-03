@@ -68,6 +68,14 @@ class User extends ActiveRecord implements IdentityInterface
         self::IS_SHOP_OWNER_NO => 'No'
     ];
 
+    const IS_ACTIVE = '1';
+    const IS_INACTIVE = '0';
+
+    public $arrStatus = [
+        self::IS_ACTIVE => 'Active',
+        self::IS_INACTIVE => 'Inactive'
+    ];
+
     /**
      * Identify user type
      */

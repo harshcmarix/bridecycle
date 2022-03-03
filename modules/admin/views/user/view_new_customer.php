@@ -151,7 +151,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
             </div>
 
             <p>
-                <?= Html::a('Back', \yii\helpers\Url::to(['index-new-customer']), ['class' => 'btn btn-default']) ?>
+                <?= Html::a('Back', Yii::$app->request->referrer, ['class' => 'btn btn-default']); ?>
             </p>
 
         </div>

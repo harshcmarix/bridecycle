@@ -228,7 +228,7 @@ $this->params['breadcrumbs'][] = 'View Customer';
             <p>
                 <?php
                 if ($pageId == '' && empty(Yii::$app->request->get('f')) && $pageType != 'seller') {
-                    echo Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']);
+                    echo Html::a('Back', Yii::$app->request->referrer, ['class' => 'btn btn-default']);
                 } else {
                     if (!empty(Yii::$app->request->get('f')) && Yii::$app->request->get('f') == 'o' && !empty(Yii::$app->request->get('oId'))) {
                         echo Html::a('Back', \yii\helpers\Url::to(['order/view?id=' . Yii::$app->request->get('oId')]), ['class' => 'btn btn-default']);

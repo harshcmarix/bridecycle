@@ -126,6 +126,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => 'Is Newsletter',
             ],
             [
+                'attribute' => 'user_status',
+                'value' => function ($data) {
+                    return (isset($data->arrStatus[$data['user_status']])) ? $data->arrStatus[$data['user_status']] : '-';
+                },
+                'filter' => $searchModel->arrStatus,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filterWidgetOptions' => [
+                    'options' => ['prompt' => 'Select'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ],
+                'header' => '',
+            ],
+            [
                 'class' => 'kartik\grid\ActionColumn',
             ],
         ];
@@ -182,7 +197,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => false,
+            'responsive' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
             ],

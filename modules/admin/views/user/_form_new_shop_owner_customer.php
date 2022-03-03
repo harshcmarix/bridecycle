@@ -200,7 +200,8 @@ echo Dialog::widget(
             </div>
         </div>
         <div class="form-group ">
-            <?= Html::a('Back', \yii\helpers\Url::to(['index-new-shop-owner-customer']), ['class' => 'btn btn-default']) ?>
+<!--            --><?php //echo Html::a('Back', \yii\helpers\Url::to(['index-new-shop-owner-customer']), ['class' => 'btn btn-default']) ?>
+            <?= Html::a('Back', Yii::$app->request->referrer,['class' => 'btn btn-default']) ?>
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
         </div>
     </div>

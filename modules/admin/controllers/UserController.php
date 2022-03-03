@@ -514,7 +514,7 @@ class UserController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
             // Update user status
-            if (!empty($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
+            if (isset($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
                 $model->user_status = User::USER_STATUS_IN_ACTIVE;
             } else if (!empty(Yii::$app->request->get('f'))) {
                 $model->user_status = User::USER_STATUS_ACTIVE;
@@ -630,7 +630,7 @@ class UserController extends Controller
             }
             $model->updated_at = date('Y-m-d H:i:s');
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 if (!empty(Yii::$app->request->get('f')) && Yii::$app->request->get('f') == 'ap') {
                     \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Login user updated successfully.');
                     return $this->redirect(['site/index']);
@@ -692,7 +692,7 @@ class UserController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
             // Update user status
-            if (!empty($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
+            if (isset($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
                 $model->user_status = User::USER_STATUS_IN_ACTIVE;
             } else if (!empty(Yii::$app->request->get('f'))) {
                 $model->user_status = User::USER_STATUS_ACTIVE;
@@ -866,7 +866,7 @@ class UserController extends Controller
         if ($model->load(Yii::$app->request->post())) { // && $model->save()
 
             // Update user status
-            if (!empty($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
+            if (isset($postData['user_status']) && $postData['user_status'] == User::USER_STATUS_IN_ACTIVE) {
                 $model->user_status = User::USER_STATUS_IN_ACTIVE;
             } else if (!empty(Yii::$app->request->get('f'))) {
                 $model->user_status = User::USER_STATUS_ACTIVE;

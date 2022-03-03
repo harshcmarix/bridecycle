@@ -200,7 +200,7 @@ $this->params['breadcrumbs'][] = 'View Shop Owner';
             <p>
                 <?php
                 if ($pageId == '') {
-                    echo Html::a('Back', \yii\helpers\Url::to(['index-new-shop-owner-customer']), ['class' => 'btn btn-default']);
+                    echo Html::a('Back', Yii::$app->request->referrer, ['class' => 'btn btn-default']);
                 } else {
                     if ($pageType == '') {
                         echo Html::a('Back', \yii\helpers\Url::to(['product/view?id=' . $pageId]), ['class' => 'btn btn-default']);
