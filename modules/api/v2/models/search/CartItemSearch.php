@@ -47,7 +47,7 @@ class CartItemSearch extends CartItem
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = null)
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -99,12 +99,16 @@ class CartItemSearch extends CartItem
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+        if (!empty($userId)) {
+            $query->where(['user_id' => $userId]);
+        }
+
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id', 'product_id', 'user_id', 'color', 'size', 'price','shipping_cost','is_checkout', 'quantity'];
+            $select = ['id', 'product_id', 'user_id', 'color', 'size', 'price', 'shipping_cost', 'is_checkout', 'quantity'];
         }
 
         $query->select($select);
