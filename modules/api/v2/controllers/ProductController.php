@@ -340,10 +340,15 @@ class ProductController extends ActiveController
                 }
 
                 if (empty($modelAddress)) {
-                    $modelAddress = new UserAddress();
                     $addressData['UserAddress'] = $postData;
-                    $modelAddress->user_id = Yii::$app->user->identity->id;
 
+                    $addressModel = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['street' => $addressData['UserAddress']['street'], 'city' => $addressData['UserAddress']['city'], 'state' => $addressData['UserAddress']['state'], 'country' => $addressData['UserAddress']['country'], 'zip_code' => $addressData['UserAddress']['zip_code']])->one();
+                    if (empty($addressModel)) {
+                        $modelAddress = new UserAddress();
+                    } else {
+                        $modelAddress = UserAddress::find()->where(['id' => $addressModel->id])->one();
+                    }
+                    $modelAddress->user_id = Yii::$app->user->identity->id;
                     $modelAddress->type = UserAddress::TYPE_SHOP;
                     if ($modelAddress->load($addressData) && $modelAddress->validate()) {
                         $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->zip_code;
@@ -695,7 +700,7 @@ class ProductController extends ActiveController
         $model = ProductReceipt::findOne($id);
 
         if (empty($model) && !$model instanceof ProductReceipt) {
-            throw new NotFoundHttpException(getValidationErrorMsg('product_receipt_not_exist',Yii::$app->language));
+            throw new NotFoundHttpException(getValidationErrorMsg('product_receipt_not_exist', Yii::$app->language));
         }
 
         if (!empty($model->file) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $model->file)) {
