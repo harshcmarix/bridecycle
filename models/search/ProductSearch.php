@@ -111,12 +111,12 @@ class ProductSearch extends Product
             ->andFilterWhere(['like', 'is_top_selling', $this->is_top_selling])
             ->andFilterWhere(['like', 'is_top_trending', $this->is_top_trending])
             ->andFilterWhere(['like', 'gender', $this->gender])
-            ->andFilterWhere(['like', 'price', $this->price . "%", false])
-            ->andFilterWhere(['like', 'option_price', $this->option_price . "%", false])
-            ->andFilterWhere(['like', 'available_quantity', $this->available_quantity . "%", false])
+            ->andFilterWhere(['like', 'price', $this->price])
+            ->andFilterWhere(['like', 'option_price', $this->option_price])
+            ->andFilterWhere(['like', 'available_quantity', $this->available_quantity])
             ->andFilterWhere(['like', 'is_cleaned', $this->is_cleaned]);
 
         return $dataProvider;
     }
-    
+
 }
