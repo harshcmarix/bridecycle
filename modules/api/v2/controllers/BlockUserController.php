@@ -50,7 +50,7 @@ class BlockUserController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index','view', 'create', 'delete'],
+            'only' => ['index', 'view', 'create', 'delete'],
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -99,7 +99,7 @@ class BlockUserController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        return $model->search($requestParams);
+        return $model->search($requestParams, Yii::$app->user->identity->id);
     }
 
     /**
@@ -127,7 +127,13 @@ class BlockUserController extends ActiveController
         $postData['BlockUser']['user_id'] = Yii::$app->user->identity->id;
         $model = new BlockUser();
         if ($model->load($postData) && $model->validate()) {
-            $model->save();
+
+            $blockedUserModel = BlockUser::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['seller_id' => $model->seller_id])->one();
+            if (empty($blockedUserModel)) {
+                $model->save();
+            } else {
+                $model = $blockedUserModel;
+            }
         }
 
         return $model;
@@ -144,7 +150,7 @@ class BlockUserController extends ActiveController
     {
         $model = BlockUser::findOne($id);
         if (!$model instanceof BlockUser) {
-            throw new NotFoundHttpException(getValidationErrorMsg('block_user_not_exist',Yii::$app->language));
+            throw new NotFoundHttpException(getValidationErrorMsg('block_user_not_exist', Yii::$app->language));
         }
         $model->delete();
     }

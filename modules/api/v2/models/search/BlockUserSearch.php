@@ -46,7 +46,7 @@ class BlockUserSearch extends BlockUser
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams)
+    public function search($requestParams, $userId = "")
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -98,6 +98,9 @@ class BlockUserSearch extends BlockUser
 
         /* ########## Prepare Query With Default Filter Start ######### */
         $query = self::find();
+        if (!empty($userId)) {
+            $query->where(['user_id' => $userId]);
+        }
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];

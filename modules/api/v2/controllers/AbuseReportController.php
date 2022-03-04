@@ -128,7 +128,13 @@ class AbuseReportController extends ActiveController
         $postData['AbuseReport']['user_id'] = Yii::$app->user->identity->id;
 
         if ($model->load($postData) && $model->validate()) {
-            $model->save();
+            $abuseReportModel = AbuseReport::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['seller_id' => $model->seller_id])->andWhere(['content' => $model->content])->one();
+            if (empty($abuseReportModel)) {
+                $model->save();
+            } else {
+                $model = $abuseReportModel;
+            }
+
         }
 
         return $model;
@@ -164,5 +170,5 @@ class AbuseReportController extends ActiveController
         }
         throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
-    
+
 }

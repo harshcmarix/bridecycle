@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ]) ?>
             <p>
-                <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+                <?= Html::a('Back', Yii::$app->request->referrer, ['class' => 'btn btn-default']) ?>
             </p>
         </div>
     </div>
