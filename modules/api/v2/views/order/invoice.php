@@ -107,9 +107,14 @@
                 <td class="text-right col-08"
                     style="text-align: right;border: 0;border-collapse: collapse;text-align: right;padding: 7px 0px;"><?php echo number_format($model->quantity, 2); ?></td>
                 <td class="text-right col-20"
-                    style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 0px;"><?php echo str_replace(".", ',', number_format($product->price, 2)); ?></td>
+                    style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 0px;">
+
+                    <?php
+                    $productPrice = $product->referPrice;
+                    ?>
+                    <?php echo str_replace(".", ',', number_format($productPrice, 2)); ?></td>
                 <td class="text-right col-20"
-                    style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 15px 7px 0px;"><?php echo str_replace(".", ',', number_format($product->price * $model->quantity, 2)); ?></td>
+                    style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 15px 7px 0px;"><?php echo str_replace(".", ',', number_format($productPrice * $model->quantity, 2)); ?></td>
             </tr>
 
             <tr class="total-amount sub-total" style="border: 0;border-collapse: collapse;background: #f9f9f9;">
@@ -120,7 +125,7 @@
                 </td>
                 <td class="col-20 text-right"
                     style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;">
-                    <p style="padding-top: 20px;margin:0px;padding-right: 15px;"><?php echo str_replace(".", ',', number_format($product->price * $model->quantity, 2)); ?></p>
+                    <p style="padding-top: 20px;margin:0px;padding-right: 15px;"><?php echo str_replace(".", ',', number_format($productPrice * $model->quantity, 2)); ?></p>
                 </td>
             </tr>
 
