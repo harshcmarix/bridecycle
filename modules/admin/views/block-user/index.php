@@ -4,10 +4,10 @@ use yii\helpers\Html;
 use \app\modules\admin\widgets\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\admin\models\search\AbuseReportSearch */
+/* @var $searchModel app\modules\admin\models\search\BlockUserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Abuse Reports';
+$this->title = 'Blocked Users';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="box box-default">
@@ -16,13 +16,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="box-body admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
 
-
             <?= GridView::widget([
-                'id' => 'abuse-report-grid',
+                'id' => 'block-user-grid',
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
+
+                    //'id',
                     [
                         'attribute' => 'user_id',
                         'value' => function ($model) {
@@ -46,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             if (!empty($model) && !empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User && $model->seller->user_status == \app\modules\api\v2\models\User::USER_STATUS_ACTIVE) {
                                 $status = "Active";
                             }
-                            return (!empty($model) && !empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User && !empty($model->seller->first_name)) ? $model->seller->first_name . " " . $model->seller->last_name . " (" . $model->seller->email . ")(Status:" . $status . ")" : "seller";
+                            return (!empty($model) && !empty($model->seller) && $model->seller instanceof \app\modules\api\v2\models\User && !empty($model->seller->first_name)) ? $model->seller->first_name . " " . $model->seller->last_name . " (" . $model->seller->email . ")" : "seller";
                         },
                         'filter' => $sellers,
                         'filterType' => GridView::FILTER_SELECT2,
@@ -58,23 +59,25 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         'header' => 'Seller',
                     ],
+                    //'created_at',
+                    //'updated_at',
+
                     [
-                        'format' => 'html',
-                        'attribute' => 'content',
-                        'header' => '',
-                    ],
-                    [
-                        'attribute' => 'created_at',
-                        'filter' => false,
-                        'header' => '',
-                    ],
-                    [
-                        'class' => 'kartik\grid\ActionColumn',
-                        //'template' => "{view} {delete}",
-                        'template' => "{view}",
+                        'class' => 'yii\grid\ActionColumn',
+                        'template' => "{unblock}",
+                        'buttons' => [
+                            'unblock' => function ($url, $model, $key) {
+
+                                $url = \yii\helpers\Url::to(['block-user/delete', 'id' => $model->id]);
+
+                                return Html::a('<i class="fa fa-unlock"></i> Unblock', $url, [
+                                    'data-confirm' => "Are your sure want to unblock this user?", 'title' => 'Unblock', 'class' => 'btn btn-xs btn-info'
+                                ]);
+
+                            }
+                        ],
                     ],
                 ],
-
                 'pjax' => true,
                 // set your toolbar
                 'toolbar' => [
@@ -83,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             Html::button('<i class="fa fa-refresh"> Reset </i>', [
                                 'class' => 'btn btn-basic',
                                 'title' => 'Reset Filter',
-                                'onclick' => "window.location.href = '" . \yii\helpers\Url::to(['abuse-report/index']) . "';",
+                                'onclick' => "window.location.href = '" . \yii\helpers\Url::to(['block-user/index']) . "';",
                             ]),
                         'options' => ['class' => 'btn-group mr-2']
                     ],
@@ -100,15 +103,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'persistResize' => false,
                 'toggleDataOptions' => ['minCount' => 10],
-                'itemLabelSingle' => 'abuse report',
-                'itemLabelPlural' => 'Abuse Reports'
+                'itemLabelSingle' => 'blocked user',
+                'itemLabelPlural' => 'Blocked Users'
             ]); ?>
+
+
         </div>
     </div>
 </div>
 
 <script>
-
     function clearFilter(element) {
         element.previousSibling.value = '';
         var e = $.Event('keyup');
@@ -121,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         var input;
         var submit_form = false;
-        var filter_selector = '#abuse-report-grid-filters input';
+        var filter_selector = '#block-user-grid-filters input';
         var isInput = true;
 
         $('select').on('change', function () {
@@ -132,13 +136,13 @@ $this->params['breadcrumbs'][] = $this->title;
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#abuse-report-grid", function (event) {
+        $("body").on('beforeFilter', "#block-user-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#abuse-report-grid", function (event) {
+        $("body").on('afterFilter', "#block-user-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
@@ -152,7 +156,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
                     if (submit_form === false) {
                         submit_form = true;
-                        $("#abuse-report-grid").yiiGridView("applyFilter");
+                        $("#block-user-grid").yiiGridView("applyFilter");
                     }
                 }
             })
@@ -183,7 +187,7 @@ $this->params['breadcrumbs'][] = $this->title;
         //select box filter
         var select;
         var submit_form = false;
-        var select_filter_selector = '#abuse-report-grid-filters select';
+        var select_filter_selector = '#block-user-grid-filters select';
         var isSelect = true;
 
         $('select').on('change', function () {
@@ -192,12 +196,12 @@ $this->params['breadcrumbs'][] = $this->title;
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#abuse-report-grid", function (event) {
+        $("body").on('beforeFilter', "#block-user-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#abuse-report-grid", function (event) {
+        $("body").on('afterFilter', "#block-user-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -209,7 +213,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
-                    $("#abuse-report-grid").yiiGridView("applyFilter");
+                    $("#block-user-grid").yiiGridView("applyFilter");
                 }
             })
             .on('pjax:success', function () {

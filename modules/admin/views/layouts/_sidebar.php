@@ -69,6 +69,7 @@ use app\modules\admin\models\Module;
         ], 'options' => ['title' => 'Reports']];
 
         $menuList[] = ['label' => 'Abuse Reports', 'icon' => 'ban', 'url' => ['abuse-report/index'], 'visible' => true, 'active' => ($route === 'admin/abuse-report/index' || $route === 'admin/abuse-report/view'), 'options' => ['title' => 'Abuse Reports']];
+        $menuList[] = ['label' => 'Blocked Users', 'icon' => 'universal-access', 'url' => ['block-user/index'], 'visible' => true, 'active' => ($route === 'admin/block-user/index' || $route === 'admin/block-user/view'), 'options' => ['title' => 'Blocked Users']];
         $menuList[] = ['label' => 'Dress Type', 'icon' => 'female', 'url' => ['dress-type/index'], 'visible' => false, 'active' => ($route === 'admin/dress-type/index' || $route === 'admin/dress-type/view'), 'options' => ['title' => 'Dress Types']];
         $menuList[] = ['label' => 'Setting', 'icon' => 'cogs', 'url' => ['setting/index'], 'visible' => $visible, 'active' => ($route === 'admin/setting/index'), 'options' => ['title' => 'Settings']];
         $menuList[] = ['label' => 'Banner', 'icon' => 'image', 'url' => ['banner/index'], 'visible' => false, 'active' => ($route === 'admin/banner/index' || $route === 'admin/banner/create' || $route === 'admin/banner/update' || $route === 'admin/banner/view'), 'options' => ['title' => 'Banners']];
