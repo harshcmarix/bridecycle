@@ -345,7 +345,7 @@ class ProductSearch extends Product
             $query->andWhere(['user_id' => $requestParams['user_id']]);
             $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
         }else{
-            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK,ProductStatus::STATUS_SOLD]]);
+            $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);//,ProductStatus::STATUS_SOLD
         }
         /** End for search screen */
 

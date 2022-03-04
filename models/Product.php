@@ -198,6 +198,7 @@ class Product extends \yii\db\ActiveRecord
             [['height'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
             [['weight'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('weight_number_validation', Yii::$app->language)],
             [['width'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('width_number_validation', Yii::$app->language)],
+            [['brand_id'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('brand_id_required', Yii::$app->language)],
 
             [['price'], 'number', 'message' => getValidationErrorMsg('price_number_validation', Yii::$app->language)],
             [['height'], 'number', 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],

@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\models\Brand;
+use app\models\CartItem;
 use app\models\Color;
 use app\models\Notification;
 use app\models\ProductCategory;
@@ -1386,6 +1387,16 @@ class ProductController extends Controller
         $model = $this->findModel($id);
         $model->status_id = ProductStatus::STATUS_ARCHIVED;
         $model->save(false);
+
+        $modelCartItems = CartItem::find()->where(['product_id' => $id])->all();
+        if (!empty($modelCartItems)) {
+            foreach ($modelCartItems as $key => $modelCartItem) {
+                if (!empty($modelCartItem) && $modelCartItem instanceof CartItem) {
+                    $modelCartItem->delete();
+                }
+            }
+        }
+
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Product deleted successfully.');
         return $this->redirect(['index']);
     }
@@ -1402,6 +1413,16 @@ class ProductController extends Controller
         $model = $this->findModel($id);
         $model->status_id = ProductStatus::STATUS_ARCHIVED;
         $model->save(false);
+
+        $modelCartItems = CartItem::find()->where(['product_id' => $id])->all();
+        if (!empty($modelCartItems)) {
+            foreach ($modelCartItems as $key => $modelCartItem) {
+                if (!empty($modelCartItem) && $modelCartItem instanceof CartItem) {
+                    $modelCartItem->delete();
+                }
+            }
+        }
+
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'New product deleted successfully.');
         return $this->redirect(['new-product']);
     }
@@ -1553,7 +1574,6 @@ class ProductController extends Controller
      */
     public function actionDeleteMultiple()
     {
-
         $selection = (array)Yii::$app->request->post('ids');//typecasting
         $models = Product::find()->where(['IN', 'id', $selection])->all();
 
@@ -1562,6 +1582,15 @@ class ProductController extends Controller
                 if (!empty($model) && $model instanceof Product) {
                     $model->status_id = ProductStatus::STATUS_ARCHIVED;
                     $model->save(false);
+
+                    $modelCartItems = CartItem::find()->where(['product_id' => $model->id])->all();
+                    if (!empty($modelCartItems)) {
+                        foreach ($modelCartItems as $key => $modelCartItem) {
+                            if (!empty($modelCartItem) && $modelCartItem instanceof CartItem) {
+                                $modelCartItem->delete();
+                            }
+                        }
+                    }
                 }
             }
             \Yii::$app->session->setFlash(\kartik\growl\Growl::TYPE_SUCCESS, 'Products deleted successfully!');
