@@ -10,7 +10,8 @@ use yii\db\ActiveRecord;
  * This is the model class for table "brands".
  *
  * @property int $id
- * @property string $name
+ * @property string|null $name
+ * @property string|null $german_name
  * @property string|null $image
  * @property string $is_top_brand 1 => top brand
  * @property string $status
@@ -113,6 +114,7 @@ class Brand extends ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'german_name' => 'German Name',
             'image' => 'Image',
             'is_top_brand' => 'Is Top Brand',
             'created_at' => 'Created At',

@@ -37,6 +37,14 @@ echo Dialog::widget(
                 </div>
 
                 <div class="col col-md-6">
+                    <?= $form->field($model, 'german_name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col col-md-6">
                     <?= $form->field($model, 'image')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'brand-image'],
                         'pluginOptions' => [
@@ -70,7 +78,7 @@ echo Dialog::widget(
 
                         Modal::end();
                         $brandmodal = "brandmodal('" . $model->id . "');";
-                    ?>
+                        ?>
 
                         <div class="form-group image-class product-image-block">
                             <?= Html::img($image_path, ['class' => 'file-preview-image your_class', 'height' => '100px', 'width' => '100px', 'onclick' => $brandmodal]); ?>
@@ -79,9 +87,7 @@ echo Dialog::widget(
 
                     <?php } ?>
                 </div>
-            </div>
 
-            <div class="row">
                 <div class="col col-md-6">
                     <?php
 
@@ -117,10 +123,10 @@ echo Dialog::widget(
 <script>
 
     var image_empty = <?php echo Brand::IMAGE_EMPTY ?>;
-    $('.pjax-delete-link').on('click', function(e) {
+    $('.pjax-delete-link').on('click', function (e) {
         e.preventDefault();
         var deleteUrl = $(this).attr('delete-url');
-        var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function(result) {
+        var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
                 $('.image-class').hide();
                 $('#brand-is_brand_image_empty').val(image_empty);

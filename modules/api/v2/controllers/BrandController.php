@@ -173,12 +173,40 @@ class BrandController extends ActiveController
                 $model->image = $fileName;
             }
 
-            if ($model->save()) {
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                $model->german_name = $model->name;
+                $model->name = NULL;
+            }
+
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                $model->german_name = NULL;
+            }
+
+            if ($model->save(false)) {
                 $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 if (!empty($model->image) && file_exists(Yii::getAlias('@brandImageThumbRelativePath') . '/' . $model->image)) {
                     $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
                 }
                 $model->image = $brandImage;
+
+
+                $brandName = "";
+                if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                    if (!empty($model->name)) {
+                        $brandName = $model->name;
+                    } elseif (empty($model->name) && !empty($model->german_name)) {
+                        $brandName = $model->german_name;
+                    }
+                }
+
+                if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                    if (!empty($model->german_name)) {
+                        $brandName = $model->german_name;
+                    } elseif (empty($model->german_name) && !empty($model->name)) {
+                        $brandName = $model->name;
+                    }
+                }
+                $model->name = $brandName;
             }
         }
         return $model;
@@ -208,6 +236,24 @@ class BrandController extends ActiveController
                     $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageThumbAbsolutePath') . '/' . $model->image;
                 }
                 $model->image = $brandImage;
+
+                $brandName = "";
+                if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                    if (!empty($model->name)) {
+                        $brandName = $model->name;
+                    } elseif (empty($model->name) && !empty($model->german_name)) {
+                        $brandName = $model->german_name;
+                    }
+                }
+
+                if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                    if (!empty($model->german_name)) {
+                        $brandName = $model->german_name;
+                    } elseif (empty($model->german_name) && !empty($model->name)) {
+                        $brandName = $model->name;
+                    }
+                }
+                $model->name = $brandName;
             }
         }
         return $model;

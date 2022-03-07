@@ -75,6 +75,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     'header' => '',
                 ],
                 [
+                    'attribute' => 'german_name',
+                    'value' => function ($model) {
+                        $germanName = '';
+                        if ($model instanceof Brand) {
+                            $germanName = $model->german_name;
+                        }
+                        return $germanName;
+                    },
+                    'header' => '',
+                ],
+                [
                     'format' => ['raw'],
                     'attribute' => 'status',
                     'value' => function ($model) {

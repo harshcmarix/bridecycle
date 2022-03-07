@@ -214,7 +214,35 @@ class Ads extends \yii\db\ActiveRecord
      */
     public function getBrand0()
     {
-        return $this->hasOne(Brand::class, ['id' => 'brand_id']);
+        //return $this->hasOne(Brand::class, ['id' => 'brand_id']);
+        $brand = Brand::find()->where(['id' => $this->brand_id])->one();
+        if ($brand instanceof Brand) {
+            $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($brand->image) && file_exists(Yii::getAlias('@brandImageRelativePath') . '/' . $brand->image)) {
+                $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageAbsolutePath') . '/' . $brand->image;
+            }
+            $brand->image = $brandImage;
+
+            $brandName = "";
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                if (!empty($brand->name)) {
+                    $brandName = $brand->name;
+                } elseif (empty($brand->name) && !empty($brand->german_name)) {
+                    $brandName = $brand->german_name;
+                }
+            }
+
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                if (!empty($brand->german_name)) {
+                    $brandName = $brand->german_name;
+                } elseif (empty($brand->german_name) && !empty($brand->name)) {
+                    $brandName = $brand->name;
+                }
+            }
+            $brand->name = $brandName;
+        }
+        return $brand;
+
     }
 
 }

@@ -4,6 +4,7 @@ namespace app\modules\api\v2\controllers;
 
 use Yii;
 use app\models\UserAddress;
+use yii\db\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\auth\HttpBasicAuth;
@@ -91,9 +92,15 @@ class UserAddressController extends ActiveController
      */
     public function actionCreate()
     {
-        $model = new UserAddress();
         $addressData = Yii::$app->request->post();
         $address['UserAddress'] = $addressData;
+
+        $addressModel = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['street' => $address['UserAddress']['street'], 'city' => $address['UserAddress']['city'], 'state' => $address['UserAddress']['state'], 'country' => $address['UserAddress']['country'], 'zip_code' => $address['UserAddress']['zip_code']])->one();
+        if (!empty($addressModel) && $addressModel instanceof UserAddress) {
+            $model = UserAddress::find()->where(['id' => $addressModel->id])->one();
+        } else {
+            $model = new UserAddress();
+        }
 
         $address['UserAddress']['user_id'] = Yii::$app->user->identity->id;
         $address['UserAddress']['is_primary_address'] = (!empty($address['UserAddress']['is_primary_address'])) ? '1' : '0';
@@ -139,6 +146,14 @@ class UserAddressController extends ActiveController
         $addressData = \Yii::$app->request->post();
         $address['UserAddress'] = $addressData;
         $address['UserAddress']['user_id'] = Yii::$app->user->identity->id;
+
+
+        $addressModel = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['street' => $address['UserAddress']['street'], 'city' => $address['UserAddress']['city'], 'state' => $address['UserAddress']['state'], 'country' => $address['UserAddress']['country'], 'zip_code' => $address['UserAddress']['zip_code']])->andWhere('id!=' . $id)->one();
+        if (!empty($addressModel) && $addressModel instanceof UserAddress) {
+            //$model = UserAddress::find()->where(['id' => $addressModel->id])->one();
+            throw new Exception(getValidationErrorMsg('user_address_already_exist',Yii::$app->language));
+        }
+
 
         if ($model->load($address) && $model->validate()) {
 

@@ -3,6 +3,7 @@
 namespace app\modules\api\v2\controllers;
 
 use app\models\Brand;
+use app\models\CartItem;
 use app\models\Color;
 use app\models\Product;
 use app\models\ProductImage;
@@ -376,7 +377,6 @@ class ProductController extends ActiveController
                     }
                 }
             }
-
         }
 
         return $model;
@@ -609,6 +609,15 @@ class ProductController extends ActiveController
 
         $model->status_id = ProductStatus::STATUS_ARCHIVED;
         $model->save(false);
+
+        $modelCartItems = CartItem::find()->where(['product_id' => $model->id])->all();
+        if (!empty($modelCartItems)) {
+            foreach ($modelCartItems as $key => $modelCartItem) {
+                if (!empty($modelCartItem) && $modelCartItem instanceof CartItem) {
+                    $modelCartItem->delete();
+                }
+            }
+        }
     }
 
     /**

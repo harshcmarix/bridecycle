@@ -22,7 +22,7 @@ class BrandSearch extends Brand
     {
         return [
             [['id'], 'integer'],
-            [['name', 'image', 'is_top_brand', 'created_at', 'updated_at', 'status'], 'safe'],
+            [['name', 'german_name', 'image', 'is_top_brand', 'created_at', 'updated_at', 'status'], 'safe'],
         ];
     }
 
@@ -96,6 +96,7 @@ class BrandSearch extends Brand
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'german_name', $this->german_name])
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'is_top_brand', $this->is_top_brand]);
 

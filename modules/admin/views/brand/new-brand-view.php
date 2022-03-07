@@ -37,6 +37,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'attribute' => 'german_name',
+                        'value' => function ($model) {
+                            $german_name = '';
+                            if ($model instanceof Brand) {
+                                $german_name = $model->german_name;
+                            }
+                            return $german_name;
+                        },
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
+                    [
                         'format' => ['raw'],
                         'attribute' => 'image',
                         'value' => function ($model) {

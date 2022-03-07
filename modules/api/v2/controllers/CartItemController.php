@@ -129,7 +129,7 @@ class CartItemController extends ActiveController
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
-        return $model->search($requestParams,Yii::$app->user->identity->id);
+        return $model->search($requestParams, Yii::$app->user->identity->id);
     }
 
     /**
@@ -170,7 +170,8 @@ class CartItemController extends ActiveController
                 throw new Exception(getValidationErrorMsg('product_not_available_choose_other_exception', Yii::$app->language));
             }
 
-            $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
+            //$basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
+            $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->getReferPrice())) ? $productData->getReferPrice() * $model->quantity : 0;
             $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
             $model->price = ($basePrice + $taxPrice);
             $model->tax = $taxPrice;
@@ -214,7 +215,7 @@ class CartItemController extends ActiveController
         if ($model->load($cartIteam) && $model->validate()) {
             $productData = Product::find()->where(['id' => $model->product_id])->one();
 
-            $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
+            $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->getReferPrice())) ? $productData->getReferPrice() * $model->quantity : 0;
             $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
             $model->price = ($basePrice + $taxPrice);
             $model->tax = ($taxPrice);
@@ -298,7 +299,7 @@ class CartItemController extends ActiveController
         $postOrderPayment['OrderPayment'] = $post;
         if ($modelAddress->load($postAddress) && $modelAddress->validate()) {
             if ($modelOrderPayment->load($postOrderPayment) && $modelOrderPayment->validate()) {
-                $modelAddressFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::SHIPPING, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
+                $modelAddressFind = UserAddress::find()->where(['user_id' => $user_id, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
                 if (!empty($modelAddressFind) && $modelAddressFind instanceof UserAddress) {
                     $modelOrder->user_address_id = $modelAddressFind->id;
                 } else {
@@ -317,8 +318,8 @@ class CartItemController extends ActiveController
         $modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
         if (empty($modelAddressBillingFind)) {
             $modelAddressBillingFind = $modelAddress;
-            $modelAddressBillingFind->type = UserAddress::BILLING;
-            $modelAddressBillingFind->save();
+            //$modelAddressBillingFind->type = UserAddress::BILLING;
+            $modelAddressBillingFind->save(false);
         } else {
             $modelOrder->user_address_id = $modelAddressBillingFind->id;
         }
@@ -441,16 +442,18 @@ class CartItemController extends ActiveController
                                     $modelProductTracking->user_id = $orderItemRow->product->user_id;
                                     $modelProductTracking->order_id = $orderItemRow->order_id;
                                     $modelProductTracking->location = (!empty($orderItemRow->product->address) && !empty($orderItemRow->product->address->city)) ? $orderItemRow->product->address->city : '';
-                                    $modelProductTracking->price = $orderItemRow->price;
+                                    $modelProductTracking->price = $orderItemRow->product->getReferPrice();
                                     $modelProductTracking->resale_date = date('Y-m-d H:i:s');
                                     $modelProductTracking->created_at = date('Y-m-d H:i:s');
                                     $modelProductTracking->updated_at = date('Y-m-d H:i:s');
 
                                     $modelProductTracking->save(false);
+
+                                    if (!empty($modelProductTracking) && !empty($modelProductTracking->id) && empty($orderItemRow->product->product_tracking_id)) {
+                                        $orderItemRow->product->product_tracking_id = $modelProductTracking->id;
+                                    }
                                 }
-                                if (!empty($modelProductTracking) && !empty($modelProductTracking->id) && empty($orderItemRow->product->product_tracking_id)) {
-                                    $orderItemRow->product->product_tracking_id = $modelProductTracking->id;
-                                }
+
                                 $orderItemRow->product->save(false);
 
                                 // Generate pdf of order invoice
@@ -462,7 +465,7 @@ class CartItemController extends ActiveController
                                 $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
                                 $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
                                 $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
-                                $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->price + $orderItemRow->shipping_cost);
+                                $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
                                 $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->price - $orderItemRow->tax);
                                 $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
                                 $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;

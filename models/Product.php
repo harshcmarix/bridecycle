@@ -573,6 +573,24 @@ class Product extends \yii\db\ActiveRecord
                 $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageAbsolutePath') . '/' . $brand->image;
             }
             $brand->image = $brandImage;
+
+            $brandName = "";
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                if (!empty($brand->name)) {
+                    $brandName = $brand->name;
+                } elseif (empty($brand->name) && !empty($brand->german_name)) {
+                    $brandName = $brand->german_name;
+                }
+            }
+
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                if (!empty($brand->german_name)) {
+                    $brandName = $brand->german_name;
+                } elseif (empty($brand->german_name) && !empty($brand->name)) {
+                    $brandName = $brand->name;
+                }
+            }
+            $brand->name = $brandName;
         }
         return $brand;
     }
@@ -586,6 +604,32 @@ class Product extends \yii\db\ActiveRecord
     {
         $colors = explode(",", $this->option_color);
         $color = Color::find()->where(['in', 'id', $colors])->all();
+
+        if (!empty($color)) {
+            foreach ($color as $key => $colorRow) {
+                if (!empty($colorRow) && $colorRow instanceof Color) {
+                    $colorName = "";
+                    if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                        if (!empty($colorRow->name)) {
+                            $colorName = $colorRow->name;
+                        } elseif (empty($colorRow->name) && !empty($colorRow->german_name)) {
+                            $colorName = $colorRow->german_name;
+                        }
+                    }
+
+                    if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                        if (!empty($colorRow->german_name)) {
+                            $colorName = $colorRow->german_name;
+                        } elseif (empty($colorRow->german_name) && !empty($colorRow->name)) {
+                            $colorName = $colorRow->name;
+                        }
+                    }
+                    $color[$key]['name'] = $colorName;
+                }
+            }
+        }
+
+
         return $color;
     }
 
@@ -671,7 +715,6 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getRating()
     {
-
         $modelRate['total_rated_count'] = (int)number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count(), 1);
         $modelRate['over_all_rate'] = number_format(ProductRating::find()->where(['product_id' => $this->id])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->average('rating'), 2);
         $modelRate['one_star_rate'] = (int)ProductRating::find()->where(['product_id' => $this->id, 'rating' => ProductRating::ONE_STAR_RATE])->andWhere(['IN', 'status', [ProductRating::STATUS_APPROVE]])->count();

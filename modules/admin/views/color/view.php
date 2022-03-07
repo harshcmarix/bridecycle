@@ -19,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'model' => $model,
             'attributes' => [
                 'name',
+                'german_name',
                 'code',
                 [
                     'attribute' => 'status',
@@ -41,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="box-footer">
         <p>
-            <?= Html::a('Back', \yii\helpers\Url::to(['index']), ['class' => 'btn btn-default']) ?>
+            <?= Html::a('Back', Yii::$app->request->referrer, ['class' => 'btn btn-default']) ?>
         </p>
     </div>
 </div>

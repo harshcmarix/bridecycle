@@ -143,7 +143,25 @@ class ColorSearch extends Color
         if (!empty($colorModelData)) {
             foreach ($colorModelData as $key => $data) {
                 if (!empty($data) && $data instanceof Color) {
-                    $colorModelData[$key]['name'] = (!empty($data->name)) ? $data->name : "";
+                    //$colorModelData[$key]['name'] = (!empty($data->name)) ? $data->name : "";
+
+                    $colorName = "";
+                    if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                        if (!empty($data->name)) {
+                            $colorName = $data->name;
+                        } elseif (empty($data->name) && !empty($data->german_name)) {
+                            $colorName = $data->german_name;
+                        }
+                    }
+
+                    if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                        if (!empty($data->german_name)) {
+                            $colorName = $data->german_name;
+                        } elseif (empty($data->german_name) && !empty($data->name)) {
+                            $colorName = $data->name;
+                        }
+                    }
+                    $colorModelData[$key]['name'] = $colorName;
                     $colorModelData[$key]['code'] = (!empty($data->code)) ? $data->code : "";
                 }
             }

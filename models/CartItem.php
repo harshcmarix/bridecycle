@@ -183,6 +183,26 @@ class CartItem extends \yii\db\ActiveRecord
     public function getColor0()
     {
         $color = Color::findOne($this->color);
+        if (!empty($color) && $color instanceof Color) {
+            $colorName = "";
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                if (!empty($color->name)) {
+                    $colorName = $color->name;
+                } elseif (empty($color->name) && !empty($color->german_name)) {
+                    $colorName = $color->german_name;
+                }
+            }
+
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                if (!empty($color->german_name)) {
+                    $colorName = $color->german_name;
+                } elseif (empty($color->german_name) && !empty($color->name)) {
+                    $colorName = $color->name;
+                }
+            }
+            $color->name = $colorName;
+        }
+
         return $color;
 
     }

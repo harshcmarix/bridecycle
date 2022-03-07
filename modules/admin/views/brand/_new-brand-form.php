@@ -37,6 +37,14 @@ echo Dialog::widget(
                 </div>
 
                 <div class="col col-md-6">
+                    <?= $form->field($model, 'german_name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col col-md-6">
                     <?= $form->field($model, 'image')->widget(FileInput::classname(), [
                         'options' => ['accept' => 'image/*', 'id' => 'brand-image'],
                         'pluginOptions' => [
@@ -81,9 +89,7 @@ echo Dialog::widget(
 
                     <?php } ?>
                 </div>
-            </div>
 
-            <div class="row">
                 <div class="col col-md-6">
 
                     <?php
@@ -131,5 +137,5 @@ echo Dialog::widget(
     function brandmodal(id) {
         $('#brandmodal_' + id).modal('show');
     }
-    
+
 </script>

@@ -126,6 +126,24 @@ class Banner extends ActiveRecord
                 $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageAbsolutePath') . '/' . $brand->image;
             }
             $brand->image = $brandImage;
+
+            $brandName = "";
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                if (!empty($brand->name)) {
+                    $brandName = $brand->name;
+                } elseif (empty($brand->name) && !empty($brand->german_name)) {
+                    $brandName = $brand->german_name;
+                }
+            }
+
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                if (!empty($brand->german_name)) {
+                    $brandName = $brand->german_name;
+                } elseif (empty($brand->german_name) && !empty($brand->name)) {
+                    $brandName = $brand->name;
+                }
+            }
+            $brand->name = $brandName;
         }
         return $brand;
     }

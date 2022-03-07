@@ -118,7 +118,7 @@ class ColorController extends ActiveController
     {
         $model = Color::findOne($id);
         if (!$model instanceof Color) {
-            throw new NotFoundHttpException(getValidationErrorMsg('color_not_exist',Yii::$app->language));
+            throw new NotFoundHttpException(getValidationErrorMsg('color_not_exist', Yii::$app->language));
         }
         return $model;
     }
@@ -136,7 +136,35 @@ class ColorController extends ActiveController
         $colorData['Color'] = $postData;
 
         if ($model->load($colorData) && $model->validate()) {
-            $model->save();
+
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                $model->german_name = $model->name;
+                $model->name = NULL;
+            }
+
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                $model->german_name = NULL;
+            }
+
+            $model->save(false);
+
+            $colorName = "";
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                if (!empty($model->name)) {
+                    $colorName = $model->name;
+                } elseif (empty($model->name) && !empty($model->german_name)) {
+                    $colorName = $model->german_name;
+                }
+            }
+
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                if (!empty($model->german_name)) {
+                    $colorName = $model->german_name;
+                } elseif (empty($model->german_name) && !empty($model->name)) {
+                    $colorName = $model->name;
+                }
+            }
+            $model->name = $colorName;
         }
 
         return $model;
@@ -153,13 +181,31 @@ class ColorController extends ActiveController
     {
         $model = Color::findOne($id);
         if (!$model instanceof Color) {
-            throw new NotFoundHttpException(getValidationErrorMsg('color_not_exist',Yii::$app->language));
+            throw new NotFoundHttpException(getValidationErrorMsg('color_not_exist', Yii::$app->language));
         }
         $postData = Yii::$app->request->post();
         $colorData['Color'] = $postData;
 
         if ($model->load($colorData) && $model->validate()) {
             $model->save(false);
+
+            $colorName = "";
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                if (!empty($model->name)) {
+                    $colorName = $model->name;
+                } elseif (empty($model->name) && !empty($model->german_name)) {
+                    $colorName = $model->german_name;
+                }
+            }
+
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                if (!empty($model->german_name)) {
+                    $colorName = $model->german_name;
+                } elseif (empty($model->german_name) && !empty($model->name)) {
+                    $colorName = $model->name;
+                }
+            }
+            $model->name = $colorName;
         }
         return $model;
     }
@@ -177,7 +223,7 @@ class ColorController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist',Yii::$app->language));
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }
