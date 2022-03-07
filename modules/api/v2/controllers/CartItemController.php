@@ -751,7 +751,8 @@ class CartItemController extends ActiveController
             $dompdf->setPaper('A4');
             $dompdf->render();
             $output = $dompdf->output();
-            $fileName = "order-" . time() . "-" . $modelOrder->id . ".pdf";
+            //$fileName = "order-" . time() . "-" . $modelOrder->id . ".pdf";
+            $fileName = "order-" . time() . "-" . $modelOrderItem->id . "_" . $modelOrder->id . ".pdf";
 
             file_put_contents(Yii::getAlias('@orderInvoiceRelativePath') . '/' . $fileName, $output);
             $modelOrderItem->invoice = $fileName;
