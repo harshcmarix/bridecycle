@@ -74,7 +74,7 @@ class UserAddress extends \yii\db\ActiveRecord
             [['is_primary_address', 'type'], 'string'],
             [['created_at', 'updated_at', 'address'], 'safe'],
             [['address', 'zip_code'], 'string', 'max' => 100],
-            [['street'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('street_max_50_character_length', \Yii::$app->language)],
+            //[['street'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('street_max_50_character_length', \Yii::$app->language)],
             [['city', 'state', 'country'], 'string', 'max' => 50],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
