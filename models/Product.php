@@ -102,7 +102,7 @@ class Product extends \yii\db\ActiveRecord
         return [
             [
                 'class' => TimestampBehavior::class,
-                'value' => date('Y-m-d h:i:s'),
+                'value' => date('Y-m-d H:i:s'),
             ],
         ];
     }
@@ -628,8 +628,6 @@ class Product extends \yii\db\ActiveRecord
                 }
             }
         }
-
-
         return $color;
     }
 
@@ -825,21 +823,22 @@ class Product extends \yii\db\ActiveRecord
     {
 
         $dataResult['ref_price'] = $this->price;
+        if (!empty(Yii::$app->user) && !empty(Yii::$app->user->identity) && !empty(Yii::$app->user->identity->id)) {
+            if ($this->type == Product::PRODUCT_TYPE_USED && Yii::$app->user->identity->id != $this->user_id) {
+                $isOfferAcceptedCount = "";
+                $offers = $this->makeOffers;
 
-        if ($this->type == Product::PRODUCT_TYPE_USED && Yii::$app->user->identity->id != $this->user_id) {
-            $isOfferAcceptedCount = "";
-            $offers = $this->makeOffers;
-
-            if (!empty($offers)) {
-                foreach ($offers as $key => $offersRow) {
-                    if (!empty($offersRow) && $offersRow instanceof MakeOffer && $offersRow->sender_id == Yii::$app->user->identity->id && $offersRow->status == MakeOffer::STATUS_ACCEPT) {
-                        $isOfferAcceptedCount = $key;
+                if (!empty($offers)) {
+                    foreach ($offers as $key => $offersRow) {
+                        if (!empty($offersRow) && $offersRow instanceof MakeOffer && $offersRow->sender_id == Yii::$app->user->identity->id && $offersRow->status == MakeOffer::STATUS_ACCEPT) {
+                            $isOfferAcceptedCount = $key;
+                        }
                     }
                 }
-            }
-            //p($isOfferAcceptedCount);
-            if (!empty($isOfferAcceptedCount) || $isOfferAcceptedCount != "") {
-                $dataResult['ref_price'] = $offers[$isOfferAcceptedCount]['offer_amount'];
+                //p($isOfferAcceptedCount);
+                if (!empty($isOfferAcceptedCount) || $isOfferAcceptedCount != "") {
+                    $dataResult['ref_price'] = $offers[$isOfferAcceptedCount]['offer_amount'];
+                }
             }
         }
 

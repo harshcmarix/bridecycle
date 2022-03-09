@@ -404,7 +404,7 @@ class CartItemController extends ActiveController
                 'order_id' => $modelOrder->id,
                 'card_type' => $cardType,
                 'card_exp_month' => $expMontYear[0],
-                'card_exp_year' => $expMontYear[1],
+                'card_exp_year' => (!empty($expMontYear[1])) ? $expMontYear[1] : date('Y'),
                 'card_first_name' => $cardHoderName[0],
                 'card_last_name' => (!empty($cardHoderName[1])) ? $cardHoderName[1] : "User",
                 'sub_total' => $subTotal,

@@ -382,11 +382,11 @@ class ProductSearch extends Product
                 'params' => $requestParams,
                 'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : Yii::$app->params['default_page_size'], //set page size here
             ],
-            'sort' => [
-                'params' => $requestParams,
-            ],
+//            'sort' => [
+//                'params' => $requestParams,
+//            ],
         ]);
-
+//p($requestParams);
         $productModelData = $activeDataProvider->getModels();
         foreach ($productModelData as $key => $value) {
             $productImg = [];
