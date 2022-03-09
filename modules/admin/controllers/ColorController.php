@@ -162,6 +162,7 @@ class ColorController extends Controller
                                                 $modelNotification->notification_text = $notificationText;
                                                 $modelNotification->action = "product_color_" . $actionStatus;
                                                 $modelNotification->ref_type = "products";
+                                                $modelNotification->product_id = $modelProductsBasedOnColorRow->id;
                                                 $modelNotification->save(false);
 
                                                 $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();

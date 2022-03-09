@@ -5,6 +5,7 @@ namespace app\modules\admin\controllers;
 use app\models\Brand;
 use app\models\CartItem;
 use app\models\Color;
+use app\models\MakeOffer;
 use app\models\Notification;
 use app\models\ProductCategory;
 use app\models\ProductImage;
@@ -15,6 +16,7 @@ use app\models\search\ProductSearch;
 use app\models\ShippingCost;
 use app\models\ShippingPrice;
 use app\models\Sizes;
+use app\models\Trial;
 use app\modules\api\v2\models\User;
 use Imagine\Image\Box;
 use Yii;
@@ -789,6 +791,7 @@ class ProductController extends Controller
                                                                 $modelNotification->notification_text = $notificationText;
                                                                 $modelNotification->action = "product_color_approve";
                                                                 $modelNotification->ref_type = "products";
+                                                                $modelNotification->product_id = $modelProductsBasedOnColorRow->id;
                                                                 $modelNotification->save(false);
 
                                                                 $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -872,6 +875,7 @@ class ProductController extends Controller
                                                         $modelNotification->notification_text = $notificationText;
                                                         $modelNotification->action = "product_brand_approve";
                                                         $modelNotification->ref_type = "products";
+                                                        $modelNotification->product_id = $modelProductsBasedOnBrandRow->id;
                                                         $modelNotification->save(false);
 
                                                         $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -1226,6 +1230,7 @@ class ProductController extends Controller
                                                                 $modelNotification->notification_text = $notificationText;
                                                                 $modelNotification->action = "product_color_approve";
                                                                 $modelNotification->ref_type = "products";
+                                                                $modelNotification->product_id = $modelProductsBasedOnColorRow->id;
                                                                 $modelNotification->save(false);
 
                                                                 $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -1307,6 +1312,7 @@ class ProductController extends Controller
                                                         $modelNotification->notification_text = $notificationText;
                                                         $modelNotification->action = "product_brand_approve";
                                                         $modelNotification->ref_type = "products";
+                                                        $modelNotification->product_id = $modelProductsBasedOnBrandRow->id;
                                                         $modelNotification->save(false);
 
                                                         $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -1397,6 +1403,24 @@ class ProductController extends Controller
             }
         }
 
+        $modelMakeOffers = MakeOffer::find()->where(['product_id' => $model->id])->all();
+        if (!empty($modelMakeOffers)) {
+            foreach ($modelMakeOffers as $key1 => $modelMakeOffer) {
+                if (!empty($modelMakeOffer) && $modelMakeOffer instanceof MakeOffer) {
+                    $modelMakeOffer->delete();
+                }
+            }
+        }
+
+        $modelTrials = Trial::find()->where(['product_id' => $model->id])->all();
+        if (!empty($modelTrials)) {
+            foreach ($modelTrials as $key2 => $modelTrial) {
+                if (!empty($modelTrial) && $modelTrial instanceof Trial) {
+                    $modelTrial->delete();
+                }
+            }
+        }
+
         \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Product deleted successfully.');
         return $this->redirect(['index']);
     }
@@ -1419,6 +1443,24 @@ class ProductController extends Controller
             foreach ($modelCartItems as $key => $modelCartItem) {
                 if (!empty($modelCartItem) && $modelCartItem instanceof CartItem) {
                     $modelCartItem->delete();
+                }
+            }
+        }
+
+        $modelMakeOffers = MakeOffer::find()->where(['product_id' => $model->id])->all();
+        if (!empty($modelMakeOffers)) {
+            foreach ($modelMakeOffers as $key1 => $modelMakeOffer) {
+                if (!empty($modelMakeOffer) && $modelMakeOffer instanceof MakeOffer) {
+                    $modelMakeOffer->delete();
+                }
+            }
+        }
+
+        $modelTrials = Trial::find()->where(['product_id' => $model->id])->all();
+        if (!empty($modelTrials)) {
+            foreach ($modelTrials as $key2 => $modelTrial) {
+                if (!empty($modelTrial) && $modelTrial instanceof Trial) {
+                    $modelTrial->delete();
                 }
             }
         }
@@ -1588,6 +1630,24 @@ class ProductController extends Controller
                         foreach ($modelCartItems as $key => $modelCartItem) {
                             if (!empty($modelCartItem) && $modelCartItem instanceof CartItem) {
                                 $modelCartItem->delete();
+                            }
+                        }
+                    }
+
+                    $modelMakeOffers = MakeOffer::find()->where(['product_id' => $model->id])->all();
+                    if (!empty($modelMakeOffers)) {
+                        foreach ($modelMakeOffers as $key1 => $modelMakeOffer) {
+                            if (!empty($modelMakeOffer) && $modelMakeOffer instanceof MakeOffer) {
+                                $modelMakeOffer->delete();
+                            }
+                        }
+                    }
+
+                    $modelTrials = Trial::find()->where(['product_id' => $model->id])->all();
+                    if (!empty($modelTrials)) {
+                        foreach ($modelTrials as $key2 => $modelTrial) {
+                            if (!empty($modelTrial) && $modelTrial instanceof Trial) {
+                                $modelTrial->delete();
                             }
                         }
                     }

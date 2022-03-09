@@ -51,12 +51,16 @@ class Order extends \yii\db\ActiveRecord
     const STATUS_ORDER_INPROGRESS = '2';
     const STATUS_ORDER_COMPLETED = '3';
     const STATUS_ORDER_CANCELLED = '4';
+    const STATUS_ORDER_SHIPPED = '5';
+    const STATUS_ORDER_DELIVERED = '6';
 
     public $arrOrderStatus = [
         // self::STATUS_ORDER_PENDING => 'Pending',
         self::STATUS_ORDER_INPROGRESS => 'In Progress',
         self::STATUS_ORDER_COMPLETED => 'Completed',
         self::STATUS_ORDER_CANCELLED => 'Cancelled',
+        self::STATUS_ORDER_SHIPPED => 'Shipped',
+        self::STATUS_ORDER_DELIVERED => 'Delivered',
     ];
 
     /**

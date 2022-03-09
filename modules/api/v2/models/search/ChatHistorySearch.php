@@ -114,7 +114,7 @@ class ChatHistorySearch extends ChatHistory
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->groupBy('chat_history.id');
+        $query->groupBy('chat_history.id')->orderBy(['id' => SORT_DESC]);
         // $query->groupBy("chat_history.from_user_id, chat_history.to_user_id");
 
         $activeDataProvider = Yii::createObject([
@@ -177,7 +177,7 @@ class ChatHistorySearch extends ChatHistory
 
                         $result['product_result'] = $lastMessage->product0;
 
-                        $dataRow['product0'] = array_merge($result['product_result']->toArray(),$resultBrand);
+                        $dataRow['product0'] = array_merge($result['product_result']->toArray(), $resultBrand);
                         $dataRow['fromUser0'] = $lastMessage->fromUser0;
                         $dataRow['toUser0'] = $lastMessage->toUser0;
 

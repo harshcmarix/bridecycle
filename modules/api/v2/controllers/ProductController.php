@@ -5,12 +5,14 @@ namespace app\modules\api\v2\controllers;
 use app\models\Brand;
 use app\models\CartItem;
 use app\models\Color;
+use app\models\MakeOffer;
 use app\models\Product;
 use app\models\ProductImage;
 use app\models\ProductReceipt;
 use app\models\ProductSizes;
 use app\models\ProductStatus;
 use app\models\ShippingPrice;
+use app\models\Trial;
 use app\models\UserAddress;
 use app\modules\admin\models\search\SizesSearch;
 use app\modules\api\v2\models\User;
@@ -152,7 +154,7 @@ class ProductController extends ActiveController
         if (!$model instanceof Product) {
             throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
-
+        $model->price = $model->getReferPrice();
         return $model;
     }
 
@@ -168,6 +170,8 @@ class ProductController extends ActiveController
         if (!$model instanceof Product) {
             throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
+
+        $model->price = $model->getReferPrice();
         return $model;
     }
 
@@ -618,6 +622,25 @@ class ProductController extends ActiveController
                 }
             }
         }
+
+        $modelMakeOffers = MakeOffer::find()->where(['product_id' => $model->id])->all();
+        if (!empty($modelMakeOffers)) {
+            foreach ($modelMakeOffers as $key1 => $modelMakeOffer) {
+                if (!empty($modelMakeOffer) && $modelMakeOffer instanceof MakeOffer) {
+                    $modelMakeOffer->delete();
+                }
+            }
+        }
+
+        $modelTrials = Trial::find()->where(['product_id' => $model->id])->all();
+        if (!empty($modelTrials)) {
+            foreach ($modelTrials as $key2 => $modelTrial) {
+                if (!empty($modelTrial) && $modelTrial instanceof Trial) {
+                    $modelTrial->delete();
+                }
+            }
+        }
+
     }
 
     /**

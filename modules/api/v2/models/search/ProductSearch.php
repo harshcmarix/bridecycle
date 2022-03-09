@@ -39,7 +39,8 @@ class ProductSearch extends Product
             'address' => 'address',
             'favouriteProduct' => 'favouriteProduct',
             'shippingCountry0' => 'shippingCountry0',
-            'productSizes0' => 'productSizes0'
+            'productSizes0' => 'productSizes0',
+            'referPrice' => 'referPrice'
         ];
     }
 
@@ -344,7 +345,7 @@ class ProductSearch extends Product
         if (!empty($requestParams['user_id']) && !empty($requestParams['is_from_sell_screen']) && $requestParams['is_from_sell_screen'] == 1) {
             $query->andWhere(['user_id' => $requestParams['user_id']]);
             $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_PENDING_APPROVAL, ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK, ProductStatus::STATUS_SOLD]]);
-        }else{
+        } else {
             $query->andWhere(['IN', 'products.status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]]);//,ProductStatus::STATUS_SOLD
         }
         /** End for search screen */
@@ -353,7 +354,7 @@ class ProductSearch extends Product
         if (!empty($userId)) {
             $modelUser = User::find()->where(['id' => $userId])->one();
             $query->andWhere(['NOT IN', 'user_id', $modelUser->blockUsersId]);
-            $query->andWhere(['NOT IN', 'user_id', $modelUser->abuseUsersId]);
+            //$query->andWhere(['NOT IN', 'user_id', $modelUser->abuseUsersId]);
         }
         /** End for Block user */
 
@@ -395,6 +396,9 @@ class ProductSearch extends Product
                         $productImg[] = Yii::$app->request->getHostInfo() . Yii::getAlias('@productImageAbsolutePath') . '/' . $productImageRow->name;
                     }
                 }
+            }
+            if (!empty($value) && $value instanceof Product) {
+                $productModelData[$key]['price'] = $value->getReferPrice();
             }
         }
 

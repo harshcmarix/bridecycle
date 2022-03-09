@@ -9,6 +9,7 @@ use app\modules\api\v2\models\User;
  * This is the model class for table "notification".
  *
  * @property int $id
+ * @property int|null $product_id
  * @property int|null $owner_id
  * @property int|null $notification_receiver_id
  * @property int $ref_id
@@ -44,12 +45,13 @@ class Notification extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['owner_id', 'notification_receiver_id', 'ref_id'], 'integer'],
+            [['owner_id', 'notification_receiver_id', 'ref_id','product_id'], 'integer'],
             [['ref_id', 'notification_text', 'action', 'ref_type'], 'required'],
             [['is_read', 'created_at'], 'safe'],
             [['notification_text', 'action', 'ref_type'], 'string', 'max' => 255],
             [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['owner_id' => 'id']],
             [['notification_receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['notification_receiver_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -60,6 +62,7 @@ class Notification extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'product_id' => 'Product ID',
             'owner_id' => 'Owner ID',
             'notification_receiver_id' => 'Notification Receiver ID',
             'ref_id' => 'Ref ID',
@@ -205,7 +208,7 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getProduct0()
     {
-        return $this->hasOne(Product::class, ['id' => 'ref_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
-    
+
 }

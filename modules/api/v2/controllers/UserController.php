@@ -218,32 +218,45 @@ class UserController extends ActiveController
             $model->is_subscribed_user = (integer)User::IS_VERIFY_USER_YES;
 
             if ($model->save()) {
+
+//                // Create stripe Account Start
+//                $stripe = new \Stripe\StripeClient(
+//                    Yii::$app->params['stripe_secret_key']
+//                );
+//
+//                // Inserted into connect
+//                $result = $stripe->accounts->create([
+//                    'type' => 'custom',
+//                    'country' => 'DE',
+//                    'email' => $postData['email'],
+//                    //'name' => $postData['first_name'] . " " . $postData['last_name'],
+//                    'capabilities' => [
+//                        'card_payments' => ['requested' => true],
+//                        'transfers' => ['requested' => true],
+//                    ],
+//                    'tos_acceptance' => ['service_agreement' => 'full','date' => time(), 'ip' => '8.8.8.8'],
+//                ]);
+//
+//                if (!empty($result) && !empty($result->id)) {
+//                    $model->stripe_account_connect_id = $result->id;
+//                    $model->save(false);
+//                }
+//
+//                $resultCust = $stripe->customers->create([
+//                    'email' => $postData['email'],
+//                    'name' => $postData['first_name'] . " " . $postData['last_name'],
+//                ]);
+//
+//                if (!empty($resultCust) && !empty($resultCust->id)) {
+//                    $model->stripe_account_customer_id = $resultCust->id;
+//                    $model->save(false);
+//                }
+
+                // Create stripe Account End
+
+
                 // Insert shop details
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
-
-
-//                    $stripe = new \Stripe\StripeClient();
-//                    p($stripe);
-//                    $result =$stripe->accounts->create([
-//                        'type' => 'custom',
-//                        'country' => 'US',
-//                        'email' => 'jenny.rosen@example.com',
-//                        'capabilities' => [
-//                            'card_payments' => ['requested' => true],
-//                            'transfers' => ['requested' => true],
-//                        ],
-//                    ]);
-
-//                    $result = $stripe->accounts->create([
-//                        'type' => 'custom',
-//                        'country' => 'US',
-//                        'email' => 'jenny.rosen@example.com',
-//                        'capabilities' => [
-//                            'card_payments' => ['requested' => true],
-//                            'transfers' => ['requested' => true],
-//                        ],
-//                    ]);
-
 
                     $userAddressModel = new UserAddress();
                     $userAddressData['UserAddress'] = $postData;
@@ -562,75 +575,23 @@ class UserController extends ActiveController
     public function actionLogin()
     {
 
+
+//        $result =$stripe = new \Stripe\StripeClient(
+//            'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw'
+//        );
+//        $stripe->transfers->create([
+//            'amount' => 400,
+//            'currency' => 'eur',
+//            'destination' => 'acct_1KbNoYPTg19m1wpV',
+//            'transfer_group' => 'ORDER_95',
+//        ]);
+//        p($result);
+
         $model = new Login();
 
         $data['Login'] = Yii::$app->request->post();
 
         $postData = Yii::$app->request->post();
-
-
-//        $stripe = new \Stripe\StripeClient(
-//            Yii::$app->params['stripe_secret_key']
-//        );
-//        $res = $stripe->accounts->create([
-//            'type' => 'express',
-//            'country' => 'DE', // For germany
-//            'email' => $postData['email'],
-////            'capabilities' => [
-////                'card_payments' => ['requested' => true],
-////                'transfers' => ['requested' => true],
-////            ],
-////            'business_type' => 'individual',
-////            'company' => [
-////                'address' => [
-////                    'city' => 'aachen',
-////                    'line1' => 'Pontsheide 31c',
-////                    'postal_code' => '52076',
-////                    'state' => 'Strawberry Pt'
-////                ]
-////            ],
-////            'business_profile' => [
-////                'mcc' => '5691',
-////                'url' => 'https://bridecycle.com',
-////                'name' => 'BCOnE1'
-////            ],
-////            'bank_account' => [
-////                'account_holder_name' => 'performer user',
-////                'account_holder_type' => 'individual',
-////                'bank_name' => 'STRIPE TEST BANK',
-////                'country' => 'DE',
-////                'currency' => 'EUR',
-////                'account_number' => 'DE89370400440532013000',
-////            ],
-////            'individual' => [
-////                'email' => $postData['email'],
-////                'first_name' => 'store',
-////                'last_name' => 'user',
-////                'phone' => '9925400547',
-////                'dob' => [
-////                    'day' => '25',
-////                    'month' => '11',
-////                    'year' => '1992'
-////                ],
-////                'address' => [
-////                    'city' => 'aachen',
-////                    'line1' => 'Pontsheide 31c',
-////                    'postal_code' => '52076',
-////                    'state' => 'Strawberry Pt'
-////                ],
-////                'verification' => [
-////                    'document' => get_fil,
-////                    'additional_document' => '',
-////                ]
-////            ],
-////            'tos_acceptance' => [
-////                'date' => time(),
-////                'ip' => '203.109.113.157'
-////            ],
-//
-//        ]);
-//        p($res);
-
 
         if (empty($postData) || empty($postData['notification_token'])) {
             throw new BadRequestHttpException(getValidationErrorMsg('notification_token_required', Yii::$app->language));
@@ -724,7 +685,7 @@ class UserController extends ActiveController
                     }
                 }
             }
-            $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user]);
+            $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user, 'is_bank_detail_available' => $model->user->isBankDetailAvailable]);
             return $dataResponse;
         } else {
             return $model;
@@ -911,13 +872,18 @@ class UserController extends ActiveController
         $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
         $thumbImagePath = $uploadThumbDirPath . '/' . $model->profile_picture;
         $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+
         if (!empty($model) && $model instanceof User && !empty($model->profile_picture) && file_exists($thumbImagePath)) {
             $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
         }
 
         $model->profile_picture = $profile_picture;
 
-        return $model;
+        $data['is_bank_detail_available'] = $model->isBankDetailAvailable;
+        $dataResult = array_merge($model->toArray(), $data);
+        //p($dataResult);
+        //return $model;
+        return $dataResult;
     }
 
     /**

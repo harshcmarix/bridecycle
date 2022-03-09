@@ -118,7 +118,7 @@ class CartItem extends \yii\db\ActiveRecord
         return [
             'user0' => 'user0',
             'color0' => 'color0',
-            'product' => 'product',
+            'product0' => 'product',
         ];
     }
 
@@ -205,5 +205,14 @@ class CartItem extends \yii\db\ActiveRecord
 
         return $color;
 
+    }
+
+    public function getProduct0()
+    {
+        $model = Product::find()->where(['id' => $this->product_id])->one();
+        if (!empty($model) && $model instanceof Product) {
+            $model->price = $model->getReferPrice();
+        }
+        return $model;
     }
 }

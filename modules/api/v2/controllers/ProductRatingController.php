@@ -202,6 +202,7 @@ class ProductRatingController extends ActiveController
                             $modelNotification->notification_text = $notificationText;
                             $modelNotification->action = "Add";
                             $modelNotification->ref_type = "product_ratings"; // For Product rate review
+                            $modelNotification->product_id = $model->product_id; // For Product rate review
                             $modelNotification->save(false);
 
                             $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();

@@ -827,19 +827,19 @@ class Product extends \yii\db\ActiveRecord
         $dataResult['ref_price'] = $this->price;
 
         if ($this->type == Product::PRODUCT_TYPE_USED && Yii::$app->user->identity->id != $this->user_id) {
-            $isOfferAcceptedCount = 0;
+            $isOfferAcceptedCount = "";
             $offers = $this->makeOffers;
 
             if (!empty($offers)) {
                 foreach ($offers as $key => $offersRow) {
                     if (!empty($offersRow) && $offersRow instanceof MakeOffer && $offersRow->sender_id == Yii::$app->user->identity->id && $offersRow->status == MakeOffer::STATUS_ACCEPT) {
-                        $isOfferAcceptedCount++;
+                        $isOfferAcceptedCount = $key;
                     }
                 }
             }
-
-            if ($isOfferAcceptedCount > 0) {
-                $dataResult['ref_price'] = $offers[$isOfferAcceptedCount - 1]['offer_amount'];
+            //p($isOfferAcceptedCount);
+            if (!empty($isOfferAcceptedCount) || $isOfferAcceptedCount != "") {
+                $dataResult['ref_price'] = $offers[$isOfferAcceptedCount]['offer_amount'];
             }
         }
 

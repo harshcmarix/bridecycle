@@ -187,6 +187,7 @@ class TrialController extends ActiveController
                                         $modelNotification->notification_text = $notificationText;
                                         $modelNotification->action = "Add";
                                         $modelNotification->ref_type = "trial_book";
+                                        $modelNotification->product_id = $modelProduct->id;
                                         $modelNotification->save(false);
 
                                         $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -297,6 +298,7 @@ class TrialController extends ActiveController
                                     $modelNotification->notification_text = $notificationText;
                                     $modelNotification->action = $action;
                                     $modelNotification->ref_type = "trial_book";
+                                    $modelNotification->product_id = $modelProduct->id;
                                     $modelNotification->save(false);
 
                                     $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();

@@ -82,6 +82,9 @@ use yii\web\UnauthorizedHttpException;
  * @property string|null $is_subscribed_user
  * @property string|null $user_status
  * @property int|null $timezone_id
+ * @property int|null $stripe_account_connect_id
+ * @property int|null $stripe_account_customer_id
+ * @property int|null $stripe_bank_account_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -213,6 +216,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             //[['mobile', 'shop_phone_number'], 'string'],
             [['country_code'], 'string'],
+            [['stripe_account_connect_id', 'stripe_account_customer_id'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
 
             [['first_name'], 'string', 'max' => 50, 'tooLong' => getValidationErrorMsg('first_name_max_character_length', Yii::$app->language)],
@@ -255,6 +259,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             // [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'string'],
             [['is_newsletter_subscription'], 'safe'],
+            [['stripe_account_connect_id', 'stripe_account_customer_id', 'stripe_bank_account_id'], 'safe'],
             [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on'], 'safe'],
             [['is_new_message_email_notification_on', 'is_offer_update_email_notification_on', 'is_offer_on_favourite_email_notification_on', 'is_saved_searches_email_notification_on', 'is_order_placed_email_notification_on', 'is_payment_done_email_notification_on', 'is_order_delivered_email_notification_on', 'is_click_and_try_email_notification_on'], 'safe'],
 
@@ -652,6 +657,19 @@ class User extends ActiveRecord implements IdentityInterface
     {
         //$this->password_hash = Yii::$app->security->generatePasswordHash($password);
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * @return string
+     *
+     */
+    public function getIsBankDetailAvailable()
+    {
+        if (!empty($this->bankDetail) && $this->bankDetail instanceof UserBankDetails) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
 

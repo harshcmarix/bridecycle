@@ -220,28 +220,28 @@ class CountryController extends ActiveController
         // asia = asia
         // other = all remaining are consider as other
 
-        $continent = 'Europe';
+        //$continent = 'Europe';
+        $continent = '';
 
-//        if (!empty($result) && !empty($result['continent'])) {
-//
-//            if ($result['continent'] == 'North America') {
-//                $continent = ShippingCost::CONTINENT_CANADA;
-//            } elseif ($result['continent'] == 'South America') {
-//                $continent = ShippingCost::CONTINENT_USA;
-//            } elseif ($result['continent'] == 'Europe') {
-//                $continent = ShippingCost::CONTINENT_EUROPE;
-//            } elseif ($result['continent'] == 'Asia') {
-//                $continent = ShippingCost::CONTINENT_ASIA;
-//            } else {
-//                $continent = ShippingCost::CONTINENT_OTHER;
-//            }
-//        }
-//        if ($result['continent'] == 'Europe') {
-//            $continent = 'Europe';
-//        }
-//        else{
-//            $continent = ShippingCost::CONTINENT_OTHER;
-//        }
+        if (!empty($result) && !empty($result['continent'])) {
+
+            if ($result['continent'] == 'North America') {
+                $continent = ShippingCost::CONTINENT_CANADA;
+            } elseif ($result['continent'] == 'South America') {
+                $continent = ShippingCost::CONTINENT_USA;
+            } elseif ($result['continent'] == 'Europe') {
+                $continent = ShippingCost::CONTINENT_EUROPE;
+            } elseif ($result['continent'] == 'Asia') {
+                $continent = ShippingCost::CONTINENT_ASIA;
+            } else {
+                $continent = ShippingCost::CONTINENT_OTHER;
+            }
+        }
+        if ($result['continent'] == 'Europe') {
+            $continent = 'Europe';
+        } else {
+            $continent = ShippingCost::CONTINENT_OTHER;
+        }
 
 
         $data['is_feasible'] = 0;
@@ -271,12 +271,12 @@ class CountryController extends ActiveController
      */
     public function getCountryAndGoogleCodeFromZipCode($zipcode)
     {
+        $data['country_name'] = $data['country_google_code'] = $data['continent'] = "";
         if (!empty($zipcode)) {
             $address = urlencode($zipcode);
             $geocode = file_get_contents('https://maps.google.com/maps/api/geocode/json?key=' . Yii::$app->params['google_map_api_key'] . '&address=' . $address . '&sensor=false');
             $obj = json_decode($geocode);
 
-            $data['country_name'] = $data['country_google_code'] = $data['continent'] = "";
             if (!empty($obj) && !empty($obj->results) && !empty($obj->results[0]) && !empty($obj->results[0]->address_components)) {
                 foreach ($obj->results[0]->address_components as $addressComponentRow) {
                     if (!empty($addressComponentRow) && !empty($addressComponentRow->types) && is_array($addressComponentRow->types)) {
@@ -288,8 +288,8 @@ class CountryController extends ActiveController
                     }
                 }
             }
-            return $data;
         }
+        return $data;
     }
 
     /**
@@ -547,5 +547,5 @@ class CountryController extends ActiveController
         if ($country == 'ZW') $continent = 'Africa';
         return $continent;
     }
-    
+
 }

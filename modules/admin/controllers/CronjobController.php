@@ -224,6 +224,7 @@ class CronjobController extends Controller
                                                     $modelNotification->notification_text = $notificationText;
                                                     $modelNotification->action = "Add";
                                                     $modelNotification->ref_type = "products"; // For add new product
+                                                    $modelNotification->product_id = $model->id; // For add new product
                                                     $modelNotification->save(false);
 
                                                     $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();

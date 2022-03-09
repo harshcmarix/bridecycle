@@ -97,22 +97,28 @@ return [
     /**
      * Test/Sandbox account
      * ------------------------
-     * username : mrugen.cmarix@gmail.com
+     * username : mrugen.cmarix+01@gmail.com
      * password : ctpl@dev123456
+     *
+     * username : laura@bridecycle.com
+     * password : BrideCycle2022_You$hop3000
      *
      * URL : https://dashboard.stripe.com/test/dashboard
      *
-     *  Two step verification mobile number : 80008 53403 (Mrugen Patel)     *
+     *  Two step verification mobile number : 80008 53403 (Mrugen Patel)
+     *
      */
 
-    'stripe_publishable_Key' => 'pk_test_51KOHmqF7nc7QCOpKmxWAvH8eyuiMRQgMh3Bk3VZwipJdi5ySHFUDrx2PfnC0HlhWvkbGbLP0LOAA9BUOvtzFdyWM00UsaqoTNN',
-    'stripe_secret_key' => 'sk_test_51KOHmqF7nc7QCOpK8atLEEHbBPPEJcY9LNCtt75gdUJXGl1wWrdkCEaZtl8YU0O9t0Y1FcA19oSyIsu1YQO1E9oI00gmui63oG',
+    //  'stripe_publishable_Key' => 'pk_test_51KOHmqF7nc7QCOpKmxWAvH8eyuiMRQgMh3Bk3VZwipJdi5ySHFUDrx2PfnC0HlhWvkbGbLP0LOAA9BUOvtzFdyWM00UsaqoTNN',
+//    'stripe_secret_key' => 'sk_test_51KOHmqF7nc7QCOpK8atLEEHbBPPEJcY9LNCtt75gdUJXGl1wWrdkCEaZtl8YU0O9t0Y1FcA19oSyIsu1YQO1E9oI00gmui63oG',
+
+//    'stripe_publishable_Key' => 'pk_test_51Kaw45SHffITXCbkuSa0AdD3iRzL56s2xoh4446bPYFKVP8CvU0gxkbR15TS7b0IblMAIHGblAfo5V9Aum5HeegV00TcU0ROYD',
+//    'stripe_secret_key' => 'sk_test_51Kaw45SHffITXCbkqmKh6JeHwIl3PB5sAbPXXOUA4UGambjBzUy9Vch5uY5CtsIQoaK3MxzUXqqXbpshqOF4ep7f00AUHiOmgl',
 
 // Laura Test
-//    'stripe_publishable_Key' => 'pk_test_51KKNVyAvFy5NACFpFkGdLGGEmD9LwgHYMtmXwtknuhzZqaaWgZZCjJcvSiNvUqcHiuYqDEw8aCoEnnHVMR6YmIFc00qi9yi9zm',
-//    'stripe_secret_key' => 'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw'
+    'stripe_publishable_Key' => 'pk_test_51KKNVyAvFy5NACFpFkGdLGGEmD9LwgHYMtmXwtknuhzZqaaWgZZCjJcvSiNvUqcHiuYqDEw8aCoEnnHVMR6YmIFc00qi9yi9zm',
+    'stripe_secret_key' => 'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw',
 
     'other_support_language' => ['english', 'german'],
-
 
 ];
