@@ -2,6 +2,8 @@
 
 namespace app\modules\api\v2\models\search;
 
+use app\models\Product;
+use app\models\ProductStatus;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
@@ -111,7 +113,7 @@ class TrialSearch extends Trial
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->orderBy(['trials.created_at'=>SORT_DESC]);
+        $query->orderBy(['trials.created_at' => SORT_DESC]);
         $query->groupBy('trials.id');
 
         $activeDataProvider = Yii::createObject([
@@ -127,6 +129,18 @@ class TrialSearch extends Trial
         ]);
 
         $trialModelData = $activeDataProvider->getModels();
+//        $data = [];
+//        if (!empty($trialModelData)) {
+//            foreach ($trialModelData as $key => $trialModelDataRow) {
+//                $modelProduct = Product::find()->where(['id' => $trialModelDataRow->id])->andWhere(['not in', 'status_id', [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED]])->one();
+//                if (!empty($modelProduct) && $modelProduct instanceof Product) {
+//                    $data[] = $trialModelDataRow;
+//                }
+//            }
+//            $trialModelData = $data;
+//        }
+
+
         $activeDataProvider->setModels($trialModelData);
         return $activeDataProvider;
     }

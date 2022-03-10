@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v2\models\search;
 
+use app\models\Product;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
@@ -252,6 +253,18 @@ class MakeOfferSearch extends MakeOffer
         ]);
 
         $makeOfferModelData = $activeDataProvider->getModels();
+
+//        $data = [];
+//        if (!empty($makeOfferModelData)) {
+//            foreach ($makeOfferModelData as $key => $makeOfferModelDataRow) {
+//                $modelProduct = Product::find()->where(['id' => $makeOfferModelDataRow->id])->andWhere(['not in', 'status_id', [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED]])->one();
+//                if (!empty($modelProduct) && $modelProduct instanceof Product) {
+//                    $data[] = $makeOfferModelDataRow;
+//                }
+//            }
+//            $makeOfferModelData = $data;
+//        }
+
         $activeDataProvider->setModels($makeOfferModelData);
         return $activeDataProvider;
     }

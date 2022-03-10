@@ -576,7 +576,7 @@ class UserController extends ActiveController
     {
 
 
-//        $result =$stripe = new \Stripe\StripeClient(
+//        $stripe = new \Stripe\StripeClient(
 //            'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw'
 //        );
 //        $stripe->transfers->create([
@@ -585,6 +585,14 @@ class UserController extends ActiveController
 //            'destination' => 'acct_1KbNoYPTg19m1wpV',
 //            'transfer_group' => 'ORDER_95',
 //        ]);
+
+//        $result = $stripe->charges->create([
+//            'amount' => 100,
+//            'currency' => 'eur',
+//            'source' => 'acct_1KbNoYPTg19m1wpV',
+//            'description' => 'My First Test Charge (created for API docs)',
+//        ]);
+//
 //        p($result);
 
         $model = new Login();
@@ -719,9 +727,12 @@ class UserController extends ActiveController
                 $userModel->access_token_expired_at = null;
                 $userModel->save();
 
-                $loginDevice = UserDevice::find()->where(["user_id" => $userModel->id, "notification_token" => $postData['notification_token']])->one();
+                $loginDevice = UserDevice::find()->where(["user_id" => $userModel->id, "notification_token" => $postData['notification_token']])->all();
                 if (!empty($loginDevice)) {
-                    $loginDevice->delete();
+                    foreach ($loginDevice as $deviceRow){
+                        $deviceRow->delete();
+                    }
+
                 }
                 \Yii::$app->user->logout();
                 return [

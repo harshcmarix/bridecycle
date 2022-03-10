@@ -133,7 +133,7 @@ class TrialController extends ActiveController
         $model = new Trial();
         $postData['Trial'] = Yii::$app->request->post();
 
-        $modelProduct = Product::findOne($postData['Trial']['product_id']);
+        $modelProduct = Product::find()->where(['id' => $postData['Trial']['product_id']])->one();
 
         $postData['Trial']['sender_id'] = Yii::$app->user->identity->id;
         $postData['Trial']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
@@ -158,7 +158,7 @@ class TrialController extends ActiveController
             $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id, $model->timezone_id, $model->time);
             if ($resultData == true) {
 
-                if ($model->save()) {
+                if ($model->save(false)) {
 
                     $getUtcTime = $this->getUTCTimeBasedOnTimeZone($model->timezone_id, $model->time);
 
@@ -234,7 +234,7 @@ class TrialController extends ActiveController
                     // Send Push notification and email notification end
                 }
             } else {
-                throw new HttpException(getValidationErrorMsg('select_another_timezone', Yii::$app->language));
+                throw new NotFoundHttpException(getValidationErrorMsg('select_another_timezone', Yii::$app->language));
             }
         }
 
@@ -250,7 +250,7 @@ class TrialController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = Trial::findOne($id);
+        $model = Trial::find()->where(['id' => $id])->one();
 
         if (!$model instanceof Trial) {
             throw new NotFoundHttpException(getValidationErrorMsg('trial_not_exist', Yii::$app->language));
@@ -261,7 +261,7 @@ class TrialController extends ActiveController
         $postData = Yii::$app->request->post();
         $trialPostData['Trial'] = $postData;
 
-        $modelProduct = Product::findOne($model->product_id);
+        $modelProduct = Product::find()->where(['id' => $model->product_id])->one();
 
         if ($model->load($trialPostData) && $model->validate()) {
             if ($model->save(false)) {
@@ -423,9 +423,21 @@ class TrialController extends ActiveController
     /**
      * @return array|\yii\db\ActiveRecord[]
      */
-    public function actionGetTimezoneList()
+    public function actionGetTimezoneList($is_from_clik_try = 0)
     {
         $models = Timezone::find()->all();
+        if ($is_from_clik_try == 1) {
+            if (!empty($models)) {
+                foreach ($models as $key => $modelsRow) {
+                    if (!empty($modelsRow) && $modelsRow instanceof Timezone) {
+                        $timezone = $modelsRow->time_zone;
+                        $time = new \DateTime('now', new \DateTimeZone($timezone));
+                        //$timezoneOffset = $time->format('P').' UTC';
+                        $models[$key]['time_zone'] = $modelsRow->time_zone . " (" . $time->format('P') . ' UTC)';
+                    }
+                }
+            }
+        }
         return $models;
     }
 

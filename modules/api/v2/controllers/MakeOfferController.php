@@ -151,7 +151,7 @@ class MakeOfferController extends ActiveController
         if (empty($post) || empty($post['product_id'])) {
             throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
-        $modelProduct = Product::findOne($postData['MakeOffer']['product_id']);
+        $modelProduct = Product::find()->where(['id'=>$postData['MakeOffer']['product_id']])->one();
 
         if (!$modelProduct instanceof Product) {
             throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
@@ -186,11 +186,11 @@ class MakeOfferController extends ActiveController
 
         if ($model->load($postData) && $model->validate()) {
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 // Send Push Notification Start
                 if (!empty($postData['MakeOffer']['status']) && in_array($postData['MakeOffer']['status'], [MakeOffer::STATUS_PENDING])) {
-                    $getUsers[] = User::findOne($modelProduct->user_id);
-                    $sender = User::findOne(Yii::$app->user->identity->id);
+                    $getUsers[] = User::find()->where(['id' => $modelProduct->user_id])->one();
+                    $sender = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
 
                     if (!empty($getUsers)) {
                         foreach ($getUsers as $keys => $userROW) {
@@ -269,7 +269,7 @@ class MakeOfferController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = MakeOffer::findOne($id);
+        $model = MakeOffer::find()->where(['id' => $id])->one();
 
         if (!$model instanceof MakeOffer || ($model->receiver_id != Yii::$app->user->identity->id)) {
             throw new NotFoundHttpException(getValidationErrorMsg('offer_not_exist', Yii::$app->language));
@@ -278,7 +278,7 @@ class MakeOfferController extends ActiveController
         $postData = Yii::$app->request->post();
         $offerData['MakeOffer'] = $postData;
 
-        $modelProduct = Product::findOne($model->product_id);
+        $modelProduct = Product::find()->where(['id' => $model->product_id])->one();
 
         if (!$modelProduct instanceof Product) {
             throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
@@ -293,13 +293,15 @@ class MakeOfferController extends ActiveController
                 $model->status = MakeOffer::STATUS_PENDING;
             }
 
+
+
             // Send Push Notification Start
             if (!empty($offerData['MakeOffer']['status']) && in_array($offerData['MakeOffer']['status'], [MakeOffer::STATUS_ACCEPT, MakeOffer::STATUS_REJECT])) {
-                $getUsers[] = $model->sender;
+                $getUsers[] = User::find()->where(['id' => $model->sender_id])->one();
 
                 if (!empty($getUsers)) {
                     foreach ($getUsers as $keys => $userROW) {
-                        if ($userROW instanceof User && ($model->sender_id != $userROW->id)) {
+                        if ($userROW instanceof User && (Yii::$app->user->identity->id != $userROW->id)) {
                             if ($userROW->is_offer_update_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
                                 $userDevice = $userROW->userDevice;
 

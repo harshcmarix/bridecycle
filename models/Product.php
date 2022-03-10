@@ -823,26 +823,27 @@ class Product extends \yii\db\ActiveRecord
     {
 
         $dataResult['ref_price'] = $this->price;
+//p(Yii::$app->user->identity->id);
         if (!empty(Yii::$app->user) && !empty(Yii::$app->user->identity) && !empty(Yii::$app->user->identity->id)) {
+
             if ($this->type == Product::PRODUCT_TYPE_USED && Yii::$app->user->identity->id != $this->user_id) {
                 $isOfferAcceptedCount = "";
-                $offers = $this->makeOffers;
+                $offers = $this->getMakeOffers();
 
                 if (!empty($offers)) {
                     foreach ($offers as $key => $offersRow) {
                         if (!empty($offersRow) && $offersRow instanceof MakeOffer && $offersRow->sender_id == Yii::$app->user->identity->id && $offersRow->status == MakeOffer::STATUS_ACCEPT) {
-                            $isOfferAcceptedCount = $key;
+                            $isOfferAcceptedCount = $key + 1;
                         }
                     }
                 }
-                //p($isOfferAcceptedCount);
-                if (!empty($isOfferAcceptedCount) || $isOfferAcceptedCount != "") {
-                    $dataResult['ref_price'] = $offers[$isOfferAcceptedCount]['offer_amount'];
+                if ($isOfferAcceptedCount > 0) {
+                    //p($isOfferAcceptedCount);
+                    $dataResult['ref_price'] = $offers[$isOfferAcceptedCount - 1]['offer_amount'];
                 }
             }
+            $this->refer_price = $dataResult['ref_price'];
         }
-
-        $this->refer_price = $dataResult['ref_price'];
 
         return $this->refer_price;
     }

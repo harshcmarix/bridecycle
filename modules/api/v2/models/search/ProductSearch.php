@@ -398,7 +398,9 @@ class ProductSearch extends Product
                 }
             }
             if (!empty($value) && $value instanceof Product) {
-                $productModelData[$key]['price'] = $value->getReferPrice();
+
+                //$productModelData[$key]['price'] = $value->getReferPrice();
+                $value->price = $value->getReferPrice();
             }
         }
 

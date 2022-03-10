@@ -372,12 +372,14 @@ class ProductController extends ActiveController
                 if (!empty($model->shipping_country_id) && !empty($model->shipping_country_price)) {
                     $shippingCosts = explode(",", $model->shipping_country_price);
                     $shippingCountries = explode(",", $model->shipping_country_id);
-                    foreach ($shippingCountries as $key => $shippingCountry) {
-                        $shippingPrice = new ShippingPrice();
-                        $shippingPrice->product_id = $model->id;
-                        $shippingPrice->shipping_cost_id = $shippingCountry;
-                        $shippingPrice->price = $shippingCosts[$key];
-                        $shippingPrice->save(false);
+                    if (!empty($shippingCountries) && !empty($shippingCosts)) {
+                        foreach ($shippingCountries as $key => $shippingCountry) {
+                            $shippingPrice = new ShippingPrice();
+                            $shippingPrice->product_id = $model->id;
+                            $shippingPrice->shipping_cost_id = $shippingCountry;
+                            $shippingPrice->price = $shippingCosts[$key];
+                            $shippingPrice->save(false);
+                        }
                     }
                 }
             }
@@ -432,6 +434,9 @@ class ProductController extends ActiveController
 
             if (!empty($postData['available_quantity'])) {
                 $model->available_quantity = $postData['available_quantity'];
+                if ($postData['available_quantity'] == '1' && !empty($productData['Product']) && !empty($productData['Product']['type']) && $productData['Product']['type'] == 'u') {
+                    $model->status_id = ProductStatus::STATUS_APPROVED;
+                }
             }
 
             if (!empty($postData['brand_id'])) {
@@ -584,12 +589,15 @@ class ProductController extends ActiveController
                             $modelShippingPrice->delete();
                         }
                     }
-                    foreach ($shippingCountries as $key => $shippingCountry) {
-                        $shippingPrice = new ShippingPrice();
-                        $shippingPrice->product_id = $model->id;
-                        $shippingPrice->shipping_cost_id = $shippingCountry;
-                        $shippingPrice->price = $shippingCosts[$key];
-                        $shippingPrice->save(false);
+
+                    if (!empty($shippingCountries) && !empty($shippingCosts)) {
+                        foreach ($shippingCountries as $key => $shippingCountry) {
+                            $shippingPrice = new ShippingPrice();
+                            $shippingPrice->product_id = $model->id;
+                            $shippingPrice->shipping_cost_id = $shippingCountry;
+                            $shippingPrice->price = $shippingCosts[$key];
+                            $shippingPrice->save(false);
+                        }
                     }
                 }
             }
