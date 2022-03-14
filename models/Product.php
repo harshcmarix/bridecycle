@@ -177,6 +177,7 @@ class Product extends \yii\db\ActiveRecord
         return [
             [['name'], 'required', 'message' => getValidationErrorMsg('name_required', Yii::$app->language)], //'is_top_selling', 'is_top_trending', 'number'
             [['category_id'], 'required', 'message' => getValidationErrorMsg('category_id_required', Yii::$app->language)],
+            [['sub_category_id'], 'required', 'message' => getValidationErrorMsg('sub_category_id_required', Yii::$app->language)],
             [['price'], 'required', 'message' => getValidationErrorMsg('price_required', Yii::$app->language)],
             [['available_quantity'], 'required', 'message' => getValidationErrorMsg('available_quantity_required', Yii::$app->language)],
             [['gender'], 'required', 'message' => getValidationErrorMsg('gender_required', Yii::$app->language)],

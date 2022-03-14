@@ -72,19 +72,33 @@ echo Dialog::widget(
             </div>
 
             <div class="row">
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'parent_category_id')->widget(Select2::classname(), [
-                        'data' => ArrayHelper::map($parent_category, 'id', 'name'),
-                        'size' => Select2::MEDIUM,
-                        'options' => [
-                            'placeholder' => 'Select Parent Category',
-                        ],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]); ?>
-                </div>
-
+                <?php if (Yii::$app->controller->action->id == 'update' && !empty($model->parent_category_id)) { ?>
+                    <div class="col col-md-6">
+                        <?= $form->field($model, 'parent_category_id')->widget(Select2::classname(), [
+                            'data' => ArrayHelper::map($parent_category, 'id', 'name'),
+                            'size' => Select2::MEDIUM,
+                            'options' => [
+                                'placeholder' => 'Select Parent Category',
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => false
+                            ],
+                        ]); ?>
+                    </div>
+                <?php } elseif(Yii::$app->controller->action->id == 'create') { ?>
+                    <div class="col col-md-6">
+                        <?= $form->field($model, 'parent_category_id')->widget(Select2::classname(), [
+                            'data' => ArrayHelper::map($parent_category, 'id', 'name'),
+                            'size' => Select2::MEDIUM,
+                            'options' => [
+                                'placeholder' => 'Select Parent Category',
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]); ?>
+                    </div>
+                <?php } ?>
                 <div class="col col-md-6">
                     <?php
                     $disabled = false;

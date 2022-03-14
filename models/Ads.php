@@ -3,6 +3,7 @@
 namespace app\models;
 
 use yii\behaviors\TimestampBehavior;
+use Yii;
 
 /**
  * This is the model class for table "ads".
@@ -68,7 +69,7 @@ class Ads extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title'], 'required'],
+            [['title', 'status'], 'required'],
             [['category_id', 'sub_category_id', 'product_id', 'brand_id'], 'integer'],
             [['url'], 'url'],
             [['status'], 'integer'],
@@ -95,7 +96,7 @@ class Ads extends \yii\db\ActiveRecord
 //                    }",],
 
 
-            [['category_id'], 'required', 'message' => getValidationErrorMsg('category_id_required', \Yii::$app->language), 'when' => function ($model) {
+            [['category_id'], 'required', 'message' => str_replace(".","",getValidationErrorMsg('category_id_required', \Yii::$app->language)) . " " . getValidationErrorMsg('or', \Yii::$app->language) . " (" . getValidationErrorMsg('product_or_brand_required', \Yii::$app->language) . ")" . ".", 'when' => function ($model) {
                 return ($model->product_id == "" && $model->brand_id == "");
             }, 'whenClient' => "function (attribute, value) {
                         if ($('#ads-product_id').val() == '' && $('#ads-brand_id').val() == '') {

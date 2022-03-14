@@ -17,8 +17,8 @@ class AdsSearch extends Ads
     public function rules()
     {
         return [
-            [['id', 'product_id', 'brand_id', 'status'], 'integer'],
-            [['title', 'image', 'url', 'created_at', 'updated_at','category_id'], 'safe'],
+            [['id', 'product_id', 'brand_id', 'status', 'category_id'], 'integer'],
+            [['title', 'image', 'url', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -63,6 +63,7 @@ class AdsSearch extends Ads
             'status' => $this->status,
             'product_id' => $this->product_id,
             'brand_id' => $this->brand_id,
+            'category_id' => $this->category_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
