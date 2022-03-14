@@ -85,6 +85,7 @@ use yii\web\UnauthorizedHttpException;
  * @property int|null $stripe_account_connect_id
  * @property int|null $stripe_account_customer_id
  * @property int|null $stripe_bank_account_id
+ * @property string|null $notification_unread_count
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -100,6 +101,7 @@ use yii\web\UnauthorizedHttpException;
  * @property UserDevice $userDevice
  * @property UserBankDetails $bankDetail
  * @property Timezone $timezone
+
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -117,6 +119,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @var string
      */
     public $confirm_password;
+
 
     /**
      * variables for shop detail tables validation
@@ -215,7 +218,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['shop_phone_number'], 'integer', 'message' => getValidationErrorMsg('shop_phone_number_integer_validation', Yii::$app->language)],
 
             //[['mobile', 'shop_phone_number'], 'string'],
-            [['country_code'], 'string'],
+            [['country_code','notification_unread_count'], 'string'],
             [['stripe_account_connect_id', 'stripe_account_customer_id'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
 
@@ -328,6 +331,7 @@ class User extends ActiveRecord implements IdentityInterface
             'is_shop_owner' => 'Is Shop Owner',
             'verification_code' => 'Verification Code',
             'timezone_id' => 'Timezone',
+            //'notification_unread_count' => 'Notification Unread Count',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -343,7 +347,8 @@ class User extends ActiveRecord implements IdentityInterface
             'userAddresses' => 'userAddresses',
             'shopDetails' => 'shopDetails',
             'rating' => 'rating',
-            'timezone' => 'timezone'
+            'timezone' => 'timezone',
+
         ];
     }
 

@@ -16,7 +16,7 @@ use Yii;
  * @property string $date
  * @property string $name
  * @property string $time
- * @property int $timezone_id
+ * @property string $timezone_id
  * @property string $timezone_utc_time
  * @property string $created_at
  * @property string|null $updated_at
@@ -68,13 +68,14 @@ class Trial extends \yii\db\ActiveRecord
             [['sender_id'], 'integer', 'message' => getValidationErrorMsg('sender_id_integer_validation', Yii::$app->language)],
             [['receiver_id'], 'integer', 'message' => getValidationErrorMsg('receiver_id_integer_validation', Yii::$app->language)],
             [['status'], 'integer', 'message' => getValidationErrorMsg('status_id_integer_validation', Yii::$app->language)],
-            [['timezone_id'], 'integer', 'message' => getValidationErrorMsg('timezone_id_integer_validation', Yii::$app->language)],
+            //[['timezone_id'], 'integer', 'message' => getValidationErrorMsg('timezone_id_integer_validation', Yii::$app->language)],
 
-            [['date', 'time', 'created_at', 'updated_at', 'timezone_utc_time'], 'safe'],
+
+            [['date', 'time', 'created_at', 'updated_at', 'timezone_utc_time','timezone_id'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['sender_id' => 'id']],
             [['receiver_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['receiver_id' => 'id']],
-            [['timezone_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Timezone::class, 'targetAttribute' => ['timezone_id' => 'id']],
+            //[['timezone_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => Timezone::class, 'targetAttribute' => ['timezone_id' => 'id']],
         ];
     }
 

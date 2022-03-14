@@ -92,8 +92,6 @@ return [
      *  Stripe Credentials
      *
      */
-
-
     /**
      * Test/Sandbox account
      * ------------------------

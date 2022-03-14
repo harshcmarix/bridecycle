@@ -213,7 +213,7 @@ class CountryController extends ActiveController
         }
 
         $result = $this->getCountryAndGoogleCodeFromZipCode($postcode);
-
+p($result);
         // Canada = north america
         // usa = south america
         // europe = europe
@@ -274,7 +274,9 @@ class CountryController extends ActiveController
         $data['country_name'] = $data['country_google_code'] = $data['continent'] = "";
         if (!empty($zipcode)) {
             $address = urlencode($zipcode);
-            $geocode = file_get_contents('https://maps.google.com/maps/api/geocode/json?key=' . Yii::$app->params['google_map_api_key'] . '&address=' . $address . '&sensor=false');
+            $geocode = file_get_contents('https://maps.google.com/maps/api/geocode/json?key=' . Yii::$app->params['google_map_api_key'] . '&address=' . $address .'&sensor=true');
+            //$geocode = 'https://www.googleapis.com/geolocation/v1/geolocate?key=' . Yii::$app->params['google_map_api_key'] . '&address=' . $zipcode;
+
             $obj = json_decode($geocode);
 
             if (!empty($obj) && !empty($obj->results) && !empty($obj->results[0]) && !empty($obj->results[0]->address_components)) {

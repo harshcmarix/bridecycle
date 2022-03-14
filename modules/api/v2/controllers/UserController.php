@@ -2,6 +2,7 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\Notification;
 use app\models\ShopDetail;
 use app\models\UserAddress;
 use app\models\UserDevice;
@@ -230,23 +231,48 @@ class UserController extends ActiveController
 //                    'country' => 'DE',
 //                    'email' => $postData['email'],
 //                    //'name' => $postData['first_name'] . " " . $postData['last_name'],
+//                    'business_type' => 'individual',
 //                    'capabilities' => [
 //                        'card_payments' => ['requested' => true],
 //                        'transfers' => ['requested' => true],
 //                    ],
-//                    'tos_acceptance' => ['service_agreement' => 'full','date' => time(), 'ip' => '8.8.8.8'],
+////                    'company' => [
+////                        'name' => $postData['shop_name'],
+////                        'phone'=>$postData['shop_phone_number'],
+////                        'address' => [
+////                            'city' => $postData['city'],
+////                            'country' => $postData['country'],
+////                            'line1' => $postData['street'],
+////                            'line2' => "",
+////                            'postal_code' => $postData['zip_code'],
+////                            'state' => $postData['state'],
+////                        ],
+////                    ],
+//                    'individual' => [
+//                        'name' => $postData['shop_name'],
+//                        'phone'=>$postData['shop_phone_number'],
+//                        'address' => [
+//                            'city' => $postData['city'],
+//                            'country' => $postData['country'],
+//                            'line1' => $postData['street'],
+//                            'line2' => "",
+//                            'postal_code' => $postData['zip_code'],
+//                            'state' => $postData['state'],
+//                        ],
+//                    ],
+//                    'tos_acceptance' => ['service_agreement' => 'full', 'date' => time(), 'ip' => '8.8.8.8'],
 //                ]);
-//
+
 //                if (!empty($result) && !empty($result->id)) {
 //                    $model->stripe_account_connect_id = $result->id;
 //                    $model->save(false);
 //                }
-//
+
 //                $resultCust = $stripe->customers->create([
 //                    'email' => $postData['email'],
 //                    'name' => $postData['first_name'] . " " . $postData['last_name'],
 //                ]);
-//
+
 //                if (!empty($resultCust) && !empty($resultCust->id)) {
 //                    $model->stripe_account_customer_id = $resultCust->id;
 //                    $model->save(false);
@@ -458,8 +484,8 @@ class UserController extends ActiveController
      */
     public function actionView($id)
     {
-        $model = User::findOne($id);
-
+        $model = User::find()->where(['id' => $id])->one();
+//p($model);
         if (!$model instanceof User) {
             throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
@@ -478,7 +504,11 @@ class UserController extends ActiveController
         $model->bust_size = (string)$model->bust_size;
         $model->waist_size = (string)$model->waist_size;
         $model->hip_size = (string)$model->hip_size;
-
+        $model->notification_unread_count = (string)Notification::find()->where(['notification_receiver_id' => Yii::$app->user->identity->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+        //p($model);
+//        $data['notification_unread_count'] = Notification::find()->where(['notification_receiver_id' => Yii::$app->user->identity->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+        //$model = array_merge($model->toArray(), $data);
+        //$data = [$model, 'notification_unread_count' => $notification_unread_count];
         return $model;
     }
 
@@ -585,7 +615,7 @@ class UserController extends ActiveController
 //            'destination' => 'acct_1KbNoYPTg19m1wpV',
 //            'transfer_group' => 'ORDER_95',
 //        ]);
-
+//
 //        $result = $stripe->charges->create([
 //            'amount' => 100,
 //            'currency' => 'eur',
@@ -729,7 +759,7 @@ class UserController extends ActiveController
 
                 $loginDevice = UserDevice::find()->where(["user_id" => $userModel->id, "notification_token" => $postData['notification_token']])->all();
                 if (!empty($loginDevice)) {
-                    foreach ($loginDevice as $deviceRow){
+                    foreach ($loginDevice as $deviceRow) {
                         $deviceRow->delete();
                     }
 
@@ -775,7 +805,6 @@ class UserController extends ActiveController
                 }
             }
         }
-
         return $model;
     }
 
@@ -1014,6 +1043,12 @@ class UserController extends ActiveController
         $model->is_click_and_try_email_notification_on = (int)$model->is_click_and_try_email_notification_on;
 
         return $model;
+    }
+
+    public function actionStripeConnectResponse()
+    {
+        $postData = \Yii::$app->request->post();
+        p($postData);
     }
 
 }

@@ -138,7 +138,13 @@ class TrialController extends ActiveController
         $postData['Trial']['sender_id'] = Yii::$app->user->identity->id;
         $postData['Trial']['receiver_id'] = (!empty($modelProduct) && !empty($modelProduct->user_id)) ? $modelProduct->user_id : "";
 
+        $modelTimezone = Timezone::find()->where(['time_zone' => $postData['Trial']['timezone_id']])->one();
+
+        $postData['Trial']['timezone_id'] = (!empty($modelTimezone) && $modelTimezone instanceof Timezone && !empty($modelTimezone->id)) ? $modelTimezone->id : "";
+
+
         if ($model->load($postData) && $model->validate()) {
+
             $model->status = Trial::STATUS_PENDING;
 
             // Check seller has accepted/rejected trial booking if no then it throw exception start.
@@ -155,7 +161,8 @@ class TrialController extends ActiveController
             }
             // Check seller has accepted/rejected trial booking if no then it throw exception end.
 
-            $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id, $model->timezone_id, $model->time);
+            $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id, $model->timezone_id, $model->date." ".$model->time);
+            //p($resultData);
             if ($resultData == true) {
 
                 if ($model->save(false)) {
@@ -449,12 +456,14 @@ class TrialController extends ActiveController
 
         $modelTimeZoneSeller = Timezone::findOne($seller_timezone);
 
+
         if (!$modelTimeZoneSeller instanceof Timezone) {
             throw new NotFoundHttpException(getValidationErrorMsg('seller_timezone_not_exist', Yii::$app->language));
         }
 
         date_default_timezone_set("$modelTimeZoneSeller->time_zone");
         $utcTimeFromSeller = date('Y-m-d H:i:s', strtotime($buyer_selected_time . ' UTC'));
+
         $modelTimeZoneSelectedFromBuyer = Timezone::findOne($buyer_selected_timezone);
 
         if (!$modelTimeZoneSelectedFromBuyer instanceof Timezone) {
@@ -466,8 +475,10 @@ class TrialController extends ActiveController
 
         $sellerTimeString = strtotime($utcTimeFromSeller);
         $buyerTimeString = strtotime($utcTimeFromBuyer);
-
-        if (($sellerTimeString - $buyerTimeString) >= 0) {
+        //p("Seller ".date('Y-m-d H:i:s',($sellerTimeString)), 0);
+        //p("Buyer ".date('Y-m-d H:i:s',($buyerTimeString)));
+        //if (($sellerTimeString - $buyerTimeString) >= 0) {
+        if (($buyerTimeString - $sellerTimeString) >= 0) {
             return true;
         }
         return false;

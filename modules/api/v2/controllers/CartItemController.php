@@ -287,6 +287,302 @@ class CartItemController extends ActiveController
 
         $user_id = Yii::$app->user->identity->id;
 
+        $productIdsArr = explode(",", $post['product_id']);
+
+
+        $modeOrders = [];
+        if (!empty($productIdsArr)) {
+            foreach ($productIdsArr as $keyProduct => $productIdsRow) {
+
+                $modelOrder = new Order();
+                $modelOrder->user_id = $user_id;
+                $modelAddress = new UserAddress();
+                $postAddress['UserAddress'] = $post;
+                $postAddress['UserAddress']['user_id'] = $user_id;
+                $postAddress['UserAddress']['type'] = UserAddress::SHIPPING;
+                $postAddress['UserAddress']['address'] = "not set";
+
+                $modelOrderPayment = new OrderPayment();
+                $postOrderPayment['OrderPayment'] = $post;
+                if ($modelAddress->load($postAddress) && $modelAddress->validate()) {
+                    if ($modelOrderPayment->load($postOrderPayment) && $modelOrderPayment->validate()) {
+                        $modelAddressFind = UserAddress::find()->where(['user_id' => $user_id, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
+                        if (!empty($modelAddressFind) && $modelAddressFind instanceof UserAddress) {
+                            $modelOrder->user_address_id = $modelAddressFind->id;
+                        } else {
+                            $modelAddress->address = $modelAddress->street . ", " . $modelAddress->city . ", " . $modelAddress->zip_code . ", " . $modelAddress->state . ", " . $modelAddress->country;
+                            $modelAddress->save(false);
+                            $modelOrder->user_address_id = $modelAddress->id;
+                        }
+                    } else {
+                        return $modelOrderPayment;
+                    }
+                } else {
+                    return $modelAddress;
+                }
+
+                //$modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::BILLING,'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
+                $modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
+                if (empty($modelAddressBillingFind)) {
+                    $modelAddressBillingFind = $modelAddress;
+                    //$modelAddressBillingFind->type = UserAddress::BILLING;
+                    $modelAddressBillingFind->save(false);
+                } else {
+                    $modelOrder->user_address_id = $modelAddressBillingFind->id;
+                }
+
+                $productIds = [$productIdsRow];
+                $modelProducts = Product::find()->where(['IN', 'id', $productIds])->all();
+                $productSold = 0;
+                if (!empty($modelProducts)) {
+                    foreach ($modelProducts as $prodKey => $modelProductRow) {
+                        if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 && in_array($modelProductRow->status_id, [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
+                            $productSold++;
+                        }
+                    }
+                }
+                if ($productSold > 0) {
+                    throw new HttpException(403, $productSold . ' ' . getValidationErrorMsg('product_out_of_stock_from_selected_products_exception', Yii::$app->language));
+                }
+
+                $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
+
+                $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
+
+                $cartTotalShipping = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('shipping_cost');
+
+                if (empty($cartTotal) && empty($cartTotalShipping)) {
+                    $cartTotal = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('price');
+                    $cartTotalShipping = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('shipping_cost');
+                }
+
+                $subTotal = (!empty($cartTotal)) ? $cartTotal : 0.00;
+
+                // (product price + tax + shipping cost)
+                $modelOrder->total_amount = (!empty($cartTotal)) ? ($cartTotal + $cartTotalShipping) : 0.00;
+
+                $modelOrder->status = Order::STATUS_ORDER_PENDING;
+                $modelOrder->save(false);
+
+                $grandTotal = $modelOrder->total_amount;
+
+                if (!empty($modelCartItems)) {
+                    foreach ($modelCartItems as $key => $modelCartItemRow) {
+                        if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
+                            $modelOrderItem = new OrderItem();
+                            $modelOrderItem->order_id = $modelOrder->id;
+                            $modelOrderItem->product_id = $modelCartItemRow->product_id;
+                            $modelOrderItem->quantity = $modelCartItemRow->quantity;
+                            $modelOrderItem->color = $modelCartItemRow->color;
+                            $modelOrderItem->size_id = $modelCartItemRow->size_id;
+                            $modelOrderItem->size = $modelCartItemRow->size;
+                            $modelOrderItem->price = $modelCartItemRow->price;
+                            $modelOrderItem->tax = $modelCartItemRow->tax;
+                            $modelOrderItem->shipping_cost = $modelCartItemRow->shipping_cost;
+
+                            $modelOrderItem->product_name = $modelCartItemRow->product_name;
+                            $modelOrderItem->category_name = $modelCartItemRow->category_name;
+                            $modelOrderItem->subcategory_name = $modelCartItemRow->subcategory_name;
+                            $modelOrderItem->seller_id = $modelCartItemRow->seller_id;
+
+                            $modelOrderItem->save(false);
+                        }
+                    }
+
+                    $cardType = OrderPayment::CARD_TYPE_VISA;
+                    if (!empty($modelOrderPayment->card_number)) {
+                        if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_VISA_NUMBER) {
+                            $cardType = OrderPayment::CARD_TYPE_VISA;
+                        } else if (in_array($modelOrderPayment->card_number[0], [OrderPayment::CARD_TYPE_MASTER_NUMBER_ONE, OrderPayment::CARD_TYPE_MASTER_NUMBER_TWO])) {
+                            $cardType = OrderPayment::CARD_TYPE_MASTER;
+                        } else if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_AMEX_NUMBER) {
+                            $cardType = OrderPayment::CARD_TYPE_AMEX;
+                        } else if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_DISCOVER_NUMBER) {
+                            $cardType = OrderPayment::CARD_TYPE_DISCOVER;
+                        }
+                    }
+
+                    $expMontYear = explode("/", $modelOrderPayment->expiry_month_year);
+                    $cardHoderName = explode(" ", $modelOrderPayment->card_holder_name);
+
+                    $paymentRequestData = [
+                        'total' => $grandTotal,
+                        'user_id' => $user_id,
+                        'order_id' => $modelOrder->id,
+                        'card_type' => $cardType,
+                        'card_exp_month' => $expMontYear[0],
+                        'card_exp_year' => (!empty($expMontYear[1])) ? $expMontYear[1] : date('Y'),
+                        'card_first_name' => $cardHoderName[0],
+                        'card_last_name' => (!empty($cardHoderName[1])) ? $cardHoderName[1] : "User",
+                        'sub_total' => $subTotal,
+                        'user' => Yii::$app->user->identity,
+                        'user_address' => $modelAddress,
+                        'user_address_billing' => $modelAddressBillingFind,
+                    ];
+
+                    $modelOrderPayment->order_id = $modelOrder->id;
+                    $modelOrderPayment->card_type = $cardType;
+                    $modelOrderPayment->save(false);
+
+                    $response = $this->makePayment(array_merge($post, $paymentRequestData));
+                    //p($response);
+                    if (!empty($response)) {
+
+                        if (!empty($response->getState()) && $response->getState() == 'created') {
+
+                            if (!empty($modelOrder->orderItems)) {
+                                foreach ($modelOrder->orderItems as $keys => $orderItemRow) {
+                                    if (!empty($orderItemRow) && $orderItemRow instanceof OrderItem) {
+                                        $remainQty = ($orderItemRow->product->available_quantity - $orderItemRow->quantity);
+                                        $orderItemRow->product->available_quantity = (!empty($remainQty) && $remainQty > 0) ? $remainQty : 0;
+                                        $productModel = $orderItemRow->product;
+                                        if ($remainQty <= 0) {
+                                            $productModel->status_id = ProductStatus::STATUS_SOLD;
+                                        } else {
+                                            $productModel->status_id = ProductStatus::STATUS_IN_STOCK;
+                                        }
+                                        $productModel->available_quantity = $remainQty;
+                                        $productModel->save(false);
+                                        if ($orderItemRow->product->type == Product::PRODUCT_TYPE_USED) {
+                                            $modelProductTracking = new ProductTracking();
+                                            if (!empty($orderItemRow->product->product_tracking_id)) {
+                                                $modelProductTracking->parent_id = $orderItemRow->product->product_tracking_id;
+                                            }
+                                            $modelProductTracking->product_id = $orderItemRow->product_id;
+                                            $modelProductTracking->user_id = $orderItemRow->product->user_id;
+                                            $modelProductTracking->order_id = $orderItemRow->order_id;
+                                            $modelProductTracking->location = (!empty($orderItemRow->product->address) && !empty($orderItemRow->product->address->city)) ? $orderItemRow->product->address->city : '';
+                                            $modelProductTracking->price = $orderItemRow->product->getReferPrice();
+                                            $modelProductTracking->resale_date = date('Y-m-d H:i:s');
+                                            $modelProductTracking->created_at = date('Y-m-d H:i:s');
+                                            $modelProductTracking->updated_at = date('Y-m-d H:i:s');
+
+                                            $modelProductTracking->save(false);
+
+                                            if (!empty($modelProductTracking) && !empty($modelProductTracking->id) && empty($orderItemRow->product->product_tracking_id)) {
+                                                $orderItemRow->product->product_tracking_id = $modelProductTracking->id;
+                                            }
+                                        }
+
+                                        $orderItemRow->product->save(false);
+
+                                        // Generate pdf of order invoice
+                                        $generateInvoice = $this->generateInvoice($orderItemRow->id);
+
+                                        // Track for Pending payment from bridecycle to seller start
+//                                        $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
+//                                        $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
+//                                        $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
+//                                        $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
+//                                        $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
+//                                        $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
+//                                        $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->price - $orderItemRow->tax);
+//                                        $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
+//                                        $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
+//                                        $modelBridecycleToSellerPayment->save(false);
+                                        // Track for Pending payment from bridecycle to seller end
+
+                                        // Send Push notification start
+                                        $getUsers[] = $orderItemRow->product->user;
+                                        if (!empty($getUsers)) {
+                                            foreach ($getUsers as $userROW) {
+                                                if ($userROW instanceof User && ($user_id != $userROW->id)) {
+                                                    if ($userROW->is_order_placed_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
+                                                        $userDevice = $userROW->userDevice;
+
+                                                        // Insert into notification.
+                                                        $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+                                                        $modelNotification = new Notification();
+                                                        $modelNotification->owner_id = $user_id;
+                                                        $modelNotification->notification_receiver_id = $userROW->id;
+                                                        $modelNotification->ref_id = $modelOrder->id;
+                                                        $modelNotification->notification_text = $notificationText;
+                                                        $modelNotification->action = "Add";
+                                                        $modelNotification->ref_type = "Order";
+                                                        $modelNotification->product_id = $orderItemRow->product->id;
+                                                        $modelNotification->save(false);
+
+                                                        $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
+                                                        if ($userDevice->device_platform == 'android') {
+                                                            $notificationToken = array($userDevice->notification_token);
+                                                            $senderName = $modelOrder->user->first_name . " " . $modelOrder->user->last_name;
+                                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
+                                                        } else {
+                                                            $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
+                                                            $note->setBadge($badge);
+                                                            $note->setSound('default');
+                                                            $message = Yii::$app->fcm->createMessage();
+                                                            $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
+                                                            $message->setNotification($note)
+                                                                ->setData([
+                                                                    'id' => $modelNotification->ref_id,
+                                                                    'type' => $modelNotification->ref_type,
+                                                                    'message' => $notificationText,
+                                                                    'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
+                                                                ]);
+                                                            $notificationResponse = Yii::$app->fcm->send($message);
+                                                        }
+                                                    }
+
+                                                    if ($userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                                        $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // Send Push notification end
+                                    }
+                                }
+                            }
+
+                            if (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') {
+                                $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
+
+                                $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
+
+                                foreach ($modelCartItems as $key => $modelCartItemRow) {
+                                    if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
+                                        // Delete from cart
+                                        $modelCartItemRow->delete();
+                                    }
+                                }
+                            }
+                            $modelOrder->save(false);
+                        }
+                        $modelOrderPayment->payment_response = (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') ? $response : "";
+                        $modelOrderPayment->payment_status = (!empty($response->getState())) ? $response->getState() : 'failed';
+                        $modelOrderPayment->payment_id = (!empty($response->getId())) ? $response->getId() : "";
+                        $modelOrderPayment->save(false);
+                        //return $modelOrderPayment;
+                    }
+                } else {
+                    throw new NotFoundHttpException(getValidationErrorMsg('cart_item_not_exist', Yii::$app->language));
+                }
+
+                $modeOrders[] = $modelOrder;
+            }
+        }
+        return $modeOrders;
+
+    }
+
+    /**
+     * @return Order|OrderPayment|UserAddress
+     * @throws BadRequestHttpException
+     * @throws HttpException
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionCheckout_bkp1()
+    {
+        $post = Yii::$app->request->post();
+        if (empty($post) || empty($post['product_id'])) {
+            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
+        }
+
+        $user_id = Yii::$app->user->identity->id;
+
         $modelOrder = new Order();
         $modelOrder->user_id = $user_id;
         $modelAddress = new UserAddress();
@@ -555,6 +851,89 @@ class CartItemController extends ActiveController
      * @param $request
      * @return \Exception|Payment|PayPalConnectionException
      */
+    public function makePayment_bkp1($request)
+    {
+        //p($request);
+
+        $stripe = new \Stripe\StripeClient(
+            Yii::$app->params['stripe_secret_key']
+        );
+
+        $resultCust = $stripe->customers->create([
+            'email' => Yii::$app->user->identity->email,
+            'name' => Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name,
+        ]);
+
+        try {
+            $expiryMonthAndYear = explode("/", $request['expiry_month_year']);
+            $cardToken = $stripe->tokens->create([
+                'card' => [
+                    'number' => $request['card_number'],
+                    'exp_month' => $expiryMonthAndYear[0],
+                    'exp_year' => $expiryMonthAndYear[1],
+                    'cvc' => $request['cvv'],
+                ],
+            ]);
+            $cardRequest = $stripe->customers->createSource(
+                $resultCust->id,
+                ['source' => $cardToken->id]
+            );
+            $chargeResult = $stripe->charges->create([
+                'amount' => $request['total'] . '00',
+                'currency' => 'eur',
+                'customer' => $resultCust->id,
+                'source' => $cardRequest->id,
+                'description' => 'My First Test Charge (created for API docs)',
+            ]);
+
+//            $refund = $stripe->refunds->create([
+//                //'charge' => 'ch_3KayxHAvFy5NACFp0BIFRGfB',
+//                'charge' => $chargeResult->id,
+//            ]);
+//            p($refund);
+
+
+
+//            $payout = $stripe->payouts->create([
+//                'amount' => $request['total'] . '00',
+//                'currency' => 'eur',
+//            ]);
+            //p($payout);
+//            $chargeCaptureResult = $stripe->charges->capture(
+//                $chargeResult->id,
+//                //['receipt_email' => Yii::$app->user->identity->email]
+//                []
+//            );
+//p($chargeCaptureResult);
+            $transactionFee = $request['total'] * 2 / 100;
+
+            $brideCycleEarning = $request['total'] * 8 / 100;
+
+            $sellerAmount = $request['total'] - ($brideCycleEarning + $transactionFee);
+            //p($sellerAmount);
+
+
+            $transferResult = $stripe->transfers->create([
+                //'amount' => $sellerAmount,
+                'amount' => 200,
+                'currency' => 'eur',
+                'source_type' => 'bank_account',
+                'destination' => 'acct_1KbNoYPTg19m1wpV', //product_id
+                'transfer_group' => 'ORDER_' . $request['order_id'],
+            ]);
+            
+            p($transferResult);
+            p($chargeResult);
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+
+    }
+
+    /**
+     * @param $request
+     * @return \Exception|Payment|PayPalConnectionException
+     */
     public function makePayment($request)
     {
         $apiContext = new \PayPal\Rest\ApiContext(
@@ -672,7 +1051,6 @@ class CartItemController extends ActiveController
             echo "Error: " . $pce->getMessage();
         }
     }
-
 
     /**
      * @return Order|OrderPayment|UserAddress
@@ -979,17 +1357,17 @@ class CartItemController extends ActiveController
         $bridecycleAmount = (($total * Yii::$app->params['bridecycle_product_order_charge_percentage']) / 100);
 
 
-            $modelOrder = Order::find()->where(['id'=>$request['order_id']])->one();
-            if(!empty($modelOrder) && $modelOrder instanceof Order){
-                $modelOrderItems = $modelOrder->orderItems;
-                p($modelOrderItems);
-            }
-            $stripe->transfers->create([
-                'amount' => $total,
-                'currency' => 'eur',
-                'destination' => 'acct_1KKNVyAvFy5NACFp',
-                'transfer_group' => 'ORDER_'.$request['order_id'],
-            ]);
+        $modelOrder = Order::find()->where(['id' => $request['order_id']])->one();
+        if (!empty($modelOrder) && $modelOrder instanceof Order) {
+            $modelOrderItems = $modelOrder->orderItems;
+            //p($modelOrderItems);
+        }
+        $stripe->transfers->create([
+            'amount' => $total,
+            'currency' => 'eur',
+            'destination' => 'acct_1KKNVyAvFy5NACFp',
+            'transfer_group' => 'ORDER_' . $request['order_id'],
+        ]);
 
     }
 
