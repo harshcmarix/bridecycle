@@ -47,7 +47,71 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
-                    'url:ntext',
+                    //'url:ntext',
+
+
+                    [
+                        'attribute' => 'category_id',
+                        'value' => function ($model) {
+                            $categoryName = "";
+                            if (!empty($model->category) && $model->category instanceof \app\models\ProductCategory && !empty($model->category->name)) {
+                                $categoryName = $model->category->name;
+                            }
+                            return $categoryName;
+                        },
+//                        'filter' => $product,
+//                        'filterType' => GridView::FILTER_SELECT2,
+//                        'filterWidgetOptions' => [
+//                            'options' => ['prompt' => 'Select'],
+//                            'pluginOptions' => [
+//                                'allowClear' => true,
+//                            ],
+//                        ],
+//                        'header' => 'Product',
+                    ],
+
+                    [
+                        'attribute' => 'product_id',
+                        'value' => function ($model) {
+                            $productName = "";
+                            if (!empty($model->product) && $model->product instanceof \app\models\Product && !empty($model->product->name)) {
+                                $productName = $model->product->name;
+                            }
+                            return $productName;
+                        },
+//                        'filter' => $product,
+//                        'filterType' => GridView::FILTER_SELECT2,
+//                        'filterWidgetOptions' => [
+//                            'options' => ['prompt' => 'Select'],
+//                            'pluginOptions' => [
+//                                'allowClear' => true,
+//                            ],
+//                        ],
+//                        'header' => 'Product',
+                    ],
+                    [
+                        'attribute' => 'brand_id',
+                        'value' => function ($model) {
+                            $brandName = "";
+                            if (!empty($model->brand) && $model->brand instanceof \app\models\Brand && !empty($model->brand->name)) {
+                                $brandName = $model->brand->name;
+                            }
+                            return $brandName;
+                        },
+//                        'filter' => $brand,
+//                        'filterType' => GridView::FILTER_SELECT2,
+//                        'filterWidgetOptions' => [
+//                            'options' => ['prompt' => 'Select'],
+//                            'pluginOptions' => [
+//                                'allowClear' => true,
+//                            ],
+//                        ],
+//                        'header' => 'Brand',
+                    ],
+
+
+
+
                     [
                         'attribute' => 'status',
                         'value' => function ($model) {

@@ -55,11 +55,13 @@ class AdsController extends Controller
 
         $product = ArrayHelper::map(Product::find()->where(['IN', 'status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]])->all(), 'id', 'name');
         $brand = ArrayHelper::map(Brand::find()->where(['IN', 'status', [Brand::STATUS_APPROVE]])->all(), 'id', 'name');
+        $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->andWhere(['IN', 'status', [ProductCategory::STATUS_APPROVE]])->all(), 'id', 'name');
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'product' => $product,
-            'brand' => $brand
+            'brand' => $brand,
+            'category' => $category
         ]);
     }
 
@@ -203,7 +205,7 @@ class AdsController extends Controller
                 $model->image = $old_image;
             }
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, "Ads updated successfully.");
             } else {
                 Yii::$app->session->setFlash(Growl::TYPE_DANGER, "Error while updating Ads.");

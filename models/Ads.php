@@ -10,11 +10,11 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property string $title
  * @property string $image
- * @property string $url
- * @property int $category_id
- * @property int $sub_category_id
- * @property int $product_id
- * @property int $brand_id
+ * @property string|null $url
+ * @property int|null $category_id
+ * @property int|null $sub_category_id
+ * @property int|null $product_id
+ * @property int|null $brand_id
  * @property int $status '1'=>'inactive','2'=>'active'
  * @property string $created_at
  * @property string|null $updated_at
@@ -68,7 +68,7 @@ class Ads extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'url'], 'required'],
+            [['title'], 'required'],
             [['category_id', 'sub_category_id', 'product_id', 'brand_id'], 'integer'],
             [['url'], 'url'],
             [['status'], 'integer'],
@@ -86,13 +86,23 @@ class Ads extends \yii\db\ActiveRecord
                     }
                 }",],
 
-            [['url'], 'required', 'message' => '{attribute} cannot be blank or (Product or Brand cannot be blank).', 'when' => function ($model) {
-                return ($model->product_id == "" && $model->category_id == "");
+//            [['url'], 'required', 'message' => '{attribute} cannot be blank or (Product or Brand cannot be blank).', 'when' => function ($model) {
+//                return ($model->product_id == "" && $model->category_id == "");
+//            }, 'whenClient' => "function (attribute, value) {
+//                        if ($('#ads-product_id').val() == '' && $('#ads-brand_id').val() == '') {
+//                            return $('#ads-url').val() == '';
+//                        }
+//                    }",],
+
+
+            [['category_id'], 'required', 'message' => getValidationErrorMsg('category_id_required', \Yii::$app->language), 'when' => function ($model) {
+                return ($model->product_id == "" && $model->brand_id == "");
             }, 'whenClient' => "function (attribute, value) {
                         if ($('#ads-product_id').val() == '' && $('#ads-brand_id').val() == '') {
-                            return $('#ads-url').val() == '';   
+                            return $('#ads-category_id').val() == '';   
                         }
                     }",],
+
 
             [['category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['category_id' => 'id']],
             [['sub_category_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => ProductCategory::class, 'targetAttribute' => ['sub_category_id' => 'id']],

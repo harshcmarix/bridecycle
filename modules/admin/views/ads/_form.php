@@ -79,21 +79,12 @@ echo Dialog::widget(
             </div>
 
             <div class="row">
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'url')->textInput() ?>
-                </div>
+<!--                <div class="col col-md-6">-->
+<!--                    --><?php //echo $form->field($model, 'url')->textInput() ?>
+<!--                </div>-->
 
-                <div class="col col-md-6">
-                    <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
-                        'data' => Ads::ARR_ADS_STATUS,
-                        'options' => ['placeholder' => 'Select Status', 'value' => 1],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]); ?>
-                </div>
-            </div>
-            <div class="row">
+
+
                 <div class="col col-md-6">
                     <?= $form->field($model, 'category_id')->widget(\kartik\select2\Select2::classname(), [
                         'data' => $category,
@@ -103,20 +94,34 @@ echo Dialog::widget(
                         ],
                     ])->label('Category'); ?>
                 </div>
+
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'sub_category_id')->widget(\kartik\select2\Select2::classname(), [
-                        'data' => $subCategory,
-                        'options' => ['placeholder' => 'Select Sub Category'],
+                    <?php echo $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => $brand,
+                        'options' => ['placeholder' => 'Select Brand'],
                         'pluginOptions' => [
                             'allowClear' => true
                         ],
-                    ])->label('Sub category'); ?>
+                    ])->label('Brand'); ?>
                 </div>
+
+            </div>
+            <div class="row">
+
+<!--                <div class="col col-md-6">-->
+<!--                    --><?php //echo $form->field($model, 'sub_category_id')->widget(\kartik\select2\Select2::classname(), [
+//                        'data' => $subCategory,
+//                        'options' => ['placeholder' => 'Select Sub Category'],
+//                        'pluginOptions' => [
+//                            'allowClear' => true
+//                        ],
+//                    ])->label('Sub category'); ?>
+<!--                </div>-->
             </div>
 
             <div class="row">
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'product_id')->widget(\kartik\select2\Select2::classname(), [
+                    <?php echo $form->field($model, 'product_id')->widget(\kartik\select2\Select2::classname(), [
                         'data' => $product,
                         'options' => ['placeholder' => 'Select Product'],
                         'pluginOptions' => [
@@ -124,14 +129,15 @@ echo Dialog::widget(
                         ],
                     ])->label('Product'); ?>
                 </div>
+
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'brand_id')->widget(\kartik\select2\Select2::classname(), [
-                        'data' => $brand,
-                        'options' => ['placeholder' => 'Select Brand'],
+                    <?= $form->field($model, 'status')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => Ads::ARR_ADS_STATUS,
+                        'options' => ['placeholder' => 'Select Status', 'value' => $model->status],
                         'pluginOptions' => [
                             'allowClear' => true
                         ],
-                    ])->label('Brand'); ?>
+                    ]); ?>
                 </div>
             </div>
 

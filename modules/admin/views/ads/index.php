@@ -60,16 +60,36 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'header' => '',
                     ],
+//                    [
+//                        'attribute' => 'url',
+//                        'value' => function ($model) {
+//                            $url = '';
+//                            if ($model instanceof Ads) {
+//                                $url = $model->url;
+//                            }
+//                            return $url;
+//                        },
+//                        'header' => '',
+//                    ],
+
                     [
-                        'attribute' => 'url',
+                        'attribute' => 'category_id',
                         'value' => function ($model) {
-                            $url = '';
-                            if ($model instanceof Ads) {
-                                $url = $model->url;
+                            $categoryName = "";
+                            if (!empty($model->category) && $model->category instanceof \app\models\ProductCategory && !empty($model->category->name)) {
+                                $categoryName = $model->category->name;
                             }
-                            return $url;
+                            return $categoryName;
                         },
-                        'header' => '',
+                        'filter' => $category,
+                        'filterType' => GridView::FILTER_SELECT2,
+                        'filterWidgetOptions' => [
+                            'options' => ['prompt' => 'Select'],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                            ],
+                        ],
+                        'header' => 'Category',
                     ],
                     [
                         'attribute' => 'product_id',

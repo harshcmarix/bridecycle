@@ -18,7 +18,7 @@ class AdsSearch extends Ads
     {
         return [
             [['id', 'product_id', 'brand_id', 'status'], 'integer'],
-            [['title', 'image', 'url', 'created_at', 'updated_at'], 'safe'],
+            [['title', 'image', 'url', 'created_at', 'updated_at','category_id'], 'safe'],
         ];
     }
 
