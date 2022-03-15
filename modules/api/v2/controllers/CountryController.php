@@ -271,6 +271,86 @@ class CountryController extends ActiveController
      * @throws NotFoundHttpException
      * @throws \yii\base\InvalidConfigException
      */
+    public function actionCheckFeasibilityCheckout()
+    {
+        $post = \Yii::$app->request->post();
+        if (empty($post) || empty($post['product_id'])) {
+            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
+        }
+        if (empty($post) || empty($post['zip_code'])) {
+            throw new BadRequestHttpException(getValidationErrorMsg('post_code_required', Yii::$app->language));
+        }
+
+        $postcode = $post['zip_code'];
+        $modelProduct = Product::findOne($post['product_id']);
+        if (!$modelProduct instanceof Product) {
+            throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
+        }
+
+        $modelsShippingCountry = [];
+        if (!empty($modelProduct) && $modelProduct instanceof Product) {
+            $modelsShippingCountry = ShippingPrice::find()->where(['product_id' => $modelProduct->id])->all();
+        }
+
+        $result = $this->getCountryAndGoogleCodeFromZipCode($postcode);
+//p($result);
+        // Canada = north america
+        // usa = south america
+        // europe = europe
+        // asia = asia
+        // other = all remaining are consider as other
+
+        //$continent = 'Europe';
+        $continent = '';
+
+        if (!empty($result) && !empty($result['continent'])) {
+
+            if ($result['continent'] == 'North America') {
+                $continent = ShippingCost::CONTINENT_CANADA;
+            } elseif ($result['continent'] == 'South America') {
+                $continent = ShippingCost::CONTINENT_USA;
+            } elseif ($result['continent'] == 'Europe') {
+                $continent = ShippingCost::CONTINENT_EUROPE;
+            } elseif ($result['continent'] == 'Asia') {
+                $continent = ShippingCost::CONTINENT_ASIA;
+            } else {
+                $continent = ShippingCost::CONTINENT_OTHER;
+            }
+        }
+        if ($result['continent'] == 'Europe') {
+            $continent = 'Europe';
+        } else {
+            $continent = ShippingCost::CONTINENT_OTHER;
+        }
+
+
+        $data['is_feasible'] = 0;
+        $data['shipping_cost'] = 0.0;
+        $data['shipping_country'] = "";
+        if (!empty($result) && !empty($result['country_name']) && !empty($result['country_google_code']) && !empty($modelsShippingCountry)) {
+            foreach ($modelsShippingCountry as $key => $modelShippingCountryRow) {
+                if (!empty($modelShippingCountryRow) && $modelShippingCountryRow instanceof ShippingPrice) {
+                    if (!empty($modelShippingCountryRow) && !empty($modelShippingCountryRow->shippingCost) && $modelShippingCountryRow->shippingCost instanceof ShippingCost) {
+                        if (strtolower($modelShippingCountryRow->shippingCost->name) == strtolower($continent)) {
+                            $data['is_feasible'] = 1;
+                            $data['shipping_cost'] = $modelShippingCountryRow->price;
+                            $data['shipping_country'] = "(" . $continent . ")";
+                        }
+                    }
+                }
+            }
+        }
+        $data['shipping_cost_symbol'] = mb_substr(Yii::$app->formatter->asCurrency($data['shipping_cost']), 0, 1);
+        $output[] = $data;
+        return $output;
+    }
+
+    /**
+     * @return array
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionCheckFeasibility()
     {
         $post = \Yii::$app->request->post();

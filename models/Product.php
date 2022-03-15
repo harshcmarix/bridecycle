@@ -178,7 +178,7 @@ class Product extends \yii\db\ActiveRecord
             [['name'], 'required', 'message' => getValidationErrorMsg('name_required', Yii::$app->language)], //'is_top_selling', 'is_top_trending', 'number'
             [['category_id'], 'required', 'message' => getValidationErrorMsg('category_id_required', Yii::$app->language)],
             [['sub_category_id'], 'required', 'message' => getValidationErrorMsg('sub_category_id_required', Yii::$app->language)],
-            [['price'], 'required', 'message' => getValidationErrorMsg('price_required', Yii::$app->language)],
+            //[['price'], 'required', 'message' => getValidationErrorMsg('price_required', Yii::$app->language)],
             [['available_quantity'], 'required', 'message' => getValidationErrorMsg('available_quantity_required', Yii::$app->language)],
             [['gender'], 'required', 'message' => getValidationErrorMsg('gender_required', Yii::$app->language)],
             [['is_cleaned'], 'required', 'message' => getValidationErrorMsg('is_cleaned_required', Yii::$app->language)],
@@ -195,8 +195,8 @@ class Product extends \yii\db\ActiveRecord
             [['dress_type_id'], 'integer', 'message' => getValidationErrorMsg('address_type_id_integer_validation', Yii::$app->language)],
             [['product_tracking_id'], 'integer', 'message' => getValidationErrorMsg('product_tracking_id_integer_validation', Yii::$app->language)],
 
-            [['price'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('price_number_validation', Yii::$app->language)],
-            [['height'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
+            //[['price'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('price_number_validation', Yii::$app->language)],
+            //[['height'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
             [['weight'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('weight_number_validation', Yii::$app->language)],
             [['width'], 'number', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('width_number_validation', Yii::$app->language)],
             [['brand_id'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('brand_id_required', Yii::$app->language)],
@@ -222,7 +222,7 @@ class Product extends \yii\db\ActiveRecord
             [['is_receipt', 'is_admin_favourite'], 'safe'],
 
             [['images'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('product_images_required', Yii::$app->language)],
-            [['shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('shipping_country_price_required', Yii::$app->language)],
+            //[['shipping_country_price'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => getValidationErrorMsg('shipping_country_price_required', Yii::$app->language)],
 
             [['images'], 'file', 'maxFiles' => 5, 'message' => getValidationErrorMsg('product_max_file_upload_validation', Yii::$app->language)],
             [['receipt'], 'file', 'maxFiles' => 5, 'message' => getValidationErrorMsg('product_receipt_max_file_upload_validation', Yii::$app->language)],

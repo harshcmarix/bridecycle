@@ -88,6 +88,9 @@ return [
     'google_play_store_subscription_package_name' => 'com.bridecycle',
     'google_play_store_subscription_app_name' => 'bridecycle',
 
+    'app_store_subscription_shared_secret_key'=> '15ac9910d3a84fa89cad2d9736b3391f', // For Production/sandbox
+    // Make changes in cronjob controller from admin for production Mode
+
     /**
      *  Stripe Credentials
      *
@@ -118,5 +121,7 @@ return [
     'stripe_secret_key' => 'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw',
 
     'other_support_language' => ['english', 'german'],
+
+
 
 ];
