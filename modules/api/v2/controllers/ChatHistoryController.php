@@ -16,6 +16,7 @@ use yii\rest\ActiveController;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
+use yii\web\HttpException;
 
 /**
  * ChatHistoryController implements the CRUD actions for ChatHistory model.
@@ -267,7 +268,7 @@ class ChatHistoryController extends ActiveController
                             if ($userDevice->device_platform == 'android') {
                                 $notificationToken = array($userDevice->notification_token);
                                 $senderName = $model->fromUser->first_name . " " . $model->fromUser->last_name;
-                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName,$modelNotification);
+                                $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
                             } else {
                                 $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
                                 $note->setBadge($badge);
@@ -286,15 +287,36 @@ class ChatHistoryController extends ActiveController
                         }
 
                         if ($userROW->is_new_message_email_notification_on == User::IS_NOTIFICATION_ON) {
-                            $message = $model->fromUser->first_name . " " . $model->fromUser->last_name . " Send new message\n" . $model->message;
+                            if (!in_array($model->message_type, [ChatHistory::MESSAGE_TYPE_IMAGE, ChatHistory::MESSAGE_TYPE_VIDEO])) {
+                                $message = $model->fromUser->first_name . " " . $model->fromUser->last_name . " Send new message\n" . $model->message;
+                            } else {
+                                $message = $model->fromUser->first_name . " " . $model->fromUser->last_name . " Send new message\n";
+                            }
 
-//                            if (!empty($userROW->email)) {
+
+                            if (!empty($userROW->email)) {
 //                                Yii::$app->mailer->compose('api/addSendNewMessage', ['sender' => $model->fromUser, 'receiver' => $userROW, 'message' => $message])
 //                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
 //                                    ->setTo($userROW->email)
 //                                    ->setSubject('Send new message')
 //                                    ->send();
-//                            }
+
+
+                                try {
+                                    Yii::$app->mailer->compose('api/addSendNewMessage', ['receiver' => $userROW, 'message' => $message])
+                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                        ->setTo($userROW->email)
+                                        ->setSubject('New message received')
+                                        ->send();
+                                } catch (HttpException $e) {
+                                    //echo "Error: " . $e->getMessage();
+                                    echo "Error: ";
+
+                                }
+
+
+                            }
+
 
                         }
                     }
@@ -329,7 +351,7 @@ class ChatHistoryController extends ActiveController
             return $model;
         }
 
-        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist',Yii::$app->language));
+        throw new NotFoundHttpException(getValidationErrorMsg('page_not_exist', Yii::$app->language));
     }
 
 }

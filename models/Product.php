@@ -823,7 +823,7 @@ class Product extends \yii\db\ActiveRecord
     public function getReferPrice()
     {
 
-        $dataResult['ref_price'] = $this->price;
+        $dataResult['ref_price'] = $this->price + $this->option_price;
         $this->refer_price = $dataResult['ref_price'];
 //p(Yii::$app->user->identity->id);
         if (!empty(Yii::$app->user) && !empty(Yii::$app->user->identity) && !empty(Yii::$app->user->identity->id)) {

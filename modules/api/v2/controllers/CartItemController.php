@@ -159,9 +159,11 @@ class CartItemController extends ActiveController
 
         if ($model->load($cartIteam) && $model->validate()) {
 
-            $cartIteamAlreadyAdded = CartItem::find()->where(['product_id' => $model->product_id, 'user_id' => $model->user_id, 'is_checkout' => CartItem::IS_CHECKOUT_NO, 'color' => $model->color, 'size' => $model->size])->one();
+            $cartIteamAlreadyAdded = CartItem::find()->where(['product_id' => $model->product_id, 'user_id' => $model->user_id, 'is_checkout' => CartItem::IS_CHECKOUT_NO, 'color' => $model->color, 'size_id' => $model->size])->one();
+            //p($cartIteamAlreadyAdded);
             if (!empty($cartIteamAlreadyAdded) && $cartIteamAlreadyAdded instanceof CartItem) {
-                throw new BadRequestHttpException(getValidationErrorMsg('product_already_added_to_cart_exception', Yii::$app->language));
+                //throw new Exception(getValidationErrorMsg('product_already_added_to_cart_exception', Yii::$app->language));
+                throw new httpException(403, getValidationErrorMsg('product_already_added_to_cart_exception', Yii::$app->language));
             }
 
             $productData = Product::find()->where(['id' => $model->product_id])->one();
@@ -173,7 +175,8 @@ class CartItemController extends ActiveController
             //$basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->price)) ? $productData->price * $model->quantity : 0;
             $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->getReferPrice())) ? $productData->getReferPrice() * $model->quantity : 0;
             $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
-            $model->price = ($basePrice + $taxPrice);
+            //$model->price = ($basePrice + $taxPrice);
+            $model->price = ($basePrice - $taxPrice);
             $model->tax = $taxPrice;
 
             // Update Size data start
@@ -205,7 +208,7 @@ class CartItemController extends ActiveController
      */
     public function actionUpdate($id)
     {
-        $model = CartItem::findOne($id);
+        $model = CartItem::find()->where(['id' => $id])->one();
         if (!$model instanceof CartItem) {
             throw new NotFoundHttpException(getValidationErrorMsg('cart_item_not_exist', Yii::$app->language));
         }
@@ -217,7 +220,8 @@ class CartItemController extends ActiveController
 
             $basePrice = (!empty($productData) && $productData instanceof Product && !empty($productData->getReferPrice())) ? $productData->getReferPrice() * $model->quantity : 0;
             $taxPrice = (!empty($productData) && $productData instanceof Product && !empty($productData->option_price)) ? $productData->option_price * $model->quantity : 0;
-            $model->price = ($basePrice + $taxPrice);
+            //$model->price = ($basePrice + $taxPrice);
+            $model->price = ($basePrice - $taxPrice);
             $model->tax = ($taxPrice);
 
             $model->product_name = (!empty($productData) && $productData instanceof Product && !empty($productData->name)) ? $productData->name : 0;
@@ -389,6 +393,37 @@ class CartItemController extends ActiveController
                         }
                     }
 
+                    // Send Email notification to buyer for order placed start
+                    //$modelOrder
+                    $getUsersArr[] = $modelOrder->user;
+                    if (!empty($getUsersArr)) {
+                        foreach ($getUsersArr as $getUsersArrROW) {
+                            if ($getUsersArrROW instanceof User && ($user_id == $getUsersArrROW->id)) {
+
+                                if (!empty($getUsersArrROW->email) && $getUsersArrROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                    $messageString = "Thank you for create an order.\nYour order placed.";
+
+                                    if (!empty($getUsersArrROW->email)) {
+                                        try {
+                                            Yii::$app->mailer->compose('api/addNewOrder', ['receiver' => $getUsersArrROW, 'message' => $messageString])
+                                                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                ->setTo($getUsersArrROW->email)
+                                                ->setSubject('Order placed')
+                                                ->send();
+                                        } catch (HttpException $e) {
+                                            //echo "Error: " . $e->getMessage();
+                                            echo "Error: ";
+
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //Send Email notification to buyer for order placed end
+
+
                     $cardType = OrderPayment::CARD_TYPE_VISA;
                     if (!empty($modelOrderPayment->card_number)) {
                         if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_VISA_NUMBER) {
@@ -430,6 +465,38 @@ class CartItemController extends ActiveController
 
                         if (!empty($response->getState()) && $response->getState() == 'created') {
 
+
+                            // Send Email notification to buyer for order payment done start
+                            //$modelOrder
+                            $getUsersPaymentDoneArr[] = $modelOrder->user;
+                            if (!empty($getUsersPaymentDoneArr)) {
+                                foreach ($getUsersPaymentDoneArr as $getUsersPaymentDoneArrROW) {
+                                    if ($getUsersPaymentDoneArrROW instanceof User && ($user_id == $getUsersPaymentDoneArrROW->id)) {
+
+                                        if (!empty($getUsersPaymentDoneArrROW->email) && $getUsersPaymentDoneArrROW->is_payment_done_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                            $messageStringPaymentDone = "Thank you for create payment for your order.\n Your payment done for order ID:" . $modelOrder->id;
+
+                                            if (!empty($getUsersPaymentDoneArrROW->email)) {
+                                                try {
+                                                    Yii::$app->mailer->compose('api/orderPayment', ['receiver' => $getUsersPaymentDoneArrROW, 'message' => $messageStringPaymentDone])
+                                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                        ->setTo($getUsersArrROW->email)
+                                                        ->setSubject('Order Payment Done')
+                                                        ->send();
+                                                } catch (HttpException $e) {
+                                                    //echo "Error: " . $e->getMessage();
+                                                    echo "Error: ";
+
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // Send Email notification to buyer for order payment done end
+
+
                             if (!empty($modelOrder->orderItems)) {
                                 foreach ($modelOrder->orderItems as $keys => $orderItemRow) {
                                     if (!empty($orderItemRow) && $orderItemRow instanceof OrderItem) {
@@ -470,19 +537,19 @@ class CartItemController extends ActiveController
                                         $generateInvoice = $this->generateInvoice($orderItemRow->id);
 
                                         // Track for Pending payment from bridecycle to seller start
-//                                        $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
-//                                        $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
-//                                        $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
-//                                        $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
-//                                        $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
-//                                        $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
-//                                        $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->price - $orderItemRow->tax);
-//                                        $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
-//                                        $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
-//                                        $modelBridecycleToSellerPayment->save(false);
+                                        $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
+                                        $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
+                                        $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
+                                        $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
+                                        $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
+                                        $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
+                                        $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->price - $orderItemRow->tax);
+                                        $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
+                                        $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
+                                        $modelBridecycleToSellerPayment->save(false);
                                         // Track for Pending payment from bridecycle to seller end
 
-                                        // Send Push notification start
+                                        // Send Push notification start for seller
                                         $getUsers[] = $orderItemRow->product->user;
                                         if (!empty($getUsers)) {
                                             foreach ($getUsers as $userROW) {
@@ -491,7 +558,7 @@ class CartItemController extends ActiveController
                                                         $userDevice = $userROW->userDevice;
 
                                                         // Insert into notification.
-                                                        $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+                                                        $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order for your product " . $orderItemRow->product->name;
                                                         $modelNotification = new Notification();
                                                         $modelNotification->owner_id = $user_id;
                                                         $modelNotification->notification_receiver_id = $userROW->id;
@@ -524,13 +591,29 @@ class CartItemController extends ActiveController
                                                         }
                                                     }
 
-                                                    if ($userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                                        $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+                                                    if (!empty($userROW->email) && $userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                                        $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order for your product " . $orderItemRow->product->name;
+
+                                                        if (!empty($userROW->email)) {
+                                                            try {
+                                                                Yii::$app->mailer->compose('api/addNewOrder', ['receiver' => $userROW, 'message' => $message])
+                                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                                    ->setTo($userROW->email)
+                                                                    ->setSubject('New order place for your product!')
+                                                                    ->send();
+                                                            } catch (HttpException $e) {
+                                                                //echo "Error: " . $e->getMessage();
+                                                                echo "Error: ";
+
+                                                            }
+
+                                                        }
                                                     }
+
                                                 }
                                             }
                                         }
-                                        // Send Push notification end
+                                        // Send Push notification end for seller
                                     }
                                 }
                             }
@@ -777,7 +860,7 @@ class CartItemController extends ActiveController
                                                 $userDevice = $userROW->userDevice;
 
                                                 // Insert into notification.
-                                                $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+                                                $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order for your product " . $orderItemRow->product->name;
                                                 $modelNotification = new Notification();
                                                 $modelNotification->owner_id = $user_id;
                                                 $modelNotification->notification_receiver_id = $userROW->id;
@@ -810,9 +893,25 @@ class CartItemController extends ActiveController
                                                 }
                                             }
 
-                                            if ($userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                                $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+                                            if (!empty($userROW->email) && $userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                                $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order for your product " . $orderItemRow->product->name;
+
+                                                if (!empty($userROW->email)) {
+                                                    try {
+                                                        Yii::$app->mailer->compose('api/addNewOrder', ['receiver' => $userROW, 'message' => $message])
+                                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                            ->setTo($userROW->email)
+                                                            ->setSubject('New order place for your product!')
+                                                            ->send();
+                                                    } catch (HttpException $e) {
+                                                        //echo "Error: " . $e->getMessage();
+                                                        echo "Error: ";
+
+                                                    }
+
+                                                }
                                             }
+
                                         }
                                     }
                                 }
@@ -893,7 +992,6 @@ class CartItemController extends ActiveController
 //            p($refund);
 
 
-
 //            $payout = $stripe->payouts->create([
 //                'amount' => $request['total'] . '00',
 //                'currency' => 'eur',
@@ -921,7 +1019,7 @@ class CartItemController extends ActiveController
                 'destination' => 'acct_1KbNoYPTg19m1wpV', //product_id
                 'transfer_group' => 'ORDER_' . $request['order_id'],
             ]);
-            
+
             p($transferResult);
             p($chargeResult);
         } catch (Exception $e) {
@@ -1263,7 +1361,7 @@ class CartItemController extends ActiveController
                                                 $userDevice = $userROW->userDevice;
 
                                                 // Insert into notification.
-                                                $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+                                                $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order for your product " . $orderItemRow->product->name;
                                                 $modelNotification = new Notification();
                                                 $modelNotification->owner_id = $user_id;
                                                 $modelNotification->notification_receiver_id = $userROW->id;
@@ -1296,9 +1394,25 @@ class CartItemController extends ActiveController
                                                 }
                                             }
 
-                                            if ($userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                                $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order";
+                                            if (!empty($userROW->email) && $userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
+                                                $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order for your product " . $orderItemRow->product->name;
+
+                                                if (!empty($userROW->email)) {
+                                                    try {
+                                                        Yii::$app->mailer->compose('api/addNewOrder', ['receiver' => $userROW, 'message' => $message])
+                                                            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+                                                            ->setTo($userROW->email)
+                                                            ->setSubject('New order place for your product!')
+                                                            ->send();
+                                                    } catch (HttpException $e) {
+                                                        //echo "Error: " . $e->getMessage();
+                                                        echo "Error: ";
+
+                                                    }
+
+                                                }
                                             }
+
                                         }
                                     }
                                 }
@@ -1408,8 +1522,8 @@ class CartItemController extends ActiveController
         if (!empty($modelOrderItem) && $modelOrderItem instanceof OrderItem) {
             $modelProduct = $modelOrderItem->product;
             $modelseller = $modelOrderItem->product->user;
-            if ((!empty($modelOrderItem->product->user) && $modelOrderItem->product->user->is_shop_owner == '1' && $modelOrderItem->product->type == 'n' && !empty($modelOrderItem->product->user->ShopDetails))) {
-                $modelsellerDetail = $modelOrderItem->product->user->ShopDetails;
+            if ((!empty($modelOrderItem->product->user) && $modelOrderItem->product->user->is_shop_owner == '1' && $modelOrderItem->product->type == 'n' && !empty($modelOrderItem->product->user->shopDetail))) {
+                $modelsellerDetail = $modelOrderItem->product->user->shopDetail;
             } else {
                 $modelsellerDetail = $modelOrderItem->product->user;
             }

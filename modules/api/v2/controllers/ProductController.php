@@ -171,7 +171,7 @@ class ProductController extends ActiveController
             throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
         }
 
-        $model->price = $model->getReferPrice();
+        $model->price = ($model->getReferPrice() - $model->option_price);
         return $model;
     }
 
@@ -407,6 +407,8 @@ class ProductController extends ActiveController
         $model->gender = Product::GENDER_FOR_FEMALE;
 
         $productSizes = $model->productSizes;
+
+        $model->receipt = $model->productReceipt;
 
         if ($model->load($productData) && $model->validate()) {
             $model->user_id = Yii::$app->user->identity->id;
@@ -737,7 +739,7 @@ class ProductController extends ActiveController
      */
     public function actionDeleteProductReceipt($id)
     {
-        $model = ProductReceipt::findOne($id);
+        $model = ProductReceipt::find()->where(['id' => $id])->one();
 
         if (empty($model) && !$model instanceof ProductReceipt) {
             throw new NotFoundHttpException(getValidationErrorMsg('product_receipt_not_exist', Yii::$app->language));

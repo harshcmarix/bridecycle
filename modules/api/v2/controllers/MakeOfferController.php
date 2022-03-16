@@ -151,7 +151,7 @@ class MakeOfferController extends ActiveController
         if (empty($post) || empty($post['product_id'])) {
             throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
-        $modelProduct = Product::find()->where(['id'=>$postData['MakeOffer']['product_id']])->one();
+        $modelProduct = Product::find()->where(['id' => $postData['MakeOffer']['product_id']])->one();
 
         if (!$modelProduct instanceof Product) {
             throw new NotFoundHttpException(getValidationErrorMsg('product_not_exist', Yii::$app->language));
@@ -199,7 +199,7 @@ class MakeOfferController extends ActiveController
                                     $userDevice = $userROW->userDevice;
 
                                     // Insert into notification.
-                                    $notificationText = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $notificationText = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . str_replace(".",",",Yii::$app->formatter->asCurrency($model->offer_amount));
                                     $action = "Add";
                                     $modelNotification = new Notification();
                                     $modelNotification->owner_id = $sender->id;
@@ -234,7 +234,7 @@ class MakeOfferController extends ActiveController
                                 }
 
                                 if (!empty($userROW->email) && $userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                    $message = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $message = $sender->first_name . " " . $sender->last_name . " has been sent you offer for your product " . ucfirst($modelProduct->name) . " at " . str_replace(".", ",", Yii::$app->formatter->asCurrency($model->offer_amount));
                                     $subject = "Sent an offer for your product";
                                     if (!empty($userROW->email)) {
                                         try {
@@ -244,7 +244,8 @@ class MakeOfferController extends ActiveController
                                                 ->setSubject($subject)
                                                 ->send();
                                         } catch (HttpException $e) {
-                                            echo "Error: " . $e->getMessage();
+                                            //echo "Error: " . $e->getMessage();
+                                            echo "Error: ";
                                         }
                                     }
                                 }
@@ -294,7 +295,6 @@ class MakeOfferController extends ActiveController
             }
 
 
-
             // Send Push Notification Start
             if (!empty($offerData['MakeOffer']['status']) && in_array($offerData['MakeOffer']['status'], [MakeOffer::STATUS_ACCEPT, MakeOffer::STATUS_REJECT])) {
                 $getUsers[] = User::find()->where(['id' => $model->sender_id])->one();
@@ -307,10 +307,10 @@ class MakeOfferController extends ActiveController
 
                                 if (!empty($userDevice) && !empty($userDevice->notification_token)) {
                                     // Insert into notification.
-                                    $notificationText = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $notificationText = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . str_replace(".",",",Yii::$app->formatter->asCurrency($model->offer_amount));
                                     $action = "Reject";
                                     if ($offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {
-                                        $notificationText = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                        $notificationText = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . str_replace(".",",",Yii::$app->formatter->asCurrency($model->offer_amount));
                                         $action = "Accept";
                                     }
                                     $modelNotification = new Notification();
@@ -347,10 +347,10 @@ class MakeOfferController extends ActiveController
                             }
 
                             if (!empty($userROW->email) && $userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                $message = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                $message = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . str_replace(".",",",Yii::$app->formatter->asCurrency($model->offer_amount));
                                 $subject = "Your product offer rejected by seller";
                                 if ($offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {
-                                    $message = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . Yii::$app->formatter->asCurrency($model->offer_amount);
+                                    $message = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . str_replace(".",",",Yii::$app->formatter->asCurrency($model->offer_amount));
                                     $subject = "Your product offer accepted by seller";
                                 }
 

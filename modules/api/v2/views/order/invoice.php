@@ -15,13 +15,50 @@
             <td>
                 <h1 style="font-size:28px;margin-bottom:15px;color:#191919;margin-top: 0px;">Bride Cycle</h1>
                 <p style="font-size: 13px;margin: 3px 0px;">
-                    Name: <?php echo isset($sellerDetail->shop_name) ? $sellerDetail->shop_name : '-' ?></p>
+                    <?php
+                    $sellerName = "-";
+                    $sellerContact = "-";
+                    $sellerEmail = "-";
+
+                    if (!empty($sellerDetail) && $sellerDetail instanceof \app\models\ShopDetail) {
+                        if (!empty($sellerDetail->shop_name)) {
+                            $sellerName = $sellerDetail->shop_name;
+                        }
+
+                        if (!empty($sellerDetail->shop_phone_number)) {
+                            $sellerContact = $sellerDetail->shop_phone_number;
+                        }
+
+                        if (!empty($sellerDetail->shop_email)) {
+                            $sellerEmail = $sellerDetail->shop_email;
+                        }
+                    } elseif (!empty($sellerDetail) && $sellerDetail instanceof \app\modules\api\v2\models\User) {
+                        if (!empty($sellerDetail->first_name)) {
+                            $sellerName = $sellerDetail->first_name . " " . $sellerDetail->last_name;
+                        } elseif (!empty($sellerDetail->username)) {
+                            $sellerName = $sellerDetail->username;
+                        } else {
+                            $sellerName = 'Bridecycle User';
+                        }
+
+                        if (!empty($sellerDetail->country_code) && !empty($sellerDetail->mobile)) {
+                            $sellerContact = $sellerDetail->country_code . $sellerDetail->mobile;
+                        }
+
+                        if (!empty($sellerDetail->email)) {
+                            $sellerEmail = $sellerDetail->email;
+                        }
+                    }
+                    ?>
+                    Name: <?php echo $sellerName ?></p>
                 <p style="font-size: 13px;margin: 3px 0px;">
-                    Phone: <?php echo isset($sellerDetail->shop_phone_number) ? $sellerDetail->shop_phone_number : '-' ?></p>
+                    Phone: <?php echo $sellerContact ?></p>
                 <p style="font-size: 13px;margin: 3px 0px;">
-                    Email: <?php echo isset($sellerDetail->shop_email) ? $sellerDetail->shop_email : '-' ?></p>
+                    Email: <?php echo $sellerEmail ?></p>
                 <address style="width:100%;font-style:normal;font-size: 13px;">
-                    Address: <?php echo isset($sellerAddress->address) ? $sellerAddress->address . ', ' . $sellerAddress->state . ', ' . $sellerAddress->country : '-' ?></address>
+                    <!--                    Address: -->
+                    <?php //echo isset($sellerAddress->address) ? $sellerAddress->address . ', ' . $sellerAddress->state . ', ' . $sellerAddress->country : '-' ?><!--</address>-->
+                    Address: <?php echo isset($sellerAddress->address) ? $sellerAddress->address . ', ' . $sellerAddress->country : '-' ?></address>
             </td>
             <td>
                 <img src="data:image/png;base64,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

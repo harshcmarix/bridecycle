@@ -99,6 +99,7 @@ use yii\web\UnauthorizedHttpException;
  * @property UserPurchasedSubscriptions[] $userPurchasedSubscriptions
  * @property UserDevices[] $userDevices
  * @property UserDevice $userDevice
+ * @property ShopDetail $shopDetail
  * @property UserBankDetails $bankDetail
  * @property Timezone $timezone
 
@@ -382,7 +383,6 @@ class User extends ActiveRecord implements IdentityInterface
                     $shop_cover_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@shopCoverPictureAbsolutePath') . '/' . $value->shop_cover_picture;
                 }
                 $value->shop_cover_picture = $shop_cover_picture;
-
             }
         }
 
