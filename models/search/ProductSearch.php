@@ -5,7 +5,7 @@ namespace app\models\search;
 use app\models\ProductStatus;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Product;
+use app\modules\admin\models\Product;
 use Yii;
 
 /**

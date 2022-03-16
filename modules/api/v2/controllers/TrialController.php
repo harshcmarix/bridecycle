@@ -161,7 +161,7 @@ class TrialController extends ActiveController
             }
             // Check seller has accepted/rejected trial booking if no then it throw exception end.
 
-            $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id, $model->timezone_id, $model->date." ".$model->time);
+            $resultData = $this->getTwoTimeZoneDifference($modelProduct->user->timezone_id, $model->timezone_id, $model->date . " " . $model->time);
             //p($resultData);
             if ($resultData == true) {
 
@@ -432,7 +432,7 @@ class TrialController extends ActiveController
      */
     public function actionGetTimezoneList($is_from_clik_try = 0)
     {
-        $models = Timezone::find()->all();
+        $models = Timezone::find()->orderBy(['time_zone' => SORT_ASC])->all();
         if ($is_from_clik_try == 1) {
             if (!empty($models)) {
                 foreach ($models as $key => $modelsRow) {

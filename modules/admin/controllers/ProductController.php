@@ -17,10 +17,11 @@ use app\models\ShippingCost;
 use app\models\ShippingPrice;
 use app\models\Sizes;
 use app\models\Trial;
+use app\modules\api\v2\models\UserAddress;
 use app\modules\api\v2\models\User;
 use Imagine\Image\Box;
 use Yii;
-use app\models\Product;
+use app\modules\admin\models\Product;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\imagine\Image;
@@ -183,6 +184,8 @@ class ProductController extends Controller
         $ReceiptImages = UploadedFile::getInstancesByName('receipt');
         $model->receipt = $ReceiptImages;
 
+        $model->gender = Product::GENDER_FOR_FEMALE;
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
             if (!empty($postData['option_show_only'])) {
@@ -305,6 +308,32 @@ class ProductController extends Controller
                         $modelImageReceipt->save(false);
                     }
                 }
+
+                // For address Start
+                $addressData['UserAddress'] = $postData;
+
+                $addressModel = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['street' => $addressData['UserAddress']['street'], 'city' => $addressData['UserAddress']['city'], 'state' => $addressData['UserAddress']['state'], 'country' => $addressData['UserAddress']['country'], 'zip_code' => $addressData['UserAddress']['zip_code']])->one();
+                if (empty($addressModel)) {
+                    $modelAddress = new UserAddress();
+                    $modelAddress->street = $addressData['UserAddress']['street'];
+                    $modelAddress->city = $addressData['UserAddress']['city'];
+                    $modelAddress->state = $addressData['UserAddress']['state'];
+                    $modelAddress->country = $addressData['UserAddress']['country'];
+                    $modelAddress->zip_code = $addressData['UserAddress']['zip_code'];
+                } else {
+                    $modelAddress = UserAddress::find()->where(['id' => $addressModel->id])->one();
+                }
+                $modelAddress->user_id = Yii::$app->user->identity->id;
+                $modelAddress->type = UserAddress::TYPE_SHOP;
+                //if ($modelAddress->load($addressData) && $modelAddress->validate()) {
+                    $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->state . ", " . $modelAddress->country . ", " . $modelAddress->zip_code;
+                    $modelAddress->type = UserAddress::TYPE_SHOP;
+                    if ($modelAddress->save(false)) {
+                        $model->address_id = $modelAddress->id;
+                        $model->save(false);
+                    }
+                //}
+                // For address End
             }
 
             \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'Product created successfully.');
@@ -362,6 +391,8 @@ class ProductController extends Controller
         $ReceiptImages = UploadedFile::getInstancesByName('receipt');
         $model->receipt = $ReceiptImages;
 
+        $model->gender = Product::GENDER_FOR_FEMALE;
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
             if (!empty($postData['option_show_only'])) {
@@ -484,6 +515,32 @@ class ProductController extends Controller
                         $modelImageReceipt->save(false);
                     }
                 }
+
+                // For address Start
+                $addressData['UserAddress'] = $postData;
+
+                $addressModel = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['street' => $addressData['UserAddress']['street'], 'city' => $addressData['UserAddress']['city'], 'state' => $addressData['UserAddress']['state'], 'country' => $addressData['UserAddress']['country'], 'zip_code' => $addressData['UserAddress']['zip_code']])->one();
+                if (empty($addressModel)) {
+                    $modelAddress = new UserAddress();
+                    $modelAddress->street = $addressData['UserAddress']['street'];
+                    $modelAddress->city = $addressData['UserAddress']['city'];
+                    $modelAddress->state = $addressData['UserAddress']['state'];
+                    $modelAddress->country = $addressData['UserAddress']['country'];
+                    $modelAddress->zip_code = $addressData['UserAddress']['zip_code'];
+                } else {
+                    $modelAddress = UserAddress::find()->where(['id' => $addressModel->id])->one();
+                }
+                $modelAddress->user_id = Yii::$app->user->identity->id;
+                $modelAddress->type = UserAddress::TYPE_SHOP;
+                //if ($modelAddress->load($addressData) && $modelAddress->validate()) {
+                    $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->state . ", " . $modelAddress->country . ", " . $modelAddress->zip_code;
+                    $modelAddress->type = UserAddress::TYPE_SHOP;
+                    if ($modelAddress->save(false)) {
+                        $model->address_id = $modelAddress->id;
+                        $model->save(false);
+                    }
+                //}
+                // For address End
             }
 
             \Yii::$app->session->setFlash(Growl::TYPE_SUCCESS, 'New product created successfully.');
@@ -514,6 +571,17 @@ class ProductController extends Controller
     {
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
+
+        $modelAddress = $model->address;
+        //p($modelAddress);
+        if (!empty($modelAddress) && $modelAddress instanceof UserAddress) {
+            $model->street = $modelAddress->street;
+            $model->city = $modelAddress->city;
+            $model->state = $modelAddress->state;
+            $model->country = $modelAddress->country;
+            $model->zip_code = $modelAddress->zip_code;
+        }
+        //p($model);
 
         $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
@@ -731,6 +799,42 @@ class ProductController extends Controller
                         $modelImageReceipt->save(false);
                     }
                 }
+
+                // For address Start
+                $addressData['UserAddress'] = $postData;
+
+                $idUser = Yii::$app->user->identity->id;
+                if (!empty($oldUserId)) {
+                    $idUser = $oldUserId;
+                }
+                //p($idUser,0);
+                //p($addressData['UserAddress'],0);
+
+                $addressModel = UserAddress::find()->where(['user_id' => $idUser])->andWhere(['street' => $addressData['UserAddress']['street'], 'city' => $addressData['UserAddress']['city'], 'state' => $addressData['UserAddress']['state'], 'country' => $addressData['UserAddress']['country'], 'zip_code' => $addressData['UserAddress']['zip_code']])->one();
+                //p($addressModel);
+                if (empty($addressModel)) {
+                    $modelAddress = new UserAddress();
+                    $modelAddress->street = $addressData['UserAddress']['street'];
+                    $modelAddress->city = $addressData['UserAddress']['city'];
+                    $modelAddress->state = $addressData['UserAddress']['state'];
+                    $modelAddress->country = $addressData['UserAddress']['country'];
+                    $modelAddress->zip_code = $addressData['UserAddress']['zip_code'];
+                } else {
+                    $modelAddress = UserAddress::find()->where(['id' => $addressModel->id])->one();
+                }
+                $modelAddress->user_id = $idUser;
+                $modelAddress->type = UserAddress::TYPE_SHOP;
+
+                //if ($modelAddress->load($addressData) && $modelAddress->validate()) {
+
+                $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->state . ", " . $modelAddress->country . ", " . $modelAddress->zip_code;
+                $modelAddress->type = UserAddress::TYPE_SHOP;
+                if ($modelAddress->save(false)) {
+                    $model->address_id = $modelAddress->id;
+                    $model->save(false);
+                }
+                //}
+                // For address End
 
                 // Status of product is Approve then color/brand status approved START.
                 if (in_array($model->status_id, [ProductStatus::STATUS_APPROVED])) {
@@ -956,6 +1060,17 @@ class ProductController extends Controller
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
 
+        $modelAddress = $model->address;
+        //p($modelAddress);
+        if (!empty($modelAddress) && $modelAddress instanceof UserAddress) {
+            $model->street = $modelAddress->street;
+            $model->city = $modelAddress->city;
+            $model->state = $modelAddress->state;
+            $model->country = $modelAddress->country;
+            $model->zip_code = $modelAddress->zip_code;
+        }
+        //p($model);
+
         //$shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
         $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
@@ -1170,6 +1285,44 @@ class ProductController extends Controller
                         $modelImageReceipt->save(false);
                     }
                 }
+
+
+                // For address Start
+                $addressData['UserAddress'] = $postData;
+
+                $idUser = Yii::$app->user->identity->id;
+                if (!empty($oldUserId)) {
+                    $idUser = $oldUserId;
+                }
+                //p($idUser,0);
+                //p($addressData['UserAddress'],0);
+
+                $addressModel = UserAddress::find()->where(['user_id' => $idUser])->andWhere(['street' => $addressData['UserAddress']['street'], 'city' => $addressData['UserAddress']['city'], 'state' => $addressData['UserAddress']['state'], 'country' => $addressData['UserAddress']['country'], 'zip_code' => $addressData['UserAddress']['zip_code']])->one();
+                //p($addressModel);
+                if (empty($addressModel)) {
+                    $modelAddress = new UserAddress();
+                    $modelAddress->street = $addressData['UserAddress']['street'];
+                    $modelAddress->city = $addressData['UserAddress']['city'];
+                    $modelAddress->state = $addressData['UserAddress']['state'];
+                    $modelAddress->country = $addressData['UserAddress']['country'];
+                    $modelAddress->zip_code = $addressData['UserAddress']['zip_code'];
+                } else {
+                    $modelAddress = UserAddress::find()->where(['id' => $addressModel->id])->one();
+                }
+                $modelAddress->user_id = $idUser;
+                $modelAddress->type = UserAddress::TYPE_SHOP;
+
+                //if ($modelAddress->load($addressData) && $modelAddress->validate()) {
+
+                $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->state . ", " . $modelAddress->country . ", " . $modelAddress->zip_code;
+                $modelAddress->type = UserAddress::TYPE_SHOP;
+                if ($modelAddress->save(false)) {
+                    $model->address_id = $modelAddress->id;
+                    $model->save(false);
+                }
+                //}
+                // For address End
+
 
                 // Status of product is Approve then color/brand status approved START.
                 if (in_array($model->status_id, [ProductStatus::STATUS_APPROVED])) {

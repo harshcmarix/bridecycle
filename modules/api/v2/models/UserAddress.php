@@ -36,6 +36,18 @@ class UserAddress extends ActiveRecord
     const SHOP = '3';
 
     /**
+     * Constants
+     */
+    const TYPE_BILLING = '1';
+    const TYPE_SHIPPING = '2';
+    const TYPE_SHOP = '3';
+
+    const IS_ADDRESS_PRIMARY_YES = "1";
+    const IS_ADDRESS_PRIMARY_NO = "0";
+
+
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()

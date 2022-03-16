@@ -15,13 +15,10 @@ use kartik\file\FileInput;
 echo Dialog::widget(
     ['overrideYiiConfirm' => true]
 );
-
 ?>
 
 <div class="box box-default">
-
     <div class="box-body">
-
         <div class="tailor-form">
             <?php $form = ActiveForm::begin(); ?>
             <div class="row">
@@ -47,10 +44,10 @@ echo Dialog::widget(
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <?= $form->field($model, 'latitude')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'latitude')->textInput(['type' => 'number']) ?>
                 </div>
                 <div class="col-md-6">
-                    <?= $form->field($model, 'longitude')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'longitude')->textInput(['type' => 'number']) ?>
                 </div>
             </div>
             <div class="row">
@@ -151,13 +148,20 @@ echo Dialog::widget(
 
 <script type="text/javascript">
 
+    $("#w1").submit(function () {
+        if (!$(this).find('has-error')) { // in case you have some validation
+            $(this).find(":submit").prop('disabled', true);
+            $("*").css("cursor", "wait"); // in case you want to show a waiting cursor after submit
+        }
+    });
+
     //image delete using rejax
     var image_empty = <?php echo Tailor::IMAGE_EMPTY?>;
     var image_not_empty = <?php echo Tailor::IMAGE_NOT_EMPTY?>;
     $('.shop_image-delete-link').on('click', function (e) {
         e.preventDefault();
         var deleteUrl = $(this).attr('delete-url');
-        var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
+        var result = krajeeDialog.confirm('Are you sure you want to delete this image?', function (result) {
             if (result) {
                 $('.image-class').hide();
                 $('#tailor-is_shop_image_empty').val(image_empty);
@@ -168,7 +172,7 @@ echo Dialog::widget(
     $('.shop_image-voucher-delete-link').on('click', function (e) {
         e.preventDefault();
         var deleteUrl = $(this).attr('delete-url');
-        var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
+        var result = krajeeDialog.confirm('Are you sure you want to delete this image?', function (result) {
             if (result) {
                 $('.image-class-voucher').hide();
                 $('#tailor-is_voucher_image_empty').val(image_empty);

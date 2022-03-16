@@ -216,7 +216,7 @@ class UserController extends ActiveController
                 $model->is_verify_user = User::IS_VERIFY_USER_YES;
             }
 
-            $model->is_subscribed_user = (integer)User::IS_VERIFY_USER_YES;
+            $model->is_subscribed_user = (integer)User::IS_VERIFY_USER_NO;
 
             if ($model->save()) {
 

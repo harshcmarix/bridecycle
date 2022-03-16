@@ -447,6 +447,25 @@ class ProductController extends ActiveController
 
             if (!empty($postData['is_cleaned'])) {
                 $model->is_cleaned = $postData['is_cleaned'];
+
+                if ($postData['is_cleaned'] == Product::IS_CLEANED_NO) {
+
+                    if (!empty($model->productReceipt)) {
+                        foreach ($model->productReceipt as $keyRec => $receiptRow) {
+                            if (!empty($receiptRow) && $receiptRow instanceof ProductReceipt) {
+                                $receiptFileName = $receiptRow->file;
+                                if (!empty($receiptFileName) && file_exists(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $receiptFileName)) {
+                                    unlink(Yii::getAlias('@productReceiptImageRelativePath') . "/" . $receiptFileName);
+                                }
+
+                                if (!empty($receiptFileName) && file_exists(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $receiptFileName)) {
+                                    unlink(Yii::getAlias('@productReceiptImageThumbRelativePath') . "/" . $receiptFileName);
+                                }
+                                $receiptRow->delete();
+                            }
+                        }
+                    }
+                }
             }
 
             if (!empty($postData['height'])) {

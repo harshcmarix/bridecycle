@@ -85,7 +85,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
             <div class="row">
                 <div class="col col-md-2">
-                    <?= $form->field($model, 'height')->textInput() ?>
+                    <?= $form->field($model, 'height')->textInput()->label('Dress Length') ?>
                 </div>
                 <div class="col col-md-2">
                     <?= $form->field($model, 'weight')->textInput() ?>
@@ -220,15 +220,15 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="row">
-                <div class="col col-md-4">
-                    <?= $form->field($model, 'gender')->widget(Select2::classname(), [
-                        'data' => $model->arrGender,
-                        'pluginOptions' => [
-                            'allowClear' => false
-                        ],
-                    ]); ?>
-                </div>
-                <div class="col col-md-4">
+<!--                <div class="col col-md-2">-->
+<!--                    --><?php //echo $form->field($model, 'gender')->widget(Select2::classname(), [
+//                        'data' => $model->arrGender,
+//                        'pluginOptions' => [
+//                            'allowClear' => false
+//                        ],
+//                    ]); ?>
+<!--                </div>-->
+                <div class="col col-md-2">
                     <?= $form->field($model, 'is_admin_favourite')->widget(Select2::classname(), [
                         'data' => ['0' => 'No', '1' => 'Yes'],
                         'pluginOptions' => [
@@ -236,7 +236,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
-                <div class="col col-md-4">
+                <div class="col col-md-2">
                     <?php
                     $disabledProductType = false;
                     if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
@@ -251,10 +251,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ])->label('Conditions'); ?>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col col-md-6">
+                <div class="col col-md-2">
                     <?= $form->field($model, 'is_cleaned')->widget(Select2::classname(), [
                         'data' => $model->arrIsCleaned,
                         'options' => ['placeholder' => 'Select'],
@@ -263,7 +261,18 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
-                <div class="col col-md-6">
+
+                <div class="col col-md-3">
+                    <?= $form->field($model, 'is_receipt')->widget(Select2::class, [
+                        'data' => $model->arrIsCleaned,
+                        'options' => ['placeholder' => 'Select'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]); ?>
+                </div>
+
+                <div class="col col-md-3">
                     <?php
                     $disabled = false;
                     if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->status_id) && in_array($model->status_id, [\app\models\ProductStatus::STATUS_APPROVED, \app\models\ProductStatus::STATUS_IN_STOCK])) {
@@ -278,7 +287,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ],
                     ]); ?>
                 </div>
+
             </div>
+
+<!--            <div class="row">-->
+<!--                -->
+<!--            </div>-->
 
             <div class="row">
                 <div class="col col-md-6 receiptUpload"
@@ -331,6 +345,34 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         ], // default options
                     ]);
                 } ?>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-4">
+                    <div class="form-group">
+                        <?= $form->field($model, 'street')->textInput() ?>
+                    </div>
+                </div>
+                <div class="col col-md-2">
+                    <div class="form-group">
+                        <?= $form->field($model, 'city')->textInput() ?>
+                    </div>
+                </div>
+                <div class="col col-md-2">
+                    <div class="form-group">
+                        <?= $form->field($model, 'state')->textInput() ?>
+                    </div>
+                </div>
+                <div class="col col-md-2">
+                    <div class="form-group">
+                        <?= $form->field($model, 'country')->textInput() ?>
+                    </div>
+                </div>
+                <div class="col col-md-2">
+                    <div class="form-group">
+                        <?= $form->field($model, 'zip_code')->textInput() ?>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -415,7 +457,16 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             })
         });
 
-        $('#product-is_cleaned').change(function () {
+        // $('#product-is_cleaned').change(function () {
+        //     var valueData = $(this).val();
+        //     if (valueData == 1) {
+        //         $('.receiptUpload').show();
+        //     } else {
+        //         $('.receiptUpload').hide();
+        //     }
+        // });
+
+        $('#product-is_receipt').change(function () {
             var valueData = $(this).val();
             if (valueData == 1) {
                 $('.receiptUpload').show();

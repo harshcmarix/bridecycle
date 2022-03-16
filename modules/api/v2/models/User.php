@@ -251,7 +251,7 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['profile_picture'], 'required', 'on' => [self::PROFILE_PICTURE_UPDATE], 'message' => getValidationErrorMsg('profile_picture_required', Yii::$app->language)],
 
-            [['shop_name', 'shop_email', 'shop_logo'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]],
+            [['shop_name', 'shop_email'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]], // 'shop_logo'
 
             [['weight'], 'number', 'message' => getValidationErrorMsg('weight_number_validation', Yii::$app->language)],
             [['height'], 'number', 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
