@@ -22,11 +22,11 @@ function p($value, $exit = 1)
  */
 function getValidationErrorMsg($attribute, $language = 'english')
 {
-    if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+    if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english' || \Yii::$app->language == 'en') {
         $language = 'english';
     }
 
-    if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+    if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german' || \Yii::$app->language == 'de') {
         $language = 'german';
     }
     //$messageLanguage = (!empty(\Yii::$app->language)) ? \Yii::$app->language : $language;
