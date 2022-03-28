@@ -6,6 +6,7 @@ use app\models\Notification;
 use app\models\ShopDetail;
 use app\models\UserAddress;
 use app\models\UserDevice;
+use app\modules\admin\models\Product;
 use app\modules\api\v2\models\ChangePassword;
 use app\modules\api\v2\models\ForgotPassword;
 use app\modules\api\v2\models\Login;
@@ -142,7 +143,7 @@ class UserController extends ActiveController
 
         if (empty($postData['is_login_from']) && !empty($postData['is_shop_owner']) && $postData['is_shop_owner'] == User::SHOP_OWNER_YES) {
             $model->scenario = User::SCENARIO_SHOP_OWNER;
-        } elseif (!empty($postData['is_login_from']) && $postData['is_login_from'] == "") {
+        } elseif (!empty($postData['is_login_from']) && in_array($postData['is_login_from'], [User::IS_LOGIN_FROM_FACEBOOK, User::IS_LOGIN_FROM_APPLE, User::IS_LOGIN_FROM_GOOGLE])) {
             $model->scenario = User::SCENARIO_USER_CREATE_FROM_SOCIAL;
         } else {
             $model->scenario = User::SCENARIO_USER_CREATE;
@@ -156,6 +157,15 @@ class UserController extends ActiveController
         if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_FACEBOOK) {
             if (empty($postData) || empty($postData['facebook_id'])) {
                 throw new BadRequestHttpException(getValidationErrorMsg('facebook_id_required', Yii::$app->language));
+            } else {
+                //$user = User::find()->where(['facebook_id' => $postData['facebook_id']])->andWhere(['email'=>$postData['email']])->one();
+                $user = User::find()->where(['facebook_id' => $postData['facebook_id']])->andWhere(['email' => $postData['email']])->one();
+                if (!empty($user) && $user instanceof User) {
+                    throw new HttpException(409, getValidationErrorMsg('unique_facebook_create_user', Yii::$app->language));
+                } else {
+                    $user = User::find()->where(['email' => $postData['email']])->one();
+                    $model = $user;
+                }
             }
             $model->facebook_id = $postData['facebook_id'];
         }
@@ -163,6 +173,14 @@ class UserController extends ActiveController
         if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_APPLE) {
             if (empty($postData) || empty($postData['apple_id'])) {
                 throw new BadRequestHttpException(getValidationErrorMsg('apple_id_required', Yii::$app->language));
+            } else {
+                $user = User::find()->where(['apple_id' => $postData['apple_id']])->orWhere(['email' => $postData['email']])->one();
+                if (!empty($user) && $user instanceof User) {
+                    throw new HttpException(409, getValidationErrorMsg('unique_apple_create_user', Yii::$app->language));
+                } else {
+                    $user = User::find()->where(['email' => $postData['email']])->one();
+                    $model = $user;
+                }
             }
             $model->apple_id = $postData['apple_id'];
         }
@@ -170,6 +188,14 @@ class UserController extends ActiveController
         if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_GOOGLE) {
             if (empty($postData) || empty($postData['google_id'])) {
                 throw new BadRequestHttpException(getValidationErrorMsg('google_id_required', Yii::$app->language));
+            } else {
+                $user = User::find()->where(['google_id' => $postData['google_id']])->andWhere(['email' => $postData['email']])->one();
+                if (!empty($user) && $user instanceof User) {
+                    throw new HttpException(409, getValidationErrorMsg('unique_google_create_user', Yii::$app->language));
+                } else {
+                    $user = User::find()->where(['email' => $postData['email']])->one();
+                    $model = $user;
+                }
             }
             $model->google_id = $postData['google_id'];
         }
@@ -218,7 +244,7 @@ class UserController extends ActiveController
 
             $model->is_subscribed_user = (integer)User::IS_VERIFY_USER_NO;
 
-            if ($model->save()) {
+            if ($model->save(false)) {
 
 //                // Create stripe Account Start
 //                $stripe = new \Stripe\StripeClient(
@@ -692,6 +718,51 @@ class UserController extends ActiveController
                 throw new ForbiddenHttpException(getValidationErrorMsg('forbidden_exception', Yii::$app->language));
             }
 
+
+//            $stripe = new \Stripe\StripeClient(
+//                Yii::$app->params['stripe_secret_key']
+//            );
+//
+//
+//            $tokenRes = $stripe->tokens->create([
+//                'bank_account' => [
+//                    'country' => 'DE',
+//                    'currency' => 'eur',
+//                    'account_holder_name' => $model->user->first_name." ".$model->user->last_name,
+//                    'account_holder_type' => 'individual',
+//                    //'routing_number' => '110000000',
+//                    'account_number' => 'DE89370400440532013000',
+//                ],
+//            ]);
+//
+//            //p($tokenRes);
+//
+//            $res = $stripe->accounts->createExternalAccount(
+//                    $model->user->stripe_account_connect_id,
+//                    [
+//                        'external_account' => $tokenRes->id,
+//                    ]
+//                );
+//
+//
+////                $stripe->accounts->createExternalAccount(
+////
+////                [
+////                    //'external_account' => 'btok_1Kh9NPAvFy5NACFpggp3lsvx',
+////                    'external_account' => [
+////                        'object'=>'bank_account',
+////                        'country'=>'DE',
+////                        'currency'=>'eur',
+////                        'account_holder_name'=>$model->user->first_name." ".$model->user->last_name,
+////                        'account_holder_type'=>'individual',
+////                        'account_number'=>'DE89370400440532013000'
+////                    ],
+////                ]
+////            );
+//
+//p($res);
+
+
             //update notification token
             if (!empty($postData['notification_token']) && !empty($postData['device_platform']) && !empty(Yii::$app->user->identity->id)) {
                 $loginDevice = UserDevice::find()->where(['notification_token' => $postData['notification_token'], 'device_platform' => $postData['device_platform'], 'user_id' => Yii::$app->user->identity->id])->one();
@@ -885,6 +956,7 @@ class UserController extends ActiveController
      */
     public function actionVerifyProfileVerificationCode()
     {
+
         $postData = \Yii::$app->request->post();
         if (empty($postData) || empty($postData['verification_code'])) {
             throw new BadRequestHttpException(getValidationErrorMsg('verification_code_required', Yii::$app->language));
@@ -920,9 +992,19 @@ class UserController extends ActiveController
         $model->profile_picture = $profile_picture;
 
         $data['is_bank_detail_available'] = $model->isBankDetailAvailable;
+
+        //$stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://203.109.113.157/bridecycle/web/api/v2/user/stripe-connect-response&client_id=ca_L4rzio6oCTXedreN1BVfcElzYzgQQQAp&state=onbrd_LId75eDtdMffGAp06EJemNofIu___"' . $model->id . '"&stripe_user[country]=DE');
+        // Testmode URL
+
+
+        $stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?response_type=code&client_id=ca_L4rzio6oCTXedreN1BVfcElzYzgQQQAp&scope=read_write&redirect_uri=http://203.109.113.157/bridecycle/web/api/v2/user/stripe-connect-response&state=' . $model->id . '&stripe_user[email]=' . $model->email . '&stripe_user[country]=DE');
+
+        // Livemode URL
+        //$stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?redirect_uri=https://connect.stripe.com/hosted/oauth&client_id=ca_L4rzTsUAjbt0UXJw4wYt6vK4LxaGKVPu&state=onbrd_LNcCP9FQk3i0Il7MTrXBmYKP7S___' . $model->id . '&stripe_user[country]=DE');
+        //$stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?response_type=code&client_id=ca_L4rzTsUAjbt0UXJw4wYt6vK4LxaGKVPu&stripe_user[country]=DE&user_id='.$model->id);
+
+        $data['stripe_connect_url'] = $stripeConnectURL;
         $dataResult = array_merge($model->toArray(), $data);
-        //p($dataResult);
-        //return $model;
         return $dataResult;
     }
 
@@ -1045,10 +1127,87 @@ class UserController extends ActiveController
         return $model;
     }
 
+    /**
+     * @return bool
+     * @throws \Stripe\Exception\OAuth\OAuthErrorException
+     */
     public function actionStripeConnectResponse()
     {
-        $postData = \Yii::$app->request->post();
-        p($postData);
+        $getData = \Yii::$app->request->get();
+
+        \Stripe\Stripe::setApiKey(Yii::$app->params['stripe_secret_key']);
+
+        $response = \Stripe\OAuth::token([
+            'grant_type' => 'authorization_code',
+            'code' => $getData['code'],
+        ]);
+
+        try {
+            // Access the connected account id in the response
+            $connected_account_id = (!empty($response) && !empty($response->stripe_user_id)) ? $response->stripe_user_id : "";
+
+            // $data['post'] = json_encode($postData);
+            // $data['get'] = json_encode($getData);
+
+            //\Yii::info("\n------------------------get data--------------------------\n" .$data['get'] . "\n-----------------------------------------------post data--------------------------\n" . $data['post'] . "\n----------------------------------------------", 'stripe_connect_account');
+
+
+            $userId = (!empty($getData) && !empty($getData['state'])) ? $getData['state'] : "";
+
+            $stripeAccountId = $connected_account_id;
+
+            if (!empty($userId) && !empty($stripeAccountId)) {
+                $modelUser = User::find()->where(['id' => $userId])->one();
+                if (!empty($modelUser) && $modelUser instanceof User) {
+                    $modelUser->stripe_account_connect_id = $stripeAccountId;
+                    $modelUser->save(false);
+
+//                        $stripe = new \Stripe\StripeClient(
+//                            Yii::$app->params['stripe_secret_key']
+//                        );
+//
+//                        $bankAccountResponse = $stripe->accounts->allExternalAccounts(
+//                        //$stripeAccountId,
+//                            $modelUser->stripe_account_connect_id,
+//                            ['object' => 'bank_account', 'limit' => 3]
+//                        );
+//
+//                        //p($bankAccountResponse);
+//
+//                        if (!empty($bankAccountResponse) && !empty($bankAccountResponse['data'])) {
+//                            foreach ($bankAccountResponse['data'] as $key => $bankAccountResponseRow) {
+//                                //p($bankAccountResponseRow);
+//
+//                                $responseRetriveBankDetail = $stripe->accounts->retrieveExternalAccount(
+//                                //'acct_1KgRvhPABUdKTa3N',
+//                                    $bankAccountResponseRow->account,
+//                                    //'ba_1KgU4NAvFy5NACFpxR2gAeyn',
+//                                    $bankAccountResponseRow->id,
+//                                    []
+//                                );
+//
+//                                p($responseRetriveBankDetail);
+//
+//
+//
+//
+//                                $modelUser->stripe_bank_account_id = $responseRetriveBankDetail->id;
+//                            }
+//                            $modelUser->save(false);
+//                        }
+                    return true;
+                }
+            }
+            return false;
+        } catch (\Exception $e) {
+            echo "Error : " . $e->getMessage();
+        }
+        return false;
+    }
+
+    public function actionStripeEndpoint()
+    {
+
     }
 
 }

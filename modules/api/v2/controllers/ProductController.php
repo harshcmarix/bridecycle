@@ -58,6 +58,7 @@ class ProductController extends ActiveController
             'delete' => ['POST', 'DELETE'],
             'add-product-receipt' => ['POST', 'OPTIONS'],
             'size-list' => ['GET', 'HEAD', 'OPTIONS'],
+            //'seller-sell-product-list' => ['GET', 'HEAD', 'OPTIONS'],
         ];
     }
 
@@ -69,7 +70,7 @@ class ProductController extends ActiveController
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'] = [
             'class' => CompositeAuth::class,
-            'only' => ['index-list', 'view', 'view-product', 'create', 'update', 'delete', 'add-product-receipt', 'delete-product-receipt'],//'index', 'size-list'
+            'only' => ['index-list', 'view', 'view-product', 'create', 'update', 'delete', 'add-product-receipt', 'delete-product-receipt'],//'index', 'size-list' ,  'seller-sell-product-list'
             'authMethods' => [
                 HttpBasicAuth::class,
                 HttpBearerAuth::class,
@@ -106,6 +107,7 @@ class ProductController extends ActiveController
         unset($actions['delete']);
         unset($actions['delete-product-receipt']);
         unset($actions['view']);
+        unset($actions['seller-sell-product-list']);
 
         return $actions;
     }
@@ -788,5 +790,19 @@ class ProductController extends ActiveController
         }
         return $model->searchForMobile($requestParams);
     }
+
+//    public function actionSellerSellProductList()
+//    {
+//
+//        if (!empty($productIds)) {
+//            $query = OrderItem::find();
+//            $query->innerJoin('orders', 'orders.id=order_items.order_id');
+//            $query->where(['in', 'order_items.product_id', $productIds]);
+//            $query->select(['orders.*','order_items.*']);
+//            $orderModels = $query->orderBy(['orders.created_at' => SORT_DESC])->all();
+//
+//            return $orderModels;
+//        }
+//    }
 
 }

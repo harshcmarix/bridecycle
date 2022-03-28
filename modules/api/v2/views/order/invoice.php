@@ -72,14 +72,26 @@
         <tbody>
 
         <tr>
+<!--            <td>-->
+<!--                <h2 style="font-size:18px;margin-bottom:5px;color:#191919;">Bill To:</h2>-->
+<!--                <p style="font-size: 13px;margin: 3px 0px;">-->
+<!--                    Name: --><?php //echo isset($buyerUser->first_name) ? $buyerUser->first_name . ' ' . $buyerUser->last_name : '-' ?><!--</p>-->
+<!--                <p style="font-size: 13px;margin: 3px 0px;">-->
+<!--                    Phone: --><?php //echo isset($buyerUser->mobile) ? $buyerUser->mobile : '-' ?><!--</p>-->
+<!--                <p style="font-size: 13px;margin: 3px 0px;">-->
+<!--                    Email: --><?php //echo isset($buyerUser->email) ? $buyerUser->email : '-' ?><!--</p>-->
+<!--                <address class="col-5" style="width: 100%;font-style: normal;font-size: 13px;">-->
+<!--                    Address: --><?php //echo isset($buyerUserAddress->address) ? $buyerUserAddress->address . ', ' . $buyerUserAddress->state . ', ' . $buyerUserAddress->country : '-' ?><!--</address>-->
+<!--            </td>-->
+
             <td>
                 <h2 style="font-size:18px;margin-bottom:5px;color:#191919;">Bill To:</h2>
                 <p style="font-size: 13px;margin: 3px 0px;">
-                    Name: <?php echo isset($buyerUser->first_name) ? $buyerUser->first_name . ' ' . $buyerUser->last_name : '-' ?></p>
+                    Name: <?php echo isset($order->name) ? $order->name : '-' ?></p>
                 <p style="font-size: 13px;margin: 3px 0px;">
-                    Phone: <?php echo isset($buyerUser->mobile) ? $buyerUser->mobile : '-' ?></p>
+                    Phone: <?php echo isset($order->contact) ? $order->contact : '-' ?></p>
                 <p style="font-size: 13px;margin: 3px 0px;">
-                    Email: <?php echo isset($buyerUser->email) ? $buyerUser->email : '-' ?></p>
+                    Email: <?php echo isset($order->email) ? $order->email : '-' ?></p>
                 <address class="col-5" style="width: 100%;font-style: normal;font-size: 13px;">
                     Address: <?php echo isset($buyerUserAddress->address) ? $buyerUserAddress->address . ', ' . $buyerUserAddress->state . ', ' . $buyerUserAddress->country : '-' ?></address>
             </td>

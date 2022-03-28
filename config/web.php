@@ -131,8 +131,8 @@ $config = [
         ],
         // Logging
         'log' => [
-            //'traceLevel' => YII_DEBUG ? 3 : 0,
-//            'targets' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
 //                // writes to php-fpm output stream
 //                [
 //                    'class' => 'yii\log\FileTarget',
@@ -149,7 +149,21 @@ $config = [
 //                    'logVars' => [],
 //                    //'logFile' => '@runtime/logs/androidgoogleplaysubscriptionfail/' . date('d-m-Y') . 'androidGooglePlaySubscriptionFailUser.log',
 //                ],
-//            ],
+
+                [
+
+                    'class' => 'yii\log\FileTarget',
+
+                    'categories' => ['stripe_connect_account'],
+
+                    'exportInterval' => 1,
+
+                    'logFile' => '@app/runtime/logs/stripelog_' . date('Y-m-d H:i:s') . '.log',
+
+                ],
+
+            ],
+
         ],
         'db' => $db,
         'urlManager' => [

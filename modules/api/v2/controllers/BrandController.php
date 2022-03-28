@@ -173,12 +173,12 @@ class BrandController extends ActiveController
                 $model->image = $fileName;
             }
 
-            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
                 $model->german_name = $model->name;
                 $model->name = NULL;
             }
 
-            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
                 $model->german_name = NULL;
             }
 
@@ -191,7 +191,7 @@ class BrandController extends ActiveController
 
 
                 $brandName = "";
-                if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
                     if (!empty($model->name)) {
                         $brandName = $model->name;
                     } elseif (empty($model->name) && !empty($model->german_name)) {
@@ -199,7 +199,7 @@ class BrandController extends ActiveController
                     }
                 }
 
-                if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
                     if (!empty($model->german_name)) {
                         $brandName = $model->german_name;
                     } elseif (empty($model->german_name) && !empty($model->name)) {
@@ -238,7 +238,7 @@ class BrandController extends ActiveController
                 $model->image = $brandImage;
 
                 $brandName = "";
-                if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
                     if (!empty($model->name)) {
                         $brandName = $model->name;
                     } elseif (empty($model->name) && !empty($model->german_name)) {
@@ -246,7 +246,7 @@ class BrandController extends ActiveController
                     }
                 }
 
-                if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
                     if (!empty($model->german_name)) {
                         $brandName = $model->german_name;
                     } elseif (empty($model->german_name) && !empty($model->name)) {

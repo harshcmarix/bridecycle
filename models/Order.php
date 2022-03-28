@@ -12,6 +12,9 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property int $user_id
  * @property int $user_address_id
+ * @property string|null $name
+ * @property string|null $contact
+ * @property string|null $email
  * @property int $total_amount
  * @property string $status 1 => pending, 2 => in progress, 3 => completed, 4 => cancelled
  * @property string|null $created_at
@@ -72,6 +75,7 @@ class Order extends \yii\db\ActiveRecord
             [['user_id', 'user_address_id', 'total_amount', 'status'], 'required'],
             [['user_id', 'user_address_id', 'total_amount'], 'integer'],
             [['status'], 'string'],
+            [['name', 'contact', 'email'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['user_address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::class, 'targetAttribute' => ['user_address_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
@@ -87,6 +91,9 @@ class Order extends \yii\db\ActiveRecord
             'id' => 'Order ID',
             'user_id' => 'User',
             'user_address_id' => 'User Address',
+            'name' => 'Name',
+            'contact' => 'Contact',
+            'email' => 'Email',
             'total_amount' => 'Total Amount',
             'status' => 'Status',
             'created_at' => 'Created At',

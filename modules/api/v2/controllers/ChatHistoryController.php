@@ -326,9 +326,14 @@ class ChatHistoryController extends ActiveController
 
             if (!empty($model) && !empty($model->message_type) && in_array($model->message_type, [ChatHistory::MESSAGE_TYPE_IMAGE, ChatHistory::MESSAGE_TYPE_VIDEO])) {
                 $imgFile = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-                if (!empty($model->message) && file_exists(Yii::getAlias('@chatMediaThumbRelativePath') . '/' . $model->message)) {
-                    $imgFile = Yii::$app->request->getHostInfo() . Yii::getAlias('@chatMediaThumbAbsolutePath') . '/' . $model->message;
+//                if (!empty($model->message) && file_exists(Yii::getAlias('@chatMediaThumbRelativePath') . '/' . $model->message)) {
+//                    $imgFile = Yii::$app->request->getHostInfo() . Yii::getAlias('@chatMediaThumbAbsolutePath') . '/' . $model->message;
+//                }
+
+                if (!empty($model->message) && file_exists(Yii::getAlias('@chatMediaRelativePath') . '/' . $model->message)) {
+                    $imgFile = Yii::$app->request->getHostInfo() . Yii::getAlias('@chatMediaAbsolutePath') . '/' . $model->message;
                 }
+
                 $model->message = $imgFile;
             } else {
                 $model->message = (!empty($model) && !empty($model->message)) ? $model->message : "";

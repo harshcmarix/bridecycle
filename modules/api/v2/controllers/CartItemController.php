@@ -289,17 +289,37 @@ class CartItemController extends ActiveController
             throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
         }
 
+        if (empty($post) || empty($post['name'])) {
+            throw new BadRequestHttpException(getValidationErrorMsg('name_required', Yii::$app->language));
+        }
+
+        if (empty($post) || empty($post['contact'])) {
+            throw new BadRequestHttpException(getValidationErrorMsg('contact_required', Yii::$app->language));
+        }
+
+        if (empty($post) || empty($post['email'])) {
+            throw new BadRequestHttpException(getValidationErrorMsg('email_required', Yii::$app->language));
+        }
+
         $user_id = Yii::$app->user->identity->id;
 
         $productIdsArr = explode(",", $post['product_id']);
-
 
         $modeOrders = [];
         if (!empty($productIdsArr)) {
             foreach ($productIdsArr as $keyProduct => $productIdsRow) {
 
+                $prodModel = Product::find()->where(['id' => $productIdsRow])->one();
+                $productActualPrice = "";
+                if (!empty($prodModel) && $prodModel instanceof Product) {
+                    $productActualPrice = $prodModel->getReferPrice();
+                }
+
                 $modelOrder = new Order();
                 $modelOrder->user_id = $user_id;
+                $modelOrder->name = $post['name'];
+                $modelOrder->contact = $post['contact'];
+                $modelOrder->email = $post['email'];
                 $modelAddress = new UserAddress();
                 $postAddress['UserAddress'] = $post;
                 $postAddress['UserAddress']['user_id'] = $user_id;
@@ -440,6 +460,21 @@ class CartItemController extends ActiveController
                     $expMontYear = explode("/", $modelOrderPayment->expiry_month_year);
                     $cardHoderName = explode(" ", $modelOrderPayment->card_holder_name);
 
+
+                    $sellerDetail = '';
+                    if (!empty($modelOrder->orderItems)) {
+                        $orderItms = $modelOrder->orderItems;
+                        foreach ($orderItms as $itmKey => $orderitemRow) {
+                            if (!empty($orderitemRow) && $orderitemRow instanceof OrderItem) {
+                                if (!empty($orderitemRow) && !empty($orderitemRow->product) && !empty($orderitemRow->product->user)) {
+                                    if ($orderitemRow->product->user instanceof User) {
+                                        $sellerDetail = $orderitemRow->product->user;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     $paymentRequestData = [
                         'total' => $grandTotal,
                         'user_id' => $user_id,
@@ -453,6 +488,7 @@ class CartItemController extends ActiveController
                         'user' => Yii::$app->user->identity,
                         'user_address' => $modelAddress,
                         'user_address_billing' => $modelAddressBillingFind,
+                        'destination_id' => (!empty($sellerDetail) && $sellerDetail instanceof User && !empty($sellerDetail->stripe_account_connect_id)) ? $sellerDetail->stripe_account_connect_id : "",
                     ];
 
                     $modelOrderPayment->order_id = $modelOrder->id;
@@ -463,8 +499,7 @@ class CartItemController extends ActiveController
                     //p($response);
                     if (!empty($response)) {
 
-                        if (!empty($response->getState()) && $response->getState() == 'created') {
-
+                        if (!empty($response->status) && $response->status == 'succeeded') {
 
                             // Send Email notification to buyer for order payment done start
                             //$modelOrder
@@ -531,6 +566,9 @@ class CartItemController extends ActiveController
                                             }
                                         }
 
+
+                                        $orderItemRow->product->price = $productActualPrice;
+                                        //$orderItemRow->product->save(false);
                                         $orderItemRow->product->save(false);
 
                                         // Generate pdf of order invoice
@@ -548,6 +586,9 @@ class CartItemController extends ActiveController
                                         $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
                                         $modelBridecycleToSellerPayment->save(false);
                                         // Track for Pending payment from bridecycle to seller end
+
+                                        $orderItemRow->product->price = $productActualPrice;
+                                        $orderItemRow->product->save(false);
 
                                         // Send Push notification start for seller
                                         $getUsers[] = $orderItemRow->product->user;
@@ -618,8 +659,8 @@ class CartItemController extends ActiveController
                                 }
                             }
 
-                            if (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') {
-                                $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
+                            if (!empty($response) && !empty($response->status) && $response->status == 'succeeded') {
+                                $modelOrder->status = Order::STATUS_ORDER_PENDING;
 
                                 $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
 
@@ -632,9 +673,9 @@ class CartItemController extends ActiveController
                             }
                             $modelOrder->save(false);
                         }
-                        $modelOrderPayment->payment_response = (!empty($response) && !empty($response->getState()) && $response->getState() == 'created') ? $response : "";
-                        $modelOrderPayment->payment_status = (!empty($response->getState())) ? $response->getState() : 'failed';
-                        $modelOrderPayment->payment_id = (!empty($response->getId())) ? $response->getId() : "";
+                        $modelOrderPayment->payment_response = (!empty($response) && !empty($response->status) && $response->status == 'succeeded') ? $response : "";
+                        $modelOrderPayment->payment_status = (!empty($response->status)) ? $response->status : 'failed';
+                        $modelOrderPayment->payment_id = (!empty($response->id)) ? $response->id : "";
                         $modelOrderPayment->save(false);
                         //return $modelOrderPayment;
                     }
@@ -646,7 +687,6 @@ class CartItemController extends ActiveController
             }
         }
         return $modeOrders;
-
     }
 
     /**
@@ -950,10 +990,8 @@ class CartItemController extends ActiveController
      * @param $request
      * @return \Exception|Payment|PayPalConnectionException
      */
-    public function makePayment_bkp1($request)
+    public function makePayment($request)
     {
-        //p($request);
-
         $stripe = new \Stripe\StripeClient(
             Yii::$app->params['stripe_secret_key']
         );
@@ -963,6 +1001,7 @@ class CartItemController extends ActiveController
             'name' => Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name,
         ]);
 
+        $chargeResult = "";
         try {
             $expiryMonthAndYear = explode("/", $request['expiry_month_year']);
             $cardToken = $stripe->tokens->create([
@@ -977,13 +1016,7 @@ class CartItemController extends ActiveController
                 $resultCust->id,
                 ['source' => $cardToken->id]
             );
-            $chargeResult = $stripe->charges->create([
-                'amount' => $request['total'] . '00',
-                'currency' => 'eur',
-                'customer' => $resultCust->id,
-                'source' => $cardRequest->id,
-                'description' => 'My First Test Charge (created for API docs)',
-            ]);
+
 
 //            $refund = $stripe->refunds->create([
 //                //'charge' => 'ch_3KayxHAvFy5NACFp0BIFRGfB',
@@ -1003,36 +1036,49 @@ class CartItemController extends ActiveController
 //                []
 //            );
 //p($chargeCaptureResult);
-            $transactionFee = $request['total'] * 2 / 100;
+            $transactionFee = ($request['total'] * 2 / 100);
 
-            $brideCycleEarning = $request['total'] * 8 / 100;
+            $brideCycleEarning = ($request['total'] * 8 / 100);
 
             $sellerAmount = $request['total'] - ($brideCycleEarning + $transactionFee);
             //p($sellerAmount);
 
 
-            $transferResult = $stripe->transfers->create([
-                //'amount' => $sellerAmount,
-                'amount' => 200,
+//            $transferResult = $stripe->transfers->create([
+//                //'amount' => $sellerAmount,
+//                'amount' => $sellerAmount,
+//                'currency' => 'eur',
+//                'source_type' => 'bank_account',
+//                'destination' => 'acct_1KbNoYPTg19m1wpV', //product_id
+//                'transfer_group' => 'ORDER_' . $request['order_id'],
+//            ]);
+
+            //p($transferResult);
+
+            $chargeResult = $stripe->charges->create([
+                'amount' => $request['total'] . '00',
                 'currency' => 'eur',
-                'source_type' => 'bank_account',
-                'destination' => 'acct_1KbNoYPTg19m1wpV', //product_id
-                'transfer_group' => 'ORDER_' . $request['order_id'],
+                'customer' => $resultCust->id,
+                'source' => $cardRequest->id,
+                'capture' => true,
+                'description' => 'Payment for Order id: ' . $request['order_id'],
+                'transfer_data' => [
+                    'destination' => $request['destination_id'],
+                    'amount' => $sellerAmount . '00'
+                ]
             ]);
 
-            p($transferResult);
-            p($chargeResult);
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();
         }
-
+        return $chargeResult;
     }
 
     /**
      * @param $request
      * @return \Exception|Payment|PayPalConnectionException
      */
-    public function makePayment($request)
+    public function makePayment___bkp_latest($request)
     {
         $apiContext = new \PayPal\Rest\ApiContext(
             new \PayPal\Auth\OAuthTokenCredential(
@@ -1447,6 +1493,10 @@ class CartItemController extends ActiveController
         return $modelOrder;
     }
 
+    /**
+     * @param $request
+     * @throws \Stripe\Exception\ApiErrorException
+     */
     public function makePayment_bkp($request)
     {
         $stripe = new \Stripe\StripeClient(
@@ -1512,7 +1562,7 @@ class CartItemController extends ActiveController
     public function generateInvoice($order_item_id)
     {
         $this->layout = "";
-        $modelOrderItem = OrderItem::findOne($order_item_id);
+        $modelOrderItem = OrderItem::find()->where(['id'=>$order_item_id])->one();
 
         $modelProduct = '';
         $modelseller = '';
@@ -1641,5 +1691,4 @@ class CartItemController extends ActiveController
         }
         return $modelCartItems;
     }
-
 }

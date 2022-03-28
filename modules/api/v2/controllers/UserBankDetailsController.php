@@ -137,39 +137,50 @@ class UserBankDetailsController extends ActiveController
 
             // Create stripe Account Start
             $modelUser = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
-            if (!empty($modelUser) && $modelUser instanceof User && !empty($modelUser->stripe_account_customer_id)) {
+            if (!empty($modelUser) && $modelUser instanceof User && !empty($modelUser->stripe_account_connect_id)) {
 
-//                $stripe = new \Stripe\StripeClient(
-//                    Yii::$app->params['stripe_secret_key']
-//                );
-//
-//                $resultAccount = $stripe->accounts->createExternalAccount(
-//                    $modelUser->stripe_account_connect_id,
-//                    [
-//                        'external_account' => [
-//                            'object' => 'bank_account',
-//                            'country' => 'DE',
-//                            'currency' => 'eur',
-//                            'account_holder_name' => $model->first_name . " " . $model->last_name,
-//                            'account_holder_type' => 'individual',
-//                            //'routing_number' => '110000000',
-//                            'account_number' => $model->iban,
-////                            'usage'=>'source',
-//                        ],
-//                    ]
-//                );
 
-//                if (!empty($resultAccount) && !empty($resultAccount->id)) {
-//                    $modelUser->stripe_bank_account_id = $resultAccount->id;
-//                    $modelUser->save(false);
-//                } else {
-//                    throw new HttpException($resultAccount->status, $resultAccount);
-//                }
+
+                $stripe = new \Stripe\StripeClient(
+                    Yii::$app->params['stripe_secret_key']
+                );
+
+                $deleteAccountResponse = $stripe->accounts->deleteExternalAccount(
+                    //$modelUser->stripe_account_connect_id,
+                    'acct_1KKNVyAvFy5NACFp',
+                    $modelUser->stripe_bank_account_id,
+                    []
+                );
+p($deleteAccountResponse);
+                $resultAccount = $stripe->accounts->createExternalAccount(
+                    $modelUser->stripe_account_connect_id,
+                    //'acct_1KgRvhPABUdKTa3N',
+                    [
+                        'external_account' => [
+                            'object' => 'bank_account',
+                            'country' => 'DE',
+                            'currency' => 'eur',
+                            'account_holder_name' => $model->first_name . " " . $model->last_name,
+                            'account_holder_type' => 'individual',
+                            //'routing_number' => '110000000',
+                            'account_number' => $model->iban,
+//                            'usage'=>'source',
+                        ],
+                    ]
+                );
+
+                p($resultAccount);
+
+                if (!empty($resultAccount) && !empty($resultAccount->id)) {
+                    $modelUser->stripe_bank_account_id = $resultAccount->id;
+                    $modelUser->save(false);
+                } else {
+                    throw new HttpException($resultAccount->status, $resultAccount);
+                }
             }
             // Create stripe Account End
 
-
-            $model->save();
+            $model->save(false);
 
         }
         return $model;

@@ -30,6 +30,8 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property Order $order
  * @property Product $product
+ * @property Color $colors
+ * @property Sizes $sizes
  */
 class OrderItem extends \yii\db\ActiveRecord
 {
@@ -97,6 +99,9 @@ class OrderItem extends \yii\db\ActiveRecord
     {
         return [
             'product' => 'product',
+            'order' => 'order',
+            'colors' => 'colors',
+            'sizes' => 'sizes',
         ];
     }
 
@@ -108,6 +113,22 @@ class OrderItem extends \yii\db\ActiveRecord
     public function getOrder()
     {
         return $this->hasOne(Order::class, ['id' => 'order_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getColors()
+    {
+        return $this->hasOne(Color::class, ['id' => 'color']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSizes()
+    {
+        return $this->hasOne(Sizes::class, ['id' => 'size_id']);
     }
 
     /**

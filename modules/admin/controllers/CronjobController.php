@@ -244,15 +244,24 @@ class CronjobController extends Controller
 
                     $query->where('user_id!=' . $model->user_id);
 
+//                    if (!empty($model->name)) {
+//
+//                        $query->andFilterWhere([
+//                            'or',
+//                            ['like', 'search_text', "%" . $model->name . "%", false],
+//                            ['like', 'search_text', "%" . $brandName . "%", false],
+//                            ['like', 'search_text', "%" . $categoryName . "%", false],
+//                        ]);
+//                    }
+
                     if (!empty($model->name)) {
 
                         $query->andFilterWhere([
                             'or',
-                            ['like', 'search_text', "%" . $model->name . "%", false],
-                            ['like', 'search_text', "%" . $brandName . "%", false],
-                            ['like', 'search_text', "%" . $categoryName . "%", false],
+                            ['like', 'search_text', $model->name . "%", false],
+                            ['like', 'search_text', $brandName . "%", false],
+                            ['like', 'search_text', $categoryName . "%", false],
                         ]);
-
                     }
 
                     $modelsSearch = $query->groupBy(['user_id', 'search_text'])->all();
@@ -327,10 +336,8 @@ class CronjobController extends Controller
                                                         echo "Error: " . $e->getMessage();
 
                                                     }
-
                                                 }
                                             }
-
                                         }
                                     }
                                 }

@@ -3,17 +3,18 @@
 namespace app\modules\api\v2\models\search;
 
 use app\models\Product;
-use Yii;
 use yii\base\Model;
-use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
-use app\models\Color;
+use app\models\OrderItem;
+use yii\data\ActiveDataFilter;
+use Yii;
 
 /**
- * ColorSearch represents the model behind the search form of `app\models\Color`.
+ * OrderItemSearch represents the model behind the search form of `app\models\OrderItem`.
  */
-class ColorSearch extends Color
+class OrderItemSearch extends OrderItem
 {
+
     /**
      * @var $hiddenFields Array of hidden fields which not needed in APIs
      */
@@ -25,8 +26,9 @@ class ColorSearch extends Color
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name', 'code', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size_id'], 'integer'],
+            [['product_name', 'category_name', 'subcategory_name', 'color', 'size', 'order_tracking_id', 'invoice', 'created_at', 'updated_at'], 'safe'],
+            [['price', 'tax', 'shipping_cost'], 'number'],
         ];
     }
 
@@ -46,7 +48,7 @@ class ColorSearch extends Color
      *
      * @return ActiveDataProvider
      */
-    public function search($requestParams, $from = null, $product_id = null)
+    public function search($requestParams, $userId = null)
     {
 
         /* ########## Prepare Request Filter Start ######### */
@@ -75,6 +77,7 @@ class ColorSearch extends Color
                 }
             }
         }
+
         /* ########## Prepare Request Filter End ######### */
 
         /* ########## Active Data Filter Start ######### */
@@ -97,35 +100,34 @@ class ColorSearch extends Color
         /* ########## Active Data Filter End ######### */
 
         /* ########## Prepare Query With Default Filter Start ######### */
-        $query = self::find()->where(['status' => Color::STATUS_APPROVE]);
+        $query = self::find();
 
-        // Edit product Pending Approve color get start
-        if (!empty($from) && $from == "edit_product" && !empty($product_id)) {
-            $modelProduct = Product::findOne($product_id);
-            if (!empty($modelProduct) && $modelProduct instanceof Product && !empty($modelProduct->option_color)) {
-                $colorIds = explode(",", $modelProduct->option_color);
-                if (!empty($colorIds)) {
-                    $query->orWhere(['in', 'color.id', $colorIds]);
-                }
-            }
+        if (!empty($userId)) {
+            $productIds = Product::find()->select('id')->where(['user_id' => $userId])->column();
+            $query->where(['in', 'product_id', $productIds]);
         }
-        // Edit product Pending Approve color get end
 
         $fields = $this->hiddenFields;
         if (!empty($requestParams['fields'])) {
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['color.*',];
+            $select = ['order_items.*'];
         }
 
         $query->select($select);
         if (!empty($filter)) {
             $query->andWhere($filter);
         }
+
+//        if (!empty($requestParams['user_id'])) {
+//            $query->andWhere(['user_id' => $requestParams['user_id']]);
+//        }
+
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->groupBy('color.id');
+        $query->orderBy(['order_items.created_at' => SORT_DESC]);
+        $query->groupBy('order_items.id');
 
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,
@@ -139,34 +141,21 @@ class ColorSearch extends Color
             ],
         ]);
 
-        $colorModelData = $activeDataProvider->getModels();
-        if (!empty($colorModelData)) {
-            foreach ($colorModelData as $key => $data) {
-                if (!empty($data) && $data instanceof Color) {
-                    //$colorModelData[$key]['name'] = (!empty($data->name)) ? $data->name : "";
+        $orderItemModels = $activeDataProvider->getModels();
+        $activeDataProvider->setModels($orderItemModels);
+        /**
+         * get and set order status name
+         */
 
-                    $colorName = "";
-                    if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
-                        if (!empty($data->name)) {
-                            $colorName = $data->name;
-                        } elseif (empty($data->name) && !empty($data->german_name)) {
-                            $colorName = $data->german_name;
-                        }
-                    }
+        //$getStatusArray = new Order();
+//        $arrOrderStatus = $getStatusArray->arrOrderStatus;
+//
+//        foreach ($orderModels as $key => $value) {
+//            if (!empty($value->status) && array_key_exists($value->status, $arrOrderStatus)) {
+//                $value->status = $arrOrderStatus[$value->status];
+//            }
+//        }
 
-                    if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
-                        if (!empty($data->german_name)) {
-                            $colorName = $data->german_name;
-                        } elseif (empty($data->german_name) && !empty($data->name)) {
-                            $colorName = $data->name;
-                        }
-                    }
-                    $colorModelData[$key]['name'] = $colorName;
-                    $colorModelData[$key]['code'] = (!empty($data->code)) ? $data->code : "";
-                }
-            }
-        }
-        $activeDataProvider->setModels($colorModelData);
         return $activeDataProvider;
     }
 }

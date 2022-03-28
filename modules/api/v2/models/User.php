@@ -36,13 +36,13 @@ use yii\web\UnauthorizedHttpException;
  * @property string|null $password_reset_token
  * @property string|null $country_code
  * @property string|null $mobile
- * @property float|null $weight
+ * @property string|null $weight
  * @property string|null $height
- * @property float|null $top_size
- * @property float|null $pant_size
- * @property float|null $bust_size
- * @property float|null $waist_size
- * @property float|null $hip_size
+ * @property string|null $top_size
+ * @property string|null $pant_size
+ * @property string|null $bust_size
+ * @property string|null $waist_size
+ * @property string|null $hip_size
  * @property string|null $personal_information
  * @property string|null $user_type 1 => admin, 2 => sub admin, 3 => normal user
  * @property string $is_shop_owner 1 => shop owner
@@ -102,7 +102,6 @@ use yii\web\UnauthorizedHttpException;
  * @property ShopDetail $shopDetail
  * @property UserBankDetails $bankDetail
  * @property Timezone $timezone
-
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -131,6 +130,8 @@ class User extends ActiveRecord implements IdentityInterface
     public $shop_phone_number;
     public $shop_logo;
     public $website;
+
+    public $is_login_from;
 
     /**
      * Identify user type
@@ -212,14 +213,20 @@ class User extends ActiveRecord implements IdentityInterface
             [['height'], 'required', 'on' => self::SCENARIO_ADD_SIZE_INFORMARION_FOR_NORMAL_USER, 'message' => getValidationErrorMsg('height_required', Yii::$app->language)],
 
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => getValidationErrorMsg('password_confirm_password_match_required', Yii::$app->language)],
-            [['facebook_id', 'apple_id', 'google_id', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],
+            [['facebook_id', 'apple_id', 'google_id', 'access_token_expired_at', 'created_at', 'updated_at', 'is_login_from'], 'safe'],
+
+
+            //[['facebook_id'], 'unique', 'message' => getValidationErrorMsg('unique_facebook_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]],
+            //[['apple_id'], 'unique', 'message' => getValidationErrorMsg('unique_apple_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]],
+            //[['google_id'], 'unique', 'message' => getValidationErrorMsg('unique_google_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]],
+
 
             [['timezone_id'], 'integer', 'message' => getValidationErrorMsg('timezone_integer_validation', Yii::$app->language)],
             [['mobile'], 'integer', 'message' => getValidationErrorMsg('mobile_integer_validation', Yii::$app->language)],
             [['shop_phone_number'], 'integer', 'message' => getValidationErrorMsg('shop_phone_number_integer_validation', Yii::$app->language)],
 
             //[['mobile', 'shop_phone_number'], 'string'],
-            [['country_code','notification_unread_count'], 'string'],
+            [['country_code', 'notification_unread_count'], 'string'],
             [['stripe_account_connect_id', 'stripe_account_customer_id'], 'string'],
             [['personal_information', 'user_type', 'is_shop_owner'], 'string'],
 
@@ -253,15 +260,16 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['shop_name', 'shop_email'], 'required', 'on' => [self::SCENARIO_SHOP_OWNER]], // 'shop_logo'
 
-            [['weight'], 'number', 'message' => getValidationErrorMsg('weight_number_validation', Yii::$app->language)],
-            [['height'], 'number', 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
-            [['top_size'], 'number', 'message' => getValidationErrorMsg('top_size_number_validation', Yii::$app->language)],
-            [['pant_size'], 'number', 'message' => getValidationErrorMsg('pant_size_number_validation', Yii::$app->language)],
-            [['bust_size'], 'number', 'message' => getValidationErrorMsg('bust_size_number_validation', Yii::$app->language)],
-            [['waist_size'], 'number', 'message' => getValidationErrorMsg('waist_size_number_validation', Yii::$app->language)],
-            [['hip_size'], 'number', 'message' => getValidationErrorMsg('hip_size_number_validation', Yii::$app->language)],
+            //[['weight'], 'number', 'message' => getValidationErrorMsg('weight_number_validation', Yii::$app->language)],
+            //[['height'], 'number', 'message' => getValidationErrorMsg('height_number_validation', Yii::$app->language)],
+            //[['top_size'], 'number', 'message' => getValidationErrorMsg('top_size_number_validation', Yii::$app->language)],
+            //[['pant_size'], 'number', 'message' => getValidationErrorMsg('pant_size_number_validation', Yii::$app->language)],
+            //[['bust_size'], 'number', 'message' => getValidationErrorMsg('bust_size_number_validation', Yii::$app->language)],
+            //[['waist_size'], 'number', 'message' => getValidationErrorMsg('waist_size_number_validation', Yii::$app->language)],
+            //[['hip_size'], 'number', 'message' => getValidationErrorMsg('hip_size_number_validation', Yii::$app->language)],
 
-            // [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'string'],
+            [['weight', 'height', 'top_size', 'pant_size', 'bust_size', 'waist_size', 'hip_size'], 'string'],
+
             [['is_newsletter_subscription'], 'safe'],
             [['stripe_account_connect_id', 'stripe_account_customer_id', 'stripe_bank_account_id'], 'safe'],
             [['is_new_message_notification_on', 'is_offer_update_notification_on', 'is_offer_on_favourite_notification_on', 'is_saved_searches_notification_on', 'is_order_placed_notification_on', 'is_payment_done_notification_on', 'is_order_delivered_notification_on', 'is_click_and_try_notification_on'], 'safe'],
@@ -287,6 +295,41 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['shop_email'], 'unique', 'targetClass' => ShopDetail::class, 'targetAttribute' => ['shop_email'], 'on' => [self::SCENARIO_SHOP_OWNER]],
             //[['timezone_id'], 'exist', 'skipOnEmpty' => true,'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['timezone_id' => 'id']],
+
+
+            [
+                ['facebook_id'], 'required', 'on' => self::SCENARIO_USER_CREATE_FROM_SOCIAL, 'message' => getValidationErrorMsg('facebook_id_required', Yii::$app->language), 'when' => function ($model) {
+                //return $model->is_login_from = User::IS_LOGIN_FROM_FACEBOOK;
+            },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#user-is_login_from').val() == 'facebook') {
+                        return $('#user-facebook_id').val() == '';
+                    }
+                }",
+            ],
+
+            [
+                ['apple_id'], 'required', 'on' => self::SCENARIO_USER_CREATE_FROM_SOCIAL, 'message' => getValidationErrorMsg('apple_id_required', Yii::$app->language), 'when' => function ($model) {
+                //return $model->is_login_from = User::IS_LOGIN_FROM_FACEBOOK;
+            },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#user-is_login_from').val() == 'apple') {
+                        return $('#user-apple_id').val() == '';
+                    }
+                }",
+            ],
+
+            [
+                ['google_id'], 'required', 'on' => self::SCENARIO_USER_CREATE_FROM_SOCIAL, 'message' => getValidationErrorMsg('google_id_required', Yii::$app->language), 'when' => function ($model) {
+                //return $model->is_login_from = User::IS_LOGIN_FROM_FACEBOOK;
+            },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#user-is_login_from').val() == 'google') {
+                        return $('#user-google_id').val() == '';
+                    }
+                }",
+            ],
+
         ];
     }
 

@@ -168,6 +168,24 @@ class BrandSearch extends Brand
             if (!empty($brandModelData[$key]['image']) && file_exists(Yii::getAlias('@brandImageRelativePath') . '/' . $value->image)) {
                 $brandImage = Yii::$app->request->getHostInfo() . Yii::getAlias('@brandImageAbsolutePath') . '/' . $value->image;
             }
+
+            $brandName = "";
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
+                if (!empty($value->name)) {
+                    $brandName = $value->name;
+                } elseif (empty($value->name) && !empty($value->german_name)) {
+                    $brandName = $value->german_name;
+                }
+            }
+
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
+                if (!empty($value->german_name)) {
+                    $brandName = $value->german_name;
+                } elseif (empty($value->german_name) && !empty($value->name)) {
+                    $brandName = $value->name;
+                }
+            }
+            $brandModelData[$key]['name'] = $brandName;
             $brandModelData[$key]['image'] = $brandImage;
         }
         $activeDataProvider->setModels($brandModelData);

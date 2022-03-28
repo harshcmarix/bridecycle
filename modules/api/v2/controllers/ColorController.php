@@ -137,19 +137,19 @@ class ColorController extends ActiveController
 
         if ($model->load($colorData) && $model->validate()) {
 
-            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
                 $model->german_name = $model->name;
                 $model->name = NULL;
             }
 
-            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
                 $model->german_name = NULL;
             }
 
             $model->save(false);
 
             $colorName = "";
-            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
                 if (!empty($model->name)) {
                     $colorName = $model->name;
                 } elseif (empty($model->name) && !empty($model->german_name)) {
@@ -157,7 +157,7 @@ class ColorController extends ActiveController
                 }
             }
 
-            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
                 if (!empty($model->german_name)) {
                     $colorName = $model->german_name;
                 } elseif (empty($model->german_name) && !empty($model->name)) {
@@ -190,7 +190,7 @@ class ColorController extends ActiveController
             $model->save(false);
 
             $colorName = "";
-            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
                 if (!empty($model->name)) {
                     $colorName = $model->name;
                 } elseif (empty($model->name) && !empty($model->german_name)) {
@@ -198,7 +198,7 @@ class ColorController extends ActiveController
                 }
             }
 
-            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
                 if (!empty($model->german_name)) {
                     $colorName = $model->german_name;
                 } elseif (empty($model->german_name) && !empty($model->name)) {

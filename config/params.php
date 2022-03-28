@@ -88,7 +88,7 @@ return [
     'google_play_store_subscription_package_name' => 'com.bridecycle',
     'google_play_store_subscription_app_name' => 'bridecycle',
 
-    'app_store_subscription_shared_secret_key'=> '15ac9910d3a84fa89cad2d9736b3391f', // For Production/sandbox
+    'app_store_subscription_shared_secret_key' => '15ac9910d3a84fa89cad2d9736b3391f', // For Production/sandbox
     // Make changes in cronjob controller from admin for production Mode
 
     /**
@@ -119,9 +119,12 @@ return [
 // Laura Test
     'stripe_publishable_Key' => 'pk_test_51KKNVyAvFy5NACFpFkGdLGGEmD9LwgHYMtmXwtknuhzZqaaWgZZCjJcvSiNvUqcHiuYqDEw8aCoEnnHVMR6YmIFc00qi9yi9zm',
     'stripe_secret_key' => 'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw',
+    // Live
+    'client_id' => 'ca_L4rzTsUAjbt0UXJw4wYt6vK4LxaGKVPu',
+    //'stripe_publishable_Key' => 'pk_live_51KKNVyAvFy5NACFpAgr2TKYYBoluv3okrwVpX4Ukg03b5Avw4cxJQCDHdXX8NIBEqwkWWr69KONtCMEroPUq8F0H008qyaRymi',
+    //'stripe_secret_key' => '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',
 
     'other_support_language' => ['english', 'german'],
-
 
 
 ];

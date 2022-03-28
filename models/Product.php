@@ -33,6 +33,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $product_tracking_id
  * @property string $is_cleaned 1 => cleaned product
  * @property string $is_receipt 1 => cleaned product receipt
+ * @property string $is_return_allow 1 => yes , 0 => no
+ * @property string $is_free_return_allow 1 => yes , 0 => no
  * @property int|null $height
  * @property int|null $weight
  * @property int|null $width
@@ -208,6 +210,8 @@ class Product extends \yii\db\ActiveRecord
 
             [['shipping_country_price'], 'safe'],
 
+            [['is_return_allow', 'is_free_return_allow'], 'safe'],
+
             [['option_price'], 'number', 'message' => getValidationErrorMsg('option_price_number_validation', Yii::$app->language)],
             [['refer_price'], 'number', 'message' => getValidationErrorMsg('refer_price_number_validation', Yii::$app->language)],
 
@@ -257,7 +261,6 @@ class Product extends \yii\db\ActiveRecord
                     }
                 }",
             ],
-
         ];
     }
 
@@ -576,7 +579,7 @@ class Product extends \yii\db\ActiveRecord
             $brand->image = $brandImage;
 
             $brandName = "";
-            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+            if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
                 if (!empty($brand->name)) {
                     $brandName = $brand->name;
                 } elseif (empty($brand->name) && !empty($brand->german_name)) {
@@ -584,7 +587,7 @@ class Product extends \yii\db\ActiveRecord
                 }
             }
 
-            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+            if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
                 if (!empty($brand->german_name)) {
                     $brandName = $brand->german_name;
                 } elseif (empty($brand->german_name) && !empty($brand->name)) {
@@ -610,7 +613,7 @@ class Product extends \yii\db\ActiveRecord
             foreach ($color as $key => $colorRow) {
                 if (!empty($colorRow) && $colorRow instanceof Color) {
                     $colorName = "";
-                    if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'english') {
+                    if (\Yii::$app->language == 'en-US' || \Yii::$app->language == 'en' || \Yii::$app->language == 'english') {
                         if (!empty($colorRow->name)) {
                             $colorName = $colorRow->name;
                         } elseif (empty($colorRow->name) && !empty($colorRow->german_name)) {
@@ -618,7 +621,7 @@ class Product extends \yii\db\ActiveRecord
                         }
                     }
 
-                    if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'german') {
+                    if (\Yii::$app->language == 'de-DE' || \Yii::$app->language == 'de' || \Yii::$app->language == 'german') {
                         if (!empty($colorRow->german_name)) {
                             $colorName = $colorRow->german_name;
                         } elseif (empty($colorRow->german_name) && !empty($colorRow->name)) {
