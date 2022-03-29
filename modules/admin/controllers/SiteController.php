@@ -103,11 +103,11 @@ class SiteController extends Controller
         $modelTotalOrderLast7Days = Order::find()->where(['between', 'created_at', date('Y-m-d 23:59:59', strtotime('-7 days')), date('Y-m-d 00:00:01')])->count();
         $modelTotalOrderToday = Order::find()->where(['between', 'created_at', $todayFrom, $todayTo])->count();
 
-        $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->count();
+        $modelTotalOrderDelivered = Order::find()->where(['status' => Order::STATUS_ORDER_DELIVERED])->count();
 
         $modelTotalOrderInprogress = Order::find()->where(['status' => Order::STATUS_ORDER_INPROGRESS])->count();
 
-        $modelTotalIncome = Order::find()->where(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
+        $modelTotalIncome = Order::find()->where(['status' => Order::STATUS_ORDER_DELIVERED])->sum('total_amount');
         $totalTailor = Tailor::find()->count();
 
         // Chart uses

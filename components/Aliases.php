@@ -118,5 +118,13 @@ class Aliases extends Component
         // Used for ads image thumbnail
         Yii::setAlias('@adsImageThumbAbsolutePath', Yii::getAlias('@adsImageAbsolutePath') . '/thumbs');
         Yii::setAlias('@adsImageThumbRelativePath', Yii::getAlias('@adsImageRelativePath') . '/thumbs');
+
+        // Used for order-return Image
+        Yii::setAlias('@orderReturnImageAbsolutePath', Yii::getAlias('@uploadsAbsolutePath') . '/order_return_images');
+        Yii::setAlias('@orderReturnImageRelativePath', Yii::getAlias('@uploadsRelativePath') . '/order_return_images');
+
+        // Used for order-return thumbnail
+        Yii::setAlias('@orderReturnImageThumbAbsolutePath', Yii::getAlias('@orderReturnImageAbsolutePath') . '/thumbs');
+        Yii::setAlias('@orderReturnImageThumbRelativePath', Yii::getAlias('@orderReturnImageRelativePath') . '/thumbs');
     }
 }

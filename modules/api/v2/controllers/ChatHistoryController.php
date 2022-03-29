@@ -253,7 +253,7 @@ class ChatHistoryController extends ActiveController
                             $userDevice = $userROW->userDevice;
 
                             // Insert into notification.
-                            $notificationText = $model->message;
+                            $notificationText = (in_array($model->message_type, [ChatHistory::MESSAGE_TYPE_IMAGE, ChatHistory::MESSAGE_TYPE_VIDEO])) ? ucfirst($model->message_type) : $model->message;
                             $modelNotification = new Notification();
                             $modelNotification->owner_id = $model->from_user_id;
                             $modelNotification->notification_receiver_id = $userROW->id;

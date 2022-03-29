@@ -112,7 +112,13 @@ class OrderItem extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Order::class, ['id' => 'order_id']);
+        //return $this->hasOne(Order::class, ['id' => 'order_id']);
+        $model = Order::find()->where(['id'=>$this->order_id])->one();
+
+//        if(!empty($model) && $model instanceof Order){
+//            //$model->status = $model->arrOrderStatuses[$model->status];
+//        }
+        return $model;
     }
 
     /**

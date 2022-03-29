@@ -566,7 +566,6 @@ class CartItemController extends ActiveController
                                             }
                                         }
 
-
                                         $orderItemRow->product->price = $productActualPrice;
                                         //$orderItemRow->product->save(false);
                                         $orderItemRow->product->save(false);
@@ -575,16 +574,16 @@ class CartItemController extends ActiveController
                                         $generateInvoice = $this->generateInvoice($orderItemRow->id);
 
                                         // Track for Pending payment from bridecycle to seller start
-                                        $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
-                                        $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
-                                        $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
-                                        $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
-                                        $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
-                                        $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
-                                        $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->price - $orderItemRow->tax);
-                                        $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
-                                        $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
-                                        $modelBridecycleToSellerPayment->save(false);
+//                                        $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
+//                                        $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
+//                                        $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
+//                                        $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
+//                                        $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
+//                                        $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
+//                                        $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->price - $orderItemRow->tax);
+//                                        $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
+//                                        $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
+//                                        $modelBridecycleToSellerPayment->save(false);
                                         // Track for Pending payment from bridecycle to seller end
 
                                         $orderItemRow->product->price = $productActualPrice;
@@ -660,7 +659,8 @@ class CartItemController extends ActiveController
                             }
 
                             if (!empty($response) && !empty($response->status) && $response->status == 'succeeded') {
-                                $modelOrder->status = Order::STATUS_ORDER_PENDING;
+                                //$modelOrder->status = Order::STATUS_ORDER_PENDING;
+                                $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
 
                                 $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
 

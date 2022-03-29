@@ -139,14 +139,19 @@ class OrderSearch extends Order
         /**
          * get and set order status name
          */
-        $getStatusArray = new Order();
-        $arrOrderStatus = $getStatusArray->arrOrderStatus;
+        //$getStatusArray = new Order();
+        //$arrOrderStatus = $getStatusArray->arrOrderStatus;
 
-        foreach ($orderModels as $key => $value) {
-            if (!empty($value->status) && array_key_exists($value->status, $arrOrderStatus)) {
-                $value->status = $arrOrderStatus[$value->status];
-            }
-        }
+        //foreach ($orderModels as $key => $value) {
+          //  if (!empty($value) && $value instanceof Order) {
+//                if (!empty($value->status) && array_key_exists($value->status, $arrOrderStatus)) {
+//                    $value->status = $arrOrderStatus[$value->status];
+//                }
+                //$orderModels[$key]['is_return_available'] = $value->getIsReturnAvailable();
+                //$value->is_return_available = $value->getIsReturnAvailable();
+
+//            }
+//        }
         $activeDataProvider->setModels($orderModels);
 
         return $activeDataProvider;

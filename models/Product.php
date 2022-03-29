@@ -137,6 +137,12 @@ class Product extends \yii\db\ActiveRecord
     const PRODUCT_TYPE_NEW = 'n';
     const PRODUCT_TYPE_USED = 'u';
 
+    const IS_RETURN_ALLOW_YES = '1';
+    const IS_RETURN_ALLOW_NO = '0';
+
+    const IS_FREE_RETURN_ALLOW_YES = '1';
+    const IS_FREE_RETURN_ALLOW_NO = '0';
+
     public $arrIsTopSelling = [
         self::IS_TOP_SELLING_YES => 'Yes',
         self::IS_TOP_SELLING_NO => 'No',

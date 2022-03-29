@@ -38,6 +38,10 @@ return [
 
     // Recent search product list default limit (use for API)
     'recent_search_product_list_default_limit' => 20,
+
+
+    'allow_return_product_days' => '14',
+
     /**
      * Use for payment gateway (paypal)
      */

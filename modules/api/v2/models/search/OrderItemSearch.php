@@ -142,20 +142,17 @@ class OrderItemSearch extends OrderItem
         ]);
 
         $orderItemModels = $activeDataProvider->getModels();
-        $activeDataProvider->setModels($orderItemModels);
-        /**
-         * get and set order status name
-         */
 
-        //$getStatusArray = new Order();
-//        $arrOrderStatus = $getStatusArray->arrOrderStatus;
-//
+        /**
+         * get order return possible or not
+         */
+//        $getStatusArray = new Order();
 //        foreach ($orderModels as $key => $value) {
 //            if (!empty($value->status) && array_key_exists($value->status, $arrOrderStatus)) {
 //                $value->status = $arrOrderStatus[$value->status];
 //            }
 //        }
-
+        $activeDataProvider->setModels($orderItemModels);
         return $activeDataProvider;
     }
 }

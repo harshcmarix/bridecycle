@@ -630,27 +630,6 @@ class UserController extends ActiveController
      */
     public function actionLogin()
     {
-
-
-//        $stripe = new \Stripe\StripeClient(
-//            'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw'
-//        );
-//        $stripe->transfers->create([
-//            'amount' => 400,
-//            'currency' => 'eur',
-//            'destination' => 'acct_1KbNoYPTg19m1wpV',
-//            'transfer_group' => 'ORDER_95',
-//        ]);
-//
-//        $result = $stripe->charges->create([
-//            'amount' => 100,
-//            'currency' => 'eur',
-//            'source' => 'acct_1KbNoYPTg19m1wpV',
-//            'description' => 'My First Test Charge (created for API docs)',
-//        ]);
-//
-//        p($result);
-
         $model = new Login();
 
         $data['Login'] = Yii::$app->request->post();
@@ -718,51 +697,6 @@ class UserController extends ActiveController
                 throw new ForbiddenHttpException(getValidationErrorMsg('forbidden_exception', Yii::$app->language));
             }
 
-
-//            $stripe = new \Stripe\StripeClient(
-//                Yii::$app->params['stripe_secret_key']
-//            );
-//
-//
-//            $tokenRes = $stripe->tokens->create([
-//                'bank_account' => [
-//                    'country' => 'DE',
-//                    'currency' => 'eur',
-//                    'account_holder_name' => $model->user->first_name." ".$model->user->last_name,
-//                    'account_holder_type' => 'individual',
-//                    //'routing_number' => '110000000',
-//                    'account_number' => 'DE89370400440532013000',
-//                ],
-//            ]);
-//
-//            //p($tokenRes);
-//
-//            $res = $stripe->accounts->createExternalAccount(
-//                    $model->user->stripe_account_connect_id,
-//                    [
-//                        'external_account' => $tokenRes->id,
-//                    ]
-//                );
-//
-//
-////                $stripe->accounts->createExternalAccount(
-////
-////                [
-////                    //'external_account' => 'btok_1Kh9NPAvFy5NACFpggp3lsvx',
-////                    'external_account' => [
-////                        'object'=>'bank_account',
-////                        'country'=>'DE',
-////                        'currency'=>'eur',
-////                        'account_holder_name'=>$model->user->first_name." ".$model->user->last_name,
-////                        'account_holder_type'=>'individual',
-////                        'account_number'=>'DE89370400440532013000'
-////                    ],
-////                ]
-////            );
-//
-//p($res);
-
-
             //update notification token
             if (!empty($postData['notification_token']) && !empty($postData['device_platform']) && !empty(Yii::$app->user->identity->id)) {
                 $loginDevice = UserDevice::find()->where(['notification_token' => $postData['notification_token'], 'device_platform' => $postData['device_platform'], 'user_id' => Yii::$app->user->identity->id])->one();
@@ -794,7 +728,11 @@ class UserController extends ActiveController
                     }
                 }
             }
-            $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user, 'is_bank_detail_available' => $model->user->isBankDetailAvailable]);
+            $stripeUrl = "";
+            if (empty($model->user->stripe_account_connect_id)) {
+                $stripeUrl = $stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?response_type=code&client_id=ca_L4rzio6oCTXedreN1BVfcElzYzgQQQAp&scope=read_write&redirect_uri=http://203.109.113.157/bridecycle/web/api/v2/user/stripe-connect-response&state=' . $model->user->id . '&stripe_user[email]=' . $model->user->email . '&stripe_user[country]=DE');
+            }
+            $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user, 'is_bank_detail_available' => $model->user->isBankDetailAvailable, 'stripe_account_id' => $model->user->stripe_account_connect_id, 'stripe_connect_url' => $stripeUrl]);
             return $dataResponse;
         } else {
             return $model;
@@ -956,7 +894,6 @@ class UserController extends ActiveController
      */
     public function actionVerifyProfileVerificationCode()
     {
-
         $postData = \Yii::$app->request->post();
         if (empty($postData) || empty($postData['verification_code'])) {
             throw new BadRequestHttpException(getValidationErrorMsg('verification_code_required', Yii::$app->language));
@@ -1161,40 +1098,6 @@ class UserController extends ActiveController
                 if (!empty($modelUser) && $modelUser instanceof User) {
                     $modelUser->stripe_account_connect_id = $stripeAccountId;
                     $modelUser->save(false);
-
-//                        $stripe = new \Stripe\StripeClient(
-//                            Yii::$app->params['stripe_secret_key']
-//                        );
-//
-//                        $bankAccountResponse = $stripe->accounts->allExternalAccounts(
-//                        //$stripeAccountId,
-//                            $modelUser->stripe_account_connect_id,
-//                            ['object' => 'bank_account', 'limit' => 3]
-//                        );
-//
-//                        //p($bankAccountResponse);
-//
-//                        if (!empty($bankAccountResponse) && !empty($bankAccountResponse['data'])) {
-//                            foreach ($bankAccountResponse['data'] as $key => $bankAccountResponseRow) {
-//                                //p($bankAccountResponseRow);
-//
-//                                $responseRetriveBankDetail = $stripe->accounts->retrieveExternalAccount(
-//                                //'acct_1KgRvhPABUdKTa3N',
-//                                    $bankAccountResponseRow->account,
-//                                    //'ba_1KgU4NAvFy5NACFpxR2gAeyn',
-//                                    $bankAccountResponseRow->id,
-//                                    []
-//                                );
-//
-//                                p($responseRetriveBankDetail);
-//
-//
-//
-//
-//                                $modelUser->stripe_bank_account_id = $responseRetriveBankDetail->id;
-//                            }
-//                            $modelUser->save(false);
-//                        }
                     return true;
                 }
             }
@@ -1203,11 +1106,6 @@ class UserController extends ActiveController
             echo "Error : " . $e->getMessage();
         }
         return false;
-    }
-
-    public function actionStripeEndpoint()
-    {
-
     }
 
 }

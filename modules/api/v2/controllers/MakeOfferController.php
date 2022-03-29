@@ -347,7 +347,7 @@ class MakeOfferController extends ActiveController
                             }
 
                             if (!empty($userROW->email) && $userROW->is_offer_update_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                $message = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . str_replace(".",",",Yii::$app->formatter->asCurrency($model->offer_amount));
+                                $message = "Your offer has been rejected by the seller for product " . ucfirst($modelProduct->name) . " at " . str_replace(".",",",Yii::$app->formatter->asCurrency($model->offer_amount)).", Please feel free to  visit App and make another offer!";
                                 $subject = "Your product offer rejected by seller";
                                 if ($offerData['MakeOffer']['status'] == MakeOffer::STATUS_ACCEPT) {
                                     $message = "Your offer has been accepted by the seller for product " . ucfirst($modelProduct->name) . " at " . str_replace(".",",",Yii::$app->formatter->asCurrency($model->offer_amount));

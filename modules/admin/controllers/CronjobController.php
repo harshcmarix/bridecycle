@@ -286,7 +286,8 @@ class CronjobController extends Controller
 
                                                 if (!empty($userDevice) && !empty($userDevice->notification_token)) {
                                                     // Insert into notification.
-                                                    $notificationText = "Product is uploaded as per your saved search";
+                                                    //$notificationText = "Product is uploaded as per your saved search";
+                                                    $notificationText = "A new product got uploaded which matches your search";
                                                     $modelNotification = new Notification();
                                                     $modelNotification->owner_id = $model->user_id;
                                                     $modelNotification->notification_receiver_id = $userROW->id;
@@ -324,7 +325,8 @@ class CronjobController extends Controller
                                             }
 
                                             if (!empty($userROW->email) && $userROW->is_saved_searches_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                                $message = "Product is uploaded as per your saved search.";
+                                                //$message = "Product is uploaded as per your saved search.";
+                                                $message = "A new product got uploaded which matches your search.";
                                                 if (!empty($userROW->email)) {
                                                     try {
                                                         Yii::$app->mailer->compose('api/addNewProductForSaveSearch', ['sender' => $model->user, 'receiver' => $userROW, 'message' => $message])
