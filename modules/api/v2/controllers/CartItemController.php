@@ -1545,10 +1545,10 @@ class CartItemController extends ActiveController
         $order = Order::find($order_id);
         if (!empty($order)) {
             if ($is_success) {
-                //$order->status = Order::STATUS_ORDER_COMPLETED;
+                //$order->status = Order::STATUS_ORDER_DELIVERED;
                 $order->status = Order::STATUS_ORDER_INPROGRESS;
             } else {
-                $order->status = Order::STATUS_ORDER_CANCELLED;
+                $order->status = Order::STATUS_ORDER_CANCEL;
             }
             $order->save(false);
         }

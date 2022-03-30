@@ -149,7 +149,7 @@ class SiteController extends Controller
                 }
             }
             $monthWiseOrders[] = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->count();
-            $monthIncome = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
+            $monthIncome = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->sum('total_amount');
             $monthWiseIncomes[] = (!empty($monthIncome)) ? $monthIncome : 0;
         }
 
@@ -326,7 +326,7 @@ class SiteController extends Controller
                     $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-29"));
                 }
             }
-            $monthWiseOrders[] = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
+            $monthWiseOrders[] = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->count();
         }
 
         $monthWiseOrders = [(double)$monthWiseOrders[0], (double)$monthWiseOrders[1], (double)$monthWiseOrders[2], (double)$monthWiseOrders[3], (double)$monthWiseOrders[4], (double)$monthWiseOrders[5], (double)$monthWiseOrders[6], (double)$monthWiseOrders[7], (double)$monthWiseOrders[8], (double)$monthWiseOrders[9], (double)$monthWiseOrders[10], (double)$monthWiseOrders[11]];
@@ -359,7 +359,7 @@ class SiteController extends Controller
             $endDate = date('Y') . '-' . date('m') . '-' . $i . ' 23:23:59';
             $tmparr = [
                 'name' => (string)$i,
-                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count()
+                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->count()
             ];
             array_push($currentMonthOrders, $tmparr);
         }
@@ -382,7 +382,7 @@ class SiteController extends Controller
             $dayName = $datetime->format('D');
             $tmparr = [
                 'name' => $dayName,
-                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count()
+                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->count()
             ];
             array_push($currentWeekOrders, $tmparr);
         }
@@ -397,7 +397,7 @@ class SiteController extends Controller
         $todayOrders = [];
         $tmparr = [
             'name' => 'Today',
-            'y' => (double)Order::find()->where('DATE(`created_at`) = CURRENT_DATE')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count()
+            'y' => (double)Order::find()->where('DATE(`created_at`) = CURRENT_DATE')->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->count()
         ];
         array_push($todayOrders, $tmparr);
         return json_encode($todayOrders);
@@ -428,7 +428,7 @@ class SiteController extends Controller
                     $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-29"));
                 }
             }
-            $monthWiseIncome[] = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount');
+            $monthWiseIncome[] = Order::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->sum('total_amount');
         }
 
         $monthWiseIncome = [(double)$monthWiseIncome[0], (double)$monthWiseIncome[1], (double)$monthWiseIncome[2], (double)$monthWiseIncome[3], (double)$monthWiseIncome[4], (double)$monthWiseIncome[5], (double)$monthWiseIncome[6], (double)$monthWiseIncome[7], (double)$monthWiseIncome[8], (double)$monthWiseIncome[9], (double)$monthWiseIncome[10], (double)$monthWiseIncome[11]];
@@ -461,7 +461,7 @@ class SiteController extends Controller
             $endDate = date('Y') . '-' . date('m') . '-' . $i . ' 23:23:59';
             $tmparr = [
                 'name' => (string)$i,
-                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount')
+                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->sum('total_amount')
             ];
             array_push($currentMonthIncome, $tmparr);
         }
@@ -483,7 +483,7 @@ class SiteController extends Controller
             $dayName = $datetime->format('D');
             $tmparr = [
                 'name' => $dayName,
-                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount')
+                'y' => (double)Order::find()->where(['between', 'created_at', $startDate, $endDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->sum('total_amount')
             ];
             array_push($currentWeekIncome, $tmparr);
         }
@@ -498,7 +498,7 @@ class SiteController extends Controller
         $todayIncome = [];
         $tmparr = [
             'name' => 'Today',
-            'y' => (double)Order::find()->where('DATE(`created_at`) = CURRENT_DATE')->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->sum('total_amount')
+            'y' => (double)Order::find()->where('DATE(`created_at`) = CURRENT_DATE')->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->sum('total_amount')
         ];
         array_push($todayIncome, $tmparr);
         return json_encode($todayIncome);

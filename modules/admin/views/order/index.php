@@ -199,9 +199,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     $status = 'Pending';
                     if ($model->status == Order::STATUS_ORDER_INPROGRESS) {
                         $status = 'In Progress';
-                    } elseif ($model->status == Order::STATUS_ORDER_COMPLETED) {
+                    } elseif ($model->status == Order::STATUS_ORDER_DELIVERED) {
                         $status = 'Completed';
-                    } elseif ($model->status == Order::STATUS_ORDER_CANCELLED) {
+                    } elseif ($model->status == Order::STATUS_ORDER_CANCEL) {
                         $status = 'Cancelled';
                     }
                     return $status;

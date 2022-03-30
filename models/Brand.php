@@ -157,7 +157,7 @@ class Brand extends ActiveRecord
         $query1->rightjoin('orders', 'orders.id=order_items.order_id');
         $query1->select(['SUM(order_items.quantity) AS total_sold_product', 'products.brand_id']);
         $query1->where(['products.brand_id' => $brandId]);
-        $subQuery = $query1->where(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_COMPLETED])->asArray()->one();
+        $subQuery = $query1->where(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_DELIVERED])->asArray()->one();
         return $subQuery;
     }
 

@@ -88,7 +88,7 @@ class ReportController extends Controller
                         $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-29"));
                     }
                 }
-                $orderCount = Order::find()->where(['between', 'updated_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
+                $orderCount = Order::find()->where(['between', 'updated_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->count();
                 $productCount = Product::find()->where(['between', 'created_at', $monthStartDate, $monthEndDate])->andWhere(['IN', 'status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]])->count();
 
                 $monthWiseOrders[$month[$i]] = $orderCount;
@@ -120,7 +120,7 @@ class ReportController extends Controller
             }
 
             foreach ($dates as $key => $date) {
-                $orderCount = Order::find()->where(['between', 'updated_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
+                $orderCount = Order::find()->where(['between', 'updated_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->count();
                 $productCount = Product::find()->where(['between', 'created_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['IN', 'status_id', [ProductStatus::STATUS_APPROVED, ProductStatus::STATUS_IN_STOCK]])->count();
 
                 $orders[$date] = $orderCount;
@@ -181,7 +181,7 @@ class ReportController extends Controller
                         $monthEndDate = date('Y-m-d 23:23:59', strtotime($year . "-" . $mnt . "-29"));
                     }
                 }
-                $orderCount = Order::find()->where(['between', 'updated_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
+                $orderCount = Order::find()->where(['between', 'updated_at', $monthStartDate, $monthEndDate])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->count();
                 $monthWiseOrders[$month[$i]] = $orderCount;
                 $totalOrders += $orderCount;
             }
@@ -205,7 +205,7 @@ class ReportController extends Controller
                 $dates[] = $rangeEndDate;
             }
             foreach ($dates as $key => $date) {
-                $orderCount = Order::find()->where(['between', 'updated_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['status' => Order::STATUS_ORDER_COMPLETED])->count();
+                $orderCount = Order::find()->where(['between', 'updated_at', $date . " 00:00:01", $date . " 23:23:59"])->andWhere(['status' => Order::STATUS_ORDER_DELIVERED])->count();
                 $orders[$date] = $orderCount;
                 $totalOrders += $orderCount;
             }

@@ -108,7 +108,7 @@ class BrandSearch extends Brand
             $query->leftjoin('order_items', 'order_items.product_id=products.id');
             $query->rightjoin('orders', 'orders.id=order_items.order_id');
 
-            $query->andWhere(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_COMPLETED]);
+            $query->andWhere(['between', 'order_items.created_at', $brandFromDate, $brandToDate])->andWhere(['orders.status' => Order::STATUS_ORDER_DELIVERED]);
         }
         // Brand of the week end
 

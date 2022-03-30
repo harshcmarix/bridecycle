@@ -163,7 +163,7 @@ $this->title = 'Dashboard';
     </div>
 
     <div class="col-md-3 col-xs-6">
-        <a href="<?php echo Url::to(['order/index', 'OrderSearch[status]' => Order::STATUS_ORDER_COMPLETED]) ?>"
+        <a href="<?php echo Url::to(['order/index', 'OrderSearch[status]' => Order::STATUS_ORDER_DELIVERED]) ?>"
            class="small-box-footer">
             <div class="small-box bg-green-gradient">
                 <div class="inner">

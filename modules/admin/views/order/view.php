@@ -36,9 +36,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     $status = 'Pending';
                     if ($model->status == \app\models\Order::STATUS_ORDER_INPROGRESS) {
                         $status = 'In progress';
-                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_COMPLETED) {
+                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_DELIVERED) {
                         $status = 'Completed';
-                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCELLED) {
+                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCEL) {
                         $status = 'Cancelled';
                     }
                     ?>
