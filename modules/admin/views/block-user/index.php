@@ -76,6 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             }
                         ],
+                        'header'=>'Actions'
                     ],
                 ],
                 'pjax' => true,
@@ -97,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'bordered' => true,
                 'striped' => true,
                 'condensed' => true,
-                'responsive' => true,
+                'responsive' => false,
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
                 ],
@@ -217,7 +218,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             })
             .on('pjax:success', function () {
-                window.location.reload();
+                //window.location.reload();
                 var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);

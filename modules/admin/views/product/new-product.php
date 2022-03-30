@@ -207,7 +207,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         ];
 
         echo GridView::widget([
-            'id' => 'product-grid',
+            'id' => 'new_product-grid',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => $gridColumns, // check the configuration for grid columns by clicking button above
@@ -255,7 +255,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             'bordered' => true,
             'striped' => true,
             'condensed' => true,
-            'responsive' => false,
+            'responsive' => true,
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
             ],
@@ -450,7 +450,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
         var input;
         var submit_form = false;
-        var filter_selector = '#product-grid-filters input';
+        var filter_selector = '#new_product-grid-filters input';
         var isInput = true;
 
         $('select').on('change', function () {
@@ -461,13 +461,13 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             isInput = true;
         });
 
-        $("body").on('beforeFilter', "#product-grid", function (event) {
+        $("body").on('beforeFilter', "#new_product-grid", function (event) {
             if (isInput) {
                 return submit_form;
             }
         });
 
-        $("body").on('afterFilter', "#product-grid", function (event) {
+        $("body").on('afterFilter', "#new_product-grid", function (event) {
             if (isInput) {
                 submit_form = false;
             }
@@ -481,7 +481,9 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
                     if (submit_form === false) {
                         submit_form = true;
-                        $("#product-grid").yiiGridView("applyFilter");
+                        setTimeout( function(){
+                            $("#new_product-grid").yiiGridView("applyFilter");
+                        }  , 700);
                     }
                 }
             })
@@ -505,14 +507,14 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         setTimeout(function () {
                             $(document).scrollTop($(document).innerHeight());
                         }, 200);
-                    })
+                    });
                 }
             });
 
         //select box filter
         var select;
         var submit_form = false;
-        var select_filter_selector = '#product-grid-filters select';
+        var select_filter_selector = '#new_product-grid-filters select';
         var isSelect = true;
 
         $('select').on('change', function () {
@@ -521,12 +523,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         $('input').on('keypress', function () {
             isSelect = false;
         });
-        $("body").on('beforeFilter', "#product-grid", function (event) {
+        $("body").on('beforeFilter', "#new_product-grid", function (event) {
             if (isSelect) {
                 return submit_form;
             }
         });
-        $("body").on('afterFilter', "#product-grid", function (event) {
+        $("body").on('afterFilter', "#new_product-grid", function (event) {
             if (isSelect) {
                 submit_form = false;
             }
@@ -538,11 +540,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 select = $(this).attr('name');
                 if (submit_form === false) {
                     submit_form = true;
-                    $("#product-grid").yiiGridView("applyFilter");
+                    $("#new_product-grid").yiiGridView("applyFilter");
                 }
             })
             .on('pjax:success', function () {
-                window.location.reload();
+                //window.location.reload();
                 var i = $("[name='" + input + "']");
                 var val = i.val();
                 i.focus().val(val);

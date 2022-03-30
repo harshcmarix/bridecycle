@@ -191,7 +191,10 @@ $this->params['breadcrumbs'][] = $this->title;
             if ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >= 186 && keyCode <= 192) || (keyCode >= 106 && keyCode <= 111) || (keyCode >= 219 && keyCode <= 222) || keyCode == 8 || keyCode == 32) {
                 if (submit_form === false) {
                     submit_form = true;
-                    $("#product-rating-grid").yiiGridView("applyFilter");
+                    setTimeout(function () {
+                        $("#product-rating-grid").yiiGridView("applyFilter");
+                    }, 700);
+
                 }
             }
         })
