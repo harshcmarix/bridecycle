@@ -121,12 +121,15 @@ return [
 //    'stripe_secret_key' => 'sk_test_51Kaw45SHffITXCbkqmKh6JeHwIl3PB5sAbPXXOUA4UGambjBzUy9Vch5uY5CtsIQoaK3MxzUXqqXbpshqOF4ep7f00AUHiOmgl',
 
 // Laura Test
+    'client_id' => 'ca_L4rzio6oCTXedreN1BVfcElzYzgQQQAp',
     'stripe_publishable_Key' => 'pk_test_51KKNVyAvFy5NACFpFkGdLGGEmD9LwgHYMtmXwtknuhzZqaaWgZZCjJcvSiNvUqcHiuYqDEw8aCoEnnHVMR6YmIFc00qi9yi9zm',
     'stripe_secret_key' => 'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw',
+    'stripe_connect_url' => 'https://connect.stripe.com/express/oauth/authorize?response_type=code&client_id=ca_L4rzio6oCTXedreN1BVfcElzYzgQQQAp&scope=read_write&redirect_uri=http://203.109.113.157/bridecycle/web/api/v2/user/stripe-connect-response', // For express account
     // Live
-    'client_id' => 'ca_L4rzTsUAjbt0UXJw4wYt6vK4LxaGKVPu',
+    //'client_id' => 'ca_L4rzTsUAjbt0UXJw4wYt6vK4LxaGKVPu',
     //'stripe_publishable_Key' => 'pk_live_51KKNVyAvFy5NACFpAgr2TKYYBoluv3okrwVpX4Ukg03b5Avw4cxJQCDHdXX8NIBEqwkWWr69KONtCMEroPUq8F0H008qyaRymi',
     //'stripe_secret_key' => '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',
+    //'stripe_connect_url' => 'https://connect.stripe.com/express/oauth/authorize?response_type=code&client_id=ca_L4rzTsUAjbt0UXJw4wYt6vK4LxaGKVPu&scope=read_write&redirect_uri=http://203.109.113.157/bridecycle/web/api/v2/user/stripe-connect-response', // For express account
 
     'other_support_language' => ['english', 'german'],
 

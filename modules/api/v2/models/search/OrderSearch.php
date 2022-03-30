@@ -107,7 +107,7 @@ class OrderSearch extends Order
             $fieldsData = $requestParams['fields'];
             $select = array_diff(explode(',', $fieldsData), $fields);
         } else {
-            $select = ['id', 'user_id', 'user_address_id', 'total_amount', 'status', 'created_at'];
+            $select = ['orders.*'];
         }
 
         $query->select($select);

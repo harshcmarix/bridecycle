@@ -37,7 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     if ($model->status == \app\models\Order::STATUS_ORDER_INPROGRESS) {
                         $status = 'In progress';
                     } elseif ($model->status == \app\models\Order::STATUS_ORDER_DELIVERED) {
-                        $status = 'Completed';
+                        $status = 'Delivered';
+                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_IN_TRANSIT) {
+                        $status = 'In-transit';
+                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_RETURN) {
+                        $status = 'Returned';
                     } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCEL) {
                         $status = 'Cancelled';
                     }
@@ -49,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col col-md-6 text-right">
                 <div class="form-group">
                     <h4><?= Html::encode('Order Amount (Product Price + Tax + Shipping) : ') ?>
-                        <strong><?php echo (!empty($model->total_amount)) ? str_replace('.',',',Yii::$app->formatter->asCurrency($model->total_amount)) : "" ?></strong>
+                        <strong><?php echo (!empty($model->total_amount)) ? str_replace('.', ',', Yii::$app->formatter->asCurrency($model->total_amount)) : "" ?></strong>
                     </h4>
                 </div>
                 <div class="form-group">
@@ -81,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                     ?>
                     <h4><?= Html::encode('BrideCycle Earning : ') ?>
-                        <strong><?php echo str_replace('.',',',$brideEarning) ?></strong>
+                        <strong><?php echo str_replace('.', ',', $brideEarning) ?></strong>
                     </h4>
                 </div>
                 <div class="form-group">
@@ -111,7 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                     ?>
                     <h4><?= Html::encode('Seller Earning : ') ?>
-                        <strong><?php echo (!empty($model->total_amount)) ? str_replace('.',',',Yii::$app->formatter->asCurrency(($model->total_amount - $brideEarningAmount))) : "-" ?></strong>
+                        <strong><?php echo (!empty($model->total_amount)) ? str_replace('.', ',', Yii::$app->formatter->asCurrency(($model->total_amount - $brideEarningAmount))) : "-" ?></strong>
                     </h4>
                 </div>
                 <div class="form-group">
@@ -176,7 +180,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     }
 
                                                     $dataImages[] = [
-                                                        'content' => Html::img($image_path, ['width' => '570', 'alt' => 'Product Image']),                                             //'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
+                                                        'content' => Html::img($image_path, ['width' => '80px', 'alt' => 'Product Image']),                                             //'caption' => '<h4>Product Image</h4><p>This is the product caption text</p>',
                                                         'options' => ['interval' => '600']
                                                     ];
                                                 }
@@ -239,7 +243,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             } elseif (!empty($model) && !empty($model->price)) {
                                                 $productPrice = Yii::$app->formatter->asCurrency($model->price);
                                             }
-                                            return str_replace('.',',',$productPrice);
+                                            return str_replace('.', ',', $productPrice);
                                         },
                                         'header' => 'Product Price',
                                         'headerOptions' => ['class' => 'kartik-sheet-style']
@@ -252,7 +256,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             } elseif (!empty($model) && !empty($model->tax)) {
                                                 $productTaxPrice = Yii::$app->formatter->asCurrency($model->tax);
                                             }
-                                            return str_replace('.',',',$productTaxPrice);
+                                            return str_replace('.', ',', $productTaxPrice);
                                         },
                                         'header' => 'Product Tax',
                                         'headerOptions' => ['class' => 'kartik-sheet-style']
@@ -506,16 +510,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                             return $paymentType;
                                         },
                                     ],
-                                    [
-                                        'label' => 'Paypal Email',
-                                        'value' => function ($model) {
-                                            $paypalEmail = "(not-set)";
-                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->paypal_email)) {
-                                                $paypalEmail = $model->orderItems[0]->product->user->bankDetail->paypal_email;
-                                            }
-                                            return $paypalEmail;
-                                        },
-                                    ],
+//                                    [
+//                                        'label' => 'Paypal Email',
+//                                        'value' => function ($model) {
+//                                            $paypalEmail = "(not-set)";
+//                                            if (!empty($model->orderItems[0]->product->user) && !empty($model->orderItems[0]->product->user->bankDetail) && $model->orderItems[0]->product->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->orderItems[0]->product->user->bankDetail->paypal_email)) {
+//                                                $paypalEmail = $model->orderItems[0]->product->user->bankDetail->paypal_email;
+//                                            }
+//                                            return $paypalEmail;
+//                                        },
+//                                    ],
                                 ],
                             ]) ?>
                         </div>
@@ -536,19 +540,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'attribute' => 'user_id',
                                         'label' => 'Buyer Name',
                                         'value' => function ($model) {
-                                            return '<a href="' . \yii\helpers\Url::to(['user/view', 'id' => $model->user->id, 'f' => 'o', 'oId' => $model->id]) . '" class="view-buyer-profile" title="View Buyer Profile">' . $model->user->first_name . " " . $model->user->last_name . '</a>';
+                                            if ($model->user->first_name . " " . $model->user->last_name == $model->name) {
+                                                return '<a href="' . \yii\helpers\Url::to(['user/view', 'id' => $model->user->id, 'f' => 'o', 'oId' => $model->id]) . '" class="view-buyer-profile" title="View Buyer Profile">' . $model->user->first_name . " " . $model->user->last_name . '</a>';
+                                            } else {
+                                                return '<a href="' . \yii\helpers\Url::to(['user/view', 'id' => $model->user->id, 'f' => 'o', 'oId' => $model->id]) . '" class="view-buyer-profile" title="View Buyer Profile">' . $model->user->first_name . " " . $model->user->last_name . '</a>' . " / " . $model->name;
+                                            }
+
                                         },
                                     ],
                                     [
                                         'label' => 'Buyer Email',
                                         'value' => function ($model) {
-                                            return $model->user->email;
+                                            //return $model->user->email;
+                                            return $model->email;
                                         },
                                     ],
                                     [
                                         'label' => 'Buyer Phone',
                                         'value' => function ($model) {
-                                            return $model->user->mobile;
+                                            //return $model->user->mobile;
+                                            return $model->contact;
                                         },
                                     ],
                                     [
@@ -682,17 +693,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                             return $paymentType;
                                         },
                                     ],
-                                    [
-
-                                        'label' => 'Paypal Email',
-                                        'value' => function ($model) {
-                                            $paypalEmail = "(not-set)";
-                                            if (!empty($model->user) && !empty($model->user->bankDetail) && $model->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->user->bankDetail->paypal_email)) {
-                                                $paypalEmail = $model->user->bankDetail->paypal_email;
-                                            }
-                                            return $paypalEmail;
-                                        },
-                                    ],
+//                                    [
+//
+//                                        'label' => 'Paypal Email',
+//                                        'value' => function ($model) {
+//                                            $paypalEmail = "(not-set)";
+//                                            if (!empty($model->user) && !empty($model->user->bankDetail) && $model->user->bankDetail instanceof \app\models\UserBankDetails && !empty($model->user->bankDetail->paypal_email)) {
+//                                                $paypalEmail = $model->user->bankDetail->paypal_email;
+//                                            }
+//                                            return $paypalEmail;
+//                                        },
+//                                    ],
                                 ],
                             ]) ?>
                         </div>

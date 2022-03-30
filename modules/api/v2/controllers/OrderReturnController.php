@@ -5,6 +5,7 @@ namespace app\modules\api\v2\controllers;
 use app\models\Notification;
 use app\models\Order;
 use app\models\OrderPayment;
+use app\models\OrderPaymentRefund;
 use app\modules\admin\models\Product;
 use app\modules\api\v2\models\User;
 use Stripe\Refund;
@@ -256,7 +257,7 @@ class OrderReturnController extends ActiveController
                             $userDevice = $userROW->userDevice;
 
                             // Insert into notification.
-                            $notificationText = "Order id:" . $modelOrder->id . " has been return requested for your product.";
+                            $notificationText = "Order id:" . $modelOrder->unique_id . " has been return requested for your product.";
 
                             $action = "Add";
                             $modelNotification = new Notification();
@@ -292,7 +293,7 @@ class OrderReturnController extends ActiveController
                         }
 
                         if (!empty($userROW->email)) {
-                            $message = "Order id:" . $modelOrder->id . " has been return requested for your product.";
+                            $message = "Order id:" . $modelOrder->unique_id . " has been return requested for your product.";
                             $subject = "Order Return Requested";
                             if (!empty($userROW->email)) {
                                 try {
@@ -381,23 +382,30 @@ class OrderReturnController extends ActiveController
                     );
 
                     if (!empty($chargeId) || $chargeId != "") {
+                        $refundResult = "";
                         try {
                             $refund = $stripe->refunds->create([
                                 //'charge' => 'ch_3KayxHAvFy5NACFp0BIFRGfB',
                                 'charge' => $chargeId,
                                 'reverse_transfer' => true,
                                 //'source_transfer_reversal' => false,
-                                'refund_application_fee' => false,
+                                'refund_application_fee' => true,
                                 'reason' => 'requested_by_customer',
-                                'metadata' => ['description' => 'Refund the payment for order cancel, Order id:' . $modelOrder->id]
+                                'metadata' => ['description' => 'Refund the payment for order cancel, Order id:' . $modelOrder->id."_" . $modelOrder->unique_id]
                             ]);
+
+                            $refundResult = $refund;
 
                         } catch (Exception $e) {
                             echo "Error :" . $e->getMessage();
                         }
 
+                        $refundId = "";
+                        $refundAmount = "";
                         if (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && $refund->status == Refund::STATUS_SUCCEEDED) {
                             $modelOrder->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES;
+                            $refundId = $refund->id;
+                            $refundAmount = $refund->amount;
                         } elseif (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && in_array($refund->status, [Refund::STATUS_FAILED, Refund::STATUS_PENDING, Refund::STATUS_CANCELED])) {
                             $modelOrder->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_NO;
                         } else {
@@ -405,6 +413,18 @@ class OrderReturnController extends ActiveController
                         }
                         $modelOrder->status = Order::STATUS_ORDER_RETURN;
                         $modelOrder->save(false);
+
+
+                        // Insert into OrderPaumentRefund start
+                        $modelOrerPaymentRefund = new OrderPaymentRefund();
+                        $modelOrerPaymentRefund->order_id = $modelOrder->id;
+                        $modelOrerPaymentRefund->payment_refund_id = $refundId;
+                        $modelOrerPaymentRefund->amount = $refundAmount;
+                        $modelOrerPaymentRefund->refund_status = (!empty($refundResult) && $refundResult instanceof Refund && !empty($refundResult->status)) ? $refundResult->status : Refund::STATUS_FAILED;
+                        $modelOrerPaymentRefund->refund_response = $refundResult;
+                        $modelOrerPaymentRefund->save(false);
+                        // Insert into OrderPaumentRefund end
+
                     }
 
                     if (!empty($getUsers)) {
@@ -415,9 +435,9 @@ class OrderReturnController extends ActiveController
 
                                     // Accept Refund Start
                                     // Insert into notification.
-                                    $notificationText = "Your order id:" . $modelOrder->id . " return accepted by seller.";
+                                    $notificationText = "Your order id:" . $modelOrder->unique_id . " return accepted by seller.";
 
-                                    $action = "Edit";
+                                    $action = "accept_return";
                                     $modelNotification = new Notification();
                                     $modelNotification->owner_id = $sender->id;
                                     $modelNotification->notification_receiver_id = $userROW->id;
@@ -491,7 +511,7 @@ class OrderReturnController extends ActiveController
                                 }
 
                                 if (!empty($userROW->email)) {
-                                    $message = "Your order id:" . $modelOrder->id . " return accepted by seller.";
+                                    $message = "Your order id:" . $modelOrder->unique_id . " return accepted by seller.";
                                     $subject = "Your order return accepted";
                                     if (!empty($userROW->email)) {
                                         try {
@@ -509,7 +529,7 @@ class OrderReturnController extends ActiveController
 
                                     // Refunded
                                     if ($modelOrder->is_payment_refunded == Order::IS_PAYMENT_REFUNDED_YES) {
-                                        $message = "Your order id:" . $modelOrder->id . " payment refund by " . Yii::$app->name;
+                                        $message = "Your order id:" . $modelOrder->unique_id . " payment refund by " . Yii::$app->name;
                                         $subject = "Your order payment refund";
                                         if (!empty($userROW->email)) {
                                             try {
@@ -543,9 +563,9 @@ class OrderReturnController extends ActiveController
 
                                     // Accept Refund Start
                                     // Insert into notification.
-                                    $notificationText = "Your order id:" . $modelOrder->id . " return rejected by seller.";
+                                    $notificationText = "Your order id:" . $modelOrder->unique_id . " return rejected by seller.";
 
-                                    $action = "Edit";
+                                    $action = "reject_return";
                                     $modelNotification = new Notification();
                                     $modelNotification->owner_id = $sender->id;
                                     $modelNotification->notification_receiver_id = $userROW->id;
@@ -579,7 +599,7 @@ class OrderReturnController extends ActiveController
                                 }
 
                                 if (!empty($userROW->email)) {
-                                    $message = "Your order id:" . $modelOrder->id . " return rejected by seller.";
+                                    $message = "Your order id:" . $modelOrder->unique_id . " return rejected by seller.";
                                     $subject = "Your order return rejected";
                                     if (!empty($userROW->email)) {
                                         try {

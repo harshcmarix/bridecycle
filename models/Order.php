@@ -19,6 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $status 1 => pending, 2 => in progress, 3 => in transit, 4 => delivered, 5 => return, 6 => cancel
  * @property string|null $transit_detail
  * @property int|null $is_payment_refunded 1 => yes, 0 => no
+ * @property string|null $unique_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -27,6 +28,7 @@ use yii\behaviors\TimestampBehavior;
  * @property User $user
  * @property OrderPayment $orderPayment
  * @property OrderReturn $orderReturn
+ * @property OrderPaymentRefund $orderPaymentRefund
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -61,14 +63,16 @@ class Order extends \yii\db\ActiveRecord
     const STATUS_ORDER_DELIVERED = '4';
     const STATUS_ORDER_RETURN = '5';
     const STATUS_ORDER_CANCEL = '6';
+    const STATUS_ORDER_CANCEL_BY_SELLER = '7';
 
     public $arrOrderStatus = [
-        // self::STATUS_ORDER_PENDING => 'Pending',
+        self::STATUS_ORDER_PENDING => 'Pending',
         self::STATUS_ORDER_INPROGRESS => 'In Progress',
         self::STATUS_ORDER_IN_TRANSIT => 'In-transit',
         self::STATUS_ORDER_DELIVERED => 'Delivered',
-        self::STATUS_ORDER_RETURN => 'Completed',
+        self::STATUS_ORDER_RETURN => 'Returned',
         self::STATUS_ORDER_CANCEL => 'Cancelled',
+        self::STATUS_ORDER_CANCEL_BY_SELLER => 'Cancelled by seller',
 
     ];
 
@@ -79,6 +83,7 @@ class Order extends \yii\db\ActiveRecord
         self::STATUS_ORDER_DELIVERED => 'Delivered',
         self::STATUS_ORDER_RETURN => 'Returned',
         self::STATUS_ORDER_CANCEL => 'Cancelled',
+        self::STATUS_ORDER_CANCEL_BY_SELLER => 'Cancelled by seller',
     ];
 
     const IS_PAYMENT_REFUNDED_YES = '1';
@@ -94,8 +99,10 @@ class Order extends \yii\db\ActiveRecord
             [['user_id', 'user_address_id', 'total_amount'], 'integer'],
             [['status'], 'string'],
             [['transit_detail'], 'string'],
+            //[['unique_id'], 'string'],
+            [['unique_id'], 'unique'],
             [['name', 'contact', 'email'], 'string'],
-            [['created_at', 'updated_at', 'is_return_available','is_payment_refunded'], 'safe'],
+            [['created_at', 'updated_at', 'is_return_available', 'is_payment_refunded'], 'safe'],
             [['user_address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::class, 'targetAttribute' => ['user_address_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -132,6 +139,7 @@ class Order extends \yii\db\ActiveRecord
             'orderItems0' => 'orderItems0',
             'isReturnAvailable' => 'isReturnAvailable',
             'orderReturn' => 'orderReturn',
+            'orderPaymentRefund' => 'orderPaymentRefund',
         ];
     }
 
@@ -185,6 +193,16 @@ class Order extends \yii\db\ActiveRecord
         return $this->hasOne(OrderReturn::class, ['order_id' => 'id']);
     }
 
+    /**
+     * Gets query for [[OrderPaymentRefund]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderPaymentRefund()
+    {
+        return $this->hasOne(OrderPaymentRefund::class, ['order_id' => 'id']);
+    }
+
 /////////////////////////////////// For API Use //////////////////////////////////////////
 
     /**
@@ -233,7 +251,6 @@ class Order extends \yii\db\ActiveRecord
             }
         }
 
-
         return $this->is_return_available;
     }
 
@@ -244,18 +261,9 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getDays($startdate, $enddate)
     {
-
-
         $datediff = $enddate - $startdate;
 
         return round($datediff / (60 * 60 * 24));
 
-
-//        // calulating the difference in timestamps
-//        $diff = strtotime($startdate) - strtotime($enddate);
-//
-//        // 1 day = 24 hours
-//        // 24 * 60 * 60 = 86400 seconds
-//        return ceil(abs($diff / 86400));
     }
 }

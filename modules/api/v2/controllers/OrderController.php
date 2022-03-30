@@ -4,6 +4,7 @@ namespace app\modules\api\v2\controllers;
 
 use app\models\Notification;
 use app\models\OrderPayment;
+use app\models\OrderPaymentRefund;
 use app\models\Product;
 use app\modules\api\v2\models\User;
 use Stripe\Refund;
@@ -182,7 +183,7 @@ class OrderController extends ActiveController
                                     $userDevice = $userROW->userDevice;
 
                                     // Insert into notification.
-                                    $notificationText = "Your order will be delivered soon, Order ID:" . $model->id;
+                                    $notificationText = "Your order will be delivered soon, Order ID:" . $model->unique_id;
                                     if (!empty($orderData['Order']['transit_detail'])) {
                                         $notificationText .= "\n Your shipment detail as below: \n" . $orderData['Order']['transit_detail'];
                                     }
@@ -220,7 +221,7 @@ class OrderController extends ActiveController
                                 }
 
                                 if (!empty($userROW->email)) {
-                                    $message = "Your order will be delivered soon, Order ID:" . $model->id;
+                                    $message = "Your order will be delivered soon, Order ID:" . $model->unique_id;
                                     if (!empty($orderData['Order']['transit_detail'])) {
                                         $message .= "\n Your shipment detail as below: \n" . $orderData['Order']['transit_detail'];
                                     }
@@ -253,7 +254,7 @@ class OrderController extends ActiveController
                                     $userDevice = $userROW->userDevice;
 
                                     // Insert into notification.
-                                    $notificationText = "Your order " . $model->id . " has been delivered. Thank you for shopping with " . Yii::$app->name;
+                                    $notificationText = "Your order " . $model->unique_id . " has been delivered. Thank you for shopping with " . Yii::$app->name;
 
                                     $action = "Edit";
                                     $modelNotification = new Notification();
@@ -289,7 +290,7 @@ class OrderController extends ActiveController
                                 }
 
                                 if (!empty($userROW->email) && $userROW->is_order_delivered_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                    $message = "Your order " . $model->id . " has been delivered. Thank you for shopping with " . Yii::$app->name;
+                                    $message = "Your order " . $model->unique_id . " has been delivered. Thank you for shopping with " . Yii::$app->name;
                                     $subject = "Your order has been delivered";
                                     if (!empty($userROW->email)) {
                                         try {
@@ -322,30 +323,47 @@ class OrderController extends ActiveController
                         Yii::$app->params['stripe_secret_key']
                     );
 
+
                     if (!empty($chargeId) || $chargeId != "") {
+                        $refundResult = "";
                         try {
                             $refund = $stripe->refunds->create([
                                 //'charge' => 'ch_3KayxHAvFy5NACFp0BIFRGfB',
                                 'charge' => $chargeId,
                                 'reverse_transfer' => true,
                                 //'source_transfer_reversal' => false,
-                                'refund_application_fee' => false,
+                                'refund_application_fee' => true,
                                 'reason' => 'requested_by_customer',
-                                'metadata' => ['description' => 'Refund the payment for order cancel, Order id:' . $model->id]
+                                'metadata' => ['description' => 'Refund the payment for order cancel, Order id:' . $model->id . "_" . $model->unique_id]
                             ]);
+                            $refundResult = $refund;
 
                         } catch (Exception $e) {
                             echo "Error :" . $e->getMessage();
                         }
 
+                        $refundId = "";
+                        $refundAmount = "";
                         if (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && $refund->status == Refund::STATUS_SUCCEEDED) {
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES;
+                            $refundId = $refund->id;
+                            $refundAmount = $refund->amount;
                         } elseif (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && in_array($refund->status, [Refund::STATUS_FAILED, Refund::STATUS_PENDING, Refund::STATUS_CANCELED])) {
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_NO;
                         } else {
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_NO;
                         }
 
+
+                        // Insert into OrderPaumentRefund start
+                        $modelOrerPaymentRefund = new OrderPaymentRefund();
+                        $modelOrerPaymentRefund->order_id = $model->id;
+                        $modelOrerPaymentRefund->payment_refund_id = $refundId;
+                        $modelOrerPaymentRefund->amount = $refundAmount;
+                        $modelOrerPaymentRefund->refund_status = (!empty($refundResult) && $refundResult instanceof Refund && !empty($refundResult->status)) ? $refundResult->status : Refund::STATUS_FAILED;
+                        $modelOrerPaymentRefund->refund_response = $refundResult;
+                        $modelOrerPaymentRefund->save(false);
+                        // Insert into OrderPaumentRefund end
 
                         // Cancel Order notification Start
 
@@ -358,9 +376,9 @@ class OrderController extends ActiveController
                                         // Insert into notification.
 
                                         if (Yii::$app->user->identity->id != $model->user_id) { // is a seller cancel
-                                            $notificationText = "Your order " . $model->id . " has been cancel by seller.";
+                                            $notificationText = "Your order " . $model->unique_id . " has been cancel by seller.";
                                         } else { // is a buyer cancel
-                                            $notificationText = "Your order " . $model->id . " has been cancel by buyer.";
+                                            $notificationText = "Your order " . $model->unique_id . " has been cancel by buyer.";
                                         }
 
                                         $action = "Edit";
@@ -398,14 +416,14 @@ class OrderController extends ActiveController
 
                                     if (!empty($userROW->email)) {
                                         if (Yii::$app->user->identity->id != $model->user_id) { // is a seller cancel
-                                            $message = "Your order " . $model->id . " has been cancel by seller.";
+                                            $message = "Your order " . $model->unique_id . " has been cancel by seller.";
                                         } else { // is a buyer cancel
-                                            $message = "Your order " . $model->id . " has been cancel by buyer.";
+                                            $message = "Your order " . $model->unique_id . " has been cancel by buyer.";
                                         }
                                         $subject = "Your order has been cancelled";
                                         if (!empty($userROW->email)) {
                                             try {
-                                                Yii::$app->mailer->compose('api/orderDelivered', ['sender' => $sender, 'receiver' => $userROW, 'message' => $message])
+                                                Yii::$app->mailer->compose('api/orderCancelled', ['sender' => $sender, 'receiver' => $userROW, 'message' => $message])
                                                     ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
                                                     ->setTo($userROW->email)
                                                     ->setSubject($subject)
@@ -475,7 +493,7 @@ class OrderController extends ActiveController
                                         }
 
                                         if (!empty($userROWS->email)) {
-                                            $message = "Your order id:" . $model->id . " payment refund by " . Yii::$app->name;
+                                            $message = "Your order id:" . $model->unique_id . " payment refund by " . Yii::$app->name;
                                             $subject = "Your order payment refund";
                                             if (!empty($userROWS->email)) {
                                                 try {
@@ -503,7 +521,13 @@ class OrderController extends ActiveController
                 }
             }
 
+            if (Yii::$app->user->identity->id != $model->user_id && $orderData['Order']['status'] == Order::STATUS_ORDER_CANCEL) {
+                $model->status = Order::STATUS_ORDER_CANCEL_BY_SELLER;
+            }
+
             $model->save(false);
+
+
         }
 
         return $model;

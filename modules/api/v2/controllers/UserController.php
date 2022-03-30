@@ -246,67 +246,6 @@ class UserController extends ActiveController
 
             if ($model->save(false)) {
 
-//                // Create stripe Account Start
-//                $stripe = new \Stripe\StripeClient(
-//                    Yii::$app->params['stripe_secret_key']
-//                );
-//
-//                // Inserted into connect
-//                $result = $stripe->accounts->create([
-//                    'type' => 'custom',
-//                    'country' => 'DE',
-//                    'email' => $postData['email'],
-//                    //'name' => $postData['first_name'] . " " . $postData['last_name'],
-//                    'business_type' => 'individual',
-//                    'capabilities' => [
-//                        'card_payments' => ['requested' => true],
-//                        'transfers' => ['requested' => true],
-//                    ],
-////                    'company' => [
-////                        'name' => $postData['shop_name'],
-////                        'phone'=>$postData['shop_phone_number'],
-////                        'address' => [
-////                            'city' => $postData['city'],
-////                            'country' => $postData['country'],
-////                            'line1' => $postData['street'],
-////                            'line2' => "",
-////                            'postal_code' => $postData['zip_code'],
-////                            'state' => $postData['state'],
-////                        ],
-////                    ],
-//                    'individual' => [
-//                        'name' => $postData['shop_name'],
-//                        'phone'=>$postData['shop_phone_number'],
-//                        'address' => [
-//                            'city' => $postData['city'],
-//                            'country' => $postData['country'],
-//                            'line1' => $postData['street'],
-//                            'line2' => "",
-//                            'postal_code' => $postData['zip_code'],
-//                            'state' => $postData['state'],
-//                        ],
-//                    ],
-//                    'tos_acceptance' => ['service_agreement' => 'full', 'date' => time(), 'ip' => '8.8.8.8'],
-//                ]);
-
-//                if (!empty($result) && !empty($result->id)) {
-//                    $model->stripe_account_connect_id = $result->id;
-//                    $model->save(false);
-//                }
-
-//                $resultCust = $stripe->customers->create([
-//                    'email' => $postData['email'],
-//                    'name' => $postData['first_name'] . " " . $postData['last_name'],
-//                ]);
-
-//                if (!empty($resultCust) && !empty($resultCust->id)) {
-//                    $model->stripe_account_customer_id = $resultCust->id;
-//                    $model->save(false);
-//                }
-
-                // Create stripe Account End
-
-
                 // Insert shop details
                 if ($model->is_shop_owner == User::SHOP_OWNER_YES) {
 
@@ -511,7 +450,7 @@ class UserController extends ActiveController
     public function actionView($id)
     {
         $model = User::find()->where(['id' => $id])->one();
-//p($model);
+
         if (!$model instanceof User) {
             throw new NotFoundHttpException(getValidationErrorMsg('user_not_exist', Yii::$app->language));
         }
@@ -531,10 +470,13 @@ class UserController extends ActiveController
         $model->waist_size = (string)$model->waist_size;
         $model->hip_size = (string)$model->hip_size;
         $model->notification_unread_count = (string)Notification::find()->where(['notification_receiver_id' => Yii::$app->user->identity->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
-        //p($model);
-//        $data['notification_unread_count'] = Notification::find()->where(['notification_receiver_id' => Yii::$app->user->identity->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
-        //$model = array_merge($model->toArray(), $data);
-        //$data = [$model, 'notification_unread_count' => $notification_unread_count];
+
+//        $stripeUrl = "";
+//        if (empty($model->stripe_account_connect_id)) {
+//            $stripeUrl = trim(Yii::$app->params['stripe_connect_url'] . '&state=' . $model->id . '&stripe_user[email]=' . $model->email . '&stripe_user[country]=DE');
+//        }
+//        $data = array_merge($model->toArray(), ['stripe_connect_url' => $stripeUrl]);
+
         return $model;
     }
 
@@ -730,7 +672,7 @@ class UserController extends ActiveController
             }
             $stripeUrl = "";
             if (empty($model->user->stripe_account_connect_id)) {
-                $stripeUrl = $stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?response_type=code&client_id=ca_L4rzio6oCTXedreN1BVfcElzYzgQQQAp&scope=read_write&redirect_uri=http://203.109.113.157/bridecycle/web/api/v2/user/stripe-connect-response&state=' . $model->user->id . '&stripe_user[email]=' . $model->user->email . '&stripe_user[country]=DE');
+                $stripeUrl = trim(Yii::$app->params['stripe_connect_url'] . '&state=' . $model->user->id . '&stripe_user[email]=' . $model->user->email . '&stripe_user[country]=DE');
             }
             $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user, 'is_bank_detail_available' => $model->user->isBankDetailAvailable, 'stripe_account_id' => $model->user->stripe_account_connect_id, 'stripe_connect_url' => $stripeUrl]);
             return $dataResponse;
@@ -930,15 +872,7 @@ class UserController extends ActiveController
 
         $data['is_bank_detail_available'] = $model->isBankDetailAvailable;
 
-        //$stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://203.109.113.157/bridecycle/web/api/v2/user/stripe-connect-response&client_id=ca_L4rzio6oCTXedreN1BVfcElzYzgQQQAp&state=onbrd_LId75eDtdMffGAp06EJemNofIu___"' . $model->id . '"&stripe_user[country]=DE');
-        // Testmode URL
-
-
-        $stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?response_type=code&client_id=ca_L4rzio6oCTXedreN1BVfcElzYzgQQQAp&scope=read_write&redirect_uri=http://203.109.113.157/bridecycle/web/api/v2/user/stripe-connect-response&state=' . $model->id . '&stripe_user[email]=' . $model->email . '&stripe_user[country]=DE');
-
-        // Livemode URL
-        //$stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?redirect_uri=https://connect.stripe.com/hosted/oauth&client_id=ca_L4rzTsUAjbt0UXJw4wYt6vK4LxaGKVPu&state=onbrd_LNcCP9FQk3i0Il7MTrXBmYKP7S___' . $model->id . '&stripe_user[country]=DE');
-        //$stripeConnectURL = trim('https://connect.stripe.com/express/oauth/authorize?response_type=code&client_id=ca_L4rzTsUAjbt0UXJw4wYt6vK4LxaGKVPu&stripe_user[country]=DE&user_id='.$model->id);
+        $stripeConnectURL = trim(Yii::$app->params['stripe_connect_url'] . '&state=' . $model->id . '&stripe_user[email]=' . $model->email . '&stripe_user[country]=DE');
 
         $data['stripe_connect_url'] = $stripeConnectURL;
         $dataResult = array_merge($model->toArray(), $data);

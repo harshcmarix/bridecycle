@@ -392,6 +392,7 @@ class User extends ActiveRecord implements IdentityInterface
             'shopDetails' => 'shopDetails',
             'rating' => 'rating',
             'timezone' => 'timezone',
+            'stripe_connect_url' => 'stripe_connect_url',
 
         ];
     }
@@ -607,7 +608,6 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasOne(Timezone::class, ['id' => 'timezone_id']);
     }
 
-
     /************************************************************************/
     /************************* Identity functions **************************/
     /***********************************************************************/
@@ -718,6 +718,19 @@ class User extends ActiveRecord implements IdentityInterface
         } else {
             return 0;
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getStripe_connect_url()
+    {
+        $stripeURL = "";
+        if (empty($this->stripe_account_connect_id)) {
+            $stripeUrl = trim(Yii::$app->params['stripe_connect_url'] . '&state=' . $this->id . '&stripe_user[email]=' . $this->email . '&stripe_user[country]=DE');
+        }
+
+        return $stripeURL;
     }
 }
 

@@ -145,13 +145,13 @@ class UserBankDetailsController extends ActiveController
                     Yii::$app->params['stripe_secret_key']
                 );
 
-                $deleteAccountResponse = $stripe->accounts->deleteExternalAccount(
-                    //$modelUser->stripe_account_connect_id,
-                    'acct_1KKNVyAvFy5NACFp',
-                    $modelUser->stripe_bank_account_id,
-                    []
-                );
-p($deleteAccountResponse);
+//                $deleteAccountResponse = $stripe->accounts->deleteExternalAccount(
+//                    //$modelUser->stripe_account_connect_id,
+//                    'acct_1KKNVyAvFy5NACFp',
+//                    $modelUser->stripe_bank_account_id,
+//                    []
+//                );
+
                 $resultAccount = $stripe->accounts->createExternalAccount(
                     $modelUser->stripe_account_connect_id,
                     //'acct_1KgRvhPABUdKTa3N',
@@ -169,7 +169,7 @@ p($deleteAccountResponse);
                     ]
                 );
 
-                p($resultAccount);
+                //p($resultAccount);
 
                 if (!empty($resultAccount) && !empty($resultAccount->id)) {
                     $modelUser->stripe_bank_account_id = $resultAccount->id;

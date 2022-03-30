@@ -126,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $html .= "<td style='border: solid 1px;'>" . $result . "</td>";
                                 $html .= "<td style='border: solid 1px;'>" . $productName . "</td>";
                                 $html .= "<td style='border: solid 1px;'>" . $productCatName . "</td>";
-                                $html .= "<td style='border: solid 1px;'>" . str_replace('.',',',$productPrice) . "</td>";
+                                $html .= "<td style='border: solid 1px;'>" . str_replace('.', ',', $productPrice) . "</td>";
                                 $html .= "<td style='border: solid 1px;'>" . $orderProductQty . "</td>";
                                 $html .= "</tr>";
                             }
@@ -142,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'total_amount',
                 'value' => function ($model) {
-                    return (!empty($model->total_amount)) ? str_replace('.',',',Yii::$app->formatter->asCurrency($model->total_amount)) : "";
+                    return (!empty($model->total_amount)) ? str_replace('.', ',', Yii::$app->formatter->asCurrency($model->total_amount)) : "";
                 },
                 'filter' => '',
                 'header' => "Total Amount <br>(Product Price <br> + Tax <br> + Shipping)",
@@ -165,7 +165,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         }
                     }
-                    return str_replace('.',',',$brideEarning);
+                    return str_replace('.', ',', $brideEarning);
                 },
                 'filter' => '',
                 'header' => "BrideCycle <br> Earning",
@@ -188,7 +188,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         }
                     }
-                    return str_replace('.',',',Yii::$app->formatter->asCurrency($model->total_amount - $brideEarning));
+                    return str_replace('.', ',', Yii::$app->formatter->asCurrency($model->total_amount - $brideEarning));
                 },
                 'filter' => '',
                 'header' => "Seller <br> Earning",
@@ -200,7 +200,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     if ($model->status == Order::STATUS_ORDER_INPROGRESS) {
                         $status = 'In Progress';
                     } elseif ($model->status == Order::STATUS_ORDER_DELIVERED) {
-                        $status = 'Completed';
+                        $status = 'Delivered';
+                    } elseif ($model->status == Order::STATUS_ORDER_IN_TRANSIT) {
+                        $status = 'In-transit';
+                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_RETURN) {
+                        $status = 'Returned';
                     } elseif ($model->status == Order::STATUS_ORDER_CANCEL) {
                         $status = 'Cancelled';
                     }
