@@ -572,6 +572,23 @@ class UserController extends ActiveController
      */
     public function actionLogin()
     {
+
+//       $stripe = new \Stripe\StripeClient(
+//            'sk_test_51KKNVyAvFy5NACFpRzFxqPpQjEYDMnc0SOuCV1VOt8lbNyVISP7TlcaXOteHTcd2uK7mCRR7gZSlvj1rSjpCCAZv00H3DG2OUw'
+//        );
+
+//       $cahrge =  $stripe->charges->retrieve(
+//            'ch_3KjjsOAvFy5NACFp1Y0xjJcn',
+//            []
+//        );
+//p($cahrge);
+
+//       $Btan =  $stripe->balanceTransactions->retrieve(
+//            'txn_3KjjsOAvFy5NACFp1wgQfCJv',
+//            []
+//        );
+//        p($Btan);
+
         $model = new Login();
 
         $data['Login'] = Yii::$app->request->post();
@@ -671,10 +688,11 @@ class UserController extends ActiveController
                 }
             }
             $stripeUrl = "";
-            if (empty($model->user->stripe_account_connect_id)) {
+            if (empty($model->user->stripe_account_connect_id) && $model->user->is_shop_owner == User::IS_VERIFY_USER_YES) {
                 $stripeUrl = trim(Yii::$app->params['stripe_connect_url'] . '&state=' . $model->user->id . '&stripe_user[email]=' . $model->user->email . '&stripe_user[country]=DE');
             }
-            $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user, 'is_bank_detail_available' => $model->user->isBankDetailAvailable, 'stripe_account_id' => $model->user->stripe_account_connect_id, 'stripe_connect_url' => $stripeUrl]);
+
+            $dataResponse = array_merge($model->toArray(), ['user_id' => $model->user->id, 'is_verify_user' => $model->user->is_verify_user, 'is_bank_detail_available' => $model->user->isBankDetailAvailable, 'stripe_account_id' => $model->user->stripe_account_connect_id, 'stripe_connect_url' => $stripeUrl, 'is_subscribed_user' => $model->user->is_subscribed_user, 'is_shop_owner' => $model->user->is_shop_owner]);
             return $dataResponse;
         } else {
             return $model;

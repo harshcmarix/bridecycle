@@ -182,6 +182,25 @@ class OrderReturnSearch extends OrderReturn
         ]);
 
         $orderReturnModels = $activeDataProvider->getModels();
+
+
+        foreach ($orderReturnModels as $key => $value) {
+            if (!empty($value) && $value instanceof OrderReturn) {
+                if (!empty($value->image_one)) {
+                    if (file_exists(Yii::getAlias('@orderReturnImageRelativePath') . "/" . $value->image_one)) {
+                        $value->image_one = Yii::$app->request->getHostInfo() . Yii::getAlias('@orderReturnImageAbsolutePath') . '/' . $value->image_one;
+                    }
+                }
+
+                if (!empty($value->image_two)) {
+                    if (file_exists(Yii::getAlias('@orderReturnImageRelativePath') . "/" . $value->image_two)) {
+                        $value->image_two = Yii::$app->request->getHostInfo() . Yii::getAlias('@orderReturnImageAbsolutePath') . '/' . $value->image_two;
+                    }
+                }
+            }
+        }
+
+
         $activeDataProvider->setModels($orderReturnModels);
 
         return $activeDataProvider;
@@ -285,6 +304,23 @@ class OrderReturnSearch extends OrderReturn
         ]);
 
         $orderReturnModels = $activeDataProvider->getModels();
+
+        foreach ($orderReturnModels as $key => $value) {
+            if (!empty($value) && $value instanceof OrderReturn) {
+                if (!empty($value->image_one)) {
+                    if (file_exists(Yii::getAlias('@orderReturnImageRelativePath') . "/" . $value->image_one)) {
+                        $value->image_one = Yii::$app->request->getHostInfo() . Yii::getAlias('@orderReturnImageAbsolutePath') . '/' . $value->image_one;
+                    }
+                }
+
+                if (!empty($value->image_two)) {
+                    if (file_exists(Yii::getAlias('@orderReturnImageRelativePath') . "/" . $value->image_two)) {
+                        $value->image_two = Yii::$app->request->getHostInfo() . Yii::getAlias('@orderReturnImageAbsolutePath') . '/' . $value->image_two;
+                    }
+                }
+            }
+        }
+
         $activeDataProvider->setModels($orderReturnModels);
 
         return $activeDataProvider;

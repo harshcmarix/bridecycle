@@ -48,7 +48,7 @@ class ShopDetail extends \yii\db\ActiveRecord
             [['shop_cover_picture', 'shop_name', 'shop_email', 'shop_phone_number', 'shop_logo', 'website'], 'required'],
             [['user_id'], 'integer'],
             [['shop_email'], 'email'],
-            [['shop_email'], 'unique'],
+            //[['shop_email'], 'unique'],
             [['created_at', 'updated_at'], 'safe'],
             [[ 'shop_name', 'shop_email', 'website'], 'string', 'max' => 255],
             [['shop_phone_number'], 'string', 'max' => 15],

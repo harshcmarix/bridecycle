@@ -326,12 +326,12 @@ class ProductController extends Controller
                 $modelAddress->user_id = Yii::$app->user->identity->id;
                 $modelAddress->type = UserAddress::TYPE_SHOP;
                 //if ($modelAddress->load($addressData) && $modelAddress->validate()) {
-                    $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->state . ", " . $modelAddress->country . ", " . $modelAddress->zip_code;
-                    $modelAddress->type = UserAddress::TYPE_SHOP;
-                    if ($modelAddress->save(false)) {
-                        $model->address_id = $modelAddress->id;
-                        $model->save(false);
-                    }
+                $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->state . ", " . $modelAddress->country . ", " . $modelAddress->zip_code;
+                $modelAddress->type = UserAddress::TYPE_SHOP;
+                if ($modelAddress->save(false)) {
+                    $model->address_id = $modelAddress->id;
+                    $model->save(false);
+                }
                 //}
                 // For address End
             }
@@ -533,12 +533,12 @@ class ProductController extends Controller
                 $modelAddress->user_id = Yii::$app->user->identity->id;
                 $modelAddress->type = UserAddress::TYPE_SHOP;
                 //if ($modelAddress->load($addressData) && $modelAddress->validate()) {
-                    $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->state . ", " . $modelAddress->country . ", " . $modelAddress->zip_code;
-                    $modelAddress->type = UserAddress::TYPE_SHOP;
-                    if ($modelAddress->save(false)) {
-                        $model->address_id = $modelAddress->id;
-                        $model->save(false);
-                    }
+                $modelAddress->address = $modelAddress->street . "," . $modelAddress->city . "," . $modelAddress->state . ", " . $modelAddress->country . ", " . $modelAddress->zip_code;
+                $modelAddress->type = UserAddress::TYPE_SHOP;
+                if ($modelAddress->save(false)) {
+                    $model->address_id = $modelAddress->id;
+                    $model->save(false);
+                }
                 //}
                 // For address End
             }
@@ -569,6 +569,7 @@ class ProductController extends Controller
      */
     public function actionUpdate($id)
     {
+        //p(Yii::$app->request->post());
         $model = $this->findModel($id);
         $oldUserId = $model->user_id;
 
@@ -583,7 +584,8 @@ class ProductController extends Controller
         }
         //p($model);
 
-        $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id', 'name');
+        //$shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id', 'name');
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
@@ -838,9 +840,9 @@ class ProductController extends Controller
 
                 // Status of product is Approve then color/brand status approved START.
                 if (in_array($model->status_id, [ProductStatus::STATUS_APPROVED])) {
-
                     $arrColors = explode(",", $model->option_color);
                     if (!empty($arrColors)) {
+                        $getUsers = [];
                         $modelColors = Color::find()->where(['in', 'id', $arrColors])->all();
                         if (!empty($modelColors)) {
                             $colorIds = [];
@@ -875,7 +877,9 @@ class ProductController extends Controller
                                     foreach ($modelProductsBasedOnColor as $keyProd => $modelProductsBasedOnColorRow) {
                                         if (!empty($modelProductsBasedOnColorRow) && $modelProductsBasedOnColorRow instanceof Product) {
                                             $userModel = $modelProductsBasedOnColorRow->user;
-
+                                            if (!empty($getUsers)) {
+                                                unset($getUsers);
+                                            }
                                             // Send push notification Start
                                             $getUsers[] = $userModel;
                                             if (!empty($getUsers)) {
@@ -950,6 +954,7 @@ class ProductController extends Controller
 
                     $modelBrand = Brand::findOne($model->brand_id);
                     if (!empty($modelBrand) && $modelBrand instanceof Brand && in_array($modelBrand->status, [Brand::STATUS_PENDING_APPROVAL])) {
+                        $getUsers = [];
                         $modelBrand->status = Brand::STATUS_APPROVE;
                         $modelBrand->save(false);
 
@@ -959,7 +964,9 @@ class ProductController extends Controller
                             foreach ($modelProductsBasedOnBrand as $keyProdBrand => $modelProductsBasedOnBrandRow) {
                                 if (!empty($modelProductsBasedOnBrandRow) && $modelProductsBasedOnBrandRow instanceof Product) {
                                     $userDataModel = $modelProductsBasedOnBrandRow->user;
-
+                                    if (!empty($getUsers)) {
+                                        unset($getUsers);
+                                    }
                                     // Send push notification Start
                                     $getUsers[] = $userDataModel;
                                     if (!empty($getUsers)) {
@@ -1072,7 +1079,8 @@ class ProductController extends Controller
         //p($model);
 
         //$shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
-        $shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id', 'name');
+        //$shippingCountry = ArrayHelper::map(ShippingCost::find()->leftJoin('shipping_price', 'shipping_price.shipping_cost_id = shipping_cost.id')->where(['shipping_price.product_id' => $id])->all(), 'id', 'name');
+        $shippingCountry = ArrayHelper::map(ShippingCost::find()->all(), 'id', 'name');
         $shippingPrice = $model->shippingCost;
 
         $category = ArrayHelper::map(ProductCategory::find()->where(['parent_category_id' => null])->all(), 'id', 'name');
@@ -1329,6 +1337,7 @@ class ProductController extends Controller
 
                     $arrColors = explode(",", $model->option_color);
                     if (!empty($arrColors)) {
+                        $getUsers = [];
                         $modelColors = Color::find()->where(['in', 'id', $arrColors])->all();
                         if (!empty($modelColors)) {
                             $colorIds = [];
@@ -1363,7 +1372,9 @@ class ProductController extends Controller
                                     foreach ($modelProductsBasedOnColor as $keyProd => $modelProductsBasedOnColorRow) {
                                         if (!empty($modelProductsBasedOnColorRow) && $modelProductsBasedOnColorRow instanceof Product) {
                                             $userModel = $modelProductsBasedOnColorRow->user;
-
+                                            if (!empty($getUsers)) {
+                                                unset($getUsers);
+                                            }
                                             // Send push notification Start
                                             $getUsers[] = $userModel;
                                             if (!empty($getUsers)) {
@@ -1441,11 +1452,14 @@ class ProductController extends Controller
 
                         $modelProductsBasedOnBrand = Product::find()->where(['brand_id' => $model->brand_id])->all();
 
+                        $getUsers = [];
                         if (!empty($modelProductsBasedOnBrand)) {
                             foreach ($modelProductsBasedOnBrand as $keyProdBrand => $modelProductsBasedOnBrandRow) {
                                 if (!empty($modelProductsBasedOnBrandRow) && $modelProductsBasedOnBrandRow instanceof Product) {
                                     $userDataModel = $modelProductsBasedOnBrandRow->user;
-
+                                    if (!empty($getUsers)) {
+                                        unset($getUsers);
+                                    }
                                     // Send push notification Start
                                     $getUsers[] = $userDataModel;
                                     if (!empty($getUsers)) {
@@ -1813,4 +1827,5 @@ class ProductController extends Controller
         $respondse = ['success' => true];
         return json_encode($respondse);
     }
+
 }

@@ -64,6 +64,20 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     ],
                     'mobile',
                     [
+                        'attribute' => 'stripe_account_connect_id',
+                        'value' => function ($model) {
+                            return (!empty($model) && !empty($model->stripe_account_connect_id)) ? $model->stripe_account_connect_id : "-";
+                        },
+                        'label' => 'Stripe Account ID',
+                    ],
+                    [
+                        'attribute' => 'is_subscribed_user',
+                        'value' => function ($model) {
+                            return ($model->is_subscribed_user == 1) ? "Yes" : "No";
+                        },
+                        //'label' => 'Stripe Account ID',
+                    ],
+                    [
                         'attribute' => "user_type",
                         "label" => 'Customer Type',
                         'value' => function ($model) {

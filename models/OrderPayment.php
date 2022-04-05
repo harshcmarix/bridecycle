@@ -15,8 +15,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $card_number
  * @property string|null $expiry_month_year
  *
- * @property string|null $buyer_bank_account_id
- * @property string|null $seller_bank_account_id
+
+
  *
  * @property string|null $payment_id
  * @property string|null $payment_response
@@ -77,7 +77,7 @@ class OrderPayment extends \yii\db\ActiveRecord
             [['cvv'], 'required', 'message' => getValidationErrorMsg('cvv_required', Yii::$app->language)],
 
             [['order_id'], 'integer'],
-            [['buyer_bank_account_id', 'seller_bank_account_id', 'payment_response', 'payment_status'], 'string'],
+            [['payment_response', 'payment_status'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['card_holder_name'], 'string', 'max' => 100],
             [['card_type'], 'string', 'max' => 20],

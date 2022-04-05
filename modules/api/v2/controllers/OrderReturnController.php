@@ -2,10 +2,12 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\BridecycleToSellerPayments;
 use app\models\Notification;
 use app\models\Order;
 use app\models\OrderPayment;
 use app\models\OrderPaymentRefund;
+use app\models\ProductStatus;
 use app\modules\admin\models\Product;
 use app\modules\api\v2\models\User;
 use Stripe\Refund;
@@ -365,7 +367,7 @@ class OrderReturnController extends ActiveController
                 $getUser = [];
                 if (!empty($modelOrder) && $modelOrder instanceof Order) {
                     $getUser[] = $modelOrder->user;
-                    $modelProduct = (!empty($modelOrder->orderItems) && !empty($modelOrder->orderItems[0]) && !empty($modelOrder->orderItems[0]->product)) ? $modelOrder->orderItems[0]->product : "";
+                    $modelProduct = (!empty($modelOrder->orderItems) && !empty($modelOrder->orderItems[0]) && !empty($modelOrder->orderItems[0]->product) && $modelOrder->orderItems[0]->product instanceof Product) ? $modelOrder->orderItems[0]->product : "";
                 }
 
                 if ($model->status == OrderReturn::STATUS_ACCEPT) {
@@ -391,7 +393,7 @@ class OrderReturnController extends ActiveController
                                 //'source_transfer_reversal' => false,
                                 'refund_application_fee' => true,
                                 'reason' => 'requested_by_customer',
-                                'metadata' => ['description' => 'Refund the payment for order cancel, Order id:' . $modelOrder->id."_" . $modelOrder->unique_id]
+                                'metadata' => ['description' => 'Refund the payment for order cancel, Order id:' . $modelOrder->id . "_" . $modelOrder->unique_id]
                             ]);
 
                             $refundResult = $refund;
@@ -406,6 +408,11 @@ class OrderReturnController extends ActiveController
                             $modelOrder->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES;
                             $refundId = $refund->id;
                             $refundAmount = $refund->amount;
+                            if (!empty($modelProduct) && $modelProduct instanceof Product) {
+                                $modelProduct->status_id = ProductStatus::STATUS_IN_STOCK;
+                                $modelProduct->available_quantity = ($modelProduct->available_quantity + 1);
+                                $modelProduct->save(false);
+                            }
                         } elseif (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && in_array($refund->status, [Refund::STATUS_FAILED, Refund::STATUS_PENDING, Refund::STATUS_CANCELED])) {
                             $modelOrder->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_NO;
                         } else {
@@ -414,6 +421,13 @@ class OrderReturnController extends ActiveController
                         $modelOrder->status = Order::STATUS_ORDER_RETURN;
                         $modelOrder->save(false);
 
+
+                        if(!empty($refundResult) && $refundResult instanceof Refund && !empty($refundResult->status) && $refundResult->status == Refund::STATUS_SUCCEEDED && $modelOrder->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES){
+                            $modelBridecycleToSellerPayment = BridecycleToSellerPayments::find()->where(['order_id' => $modelOrder->id])->one();
+                            if (!empty($modelBridecycleToSellerPayment) && $modelBridecycleToSellerPayment instanceof BridecycleToSellerPayments) {
+                                $modelBridecycleToSellerPayment->delete();
+                            }
+                        }
 
                         // Insert into OrderPaumentRefund start
                         $modelOrerPaymentRefund = new OrderPaymentRefund();

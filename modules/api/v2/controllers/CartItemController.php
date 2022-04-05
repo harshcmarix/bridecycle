@@ -9,6 +9,7 @@ use app\models\Notification;
 use app\models\Order;
 use app\models\OrderItem;
 use app\models\OrderPayment;
+use app\models\PaymentTransferDetails;
 use app\models\Product;
 use app\models\ProductCategory;
 use app\models\ProductStatus;
@@ -461,7 +462,6 @@ class CartItemController extends ActiveController
                     $expMontYear = explode("/", $modelOrderPayment->expiry_month_year);
                     $cardHoderName = explode(" ", $modelOrderPayment->card_holder_name);
 
-
                     $sellerDetail = '';
                     if (!empty($modelOrder->orderItems)) {
                         $orderItms = $modelOrder->orderItems;
@@ -490,6 +490,7 @@ class CartItemController extends ActiveController
                         'user_address' => $modelAddress,
                         'user_address_billing' => $modelAddressBillingFind,
                         'destination_id' => (!empty($sellerDetail) && $sellerDetail instanceof User && !empty($sellerDetail->stripe_account_connect_id)) ? $sellerDetail->stripe_account_connect_id : "",
+                        'seller_id' => (!empty($sellerDetail) && $sellerDetail instanceof User && !empty($sellerDetail->id)) ? $sellerDetail->id : "",
                     ];
 
                     $modelOrderPayment->order_id = $modelOrder->id;
@@ -497,8 +498,11 @@ class CartItemController extends ActiveController
                     $modelOrderPayment->save(false);
 
                     $response = $this->makePayment(array_merge($post, $paymentRequestData));
+                    //$response = $this->makePayment_bkp(array_merge($post, $paymentRequestData));
                     //p($response);
                     if (!empty($response)) {
+
+                        $modelBCToSellerPayment = "";
 
                         if (!empty($response->status) && $response->status == 'succeeded') {
 
@@ -575,16 +579,17 @@ class CartItemController extends ActiveController
                                         $generateInvoice = $this->generateInvoice($orderItemRow->id);
 
                                         // Track for Pending payment from bridecycle to seller start
-//                                        $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
-//                                        $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
-//                                        $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
-//                                        $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
-//                                        $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
-//                                        $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
-//                                        $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->price - $orderItemRow->tax);
-//                                        $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
-//                                        $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
-//                                        $modelBridecycleToSellerPayment->save(false);
+                                        $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
+                                        $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
+                                        $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
+                                        $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
+                                        $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
+                                        $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
+                                        $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->product->getReferPrice() - $orderItemRow->tax);
+                                        $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
+                                        $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
+                                        $modelBridecycleToSellerPayment->save(false);
+                                        $modelBCToSellerPayment = $modelBridecycleToSellerPayment;
                                         // Track for Pending payment from bridecycle to seller end
 
                                         $orderItemRow->product->price = $productActualPrice;
@@ -671,6 +676,11 @@ class CartItemController extends ActiveController
                                         $modelCartItemRow->delete();
                                     }
                                 }
+
+                                if (!empty($modelBCToSellerPayment) && $modelBCToSellerPayment instanceof BridecycleToSellerPayments) {
+                                    $modelBCToSellerPayment->status = BridecycleToSellerPayments::STATUS_COMPLETE;
+                                    $modelBCToSellerPayment->save(false);
+                                }
                             }
                             $modelOrder->save(false);
                         }
@@ -694,7 +704,7 @@ class CartItemController extends ActiveController
      * @param $request
      * @return \Exception|Payment|PayPalConnectionException
      */
-    public function makePayment($request)
+    public function makePayment_bkp($request)
     {
         $stripe = new \Stripe\StripeClient(
             Yii::$app->params['stripe_secret_key']
@@ -721,14 +731,18 @@ class CartItemController extends ActiveController
                 ['source' => $cardToken->id]
             );
 
-            $transactionFee = ($request['total'] * 2 / 100);
+            //$transactionFee = ($request['total'] * Yii::$app->params['payment_fee'] / 100);
 
-            $brideCycleEarning = ($request['total'] * 8 / 100);
+            $brideCycleEarning = ($request['total'] * Yii::$app->params['bridecycle_product_order_charge_percentage'] / 100);
 
-            $sellerAmount = $request['total'] - ($brideCycleEarning + $transactionFee);
+            //$sellerAmount = $request['total'] - ($brideCycleEarning + $transactionFee);
+            $sellerAmount = $request['total'] - ($brideCycleEarning);
+
+            //p("Total".$request['total'],0);
+            //p("BCE".$brideCycleEarning,0);
 
             $chargeResult = $stripe->charges->create([
-                'amount' => $request['total'] . '00',
+                'amount' => (is_integer($request['total']) && !is_float($request['total'])) ? $request['total'] . '00' : round($request['total']) . "00",
                 'currency' => 'eur',
                 'customer' => $resultCust->id,
                 'source' => $cardRequest->id,
@@ -736,9 +750,115 @@ class CartItemController extends ActiveController
                 'description' => 'Payment for Order id: ' . $request['order_id'],
                 'transfer_data' => [
                     'destination' => $request['destination_id'],
-                    'amount' => $sellerAmount . '00'
+                    'amount' => (is_integer($sellerAmount) && !is_float($sellerAmount)) ? $sellerAmount . '00' : round($sellerAmount) . "00"
                 ]
             ]);
+
+//            if (!empty($chargeResult) && !empty($chargeResult->balance_transaction)) {
+//                $balanceTransactionResult = $stripe->balanceTransactions->retrieve(
+//                    $chargeResult->balance_transaction,
+//                    []
+//                );
+//                if (!empty($balanceTransactionResult) && !empty($balanceTransactionResult->net)) {
+//                    $netAmount = ($balanceTransactionResult->net / 100);
+//                      p("net ".$netAmount,0);
+//                    $sellerAmount = ($netAmount - ($brideCycleEarning));
+//                }
+//            }
+//            p(floor($sellerAmount),0);
+//
+//            $transferResult = $stripe->transfers->create([
+//                'amount' => floor($sellerAmount),
+//                'currency' => 'eur',
+//                'destination' => $request['destination_id'],
+//                //'transfer_group' => 'Payment  transfer for Order id: ' . $request['order_id'],
+//            ]);
+//            p($transferResult);
+
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+        return $chargeResult;
+    }
+
+    public function makePayment($request)
+    {
+
+        $stripe = new \Stripe\StripeClient(
+            Yii::$app->params['stripe_secret_key']
+        );
+
+        $resultCust = $stripe->customers->create([
+            'email' => Yii::$app->user->identity->email,
+            'name' => Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name,
+        ]);
+
+        $chargeResult = "";
+        try {
+            $expiryMonthAndYear = explode("/", $request['expiry_month_year']);
+            $cardToken = $stripe->tokens->create([
+                'card' => [
+                    'number' => $request['card_number'],
+                    'exp_month' => $expiryMonthAndYear[0],
+                    'exp_year' => $expiryMonthAndYear[1],
+                    'cvc' => $request['cvv'],
+                ],
+            ]);
+            $cardRequest = $stripe->customers->createSource(
+                $resultCust->id,
+                ['source' => $cardToken->id]
+            );
+
+            //$transactionFee = ($request['total'] * Yii::$app->params['payment_fee'] / 100);
+            $brideCycleEarning = ($request['total'] * Yii::$app->params['bridecycle_product_order_charge_percentage'] / 100);
+
+            //$sellerAmount = $request['total'] - ($brideCycleEarning + $transactionFee);
+            $sellerAmount = $request['total'] - ($brideCycleEarning);
+
+            //p("Total".$request['total'],0);
+            //p("BCE".$brideCycleEarning,0);
+
+            $chargeResult = $stripe->charges->create([
+                'amount' => (is_integer($request['total']) && !is_float($request['total'])) ? $request['total'] . '00' : round($request['total']) . "00",
+                'currency' => 'eur',
+                'customer' => $resultCust->id,
+                'source' => $cardRequest->id,
+                'capture' => true,
+                'description' => 'Payment for Order id: ' . $request['order_id'],
+//                'transfer_data' => [
+//                    'destination' => $request['destination_id'],
+//                    'amount' => (is_integer($sellerAmount) && !is_float($sellerAmount)) ? $sellerAmount . '00' : round($sellerAmount) . "00"
+//                ]
+            ]);
+
+            if (!empty($chargeResult) && !empty($chargeResult->balance_transaction)) {
+                $balanceTransactionResult = $stripe->balanceTransactions->retrieve(
+                    $chargeResult->balance_transaction,
+                    []
+                );
+                if (!empty($balanceTransactionResult) && !empty($balanceTransactionResult->net)) {
+                    $netAmount = ($balanceTransactionResult->net / 100);
+                    $sellerAmount = ($netAmount - ($brideCycleEarning));
+                }
+            }
+            $sellerAmount = floor($sellerAmount);
+
+            $modelPaymentTransferDetail = new PaymentTransferDetails();
+            $modelPaymentTransferDetail->order_id = $request['order_id'];
+            $modelPaymentTransferDetail->seller_id = $request['seller_id'];
+            $modelPaymentTransferDetail->source_id = $chargeResult->id; // Charge ID
+            $modelPaymentTransferDetail->destination_id = $request['destination_id'];
+            $modelPaymentTransferDetail->transfer_amount = $sellerAmount;
+            $modelPaymentTransferDetail->is_transferred = PaymentTransferDetails::IS_TRANSFFERED_NO;
+            $modelPaymentTransferDetail->save(false);
+
+//            $transferResult = $stripe->transfers->create([
+//                'amount' => $sellerAmount,
+//                'currency' => 'eur',
+//                'destination' => $request['destination_id'],
+//                //'transfer_group' => 'Payment  transfer for Order id: ' . $request['order_id'],
+//            ]);
+//            p($transferResult);
 
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage();

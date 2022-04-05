@@ -413,7 +413,6 @@ class ProductController extends ActiveController
         $model->receipt = $model->productReceipt;
 
         if ($model->load($productData) && $model->validate()) {
-            $model->user_id = Yii::$app->user->identity->id;
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
             } else {
@@ -438,7 +437,8 @@ class ProductController extends ActiveController
 
             if (!empty($postData['available_quantity'])) {
                 $model->available_quantity = $postData['available_quantity'];
-                if ($postData['available_quantity'] == '1' && !empty($productData['Product']) && !empty($productData['Product']['type']) && $productData['Product']['type'] == 'u') {
+                //if ($postData['available_quantity'] == '1' && !empty($productData['Product']) && !empty($productData['Product']['type']) && $productData['Product']['type'] == 'u' && !in_array($model->status_id,[ProductStatus::STATUS_SOLD]) && $model->user_id != Yii::$app->user->identity->id) {
+                if ($postData['available_quantity'] == '1' && !empty($productData['Product']) && !empty($productData['Product']['type']) && $productData['Product']['type'] == 'u' && isset($postData['is_from_relist']) && ($postData['is_from_relist'] == 1 || $postData['is_from_relist'] == '1') && $model->user_id != Yii::$app->user->identity->id) {
                     $model->status_id = ProductStatus::STATUS_APPROVED;
                 }
             }
@@ -487,6 +487,7 @@ class ProductController extends ActiveController
             if (!empty($productData['Product']['shipping_country_price'])) {
                 $model->shipping_country_price = $productData['Product']['shipping_country_price'];
             }
+            $model->user_id = Yii::$app->user->identity->id;
 
             if ($model->save(false)) {
 

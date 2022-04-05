@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (!empty($model->userAddress->address)) {
                         $address = $model->userAddress->address;
                     } else {
-                        $address = $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state;
+                        $address = $model->userAddress->street . ", " . $model->userAddress->city . ", " . $model->userAddress->zip_code . ", " . $model->userAddress->state . ", " . $model->userAddress->country;
                     }
                     return $address;
                 },
@@ -203,10 +203,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         $status = 'Delivered';
                     } elseif ($model->status == Order::STATUS_ORDER_IN_TRANSIT) {
                         $status = 'In-transit';
-                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_RETURN) {
+                    } elseif ($model->status == Order::STATUS_ORDER_RETURN) {
                         $status = 'Returned';
                     } elseif ($model->status == Order::STATUS_ORDER_CANCEL) {
                         $status = 'Cancelled';
+                    } elseif ($model->status == Order::STATUS_ORDER_CANCEL_BY_SELLER) {
+                        $status = 'Cancelled by seller';
                     }
                     return $status;
                 },
@@ -219,6 +221,28 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
                 'header' => 'Order Status',
+            ],
+            [
+                'attribute' => 'is_payment_refunded',
+                'value' => function ($model) {
+                    $statusPaymentRefunded = '-';
+                    if ($model->is_payment_refunded == \app\models\Order::IS_PAYMENT_REFUNDED_YES && !empty($model->orderPaymentRefund)) {
+                        $statusPaymentRefunded = 'Yes';
+                    } else if ($model->is_payment_refunded == \app\models\Order::IS_PAYMENT_REFUNDED_YES && empty($model->orderPaymentRefund)) {
+                        $statusPaymentRefunded = 'No';
+                    }
+
+                    return $statusPaymentRefunded;
+                },
+//                'filter' => $searchModel->arrOrderStatus,
+//                'filterType' => GridView::FILTER_SELECT2,
+//                'filterWidgetOptions' => [
+//                    'options' => ['prompt' => 'Select'],
+//                    'pluginOptions' => [
+//                        'allowClear' => true,
+//                    ],
+//                ],
+                'header' => 'Payment Refunded',
             ],
             [
                 'class' => 'kartik\grid\ActionColumn',

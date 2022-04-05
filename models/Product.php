@@ -331,7 +331,8 @@ class Product extends \yii\db\ActiveRecord
             'productTracking' => 'productTracking',
             'productTrackingChild' => 'productTrackingChild',
             'productSizes0' => 'productSizes0',
-            'referPrice' => 'referPrice'
+            'referPrice' => 'referPrice',
+            'productReturnAllowDay' => 'productReturnAllowDay',
         ];
     }
 
@@ -834,7 +835,7 @@ class Product extends \yii\db\ActiveRecord
 
         $dataResult['ref_price'] = $this->price + $this->option_price;
         $this->refer_price = $dataResult['ref_price'];
-//p(Yii::$app->user->identity->id);
+        //p(Yii::$app->user->identity->id);
         if (!empty(Yii::$app->user) && !empty(Yii::$app->user->identity) && !empty(Yii::$app->user->identity->id)) {
 
             if ($this->type == Product::PRODUCT_TYPE_USED && Yii::$app->user->identity->id != $this->user_id) {
@@ -850,7 +851,7 @@ class Product extends \yii\db\ActiveRecord
                 }
                 if ($isOfferAcceptedCount > 0) {
                     //p($isOfferAcceptedCount);
-                    $dataResult['ref_price'] = $offers[$isOfferAcceptedCount - 1]['offer_amount'];
+                    $dataResult['ref_price'] = ($offers[$isOfferAcceptedCount - 1]['offer_amount'] + $this->option_price);
                 }
             }
             $this->refer_price = $dataResult['ref_price'];
@@ -858,5 +859,15 @@ class Product extends \yii\db\ActiveRecord
 
         return $this->refer_price;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getProductReturnAllowDay()
+    {
+
+        return Yii::$app->params['allow_return_product_days'];
+    }
+
 
 }

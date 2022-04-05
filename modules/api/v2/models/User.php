@@ -82,7 +82,7 @@ use yii\web\UnauthorizedHttpException;
  * @property string|null $is_subscribed_user
  * @property string|null $user_status
  * @property int|null $timezone_id
- * @property int|null $stripe_account_connect_id
+ * @property string|null $stripe_account_connect_id
  * @property int|null $stripe_account_customer_id
  * @property int|null $stripe_bank_account_id
  * @property string|null $notification_unread_count
@@ -199,6 +199,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             // [['first_name', 'last_name', 'email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
             [['email'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER], 'message' => getValidationErrorMsg('email_required', Yii::$app->language)],
+
             [['timezone_id'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER], 'message' => getValidationErrorMsg('timezone_required', Yii::$app->language)],
             [['username'], 'required', 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER], 'message' => getValidationErrorMsg('username_required', Yii::$app->language)],
             // [['first_name'], 'required', 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]], // 'last_name'
@@ -214,7 +215,6 @@ class User extends ActiveRecord implements IdentityInterface
 
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => getValidationErrorMsg('password_confirm_password_match_required', Yii::$app->language)],
             [['facebook_id', 'apple_id', 'google_id', 'access_token_expired_at', 'created_at', 'updated_at', 'is_login_from'], 'safe'],
-
 
             //[['facebook_id'], 'unique', 'message' => getValidationErrorMsg('unique_facebook_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]],
             //[['apple_id'], 'unique', 'message' => getValidationErrorMsg('unique_apple_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE_FROM_SOCIAL]],
@@ -237,8 +237,6 @@ class User extends ActiveRecord implements IdentityInterface
             [['shop_email'], 'email', 'message' => getValidationErrorMsg('shop_email_not_valid', Yii::$app->language)],
 
             [['user_status', 'is_verify_user', 'is_subscribed_user', 'latitude', 'longitude'], 'safe'],
-            [['email'], 'unique', 'message' => getValidationErrorMsg('unique_email_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE]],
-            [['email'], 'string', 'max' => 60, 'tooLong' => getValidationErrorMsg('email_max_60_character_length', Yii::$app->language)],
 
             //[['verification_code'], 'string', 'max' => 6, 'tooLong' => getValidationErrorMsg('verification_code_max_6_character_length', Yii::$app->language)],
             [['verification_code'], 'string', 'max' => 6],
@@ -251,6 +249,14 @@ class User extends ActiveRecord implements IdentityInterface
             [['shop_logo'], 'file'],
             [['profile_picture'], 'file'],
             [['shop_cover_picture'], 'file'],
+
+            //[['email'], 'unique', 'targetAttribute' => ['email','is_verify_user'], 'message' => getValidationErrorMsg('unique_email_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE,self::SCENARIO_SHOP_OWNER]
+//            'when' => function ($model) {
+//                return $model->is_verify_user == 0; // or other function for get current username
+//    }
+            //],
+            [['email'], 'unique', 'message' => getValidationErrorMsg('unique_email_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE,self::SCENARIO_SHOP_OWNER]],
+            [['email'], 'string', 'max' => 60, 'tooLong' => getValidationErrorMsg('email_max_60_character_length', Yii::$app->language)],
 
             // [['shop_logo', 'profile_picture', 'shop_cover_picture'], 'file', 'extensions' => 'png, jpg, jpeg'],
             [['shop_name'], 'string', 'max' => 100, 'tooLong' => getValidationErrorMsg('shop_name_max_100_character_length', Yii::$app->language)],
@@ -293,7 +299,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['is_order_delivered_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
             [['is_click_and_try_email_notification_on'], 'required', 'on' => [self::SCENARIO_API_NOTIFICATION_SETTING]],
 
-            [['shop_email'], 'unique', 'targetClass' => ShopDetail::class, 'targetAttribute' => ['shop_email'], 'on' => [self::SCENARIO_SHOP_OWNER]],
+            //[['shop_email'], 'unique', 'targetClass' => ShopDetail::class, 'targetAttribute' => ['shop_email'], 'on' => [self::SCENARIO_SHOP_OWNER]],
             //[['timezone_id'], 'exist', 'skipOnEmpty' => true,'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['timezone_id' => 'id']],
 
 
@@ -376,6 +382,7 @@ class User extends ActiveRecord implements IdentityInterface
             'verification_code' => 'Verification Code',
             'timezone_id' => 'Timezone',
             //'notification_unread_count' => 'Notification Unread Count',
+            'stripe_account_connect_id' => 'Stripe Account ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -727,7 +734,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $stripeURL = "";
         if (empty($this->stripe_account_connect_id)) {
-            $stripeUrl = trim(Yii::$app->params['stripe_connect_url'] . '&state=' . $this->id . '&stripe_user[email]=' . $this->email . '&stripe_user[country]=DE');
+            $stripeURL = trim(Yii::$app->params['stripe_connect_url'] . '&state=' . $this->id . '&stripe_user[email]=' . $this->email . '&stripe_user[country]=DE');
         }
 
         return $stripeURL;

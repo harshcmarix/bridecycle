@@ -87,6 +87,7 @@ return [
     // Per product order charges
     //'bridecycle_product_order_charge_percentage' => '11',
     'bridecycle_product_order_charge_percentage' => '8',
+    'payment_fee' => '2',
 
     // Google Play store subscription package name, Its Used for check subscription expire status cronjob.
     'google_play_store_subscription_package_name' => 'com.bridecycle',

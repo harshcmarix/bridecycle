@@ -2,10 +2,12 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\BridecycleToSellerPayments;
 use app\models\Notification;
 use app\models\OrderPayment;
 use app\models\OrderPaymentRefund;
 use app\models\Product;
+use app\models\ProductStatus;
 use app\modules\api\v2\models\User;
 use Stripe\Refund;
 use Yii;
@@ -348,6 +350,9 @@ class OrderController extends ActiveController
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES;
                             $refundId = $refund->id;
                             $refundAmount = $refund->amount;
+                            $modelProduct->status_id = ProductStatus::STATUS_IN_STOCK;
+                            $modelProduct->available_quantity = ($modelProduct->available_quantity + 1);
+                            $modelProduct->save(false);
                         } elseif (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && in_array($refund->status, [Refund::STATUS_FAILED, Refund::STATUS_PENDING, Refund::STATUS_CANCELED])) {
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_NO;
                         } else {
@@ -376,12 +381,14 @@ class OrderController extends ActiveController
                                         // Insert into notification.
 
                                         if (Yii::$app->user->identity->id != $model->user_id) { // is a seller cancel
-                                            $notificationText = "Your order " . $model->unique_id . " has been cancel by seller.";
+                                            $notificationText = "Your order " . $model->unique_id . " has been cancelled by seller.";
+                                            $cancelBy="_by_seller";
                                         } else { // is a buyer cancel
-                                            $notificationText = "Your order " . $model->unique_id . " has been cancel by buyer.";
+                                            $notificationText = "Your order " . $model->unique_id . " has been cancelled by buyer.";
+                                            $cancelBy="_by_buyer";
                                         }
 
-                                        $action = "Edit";
+                                        $action = "cancel_order".$cancelBy;
                                         $modelNotification = new Notification();
                                         $modelNotification->owner_id = $sender->id;
                                         $modelNotification->notification_receiver_id = $userROW->id;
@@ -416,9 +423,9 @@ class OrderController extends ActiveController
 
                                     if (!empty($userROW->email)) {
                                         if (Yii::$app->user->identity->id != $model->user_id) { // is a seller cancel
-                                            $message = "Your order " . $model->unique_id . " has been cancel by seller.";
+                                            $message = "Your order " . $model->unique_id . " has been cancelled by seller.";
                                         } else { // is a buyer cancel
-                                            $message = "Your order " . $model->unique_id . " has been cancel by buyer.";
+                                            $message = "Your order " . $model->unique_id . " has been cancelled by buyer.";
                                         }
                                         $subject = "Your order has been cancelled";
                                         if (!empty($userROW->email)) {
@@ -528,6 +535,12 @@ class OrderController extends ActiveController
             $model->save(false);
 
 
+            if (in_array($orderData['Order']['status'], [Order::STATUS_ORDER_CANCEL_BY_SELLER, Order::STATUS_ORDER_CANCEL]) && $model->is_payment_refunded == Order::IS_PAYMENT_REFUNDED_YES) {
+                $modelBridecycleToSellerPayment = BridecycleToSellerPayments::find()->where(['order_id' => $model->id])->one();
+                if (!empty($modelBridecycleToSellerPayment) && $modelBridecycleToSellerPayment instanceof BridecycleToSellerPayments) {
+                    $modelBridecycleToSellerPayment->delete();
+                }
+            }
         }
 
         return $model;

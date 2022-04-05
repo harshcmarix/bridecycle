@@ -129,6 +129,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <lable><strong>Shipping Country</strong></lable>
 
                     <?php
+                    //p($shippingCountry);
                     echo $form->field($model, 'shipping_country[]')->checkboxList($shippingCountry, [
                         'item' => function ($index, $label, $name, $checked, $value) {
                             if (Yii::$app->controller->action->id == 'create') {
@@ -138,7 +139,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             } else {
                                 $checked = "";
                                 $key = $index + 1;
-                                echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick=\"return false;\" onkeydown=\"return false;\" type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
+                                //echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick=\"return false;\" onkeydown=\"return false;\" type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
+                                echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
                             }
                         }
                     ])->label(false) ?>
@@ -163,7 +165,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             $class = 'shipping_country_cost_' . $pKey;
                             $readonly = false;
                             if (Yii::$app->controller->action->id == 'update') {
-                                $readonly = true;
+                               // $readonly = true;
                             }
                             ?>
 
@@ -557,7 +559,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             var html = '';
             "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
             html += '<div class="form-group field-product-shipping_country_price">';
-            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + idIndex + '" name="Product[shipping_country_price][]" value="">';
+            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + (idIndex-1) + '" name="Product[shipping_country_price][]" value="">';
             html += '<div class="help-block"></div></div>';
             $('.shipping_cost_price_tex_boxes').append(html);
             previousCheckedDataVal = previousCheckedDataVal + "," + idIndex;
@@ -569,7 +571,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         } else if ($(obj).prop("checked") == false) {
             //$('.shipping_country_' + idIndex).val('');
             "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
-            $('.shipping_country_cost_' + (idIndex)).parent('.field-product-shipping_country_price').remove();
+            $('.shipping_country_cost_' + (idIndex-1)).parent('.field-product-shipping_country_price').remove();
             if (idIndex > 1) {
                 updatedString = previousCheckedDataVal.replace("," + idIndex, "");
             } else {

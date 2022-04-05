@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             if (!empty($model) && $model instanceof \app\models\BridecycleToSellerPayments && !empty($model->amount)) {
                                 $amount = $model->amount;
                             }
-                            return str_replace('.',',',Yii::$app->formatter->asCurrency($amount));
+                            return str_replace('.', ',', Yii::$app->formatter->asCurrency($amount));
                         },
                     ],
                     [
@@ -69,19 +69,23 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value' => function ($model) {
                             $bridecycleAmount = 0.0;
                             if (!empty($model) && $model instanceof \app\models\BridecycleToSellerPayments) {
-                                $bridecycleAmount = $model->getBrideEarning($model->product_price);
+                                //$bridecycleAmount = $model->getBrideEarning($model->product_price);
+                                $bridecycleAmount = $model->getBrideEarning($model->amount);
                             }
-                            return str_replace('.',',',Yii::$app->formatter->asCurrency($bridecycleAmount));
+                            return str_replace('.', ',', Yii::$app->formatter->asCurrency($bridecycleAmount));
                         },
                     ],
                     [
                         'label' => 'Seller Earning',
                         'value' => function ($model) {
                             $bridecycleEarningAmount = 0.0;
+                            $paymentFee = 0.0;
                             if (!empty($model) && $model instanceof \app\models\BridecycleToSellerPayments) {
-                                $bridecycleEarningAmount = $model->getBrideEarning($model->product_price);
+                                //$bridecycleEarningAmount = $model->getBrideEarning($model->product_price);
+                                $bridecycleEarningAmount = $model->getBrideEarning($model->amount);
+                                //$paymentFee = $model->getPaymentGatwayFee($model->amount);
                             }
-                            return str_replace('.',',',Yii::$app->formatter->asCurrency(($model->amount - $bridecycleEarningAmount)));
+                            return str_replace('.', ',', Yii::$app->formatter->asCurrency(($model->amount - ($bridecycleEarningAmount + $paymentFee))));
                         },
                     ],
                     [

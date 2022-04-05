@@ -154,6 +154,16 @@ class BridecycleToSellerPayments extends \yii\db\ActiveRecord
         $earnPrice = (($price * Yii::$app->params['bridecycle_product_order_charge_percentage']) / 100);
         return $earnPrice;
     }
+
+    /**
+     * @param $price
+     * @return float|int
+     */
+    public function getPaymentGatwayFee($price)
+    {
+        $earnPrice = (($price * Yii::$app->params['payment_fee']) / 100);
+        return $earnPrice;
+    }
     ///////////////////////For api use only /////////////////////////////////////////////
 
     /**

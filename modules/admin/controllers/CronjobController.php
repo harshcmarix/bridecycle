@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\models\Notification;
+use app\models\PaymentTransferDetails;
 use app\models\SearchHistory;
 use app\models\UserPurchasedSubscriptions;
 use app\modules\api\v2\models\User;
@@ -25,7 +26,7 @@ class CronjobController extends Controller
      *
      *  Check subscription is valid or expire for user(shop owner).
      *
-     *  It is execute at every 10 minute.
+     *  It is execute at every 10/5 minute.
      *
      */
     public function actionCheckPlayStoreSubscriptionStatus()
@@ -273,7 +274,7 @@ class CronjobController extends Controller
                             $getUsers = [];
 
                             if (!empty($modelSearchRow) && $modelSearchRow instanceof SearchHistory) {
-
+                                unset($getUsers);
                                 $getUsers[] = $modelSearchRow->user;
 
                                 if (!empty($getUsers)) {
@@ -355,8 +356,60 @@ class CronjobController extends Controller
             }
         }
 
-        //die("Notification sent. \n");
+        die("Notification sent. \n");
 
     }
 
+    /**
+     * @throws \Stripe\Exception\ApiErrorException
+     *
+     *
+     * It is execute at every day 12:00 PM.
+     */
+    public function actionOrderSellerPaymentTransfer()
+    {
+
+        $stripe = new \Stripe\StripeClient(
+            Yii::$app->params['stripe_secret_key']
+        );
+
+        $time = new \DateTime('now');
+        $today = $time->format('Y-m-d');
+
+        $models = PaymentTransferDetails::find()->where(['is_transferred' => PaymentTransferDetails::IS_TRANSFFERED_NO])->andWhere(['<', 'created_at', $today])->andWhere(['>', 'seller_id', 0])->all();
+
+        if (!empty($models)) {
+            foreach ($models as $key => $modelsRow) {
+                if (!empty($modelsRow) && $modelsRow instanceof PaymentTransferDetails && $modelsRow->transfer_amount > 0 && is_integer($modelsRow->transfer_amount)) {
+                    $sellerAmount = $modelsRow->transfer_amount;
+                    $destinationID = $modelsRow->destination_id;
+                    $orderID = $modelsRow->order_id;
+
+                    try {
+                        $transferResult = $stripe->transfers->create([
+                            'amount' => $sellerAmount,
+                            'currency' => 'eur',
+                            'destination' => $destinationID,
+                            'transfer_group' => 'Payment transfer for Order id: ' . $orderID,
+                        ]);
+                    } catch (Exception $e) {
+                        echo "Error :" . $e->getMessage();
+                    }
+
+                    if (!empty($transferResult) && !empty($transferResult->id)) {
+                        $modelsRow->is_transferred = PaymentTransferDetails::IS_TRANSFFERED_YES;
+                        $modelsRow->transfer_id = $transferResult->id;
+                        $modelsRow->transfer_status = 'success';
+                    } else {
+                        $modelsRow->transfer_status = 'fail';
+                    }
+                    $modelsRow->transfer_response = $transferResult;
+                    $modelsRow->save(false);
+                }
+            }
+        }
+
+//die("Transfer payment to seller done. \n");
+
+    }
 }

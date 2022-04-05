@@ -16,6 +16,26 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="career-index box box-primary">
     <div class="box-body table-responsive admin_list hotel_list dataTables_wrapper form-inline dt-bootstrap">
+
+        <div class="box-header">
+            <div class="row">
+                <div class="col-md-4 col-xs-8 pull-right">
+                    <a href="javascript:void(0);" class="small-box-footer">
+                        <div class="small-box" style="background-color: #8A9673 !important;"
+                             id="tot_income_from_subscription_box">
+                            <div class="inner">
+                                <h3><?php echo str_replace('.', ',', Yii::$app->formatter->asCurrency($totalEarn)); ?></h3>
+                                <p>Total Earned Income</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-money"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <?php
         $gridColumns = [];
         echo GridView::widget([
@@ -75,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         if ($model instanceof BridecycleToSellerPayments) {
                             $amount = Yii::$app->formatter->asCurrency($model->amount);
                         }
-                        return str_replace('.',',',$amount);
+                        return str_replace('.', ',', $amount);
                     },
                     'header' => 'Total Amount <br> (Product Price <br> + Tax <br> + Shipping)',
                 ],
@@ -83,19 +103,23 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => function ($model) {
                         $bridecycleAmount = 0.0;
                         if ($model instanceof BridecycleToSellerPayments) {
-                            $bridecycleAmount = $model->getBrideEarning($model->product_price);
+                            //$bridecycleAmount = $model->getBrideEarning($model->product_price);
+                            $bridecycleAmount = $model->getBrideEarning($model->amount);
                         }
-                        return str_replace('.',',',Yii::$app->formatter->asCurrency($bridecycleAmount));
+                        return str_replace('.', ',', Yii::$app->formatter->asCurrency($bridecycleAmount));
                     },
                     'header' => 'BrideCycle<br>Earning',
                 ],
                 [
                     'value' => function ($model) {
                         $bridecycleEarningAmount = 0.0;
+                        $paymentFee = 0.0;
                         if ($model instanceof BridecycleToSellerPayments) {
-                            $bridecycleEarningAmount = $model->getBrideEarning($model->product_price);
+                            //$bridecycleEarningAmount = $model->getBrideEarning($model->product_price);
+                            $bridecycleEarningAmount = $model->getBrideEarning($model->amount);
+                            $paymentFee = $model->getPaymentGatwayFee($model->amount);
                         }
-                        return str_replace('.',',',Yii::$app->formatter->asCurrency(($model->amount - $bridecycleEarningAmount)));
+                        return str_replace('.', ',', Yii::$app->formatter->asCurrency(($model->amount - ($bridecycleEarningAmount + $paymentFee))));
                     },
                     'header' => 'Seller<br>Earning',
                 ],
@@ -118,18 +142,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'header' => '',
                 ],
-                [
-                    'format' => ['raw'],
-                    'value' => function ($model) {
-                        if ($model instanceof BridecycleToSellerPayments && $model->status == BridecycleToSellerPayments::STATUS_PENDING) {
-                            $isPaymentDone = "<button type='button' title='BrideCycle to seller payment status change if payment done by BrideCycle' class='btn btn-sm bc_to_seller_payment_payment-update' data-key='$model->id'>Payment Done?</button>";
-                        } else {
-                            $isPaymentDone = "<button type='button' title='Seller payment done from BrideCycle' class='btn bc_to_seller_payment_payment-done disabled' data-key='$model->id'><strong>Yes</strong></button>";
-                        }
-                        return $isPaymentDone;
-                    },
-                    'header' => 'Is Payment Done?',
-                ],
+//                [
+//                    'format' => ['raw'],
+//                    'value' => function ($model) {
+//                        if ($model instanceof BridecycleToSellerPayments && $model->status == BridecycleToSellerPayments::STATUS_PENDING) {
+//                            $isPaymentDone = "<button type='button' title='BrideCycle to seller payment status change if payment done by BrideCycle' class='btn btn-sm bc_to_seller_payment_payment-update' data-key='$model->id'>Payment Done?</button>";
+//                        } else {
+//                            $isPaymentDone = "<button type='button' title='Seller payment done from BrideCycle' class='btn bc_to_seller_payment_payment-done disabled' data-key='$model->id'><strong>Yes</strong></button>";
+//                        }
+//                        return $isPaymentDone;
+//                    },
+//                    'header' => 'Is Payment Done?',
+//                ],
                 [
                     'class' => 'kartik\grid\ActionColumn',
                     'template' => '{view}   ',

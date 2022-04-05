@@ -136,10 +136,12 @@ class Order extends \yii\db\ActiveRecord
             'orderItems' => 'orderItems',
             'userAddress' => 'userAddress',
             'user' => 'user',
+            'user0' => 'user0',
             'orderItems0' => 'orderItems0',
             'isReturnAvailable' => 'isReturnAvailable',
             'orderReturn' => 'orderReturn',
             'orderPaymentRefund' => 'orderPaymentRefund',
+            'productReturnAllowDays' => 'productReturnAllowDays',
         ];
     }
 
@@ -223,6 +225,20 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array|\yii\db\ActiveRecord|null
+     */
+    public function getUser0(){
+        $data = User::find()->where(['id' => $this->user_id])->one();
+        if ($data instanceof User) {
+            $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
+            if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
+                $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $data->profile_picture;
+            }
+            $data->profile_picture = $profilePicture;
+        }
+        return $data;
+    }
+    /**
      * @return int
      */
     public function getIsReturnAvailable()
@@ -250,8 +266,17 @@ class Order extends \yii\db\ActiveRecord
                 }
             }
         }
-
         return $this->is_return_available;
+        //return $data;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProductReturnAllowDays()
+    {
+
+        return Yii::$app->params['allow_return_product_days'];
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace app\modules\api\v2\controllers;
 
+use app\models\Order;
+use app\models\Product;
 use Yii;
 use app\models\UserAddress;
 use yii\db\Exception;
@@ -81,6 +83,7 @@ class UserAddressController extends ActiveController
         unset($actions['index']);
         unset($actions['create']);
         unset($actions['update']);
+        unset($actions['delete']);
 
         return $actions;
     }
@@ -151,7 +154,7 @@ class UserAddressController extends ActiveController
         $addressModel = UserAddress::find()->where(['user_id' => Yii::$app->user->identity->id])->andWhere(['street' => $address['UserAddress']['street'], 'city' => $address['UserAddress']['city'], 'state' => $address['UserAddress']['state'], 'country' => $address['UserAddress']['country'], 'zip_code' => $address['UserAddress']['zip_code']])->andWhere('id!=' . $id)->one();
         if (!empty($addressModel) && $addressModel instanceof UserAddress) {
             //$model = UserAddress::find()->where(['id' => $addressModel->id])->one();
-            throw new Exception(getValidationErrorMsg('user_address_already_exist',Yii::$app->language));
+            throw new Exception(getValidationErrorMsg('user_address_already_exist', Yii::$app->language));
         }
 
 
@@ -224,6 +227,25 @@ class UserAddressController extends ActiveController
         }
         $profileAddress->is_primary_address = (string)$profileAddress->is_primary_address;
         return $profileAddress;
+    }
+
+    public function actionDelete($id)
+    {
+        $model = UserAddress::find()->where(['id' => $id])->one();
+        //p($model);
+        if (!$model instanceof UserAddress) {
+            throw new NotFoundHttpException(getValidationErrorMsg('address_not_exist', Yii::$app->language));
+        }
+        $modelProduct = Product::find()->where(['address_id' => $id])->one();
+        $modelOrder = Order::find()->where(['user_address_id' => $id])->one();
+        if (!empty($modelProduct) && $modelProduct instanceof Product) {
+            throw new BadRequestHttpException(getValidationErrorMsg('address_in_product', Yii::$app->language));
+        }
+
+        if (!empty($modelOrder) && $modelOrder instanceof Order) {
+            throw new BadRequestHttpException(getValidationErrorMsg('address_in_order', Yii::$app->language));
+        }
+        $model->delete();
     }
 
 }

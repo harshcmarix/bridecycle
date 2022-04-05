@@ -90,6 +90,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => '',
             ],
             [
+                'attribute' => 'stripe_account_connect_id',
+                'value' => function ($model) {
+                    return (!empty($model) && !empty($model->stripe_account_connect_id)) ? $model->stripe_account_connect_id : "-";
+                },
+                'header' => 'Stripe Account ID',
+            ],
+            [
                 'attribute' => 'is_shop_owner',
                 'value' => function ($data) {
                     return (isset($data->isShopOwner[$data['is_shop_owner']])) ? $data->isShopOwner[$data['is_shop_owner']] : '-';

@@ -36,6 +36,7 @@ use yii\web\IdentityInterface;
  * @property string|null $shop_email
  * @property int|null $shop_phone_number
  * @property string|null $user_status
+ * @property string|null $stripe_account_connect_id
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -143,6 +144,9 @@ class User extends ActiveRecord implements IdentityInterface
                         return $('#user-profile_picture').val() == '';                                    
                     }
                 }",],
+
+
+            [['stripe_account_connect_id'], 'string'],
 
             [['email', 'shop_email'], 'email'],
             [['user_status', 'access_token_expired_at', 'created_at', 'updated_at'], 'safe'],

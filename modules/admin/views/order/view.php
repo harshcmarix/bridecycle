@@ -44,10 +44,23 @@ $this->params['breadcrumbs'][] = $this->title;
                         $status = 'Returned';
                     } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCEL) {
                         $status = 'Cancelled';
+                    } elseif ($model->status == \app\models\Order::STATUS_ORDER_CANCEL_BY_SELLER) {
+                        $status = 'Cancelled by seller';
                     }
+
                     ?>
                     <h4><?= Html::encode('Order Status: ') ?><strong><?php echo $status ?></strong></h4>
                 </div>
+                <?php if ($model->is_payment_refunded == \app\models\Order::IS_PAYMENT_REFUNDED_YES) { ?>
+                    <div class="form-group">
+                        <h4><?= Html::encode('Payment Refunded: ') ?>
+                            <strong><?php echo ($model->is_payment_refunded == \app\models\Order::IS_PAYMENT_REFUNDED_YES && !empty($model->orderPaymentRefund)) ? 'Yes' : 'No'; ?></strong>
+                        </h4>
+                    </div>
+                    <div class="form-group">
+                        <h4><?= Html::encode('Refund ID: ') ?><?php echo (!empty($model->orderPaymentRefund) && $model->orderPaymentRefund instanceof \app\models\OrderPaymentRefund && !empty($model->orderPaymentRefund->payment_refund_id)) ? $model->orderPaymentRefund->payment_refund_id : "No"; ?></h4>
+                    </div>
+                <?php } ?>
             </div>
 
             <div class="col col-md-6 text-right">
@@ -62,23 +75,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (!empty($model->orderItems)) {
                         foreach ($model->orderItems as $key => $orderItem) {
                             if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
-
                                 $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->tax)));
-
                             } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
-
                                 if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
-
                                     $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price)));
-
                                 } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
-
-                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->product->price));
-
+                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->product->getReferPrice()));
                                 } else {
-
                                     $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->price));
-
                                 }
                             }
                         }
@@ -105,7 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
 
-                                    $brideEarningAmount = ($orderItem->getBrideEarning($orderItem->product->price));
+                                    $brideEarningAmount = ($orderItem->getBrideEarning($orderItem->product->getReferPrice()));
 
                                 } else {
                                     $brideEarningAmount = ($orderItem->getBrideEarning($orderItem->price));
@@ -238,8 +242,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'value' => function ($model) {
                                             $productPrice = "0.00";
-                                            if (!empty($model->product->price)) {
-                                                $productPrice = Yii::$app->formatter->asCurrency($model->product->price);
+                                            if (!empty($model->orderItems[0]->product->price)) {
+                                                $productPrice = Yii::$app->formatter->asCurrency($model->orderItems[0]->product->price);
                                             } elseif (!empty($model) && !empty($model->price)) {
                                                 $productPrice = Yii::$app->formatter->asCurrency($model->price);
                                             }
@@ -251,8 +255,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'value' => function ($model) {
                                             $productTaxPrice = "0.00";
-                                            if (!empty($model->product->option_price)) {
-                                                $productTaxPrice = Yii::$app->formatter->asCurrency($model->product->option_price);
+                                            if (!empty($model->orderItems[0]->product->option_price)) {
+                                                $productTaxPrice = Yii::$app->formatter->asCurrency($model->orderItems[0]->product->option_price);
                                             } elseif (!empty($model) && !empty($model->tax)) {
                                                 $productTaxPrice = Yii::$app->formatter->asCurrency($model->tax);
                                             }

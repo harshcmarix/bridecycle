@@ -152,31 +152,31 @@ class UserBankDetailsController extends ActiveController
 //                    []
 //                );
 
-                $resultAccount = $stripe->accounts->createExternalAccount(
-                    $modelUser->stripe_account_connect_id,
-                    //'acct_1KgRvhPABUdKTa3N',
-                    [
-                        'external_account' => [
-                            'object' => 'bank_account',
-                            'country' => 'DE',
-                            'currency' => 'eur',
-                            'account_holder_name' => $model->first_name . " " . $model->last_name,
-                            'account_holder_type' => 'individual',
-                            //'routing_number' => '110000000',
-                            'account_number' => $model->iban,
-//                            'usage'=>'source',
-                        ],
-                    ]
-                );
-
-                //p($resultAccount);
-
-                if (!empty($resultAccount) && !empty($resultAccount->id)) {
-                    $modelUser->stripe_bank_account_id = $resultAccount->id;
-                    $modelUser->save(false);
-                } else {
-                    throw new HttpException($resultAccount->status, $resultAccount);
-                }
+//                $resultAccount = $stripe->accounts->createExternalAccount(
+//                    $modelUser->stripe_account_connect_id,
+//                    //'acct_1KgRvhPABUdKTa3N',
+//                    [
+//                        'external_account' => [
+//                            'object' => 'bank_account',
+//                            'country' => 'DE',
+//                            'currency' => 'eur',
+//                            'account_holder_name' => $model->first_name . " " . $model->last_name,
+//                            'account_holder_type' => 'individual',
+//                            //'routing_number' => '110000000',
+//                            'account_number' => $model->iban,
+////                            'usage'=>'source',
+//                        ],
+//                    ]
+//                );
+//
+//                //p($resultAccount);
+//
+//                if (!empty($resultAccount) && !empty($resultAccount->id)) {
+//                    $modelUser->stripe_bank_account_id = $resultAccount->id;
+//                    $modelUser->save(false);
+//                } else {
+//                    throw new HttpException($resultAccount->status, $resultAccount);
+//                }
             }
             // Create stripe Account End
 

@@ -20,7 +20,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'mobile'], 'integer'],
-            [['profile_picture', 'first_name', 'last_name', 'username', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'personal_information', 'user_type', 'is_shop_owner', 'is_newsletter_subscription','user_status', 'created_at', 'updated_at'], 'safe'],
+            [['profile_picture', 'first_name', 'last_name', 'username', 'email', 'password_hash', 'temporary_password', 'access_token', 'access_token_expired_at', 'password_reset_token', 'personal_information', 'user_type', 'is_shop_owner', 'is_newsletter_subscription', 'user_status', 'stripe_account_connect_id', 'created_at', 'updated_at'], 'safe'],
             [['weight', 'height'], 'number'],
         ];
     }
@@ -128,6 +128,7 @@ class UserSearch extends User
             ->andFilterWhere(['like', 'user_type', $this->user_type])
             ->andFilterWhere(['like', 'user_status', $this->user_status])
             ->andFilterWhere(['like', 'is_newsletter_subscription', $this->is_newsletter_subscription])
+            ->andFilterWhere(['like', 'stripe_account_connect_id', $this->stripe_account_connect_id])
             ->andFilterWhere(['like', 'is_shop_owner', $this->is_shop_owner]);
 
         return $dataProvider;

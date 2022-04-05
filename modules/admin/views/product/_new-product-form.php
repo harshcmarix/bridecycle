@@ -138,7 +138,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             } else {
                                 $checked = "";
                                 $key = $index + 1;
-                                echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick=\"return false;\" onkeydown=\"return false;\" type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
+                                //echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick=\"return false;\" onkeydown=\"return false;\" type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
+                                echo "<div class='col-sm-12'><label><input tabindex='{$index}' class='shipping_country_$key' onclick='shippingCost(this)' type='checkbox' {$checked} name='{$name}' value='$value'> {$label}</label></div>";
                             }
                         }
                     ])->label(false) ?>
@@ -154,7 +155,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         }
                         $readonly = false;
                         if (Yii::$app->controller->action->id == 'new-product-update') {
-                            $readonly = true;
+                           // $readonly = true;
                         }
                         ?>
                         <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
@@ -518,23 +519,37 @@ $this->registerJsFile("@web/js/toggle-switch.js");
     }
 
     function shippingCostNew(obj) {
+        var previousCheckedDataVal = "";
+        if ($("#product-shipping_country_ids").val()) {
+            previousCheckedDataVal = $("#product-shipping_country_ids").val()
+        }
+
         var idIndex = $(obj).attr('tabindex');
         idIndex = parseInt(idIndex) + 1;
+        var updatedString = "";
         var errDiv = $('.shipping_country_cost_' + idIndex).parent('.field-product-shipping_country_price').children('.help-block');
         if ($(obj).prop("checked") == true) {
             var html = '';
             "<?php if (Yii::$app->controller->action->id == 'new-product-update') { ?>"
             html += '<div class="form-group field-product-shipping_country_price">';
-            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + idIndex + '" name="Product[shipping_country_price][]" value="">';
+            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + (idIndex-1) + '" name="Product[shipping_country_price][]" value="">';
             html += '<div class="help-block"></div></div>';
             $('.field-product-shipping_country_price').last().append(html);
+            previousCheckedDataVal = previousCheckedDataVal + "," + idIndex;
+            updatedString = previousCheckedDataVal;
             "<?php } else { ?>"
             $('.shipping_country_cost_' + idIndex).show();
             errDiv.show();
             "<?php } ?>"
         } else if ($(obj).prop("checked") == false) {
             "<?php if (Yii::$app->controller->action->id == 'new-product-update') { ?>"
-            $('.field-product-shipping_country_price').last().remove();
+            //$('.field-product-shipping_country_price').last().remove();
+            $('.shipping_country_cost_' + (idIndex-1)).parent('.field-product-shipping_country_price').remove();
+            if (idIndex > 1) {
+                updatedString = previousCheckedDataVal.replace("," + idIndex, "");
+            } else {
+                updatedString = previousCheckedDataVal.replace(idIndex, "");
+            }
             "<?php } else { ?>"
             $('.shipping_country_cost_' + idIndex).hide();
             $('.shipping_country_cost_' + idIndex).val('');
@@ -542,6 +557,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             errDiv.hide();
             "<?php } ?>"
         }
+        $("#product-shipping_country_ids").val(updatedString);
     }
 
 </script>

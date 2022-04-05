@@ -49,10 +49,26 @@ class BridecycleToSellerPaymentsController extends Controller
 
         $modelUpdate = new BridecycleToSellerPayments();
 
+
+        $totalEarn = 0.00;
+        $data = $dataProvider->getModels();
+        if (!empty($data)) {
+            foreach ($data as $key => $dataRow) {
+                if (!empty($dataRow) && $dataRow instanceof BridecycleToSellerPayments) {
+                    $totalEarn += $dataRow->amount;
+                }
+            }
+        }
+        if ($totalEarn > 0) {
+            $totalEarn = ($totalEarn * Yii::$app->params['bridecycle_product_order_charge_percentage'] / 100);
+        }
+
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'modelUpdate' => $modelUpdate
+            'modelUpdate' => $modelUpdate,
+            'totalEarn' => $totalEarn
         ]);
     }
 
@@ -74,18 +90,18 @@ class BridecycleToSellerPaymentsController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new BridecycleToSellerPayments();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
+//    public function actionCreate()
+//    {
+//        $model = new BridecycleToSellerPayments();
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        }
+//
+//        return $this->render('create', [
+//            'model' => $model,
+//        ]);
+//    }
 
     /**
      * Updates an existing BridecycleToSellerPayments model.
@@ -94,43 +110,43 @@ class BridecycleToSellerPaymentsController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->status = BridecycleToSellerPayments::STATUS_COMPLETE;
-            if ($model->save()) {
-                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Seller payment updated successfully.');
-
-                $sellerModel = $model->seller;
-                $productModel = $model->product;
-
-                if (!empty($sellerModel) && $sellerModel instanceof User && (!empty($sellerModel->is_payment_done_email_notification_on) || $sellerModel->is_payment_done_email_notification_on == User::IS_EMAIL_NOTIFICATION_ON)) {
-                    if (!empty($sellerModel->email)) {
-                        try {
-                            Yii::$app->mailer->compose('admin/BCtoSellerPaymentDone-html', ['sellerModel' => $sellerModel, 'productModel' => $productModel, 'model' => $model])
-                                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                ->setTo($sellerModel->email)
-                                ->setSubject('Bride Cycle Payment!')
-                                ->send();
-                        } catch (HttpException $e) {
-                            echo "Error: " . $e->getMessage();
-                        }
-                    }
-                }
-                $response = ['success' => true];
-            } else {
-                \Yii::$app->getSession()->setFlash(Growl::TYPE_DANGER, 'Seller payment not updated, Please try again!');
-                $response = ['success' => false];
-            }
-        } else {
-            \Yii::$app->getSession()->setFlash(Growl::TYPE_DANGER, 'Something went wrong, Please try again!');
-            $response = ['success' => false];
-        }
-        return $response;
-    }
+//    public function actionUpdate($id)
+//    {
+//        $model = $this->findModel($id);
+//
+//        Yii::$app->response->format = Response::FORMAT_JSON;
+//        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+//            $model->status = BridecycleToSellerPayments::STATUS_COMPLETE;
+//            if ($model->save()) {
+//                \Yii::$app->getSession()->setFlash(Growl::TYPE_SUCCESS, 'Seller payment updated successfully.');
+//
+//                $sellerModel = $model->seller;
+//                $productModel = $model->product;
+//
+//                if (!empty($sellerModel) && $sellerModel instanceof User && (!empty($sellerModel->is_payment_done_email_notification_on) || $sellerModel->is_payment_done_email_notification_on == User::IS_EMAIL_NOTIFICATION_ON)) {
+//                    if (!empty($sellerModel->email)) {
+//                        try {
+//                            Yii::$app->mailer->compose('admin/BCtoSellerPaymentDone-html', ['sellerModel' => $sellerModel, 'productModel' => $productModel, 'model' => $model])
+//                                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
+//                                ->setTo($sellerModel->email)
+//                                ->setSubject('Bride Cycle Payment!')
+//                                ->send();
+//                        } catch (HttpException $e) {
+//                            echo "Error: " . $e->getMessage();
+//                        }
+//                    }
+//                }
+//                $response = ['success' => true];
+//            } else {
+//                \Yii::$app->getSession()->setFlash(Growl::TYPE_DANGER, 'Seller payment not updated, Please try again!');
+//                $response = ['success' => false];
+//            }
+//        } else {
+//            \Yii::$app->getSession()->setFlash(Growl::TYPE_DANGER, 'Something went wrong, Please try again!');
+//            $response = ['success' => false];
+//        }
+//        return $response;
+//    }
 
     /**
      * Deletes an existing BridecycleToSellerPayments model.
