@@ -130,6 +130,7 @@ class UserPurchasedSubscriptionsController extends ActiveController
         $model->scenario = 'create_api';
         $postData = \Yii::$app->request->post();
         $userPurchaseSubscriptionData['UserPurchasedSubscriptions'] = $postData;
+        $userPurchaseSubscriptionData['UserPurchasedSubscriptions']['status'] = 'success';
         $model->user_id = Yii::$app->user->identity->id;
         if ($model->load($userPurchaseSubscriptionData) && $model->validate()) {
             $dateLength = strlen($postData['date_time']);

@@ -391,10 +391,10 @@ class OrderController extends ActiveController
                                         // Insert into notification.
 
                                         if (Yii::$app->user->identity->id != $model->user_id) { // is a seller cancel
-                                            $notificationText = "Your order " . $model->unique_id . " has been cancelled by seller.";
+                                            $notificationText = "Your order " . $model->unique_id . " has been cancelled by " . $sender->first_name . " " . $sender->last_name . ".";
                                             $cancelBy = "_by_seller";
                                         } else { // is a buyer cancel
-                                            $notificationText = "Your order " . $model->unique_id . " has been cancelled by buyer.";
+                                            $notificationText = "Your order " . $model->unique_id . " has been cancelled by " . $sender->first_name . " " . $sender->last_name . ".";
                                             $cancelBy = "_by_buyer";
                                         }
 
@@ -433,9 +433,9 @@ class OrderController extends ActiveController
 
                                     if (!empty($userROW->email)) {
                                         if (Yii::$app->user->identity->id != $model->user_id) { // is a seller cancel
-                                            $message = "Your order " . $model->unique_id . " has been cancelled by seller.";
+                                            $message = "Your order " . $model->unique_id . " has been cancelled by " . $sender->first_name . " " . $sender->last_name . ".";
                                         } else { // is a buyer cancel
-                                            $message = "Your order " . $model->unique_id . " has been cancelled by buyer.";
+                                            $message = "Your order " . $model->unique_id . " has been cancelled by " . $sender->first_name . " " . $sender->last_name . ".";
                                         }
                                         $subject = "Your order has been cancelled";
                                         if (!empty($userROW->email)) {
@@ -466,7 +466,6 @@ class OrderController extends ActiveController
                                     if ($userROWS instanceof User && (Yii::$app->user->identity->id != $userROWS->id)) {
                                         if (!empty($userROWS->userDevice)) {
                                             $userDevice = $userROWS->userDevice;
-
 
                                             // Refunded Start
                                             // Insert into notification.
@@ -528,8 +527,6 @@ class OrderController extends ActiveController
                                     }
                                 }
                             }
-
-
                         }
                         // Refund Order Notification End
                     }

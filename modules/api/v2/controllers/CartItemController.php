@@ -283,451 +283,6 @@ class CartItemController extends ActiveController
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionCheckout_bkp()
-    {
-        $post = Yii::$app->request->post();
-//        if (empty($post) || empty($post['product_id'])) {
-//            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
-//        }
-
-        if (empty($post) || empty($post['product_id'])) {
-            throw new BadRequestHttpException(getValidationErrorMsg('product_id_required', Yii::$app->language));
-        }
-
-        if (empty($post) || empty($post['name'])) {
-            throw new BadRequestHttpException(getValidationErrorMsg('name_required', Yii::$app->language));
-        }
-
-        if (empty($post) || empty($post['contact'])) {
-            throw new BadRequestHttpException(getValidationErrorMsg('contact_required', Yii::$app->language));
-        }
-
-        if (empty($post) || empty($post['email'])) {
-            throw new BadRequestHttpException(getValidationErrorMsg('email_required', Yii::$app->language));
-        }
-
-        $user_id = Yii::$app->user->identity->id;
-
-        $productIdsArr = explode(",", $post['product_id']);
-
-        $modeOrders = [];
-        if (!empty($productIdsArr)) {
-            foreach ($productIdsArr as $keyProduct => $productIdsRow) {
-
-                $prodModel = Product::find()->where(['id' => $productIdsRow])->one();
-                $productActualPrice = "";
-                if (!empty($prodModel) && $prodModel instanceof Product) {
-                    $productActualPrice = ($prodModel->getReferPrice() - $prodModel->option_price);
-                }
-
-                $modelOrder = new Order();
-                $modelOrder->user_id = $user_id;
-                $modelOrder->name = $post['name'];
-                $modelOrder->contact = $post['contact'];
-                $modelOrder->email = $post['email'];
-                $modelAddress = new UserAddress();
-                $postAddress['UserAddress'] = $post;
-                $postAddress['UserAddress']['user_id'] = $user_id;
-                $postAddress['UserAddress']['type'] = UserAddress::SHIPPING;
-                $postAddress['UserAddress']['address'] = "not set";
-
-                $modelOrderPayment = new OrderPayment();
-                $postOrderPayment['OrderPayment'] = $post;
-                if ($modelAddress->load($postAddress) && $modelAddress->validate()) {
-                    if ($modelOrderPayment->load($postOrderPayment) && $modelOrderPayment->validate()) {
-                        $modelAddressFind = UserAddress::find()->where(['user_id' => $user_id, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
-                        if (!empty($modelAddressFind) && $modelAddressFind instanceof UserAddress) {
-                            $modelOrder->user_address_id = $modelAddressFind->id;
-                        } else {
-                            $modelAddress->address = $modelAddress->street . ", " . $modelAddress->city . ", " . $modelAddress->zip_code . ", " . $modelAddress->state . ", " . $modelAddress->country;
-                            $modelAddress->save(false);
-                            $modelOrder->user_address_id = $modelAddress->id;
-                        }
-                    } else {
-                        return $modelOrderPayment;
-                    }
-                } else {
-                    return $modelAddress;
-                }
-
-                //$modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'type' => UserAddress::BILLING,'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
-                $modelAddressBillingFind = UserAddress::find()->where(['user_id' => $user_id, 'street' => $modelAddress->street, 'city' => $modelAddress->city, 'state' => $modelAddress->state, 'country' => $modelAddress->country, 'zip_code' => $modelAddress->zip_code])->one();
-                if (empty($modelAddressBillingFind)) {
-                    $modelAddressBillingFind = $modelAddress;
-                    //$modelAddressBillingFind->type = UserAddress::BILLING;
-                    $modelAddressBillingFind->save(false);
-                } else {
-                    $modelOrder->user_address_id = $modelAddressBillingFind->id;
-                }
-
-                $productIds = [$productIdsRow];
-                $modelProducts = Product::find()->where(['IN', 'id', $productIds])->all();
-                $productSold = 0;
-                if (!empty($modelProducts)) {
-                    foreach ($modelProducts as $prodKey => $modelProductRow) {
-                        if (!empty($modelProductRow) && $modelProductRow instanceof Product && $modelProductRow->available_quantity <= 0 && in_array($modelProductRow->status_id, [ProductStatus::STATUS_SOLD, ProductStatus::STATUS_ARCHIVED])) {
-                            $productSold++;
-                        }
-                    }
-                }
-                if ($productSold > 0) {
-                    throw new HttpException(403, $productSold . ' ' . getValidationErrorMsg('product_out_of_stock_from_selected_products_exception', Yii::$app->language));
-                }
-
-                $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
-
-                $cartTotal = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('price');
-
-                $cartTotalShipping = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('shipping_cost');
-
-                $cartTotalTax = CartItem::find()->where(['user_id' => $user_id])->andWhere(['IN', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->sum('tax');
-
-                if (empty($cartTotal) && empty($cartTotalShipping)) {
-                    $cartTotal = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('price');
-                    $cartTotalShipping = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('shipping_cost');
-                    $cartTotalTax = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('tax');
-                }
-
-                $subTotal = (!empty($cartTotal)) ? $cartTotal : 0.00;
-
-                // (product price + tax + shipping cost)
-                $modelOrder->total_amount = (!empty($cartTotal)) ? ($cartTotal + $cartTotalShipping + $cartTotalTax) : 0.00;
-
-                $modelOrder->status = Order::STATUS_ORDER_PENDING;
-
-                $modelOrder->save(false);
-
-                $grandTotal = $modelOrder->total_amount;
-
-                if (!empty($modelCartItems)) {
-                    foreach ($modelCartItems as $key => $modelCartItemRow) {
-                        if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
-                            $modelOrderItem = new OrderItem();
-                            $modelOrderItem->order_id = $modelOrder->id;
-                            $modelOrderItem->product_id = $modelCartItemRow->product_id;
-                            $modelOrderItem->quantity = $modelCartItemRow->quantity;
-                            $modelOrderItem->color = $modelCartItemRow->color;
-                            $modelOrderItem->size_id = $modelCartItemRow->size_id;
-                            $modelOrderItem->size = $modelCartItemRow->size;
-                            $modelOrderItem->price = $modelCartItemRow->price;
-                            $modelOrderItem->tax = $modelCartItemRow->tax;
-                            $modelOrderItem->shipping_cost = $modelCartItemRow->shipping_cost;
-
-                            $modelOrderItem->product_name = $modelCartItemRow->product_name;
-                            $modelOrderItem->category_name = $modelCartItemRow->category_name;
-                            $modelOrderItem->subcategory_name = $modelCartItemRow->subcategory_name;
-                            $modelOrderItem->seller_id = $modelCartItemRow->seller_id;
-
-                            $modelOrderItem->save(false);
-                        }
-                    }
-
-                    // Send Email notification to buyer for order placed start
-                    //$modelOrder
-                    $getUsersArr = [];
-                    if (!empty($getUsersArr)) {
-                        unset($getUsersArr);
-                    }
-                    $getUsersArr[] = $modelOrder->user;
-                    if (!empty($getUsersArr)) {
-                        foreach ($getUsersArr as $getUsersArrROW) {
-                            if ($getUsersArrROW instanceof User && ($user_id == $getUsersArrROW->id)) {
-
-                                if (!empty($getUsersArrROW->email) && $getUsersArrROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                    $messageString = "Thank you for create an order.\nYour order placed.";
-
-                                    if (!empty($getUsersArrROW->email)) {
-                                        try {
-                                            Yii::$app->mailer->compose('api/addNewOrder', ['receiver' => $getUsersArrROW, 'message' => $messageString])
-                                                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                                ->setTo($getUsersArrROW->email)
-                                                ->setSubject('Order placed')
-                                                ->send();
-                                        } catch (HttpException $e) {
-                                            //echo "Error: " . $e->getMessage();
-                                            echo "Error: ";
-
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //Send Email notification to buyer for order placed end
-
-
-                    $cardType = OrderPayment::CARD_TYPE_VISA;
-                    if (!empty($modelOrderPayment->card_number)) {
-                        if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_VISA_NUMBER) {
-                            $cardType = OrderPayment::CARD_TYPE_VISA;
-                        } else if (in_array($modelOrderPayment->card_number[0], [OrderPayment::CARD_TYPE_MASTER_NUMBER_ONE, OrderPayment::CARD_TYPE_MASTER_NUMBER_TWO])) {
-                            $cardType = OrderPayment::CARD_TYPE_MASTER;
-                        } else if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_AMEX_NUMBER) {
-                            $cardType = OrderPayment::CARD_TYPE_AMEX;
-                        } else if ($modelOrderPayment->card_number[0] == OrderPayment::CARD_TYPE_DISCOVER_NUMBER) {
-                            $cardType = OrderPayment::CARD_TYPE_DISCOVER;
-                        }
-                    }
-
-                    $expMontYear = explode("/", $modelOrderPayment->expiry_month_year);
-                    $cardHoderName = explode(" ", $modelOrderPayment->card_holder_name);
-
-                    $sellerDetail = '';
-                    if (!empty($modelOrder->orderItems)) {
-                        $orderItms = $modelOrder->orderItems;
-                        foreach ($orderItms as $itmKey => $orderitemRow) {
-                            if (!empty($orderitemRow) && $orderitemRow instanceof OrderItem) {
-                                if (!empty($orderitemRow) && !empty($orderitemRow->product) && !empty($orderitemRow->product->user)) {
-                                    if ($orderitemRow->product->user instanceof User) {
-                                        $sellerDetail = $orderitemRow->product->user;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    $paymentRequestData = [
-                        'total' => $grandTotal,
-                        'user_id' => $user_id,
-                        'order_id' => $modelOrder->id,
-                        'card_type' => $cardType,
-                        'card_exp_month' => $expMontYear[0],
-                        'card_exp_year' => (!empty($expMontYear[1])) ? $expMontYear[1] : date('Y'),
-                        'card_first_name' => $cardHoderName[0],
-                        'card_last_name' => (!empty($cardHoderName[1])) ? $cardHoderName[1] : "User",
-                        'sub_total' => $subTotal,
-                        'user' => Yii::$app->user->identity,
-                        'user_address' => $modelAddress,
-                        'user_address_billing' => $modelAddressBillingFind,
-                        'destination_id' => (!empty($sellerDetail) && $sellerDetail instanceof User && !empty($sellerDetail->stripe_account_connect_id)) ? $sellerDetail->stripe_account_connect_id : "",
-                        'seller_id' => (!empty($sellerDetail) && $sellerDetail instanceof User && !empty($sellerDetail->id)) ? $sellerDetail->id : "",
-                    ];
-
-                    $modelOrderPayment->order_id = $modelOrder->id;
-                    $modelOrderPayment->card_type = $cardType;
-                    $modelOrderPayment->save(false);
-
-                    $response = $this->makePayment(array_merge($post, $paymentRequestData));
-                    //$response = $this->makePayment_bkp(array_merge($post, $paymentRequestData));
-                    //p($response);
-                    if (!empty($response)) {
-
-                        $modelBCToSellerPayment = "";
-
-                        if (!empty($response->status) && $response->status == 'succeeded') {
-                            $getUsersPaymentDoneArr = [];
-                            // Send Email notification to buyer for order payment done start
-                            //$modelOrder
-                            if (!empty($getUsersPaymentDoneArr)) {
-                                unset($getUsersPaymentDoneArr);
-                            }
-                            $getUsersPaymentDoneArr[] = $modelOrder->user;
-                            if (!empty($getUsersPaymentDoneArr)) {
-                                foreach ($getUsersPaymentDoneArr as $getUsersPaymentDoneArrROW) {
-                                    if ($getUsersPaymentDoneArrROW instanceof User && ($user_id == $getUsersPaymentDoneArrROW->id)) {
-
-                                        if (!empty($getUsersPaymentDoneArrROW->email) && $getUsersPaymentDoneArrROW->is_payment_done_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                            $messageStringPaymentDone = "Thank you for create payment for your order.\n Your payment done for order ID:" . $modelOrder->id;
-
-                                            if (!empty($getUsersPaymentDoneArrROW->email)) {
-                                                try {
-                                                    Yii::$app->mailer->compose('api/orderPayment', ['receiver' => $getUsersPaymentDoneArrROW, 'message' => $messageStringPaymentDone])
-                                                        ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                                        ->setTo($getUsersArrROW->email)
-                                                        ->setSubject('Order Payment Done')
-                                                        ->send();
-                                                } catch (HttpException $e) {
-                                                    //echo "Error: " . $e->getMessage();
-                                                    echo "Error: ";
-
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            // Send Email notification to buyer for order payment done end
-
-
-                            if (!empty($modelOrder->orderItems)) {
-                                foreach ($modelOrder->orderItems as $keys => $orderItemRow) {
-                                    if (!empty($orderItemRow) && $orderItemRow instanceof OrderItem) {
-                                        $remainQty = ($orderItemRow->product->available_quantity - $orderItemRow->quantity);
-                                        $orderItemRow->product->available_quantity = (!empty($remainQty) && $remainQty > 0) ? $remainQty : 0;
-                                        $productModel = $orderItemRow->product;
-                                        if ($remainQty <= 0) {
-                                            $productModel->status_id = ProductStatus::STATUS_SOLD;
-                                        } else {
-                                            $productModel->status_id = ProductStatus::STATUS_IN_STOCK;
-                                        }
-                                        $productModel->available_quantity = $remainQty;
-                                        $productModel->save(false);
-                                        if ($orderItemRow->product->type == Product::PRODUCT_TYPE_USED) {
-                                            $modelProductTracking = new ProductTracking();
-                                            if (!empty($orderItemRow->product->product_tracking_id)) {
-                                                $modelProductTracking->parent_id = $orderItemRow->product->product_tracking_id;
-                                            }
-                                            $modelProductTracking->product_id = $orderItemRow->product_id;
-                                            $modelProductTracking->user_id = $orderItemRow->product->user_id;
-                                            $modelProductTracking->order_id = $orderItemRow->order_id;
-                                            $modelProductTracking->location = (!empty($orderItemRow->product->address) && !empty($orderItemRow->product->address->city)) ? $orderItemRow->product->address->city : '';
-                                            $modelProductTracking->price = $orderItemRow->product->getReferPrice();
-                                            $modelProductTracking->resale_date = date('Y-m-d H:i:s');
-                                            $modelProductTracking->created_at = date('Y-m-d H:i:s');
-                                            $modelProductTracking->updated_at = date('Y-m-d H:i:s');
-
-                                            $modelProductTracking->save(false);
-
-                                            if (!empty($modelProductTracking) && !empty($modelProductTracking->id) && empty($orderItemRow->product->product_tracking_id)) {
-                                                $orderItemRow->product->product_tracking_id = $modelProductTracking->id;
-                                            }
-                                        }
-
-                                        //$orderItemRow->product->price = $productActualPrice;
-                                        $orderItemRow->product->price = $orderItemRow->price;
-                                        //$orderItemRow->product->save(false);
-                                        $orderItemRow->product->save(false);
-
-                                        // Generate pdf of order invoice
-                                        $generateInvoice = $this->generateInvoice($orderItemRow->id);
-
-                                        // Track for Pending payment from bridecycle to seller start
-                                        $modelBridecycleToSellerPayment = new BridecycleToSellerPayments();
-                                        $modelBridecycleToSellerPayment->order_id = $modelOrder->id;
-                                        $modelBridecycleToSellerPayment->order_item_id = $orderItemRow->id;
-                                        $modelBridecycleToSellerPayment->product_id = $orderItemRow->product->id;
-                                        $modelBridecycleToSellerPayment->seller_id = $orderItemRow->product->user->id;
-                                        $modelBridecycleToSellerPayment->amount = (double)($orderItemRow->product->getReferPrice() + $orderItemRow->shipping_cost);
-                                        $modelBridecycleToSellerPayment->product_price = (double)($orderItemRow->product->getReferPrice() - $orderItemRow->tax);
-                                        $modelBridecycleToSellerPayment->tax = (double)($orderItemRow->tax);
-                                        $modelBridecycleToSellerPayment->status = BridecycleToSellerPayments::STATUS_PENDING;
-                                        $modelBridecycleToSellerPayment->save(false);
-                                        $modelBCToSellerPayment = $modelBridecycleToSellerPayment;
-                                        // Track for Pending payment from bridecycle to seller end
-
-                                        //$orderItemRow->product->price = $productActualPrice;
-                                        //$orderItemRow->product->price = $orderItemRow->price;
-                                        //$orderItemRow->product->save(false);
-
-                                        // Send Push notification start for seller
-                                        $getUsers = [];
-                                        if (!empty($getUsers)) {
-                                            unset($getUsers);
-                                        }
-                                        $getUsers[] = $orderItemRow->product->user;
-                                        if (!empty($getUsers)) {
-                                            foreach ($getUsers as $userROW) {
-                                                if ($userROW instanceof User && ($user_id != $userROW->id)) {
-                                                    if ($userROW->is_order_placed_notification_on == User::IS_NOTIFICATION_ON && !empty($userROW->userDevice)) {
-                                                        $userDevice = $userROW->userDevice;
-
-                                                        // Insert into notification.
-                                                        $notificationText = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order for your product " . $orderItemRow->product->name;
-                                                        $modelNotification = new Notification();
-                                                        $modelNotification->owner_id = $user_id;
-                                                        $modelNotification->notification_receiver_id = $userROW->id;
-                                                        $modelNotification->ref_id = $modelOrder->id;
-                                                        $modelNotification->notification_text = $notificationText;
-                                                        $modelNotification->action = "Add";
-                                                        $modelNotification->ref_type = "Order";
-                                                        $modelNotification->product_id = $orderItemRow->product->id;
-                                                        $modelNotification->save(false);
-
-                                                        $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
-                                                        if ($userDevice->device_platform == 'android') {
-                                                            $notificationToken = array($userDevice->notification_token);
-                                                            $senderName = $modelOrder->user->first_name . " " . $modelOrder->user->last_name;
-                                                            $modelNotification->sendPushNotificationAndroid($modelNotification->ref_id, $modelNotification->ref_type, $notificationToken, $notificationText, $senderName, $modelNotification);
-                                                        } else {
-                                                            $note = Yii::$app->fcm->createNotification(Yii::$app->name, $notificationText);
-                                                            $note->setBadge($badge);
-                                                            $note->setSound('default');
-                                                            $message = Yii::$app->fcm->createMessage();
-                                                            $message->addRecipient(new \paragraph1\phpFCM\Recipient\Device($userDevice->notification_token));
-                                                            $message->setNotification($note)
-                                                                ->setData([
-                                                                    'id' => $modelNotification->ref_id,
-                                                                    'type' => $modelNotification->ref_type,
-                                                                    'message' => $notificationText,
-                                                                    'action' => (!empty($modelNotification) && !empty($modelNotification->action)) ? $modelNotification->action : "",
-                                                                ]);
-                                                            $notificationResponse = Yii::$app->fcm->send($message);
-                                                        }
-                                                    }
-
-                                                    if (!empty($userROW->email) && $userROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                                        $message = $modelOrder->user->first_name . " " . $modelOrder->user->last_name . " Place a new order for your product " . $orderItemRow->product->name;
-
-                                                        if (!empty($userROW->email)) {
-                                                            try {
-                                                                Yii::$app->mailer->compose('api/addNewOrder', ['receiver' => $userROW, 'message' => $message])
-                                                                    ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                                                                    ->setTo($userROW->email)
-                                                                    ->setSubject('New order place for your product!')
-                                                                    ->send();
-                                                            } catch (HttpException $e) {
-                                                                //echo "Error: " . $e->getMessage();
-                                                                echo "Error: ";
-
-                                                            }
-
-                                                        }
-                                                    }
-
-                                                }
-                                            }
-                                        }
-                                        // Send Push notification end for seller
-                                    }
-                                }
-                            }
-
-                            if (!empty($response) && !empty($response->status) && $response->status == 'succeeded') {
-                                //$modelOrder->status = Order::STATUS_ORDER_PENDING;
-                                $modelOrder->status = Order::STATUS_ORDER_INPROGRESS;
-
-                                $modelCartItems = CartItem::find()->where(['user_id' => $user_id])->andWhere(['in', 'product_id', $productIds])->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES])->all();
-
-                                foreach ($modelCartItems as $key => $modelCartItemRow) {
-                                    if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
-                                        // Delete from cart
-                                        $modelCartItemRow->delete();
-                                    }
-                                }
-
-                                if (!empty($modelBCToSellerPayment) && $modelBCToSellerPayment instanceof BridecycleToSellerPayments) {
-                                    $modelBCToSellerPayment->status = BridecycleToSellerPayments::STATUS_COMPLETE;
-                                    $modelBCToSellerPayment->save(false);
-                                }
-                            }
-                            $modelOrder->save(false);
-                        }
-                        $modelOrderPayment->payment_response = (!empty($response) && !empty($response->status) && $response->status == 'succeeded') ? $response : "";
-                        $modelOrderPayment->payment_status = (!empty($response->status)) ? $response->status : 'failed';
-                        $modelOrderPayment->payment_id = (!empty($response->id)) ? $response->id : "";
-                        $modelOrderPayment->save(false);
-                        //return $modelOrderPayment;
-                    }
-                } else {
-                    throw new NotFoundHttpException(getValidationErrorMsg('cart_item_not_exist', Yii::$app->language));
-                }
-
-                $modeOrders[] = $modelOrder;
-            }
-        }
-        return $modeOrders;
-    }
-
-
-    /**
-     * @return Order|OrderPayment|UserAddress
-     * @throws BadRequestHttpException
-     * @throws HttpException
-     * @throws NotFoundHttpException
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
     public function actionCheckout()
     {
         $post = Yii::$app->request->post();
@@ -768,10 +323,12 @@ class CartItemController extends ActiveController
                 $modelCart = CartItem::find()->where(['id' => $cartIdsRow])->one();
                 //p($modelCart);
                 $prodModel = Product::find()->where(['id' => $modelCart->product_id])->one();
-                $productActualPrice = "";
-                if (!empty($prodModel) && $prodModel instanceof Product) {
-                    $productActualPrice = ($prodModel->getReferPrice() - $prodModel->option_price);
-                }
+//                $productActualPrice = "";
+//                if (!empty($prodModel) && $prodModel instanceof Product) {
+//                    $productActualPrice = ($prodModel->getReferPrice() - $prodModel->option_price);
+//                    $prodModel->price = $productActualPrice;
+//                    $prodModel->save(false);
+//                }
 
                 $modelOrder = new Order();
                 $modelOrder->user_id = $user_id;
@@ -851,9 +408,9 @@ class CartItemController extends ActiveController
 //                    $cartTotalTax = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('tax');
 
 
-                    $cartTotal = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('price');
-                    $cartTotalShipping = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('shipping_cost');
-                    $cartTotalTax = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', $productIds])->sum('tax');
+                    $cartTotal = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', [$productIds]])->sum('price');
+                    $cartTotalShipping = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', [$productIds]])->sum('shipping_cost');
+                    $cartTotalTax = OrderItem::find()->where(['order_id' => $modelOrder->id])->andWhere(['in', 'product_id', [$productIds]])->sum('tax');
                 }
 
                 $subTotal = (!empty($cartTotal)) ? $cartTotal : 0.00;
@@ -868,8 +425,10 @@ class CartItemController extends ActiveController
                 $grandTotal = $modelOrder->total_amount;
 
                 if (!empty($modelCartItems)) {
+//                    p($modelCartItems,0);
                     foreach ($modelCartItems as $key => $modelCartItemRow) {
                         if (!empty($modelCartItemRow) && $modelCartItemRow instanceof CartItem) {
+
                             $modelOrderItem = new OrderItem();
                             $modelOrderItem->order_id = $modelOrder->id;
                             $modelOrderItem->product_id = $modelCartItemRow->product_id;
@@ -887,6 +446,12 @@ class CartItemController extends ActiveController
                             $modelOrderItem->seller_id = $modelCartItemRow->seller_id;
 
                             $modelOrderItem->save(false);
+
+//                            $modelProductPriceUpdate = Product::find()->where(['id' => $modelCartItemRow->product_id])->one();
+//                            if (!empty($modelProductPriceUpdate) && $modelProductPriceUpdate instanceof Product) {
+//                                $modelProductPriceUpdate->price = $modelCartItemRow->price;
+//                                $modelProductPriceUpdate->save(false);
+//                            }
                         }
                     }
 
@@ -1030,7 +595,9 @@ class CartItemController extends ActiveController
                                             $productModel->status_id = ProductStatus::STATUS_IN_STOCK;
                                         }
                                         $productModel->available_quantity = $remainQty;
+                                        $productModel->price = $orderItemRow->price;
                                         $productModel->save(false);
+
                                         if ($orderItemRow->product->type == Product::PRODUCT_TYPE_USED) {
                                             $modelProductTracking = new ProductTracking();
                                             if (!empty($orderItemRow->product->product_tracking_id)) {
@@ -1051,11 +618,6 @@ class CartItemController extends ActiveController
                                                 $orderItemRow->product->product_tracking_id = $modelProductTracking->id;
                                             }
                                         }
-
-                                        //$orderItemRow->product->price = $productActualPrice;
-                                        $orderItemRow->product->price = $orderItemRow->price;
-                                        //$orderItemRow->product->save(false);
-                                        $orderItemRow->product->save(false);
 
                                         // Generate pdf of order invoice
                                         $generateInvoice = $this->generateInvoice($orderItemRow->id);
@@ -1191,85 +753,9 @@ class CartItemController extends ActiveController
 
     /**
      * @param $request
-     * @return \Exception|Payment|PayPalConnectionException
+     * @return string|\Stripe\Charge
+     * @throws \Stripe\Exception\ApiErrorException
      */
-    public function makePayment_bkp($request)
-    {
-        $stripe = new \Stripe\StripeClient(
-            Yii::$app->params['stripe_secret_key']
-        );
-
-        $resultCust = $stripe->customers->create([
-            'email' => Yii::$app->user->identity->email,
-            'name' => Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name,
-        ]);
-
-        $chargeResult = "";
-        try {
-            $expiryMonthAndYear = explode("/", $request['expiry_month_year']);
-            $cardToken = $stripe->tokens->create([
-                'card' => [
-                    'number' => $request['card_number'],
-                    'exp_month' => $expiryMonthAndYear[0],
-                    'exp_year' => $expiryMonthAndYear[1],
-                    'cvc' => $request['cvv'],
-                ],
-            ]);
-            $cardRequest = $stripe->customers->createSource(
-                $resultCust->id,
-                ['source' => $cardToken->id]
-            );
-
-            //$transactionFee = ($request['total'] * Yii::$app->params['payment_fee'] / 100);
-
-            $brideCycleEarning = ($request['total'] * Yii::$app->params['bridecycle_product_order_charge_percentage'] / 100);
-
-            //$sellerAmount = $request['total'] - ($brideCycleEarning + $transactionFee);
-            $sellerAmount = $request['total'] - ($brideCycleEarning);
-
-            //p("Total".$request['total'],0);
-            //p("BCE".$brideCycleEarning,0);
-
-            $chargeResult = $stripe->charges->create([
-                'amount' => (is_integer($request['total']) && !is_float($request['total'])) ? $request['total'] . '00' : round($request['total']) . "00",
-                'currency' => 'eur',
-                'customer' => $resultCust->id,
-                'source' => $cardRequest->id,
-                'capture' => true,
-                'description' => 'Payment for Order id: ' . $request['order_id'],
-                'transfer_data' => [
-                    'destination' => $request['destination_id'],
-                    'amount' => (is_integer($sellerAmount) && !is_float($sellerAmount)) ? $sellerAmount . '00' : round($sellerAmount) . "00"
-                ]
-            ]);
-
-//            if (!empty($chargeResult) && !empty($chargeResult->balance_transaction)) {
-//                $balanceTransactionResult = $stripe->balanceTransactions->retrieve(
-//                    $chargeResult->balance_transaction,
-//                    []
-//                );
-//                if (!empty($balanceTransactionResult) && !empty($balanceTransactionResult->net)) {
-//                    $netAmount = ($balanceTransactionResult->net / 100);
-//                      p("net ".$netAmount,0);
-//                    $sellerAmount = ($netAmount - ($brideCycleEarning));
-//                }
-//            }
-//            p(floor($sellerAmount),0);
-//
-//            $transferResult = $stripe->transfers->create([
-//                'amount' => floor($sellerAmount),
-//                'currency' => 'eur',
-//                'destination' => $request['destination_id'],
-//                //'transfer_group' => 'Payment  transfer for Order id: ' . $request['order_id'],
-//            ]);
-//            p($transferResult);
-
-        } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
-        }
-        return $chargeResult;
-    }
-
     public function makePayment($request)
     {
 
@@ -1394,6 +880,7 @@ class CartItemController extends ActiveController
             $modelProduct = $modelOrderItem->product;
 
             $modelProduct->price = $modelOrderItem->price;
+            //$modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
             $modelProduct->save(false);
 
 

@@ -238,7 +238,6 @@ class OrderReturnController extends ActiveController
                 }
             }
 
-
             $model->save(false);
 
             // Send Notification Start
@@ -306,8 +305,8 @@ class OrderReturnController extends ActiveController
                                         ->setSubject($subject)
                                         ->send();
                                 } catch (HttpException $e) {
-                                    //echo "Error: " . $e->getMessage();
-                                    echo "Error: ";
+                                    echo "Error: " . $e->getMessage();
+                                    //echo "Error: ";
                                 }
                             }
                         }
@@ -315,7 +314,6 @@ class OrderReturnController extends ActiveController
                 }
             }
             // Send Notification End
-
         }
 
         $thumbImagePath = Yii::getAlias('@orderReturnImageRelativePath');
@@ -324,16 +322,10 @@ class OrderReturnController extends ActiveController
         if (!empty($model->image_one) && file_exists($thumbImagePathRelative . "/" . $model->image_one)) {
             $model->image_one = Yii::$app->request->getHostInfo() . $thumbImagePath . '/' . $model->image_one;
         }
-//        else {
-//            $model->image_one = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-//        }
 
         if (!empty($model->image_two) && file_exists($thumbImagePathRelative . "/" . $model->image_two)) {
             $model->image_two = Yii::$app->request->getHostInfo() . $thumbImagePath . '/' . $model->image_two;
         }
-//        else {
-//            $model->image_two = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
-//        }
 
         return $model;
     }
@@ -365,9 +357,9 @@ class OrderReturnController extends ActiveController
 
                 $modelProduct = "";
 
-                $getUser = [];
+                $getUsers = [];
                 if (!empty($modelOrder) && $modelOrder instanceof Order) {
-                    $getUser[] = $modelOrder->user;
+                    $getUsers[] = $modelOrder->user;
                     $modelProduct = (!empty($modelOrder->orderItems) && !empty($modelOrder->orderItems[0]) && !empty($modelOrder->orderItems[0]->product) && $modelOrder->orderItems[0]->product instanceof Product) ? $modelOrder->orderItems[0]->product : "";
                 }
 
@@ -432,7 +424,6 @@ class OrderReturnController extends ActiveController
                         $modelOrder->status = Order::STATUS_ORDER_RETURN;
                         $modelOrder->save(false);
 
-
                         if (!empty($refundResult) && $refundResult instanceof Refund && !empty($refundResult->status) && $refundResult->status == Refund::STATUS_SUCCEEDED && $modelOrder->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES) {
                             $modelBridecycleToSellerPayment = BridecycleToSellerPayments::find()->where(['order_id' => $modelOrder->id])->one();
                             if (!empty($modelBridecycleToSellerPayment) && $modelBridecycleToSellerPayment instanceof BridecycleToSellerPayments) {
@@ -449,7 +440,6 @@ class OrderReturnController extends ActiveController
                         $modelOrerPaymentRefund->refund_response = $refundResult;
                         $modelOrerPaymentRefund->save(false);
                         // Insert into OrderPaumentRefund end
-
                     }
 
                     if (!empty($getUsers)) {
@@ -546,8 +536,8 @@ class OrderReturnController extends ActiveController
                                                 ->setSubject($subject)
                                                 ->send();
                                         } catch (HttpException $e) {
-                                            //echo "Error: " . $e->getMessage();
-                                            echo "Error: ";
+                                            echo "Error: " . $e->getMessage();
+                                            //echo "Error: ";
                                         }
                                     }
 
@@ -564,8 +554,8 @@ class OrderReturnController extends ActiveController
                                                     ->setSubject($subject)
                                                     ->send();
                                             } catch (HttpException $e) {
-                                                //echo "Error: " . $e->getMessage();
-                                                echo "Error: ";
+                                                echo "Error: " . $e->getMessage();
+                                                //echo "Error: ";
                                             }
                                         }
                                     }
@@ -634,15 +624,14 @@ class OrderReturnController extends ActiveController
                                                 ->setSubject($subject)
                                                 ->send();
                                         } catch (HttpException $e) {
-                                            //echo "Error: " . $e->getMessage();
-                                            echo "Error: ";
+                                            echo "Error: " . $e->getMessage();
+                                            //echo "Error: ";
                                         }
                                     }
                                 }
                             }
                         }
                     }
-
                 }
             }
 

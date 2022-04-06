@@ -193,7 +193,10 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getOrderReturn()
     {
-        return $this->hasOne(OrderReturn::class, ['order_id' => 'id']);
+        //return $this->hasOne(OrderReturn::class, ['order_id' => 'id']);
+        $data = OrderReturn::find()->where(['order_id' => $this->id])->orderBy(['id' => SORT_DESC])->one();
+        return $data;
+
     }
 
     /**
