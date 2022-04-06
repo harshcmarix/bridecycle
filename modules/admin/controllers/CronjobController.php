@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\BridecycleToSellerPayments;
 use app\models\Notification;
 use app\models\PaymentTransferDetails;
 use app\models\SearchHistory;
@@ -375,12 +376,12 @@ class CronjobController extends Controller
 
         $time = new \DateTime('now');
         $today = $time->format('Y-m-d');
-
+//p($today);
         $models = PaymentTransferDetails::find()->where(['is_transferred' => PaymentTransferDetails::IS_TRANSFFERED_NO])->andWhere(['<', 'created_at', $today])->andWhere(['>', 'seller_id', 0])->all();
 
         if (!empty($models)) {
             foreach ($models as $key => $modelsRow) {
-                if (!empty($modelsRow) && $modelsRow instanceof PaymentTransferDetails && $modelsRow->transfer_amount > 0 && is_integer($modelsRow->transfer_amount)) {
+                if (!empty($modelsRow) && $modelsRow instanceof PaymentTransferDetails && ($modelsRow->transfer_amount > 0)) {
                     $sellerAmount = $modelsRow->transfer_amount;
                     $destinationID = $modelsRow->destination_id;
                     $orderID = $modelsRow->order_id;
@@ -405,11 +406,20 @@ class CronjobController extends Controller
                     }
                     $modelsRow->transfer_response = $transferResult;
                     $modelsRow->save(false);
+
+
+                    if ($modelsRow->is_transferred == PaymentTransferDetails::IS_TRANSFFERED_YES) {
+                        $modelBridecycleTosellerPayment = BridecycleToSellerPayments::find()->where(['order_id' => $modelsRow->order_id])->one();
+                        if (!empty($modelBridecycleTosellerPayment) && $modelBridecycleTosellerPayment instanceof BridecycleToSellerPayments) {
+                            $modelBridecycleTosellerPayment->status = BridecycleToSellerPayments::STATUS_COMPLETE;
+                            $modelBridecycleTosellerPayment->save(false);
+                        }
+                    }
                 }
             }
         }
 
-//die("Transfer payment to seller done. \n");
+        die("Transfer payment to seller done. \n");
 
     }
 }

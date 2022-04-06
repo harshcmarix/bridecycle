@@ -121,7 +121,7 @@ class CartItemSearch extends CartItem
             $query->andWhere(['is_checkout' => CartItem::IS_CHECKOUT_YES]);
         }
 
-        $query->groupBy(['cart_items.product_id']);
+        $query->groupBy(['cart_items.id']);
 
         $activeDataProvider = Yii::createObject([
             'class' => ActiveDataProvider::class,

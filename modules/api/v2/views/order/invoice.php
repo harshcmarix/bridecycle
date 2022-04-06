@@ -159,7 +159,8 @@
                     style="text-align: right;width: 20%;border: 0;border-collapse: collapse;text-align: right;padding: 7px 0px;">
 
                     <?php
-                    $productPrice = $product->referPrice;
+                    $productPriceSubTotal = $product->referPrice;
+                    $productPrice = ($productPriceSubTotal - $transactionFeesAmount);
                     ?>
                     <?php echo str_replace(".", ',', number_format($productPrice, 2)); ?></td>
                 <td class="text-right col-20"

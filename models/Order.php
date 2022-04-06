@@ -29,6 +29,7 @@ use yii\behaviors\TimestampBehavior;
  * @property OrderPayment $orderPayment
  * @property OrderReturn $orderReturn
  * @property OrderPaymentRefund $orderPaymentRefund
+ * @property PaymentTransferDetails $paymentTransferDetail
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -205,6 +206,16 @@ class Order extends \yii\db\ActiveRecord
         return $this->hasOne(OrderPaymentRefund::class, ['order_id' => 'id']);
     }
 
+    /**
+     * Gets query for [[OrderPaymentRefund]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPaymentTransferDetail()
+    {
+        return $this->hasOne(PaymentTransferDetails::class, ['order_id' => 'id']);
+    }
+
 /////////////////////////////////// For API Use //////////////////////////////////////////
 
     /**
@@ -227,7 +238,8 @@ class Order extends \yii\db\ActiveRecord
     /**
      * @return array|\yii\db\ActiveRecord|null
      */
-    public function getUser0(){
+    public function getUser0()
+    {
         $data = User::find()->where(['id' => $this->user_id])->one();
         if ($data instanceof User) {
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
@@ -238,6 +250,7 @@ class Order extends \yii\db\ActiveRecord
         }
         return $data;
     }
+
     /**
      * @return int
      */

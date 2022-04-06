@@ -7,6 +7,7 @@ use app\models\Notification;
 use app\models\Order;
 use app\models\OrderPayment;
 use app\models\OrderPaymentRefund;
+use app\models\PaymentTransferDetails;
 use app\models\ProductStatus;
 use app\modules\admin\models\Product;
 use app\modules\api\v2\models\User;
@@ -373,9 +374,14 @@ class OrderReturnController extends ActiveController
                 if ($model->status == OrderReturn::STATUS_ACCEPT) {
 
                     $chargeId = "";
+                    $transferId = "";
                     if (!empty($modelOrder) && $modelOrder instanceof Order) {
                         if (!empty($modelOrder->orderPayment) && $modelOrder->orderPayment instanceof OrderPayment && !empty($modelOrder->orderPayment->payment_id)) {
                             $chargeId = $modelOrder->orderPayment->payment_id;
+                        }
+
+                        if (!empty($modelOrder->paymentTransferDetail) && $modelOrder->paymentTransferDetail instanceof PaymentTransferDetails && !empty($modelOrder->paymentTransferDetail->transfer_id)) {
+                            $transferId = $modelOrder->paymentTransferDetail->transfer_id;
                         }
                     }
 
@@ -383,15 +389,20 @@ class OrderReturnController extends ActiveController
                         Yii::$app->params['stripe_secret_key']
                     );
 
+                    $isReverseTransfer = false;
+                    if (!empty($transferId) && $transferId != "") {
+                        $isReverseTransfer = true;
+                    }
+
                     if (!empty($chargeId) || $chargeId != "") {
                         $refundResult = "";
                         try {
                             $refund = $stripe->refunds->create([
                                 //'charge' => 'ch_3KayxHAvFy5NACFp0BIFRGfB',
                                 'charge' => $chargeId,
-                                'reverse_transfer' => true,
+                                'reverse_transfer' => $isReverseTransfer,
                                 //'source_transfer_reversal' => false,
-                                'refund_application_fee' => true,
+                                'refund_application_fee' => $isReverseTransfer,
                                 'reason' => 'requested_by_customer',
                                 'metadata' => ['description' => 'Refund the payment for order cancel, Order id:' . $modelOrder->id . "_" . $modelOrder->unique_id]
                             ]);
@@ -422,7 +433,7 @@ class OrderReturnController extends ActiveController
                         $modelOrder->save(false);
 
 
-                        if(!empty($refundResult) && $refundResult instanceof Refund && !empty($refundResult->status) && $refundResult->status == Refund::STATUS_SUCCEEDED && $modelOrder->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES){
+                        if (!empty($refundResult) && $refundResult instanceof Refund && !empty($refundResult->status) && $refundResult->status == Refund::STATUS_SUCCEEDED && $modelOrder->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES) {
                             $modelBridecycleToSellerPayment = BridecycleToSellerPayments::find()->where(['order_id' => $modelOrder->id])->one();
                             if (!empty($modelBridecycleToSellerPayment) && $modelBridecycleToSellerPayment instanceof BridecycleToSellerPayments) {
                                 $modelBridecycleToSellerPayment->delete();

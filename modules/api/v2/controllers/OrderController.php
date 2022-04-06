@@ -6,6 +6,7 @@ use app\models\BridecycleToSellerPayments;
 use app\models\Notification;
 use app\models\OrderPayment;
 use app\models\OrderPaymentRefund;
+use app\models\PaymentTransferDetails;
 use app\models\Product;
 use app\models\ProductStatus;
 use app\modules\api\v2\models\User;
@@ -317,14 +318,23 @@ class OrderController extends ActiveController
 
                     $model->orderPayment;
                     $chargeId = "";
+                    $transferId = "";
                     if (!empty($model->orderPayment) && $model->orderPayment instanceof OrderPayment && !empty($model->orderPayment->payment_id)) {
                         $chargeId = $model->orderPayment->payment_id;
+                    }
+
+                    if (!empty($model->paymentTransferDetail) && $model->paymentTransferDetail instanceof PaymentTransferDetails && !empty($model->paymentTransferDetail->transfer_id)) {
+                        $transferId = $model->paymentTransferDetail->transfer_id;
                     }
 
                     $stripe = new \Stripe\StripeClient(
                         Yii::$app->params['stripe_secret_key']
                     );
 
+                    $isReverseTransfer = false;
+                    if (!empty($transferId) && $transferId != "") {
+                        $isReverseTransfer = true;
+                    }
 
                     if (!empty($chargeId) || $chargeId != "") {
                         $refundResult = "";
@@ -332,9 +342,9 @@ class OrderController extends ActiveController
                             $refund = $stripe->refunds->create([
                                 //'charge' => 'ch_3KayxHAvFy5NACFp0BIFRGfB',
                                 'charge' => $chargeId,
-                                'reverse_transfer' => true,
+                                'reverse_transfer' => $isReverseTransfer,
                                 //'source_transfer_reversal' => false,
-                                'refund_application_fee' => true,
+                                'refund_application_fee' => $isReverseTransfer,
                                 'reason' => 'requested_by_customer',
                                 'metadata' => ['description' => 'Refund the payment for order cancel, Order id:' . $model->id . "_" . $model->unique_id]
                             ]);
@@ -382,13 +392,13 @@ class OrderController extends ActiveController
 
                                         if (Yii::$app->user->identity->id != $model->user_id) { // is a seller cancel
                                             $notificationText = "Your order " . $model->unique_id . " has been cancelled by seller.";
-                                            $cancelBy="_by_seller";
+                                            $cancelBy = "_by_seller";
                                         } else { // is a buyer cancel
                                             $notificationText = "Your order " . $model->unique_id . " has been cancelled by buyer.";
-                                            $cancelBy="_by_buyer";
+                                            $cancelBy = "_by_buyer";
                                         }
 
-                                        $action = "cancel_order".$cancelBy;
+                                        $action = "cancel_order" . $cancelBy;
                                         $modelNotification = new Notification();
                                         $modelNotification->owner_id = $sender->id;
                                         $modelNotification->notification_receiver_id = $userROW->id;
@@ -436,8 +446,8 @@ class OrderController extends ActiveController
                                                     ->setSubject($subject)
                                                     ->send();
                                             } catch (HttpException $e) {
-                                                //echo "Error: " . $e->getMessage();
-                                                echo "Error: ";
+                                                echo "Error: " . $e->getMessage();
+                                                //echo "Error: ";
                                             }
                                         }
                                     }
@@ -510,8 +520,8 @@ class OrderController extends ActiveController
                                                         ->setSubject($subject)
                                                         ->send();
                                                 } catch (HttpException $e) {
-                                                    //echo "Error: " . $e->getMessage();
-                                                    echo "Error: ";
+                                                    echo "Error: " . $e->getMessage();
+                                                    //echo "Error: ";
                                                 }
                                             }
                                         }
@@ -522,8 +532,6 @@ class OrderController extends ActiveController
 
                         }
                         // Refund Order Notification End
-
-
                     }
                 }
             }
@@ -533,7 +541,6 @@ class OrderController extends ActiveController
             }
 
             $model->save(false);
-
 
             if (in_array($orderData['Order']['status'], [Order::STATUS_ORDER_CANCEL_BY_SELLER, Order::STATUS_ORDER_CANCEL]) && $model->is_payment_refunded == Order::IS_PAYMENT_REFUNDED_YES) {
                 $modelBridecycleToSellerPayment = BridecycleToSellerPayments::find()->where(['order_id' => $model->id])->one();

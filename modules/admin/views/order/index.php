@@ -152,20 +152,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     $brideEarning = "-";
                     if (!empty($model->orderItems)) {
                         foreach ($model->orderItems as $key => $orderItem) {
-                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
-                                $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->tax)));
-                            } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
-                                if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
-                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price)));
-                                } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
-                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->product->price));
-                                } else {
-                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->price));
-                                }
+                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($model->total_amount)) {
+//
+//                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
+//                                $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->tax)));
+//                            } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
+//                                if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
+//                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price)));
+//                                } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
+//                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->product->price));
+//                                } else {
+//                                    $brideEarning = Yii::$app->formatter->asCurrency($orderItem->getBrideEarning($orderItem->price));
+//                                }
+//                            }
+
+                                $brideEarning = $orderItem->getBrideEarning(($model->total_amount));
                             }
                         }
                     }
-                    return str_replace('.', ',', $brideEarning);
+                    return ( $brideEarning != '-') ? str_replace('.', ',', Yii::$app->formatter->asCurrency($brideEarning)) : $brideEarning;
                 },
                 'filter' => '',
                 'header' => "BrideCycle <br> Earning",
@@ -173,22 +178,31 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'value' => function ($model) {
                     $brideEarning = "0.0";
-                    if (!empty($model->orderItems)) {
-                        foreach ($model->orderItems as $key => $orderItem) {
-                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
-                                $brideEarning = $orderItem->getBrideEarning(($orderItem->price - $orderItem->tax));
-                            } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
-                                if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
-                                    $brideEarning = $orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price));
-                                } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
-                                    $brideEarning = $orderItem->getBrideEarning($orderItem->product->price);
-                                } else {
-                                    $brideEarning = $orderItem->getBrideEarning($orderItem->price);
-                                }
-                            }
-                        }
+//                    if (!empty($model->orderItems)) {
+//                        foreach ($model->orderItems as $key => $orderItem) {
+//                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($model->total_amount)) {
+////                            if (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && !empty($orderItem->tax)) {
+////                                $brideEarning = $orderItem->getBrideEarning(($orderItem->price - $orderItem->tax));
+////                            } elseif (!empty($orderItem) && $orderItem instanceof \app\models\OrderItem && !empty($orderItem->price) && empty($orderItem->tax)) {
+////                                if (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && !empty($orderItem->product->option_price)) {
+////                                    $brideEarning = $orderItem->getBrideEarning(($orderItem->price - $orderItem->product->option_price));
+////                                } elseif (!empty($orderItem->product) && !empty($orderItem->product) && $orderItem->product instanceof \app\models\Product && empty($orderItem->product->option_price)) {
+////                                    $brideEarning = $orderItem->getBrideEarning($orderItem->product->price);
+////                                } else {
+////                                    $brideEarning = $orderItem->getBrideEarning($orderItem->price);
+////                                }
+////                            }
+//
+//
+//                                $brideEarning = $orderItem->getBrideEarning(($model->total_amount));
+//                            }
+//                        }
+//                    }
+                    if(!empty($model) && $model instanceof Order && !empty($model->paymentTransferDetail) && !empty($model->paymentTransferDetail->transfer_amount)){
+                        $brideEarning = $model->paymentTransferDetail->transfer_amount;
                     }
-                    return str_replace('.', ',', Yii::$app->formatter->asCurrency($model->total_amount - $brideEarning));
+                    //return str_replace('.', ',', Yii::$app->formatter->asCurrency($model->total_amount - $brideEarning));
+                    return str_replace('.', ',', Yii::$app->formatter->asCurrency($brideEarning));
                 },
                 'filter' => '',
                 'header' => "Seller <br> Earning",
