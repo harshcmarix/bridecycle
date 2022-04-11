@@ -119,6 +119,8 @@ class FavouriteProduct extends ActiveRecord
             $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
                 $profilepicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $data->profile_picture;
+            }elseif (!empty($data->social_media_profile_picture)) {
+                $profilepicture = $data->social_media_profile_picture;
             }
             $data->profile_picture = $profilepicture;
         }

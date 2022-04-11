@@ -3,7 +3,8 @@
 namespace app\models;
 
 use Yii;
-use app\modules\admin\models\User;
+//use app\modules\admin\models\User;
+use app\modules\api\v2\models\User;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -17,7 +18,9 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $email
  * @property int $total_amount
  * @property string $status 1 => pending, 2 => in progress, 3 => in transit, 4 => delivered, 5 => return, 6 => cancel
- * @property string|null $transit_detail
+ * @property string|null $tracking_number
+ * @property string|null $shipping_method
+ * @property string|null $tracking_url
  * @property int|null $is_payment_refunded 1 => yes, 0 => no
  * @property string|null $unique_id
  * @property string|null $created_at
@@ -55,6 +58,7 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public $is_return_available;
+
     /**
      * Constants
      */
@@ -74,7 +78,6 @@ class Order extends \yii\db\ActiveRecord
         self::STATUS_ORDER_RETURN => 'Returned',
         self::STATUS_ORDER_CANCEL => 'Cancelled',
         self::STATUS_ORDER_CANCEL_BY_SELLER => 'Cancelled by seller',
-
     ];
 
     public $arrOrderStatuses = [
@@ -99,8 +102,33 @@ class Order extends \yii\db\ActiveRecord
             [['user_id', 'user_address_id', 'total_amount', 'status'], 'required'],
             [['user_id', 'user_address_id', 'total_amount'], 'integer'],
             [['status'], 'string'],
-            [['transit_detail'], 'string'],
+            [['tracking_number', 'shipping_method'], 'string'],
+            [['tracking_url'], 'url', 'defaultScheme' => '', 'message' => getValidationErrorMsg('tracking_url_not_valid', Yii::$app->language)],
             //[['unique_id'], 'string'],
+
+            [
+                ['tracking_number'], 'required', 'message' => getValidationErrorMsg('tracking_number_required', Yii::$app->language), 'when' => function ($model) {
+
+                return $model->status == self::STATUS_ORDER_IN_TRANSIT;
+            },
+
+                'whenClient' => "function (attribute, value) {
+                    if ($('#order-status').val() == '3') {
+                        return $('#order-tracking_number').val() == '';
+                    }
+                }",
+            ],
+            [
+                ['shipping_method'], 'required', 'message' => getValidationErrorMsg('shipping_method_required', Yii::$app->language), 'when' => function ($model) {
+                return $model->status == self::STATUS_ORDER_IN_TRANSIT;
+            },
+                'whenClient' => "function (attribute, value) {
+                    if ($('#order-status').val() == '3') {
+                        return $('#order-shipping_method').val() == '';
+                    }
+                }",
+            ],
+
             [['unique_id'], 'unique'],
             [['name', 'contact', 'email'], 'string'],
             [['created_at', 'updated_at', 'is_return_available', 'is_payment_refunded'], 'safe'],
@@ -248,6 +276,8 @@ class Order extends \yii\db\ActiveRecord
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if (!empty($data->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $data->profile_picture)) {
                 $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $data->profile_picture;
+            } elseif (!empty($data->social_media_profile_picture)) {
+                $profilePicture = $data->social_media_profile_picture;
             }
             $data->profile_picture = $profilePicture;
         }
@@ -291,7 +321,6 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getProductReturnAllowDays()
     {
-
         return Yii::$app->params['allow_return_product_days'];
     }
 
@@ -305,6 +334,5 @@ class Order extends \yii\db\ActiveRecord
         $datediff = $enddate - $startdate;
 
         return round($datediff / (60 * 60 * 24));
-
     }
 }

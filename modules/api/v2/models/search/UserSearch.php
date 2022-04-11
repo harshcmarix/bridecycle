@@ -137,6 +137,8 @@ class UserSearch extends User
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if (!empty($userModelData[$key]['profile_picture']) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $value->profile_picture)) {
                 $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $value->profile_picture;
+            } elseif (!empty($userModelData[$key]['social_media_profile_picture'])) {
+                $profilePicture = $value->social_media_profile_picture;
             }
             $userModelData[$key]['profile_picture'] = $profilePicture;
 

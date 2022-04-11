@@ -86,6 +86,7 @@ use yii\web\UnauthorizedHttpException;
  * @property int|null $stripe_account_customer_id
  * @property int|null $stripe_bank_account_id
  * @property string|null $notification_unread_count
+ * @property string|null $social_media_profile_picture
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -238,6 +239,8 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['user_status', 'is_verify_user', 'is_subscribed_user', 'latitude', 'longitude'], 'safe'],
 
+            [['social_media_profile_picture'], 'safe'],
+
             //[['verification_code'], 'string', 'max' => 6, 'tooLong' => getValidationErrorMsg('verification_code_max_6_character_length', Yii::$app->language)],
             [['verification_code'], 'string', 'max' => 6],
 
@@ -255,7 +258,7 @@ class User extends ActiveRecord implements IdentityInterface
 //                return $model->is_verify_user == 0; // or other function for get current username
 //    }
             //],
-            [['email'], 'unique', 'message' => getValidationErrorMsg('unique_email_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE,self::SCENARIO_SHOP_OWNER]],
+            [['email'], 'unique', 'message' => getValidationErrorMsg('unique_email_create_user', Yii::$app->language), 'on' => [self::SCENARIO_USER_CREATE, self::SCENARIO_USER_UPDATE, self::SCENARIO_SHOP_OWNER]],
             [['email'], 'string', 'max' => 60, 'tooLong' => getValidationErrorMsg('email_max_60_character_length', Yii::$app->language)],
 
             // [['shop_logo', 'profile_picture', 'shop_cover_picture'], 'file', 'extensions' => 'png, jpg, jpeg'],

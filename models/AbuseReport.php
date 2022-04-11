@@ -124,6 +124,8 @@ class AbuseReport extends \yii\db\ActiveRecord
             $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if (!empty($user->profile_picture) && file_exists(Yii::getAlias('@profilePictureRelativePath') . '/' . $user->profile_picture)) {
                 $profilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $user->profile_picture;
+            }elseif (!empty($user->social_media_profile_picture)) {
+                $profilePicture = $user->social_media_profile_picture;
             }
             $user->profile_picture = $profilePicture;
         }

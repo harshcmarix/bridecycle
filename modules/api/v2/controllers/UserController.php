@@ -154,6 +154,7 @@ class UserController extends ActiveController
             return \yii\widgets\ActiveForm::validate($model);
         }
 
+
         if (!empty($postData['is_login_from']) && strtolower($postData['is_login_from']) == User::IS_LOGIN_FROM_FACEBOOK) {
             if (empty($postData) || empty($postData['facebook_id'])) {
                 throw new BadRequestHttpException(getValidationErrorMsg('facebook_id_required', Yii::$app->language));
@@ -164,7 +165,9 @@ class UserController extends ActiveController
                     throw new HttpException(409, getValidationErrorMsg('unique_facebook_create_user', Yii::$app->language));
                 } else {
                     $user = User::find()->where(['email' => $postData['email']])->one();
-                    $model = $user;
+                    if (!empty($user)) {
+                        $model = $user;
+                    }
                 }
             }
             $model->facebook_id = $postData['facebook_id'];
@@ -174,12 +177,15 @@ class UserController extends ActiveController
             if (empty($postData) || empty($postData['apple_id'])) {
                 throw new BadRequestHttpException(getValidationErrorMsg('apple_id_required', Yii::$app->language));
             } else {
-                $user = User::find()->where(['apple_id' => $postData['apple_id']])->orWhere(['email' => $postData['email']])->one();
+                //$user = User::find()->where(['apple_id' => $postData['apple_id']])->orWhere(['email' => $postData['email']])->one();
+                $user = User::find()->where(['apple_id' => $postData['apple_id']])->andWhere(['email' => $postData['email']])->one();
                 if (!empty($user) && $user instanceof User) {
                     throw new HttpException(409, getValidationErrorMsg('unique_apple_create_user', Yii::$app->language));
                 } else {
                     $user = User::find()->where(['email' => $postData['email']])->one();
-                    $model = $user;
+                    if (!empty($user)) {
+                        $model = $user;
+                    }
                 }
             }
             $model->apple_id = $postData['apple_id'];
@@ -194,7 +200,9 @@ class UserController extends ActiveController
                     throw new HttpException(409, getValidationErrorMsg('unique_google_create_user', Yii::$app->language));
                 } else {
                     $user = User::find()->where(['email' => $postData['email']])->one();
-                    $model = $user;
+                    if (!empty($user)) {
+                        $model = $user;
+                    }
                 }
             }
             $model->google_id = $postData['google_id'];
@@ -205,6 +213,11 @@ class UserController extends ActiveController
         $model->shop_cover_picture = UploadedFile::getInstanceByName('shop_cover_picture');
 
         if ($model->load($userData) && $model->validate()) {
+
+            if (!empty($postData['social_media_profile_picture'])) {
+                $model->social_media_profile_picture = $postData['social_media_profile_picture'];
+            }
+
             // Profile picture upload
             $uploadDirPath = Yii::getAlias('@profilePictureRelativePath');
             $uploadThumbDirPath = Yii::getAlias('@profilePictureThumbRelativePath');
@@ -341,6 +354,8 @@ class UserController extends ActiveController
                 $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 if (!empty($model->profile_picture) && file_exists(Yii::getAlias('@profilePictureThumbRelativePath') . '/' . $model->profile_picture)) {
                     $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                }elseif (!empty($model->social_media_profile_picture)) {
+                    $showProfilePicture = $model->social_media_profile_picture;
                 }
                 $model->profile_picture = $showProfilePicture;
             }
@@ -365,6 +380,11 @@ class UserController extends ActiveController
         $model->password_hash = $oldPass;
         $postData = \Yii::$app->request->post();
         $data['User'] = $postData;
+
+        if (!empty($data['User']['social_media_profile_picture'])) {
+            $model->social_media_profile_picture = $data['User']['social_media_profile_picture'];
+        }
+
         $model->scenario = User::SCENARIO_USER_UPDATE;
         if ($model->load($data) && $model->validate()) {
 
@@ -434,6 +454,8 @@ class UserController extends ActiveController
                 $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 if (file_exists($thumbImagePath) && !empty($model->profile_picture)) {
                     $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                } elseif (!empty($model->social_media_profile_picture)) {
+                    $showProfilePicture = $model->social_media_profile_picture;
                 }
                 $model->profile_picture = $showProfilePicture;
             }
@@ -460,6 +482,8 @@ class UserController extends ActiveController
         $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
         if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
             $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureAbsolutePath') . '/' . $model->profile_picture;
+        } elseif (!empty($model->social_media_profile_picture)) {
+            $showProfilePicture = $model->social_media_profile_picture;
         }
         $model->profile_picture = $showProfilePicture;
 
@@ -541,6 +565,8 @@ class UserController extends ActiveController
             $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
                 $showProfilePicture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+            } elseif (!empty($model->social_media_profile_picture)) {
+                $showProfilePicture = $model->social_media_profile_picture;
             }
             $model->profile_picture = $showProfilePicture;
         }
@@ -731,7 +757,6 @@ class UserController extends ActiveController
                     foreach ($loginDevice as $deviceRow) {
                         $deviceRow->delete();
                     }
-
                 }
                 \Yii::$app->user->logout();
                 return [
@@ -758,6 +783,8 @@ class UserController extends ActiveController
         if ($model->load($data) && $model->validate()) {
             $tmpPassword = \Yii::$app->security->generateRandomString(8);
             $userModel = $model->getUser();
+            $oldPasswordHash = $userModel->password_hash;
+            $userModel->password_hash = $oldPasswordHash;
             //$userModel->password_hash = $model->getUser()->password_hash;
             $userModel->temporary_password = $tmpPassword;
             if ($userModel->save(false)) {
@@ -796,6 +823,8 @@ class UserController extends ActiveController
             $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
             if (!empty($model->profile_picture) && file_exists($thumbImagePath)) {
                 $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+            } elseif (!empty($model->social_media_profile_picture)) {
+                $profile_picture = $model->social_media_profile_picture;
             }
             $model->profile_picture = $profile_picture;
         }
@@ -884,6 +913,8 @@ class UserController extends ActiveController
 
         if (!empty($model) && $model instanceof User && !empty($model->profile_picture) && file_exists($thumbImagePath)) {
             $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+        } elseif (!empty($model->social_media_profile_picture)) {
+            $profile_picture = $model->social_media_profile_picture;
         }
 
         $model->profile_picture = $profile_picture;
@@ -956,6 +987,8 @@ class UserController extends ActiveController
                 $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 if (!empty($model) && $model instanceof User && !empty($model->profile_picture) && file_exists($thumbImagePath)) {
                     $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                } elseif (!empty($model->social_media_profile_picture)) {
+                    $profile_picture = $model->social_media_profile_picture;
                 }
                 $model->profile_picture = $profile_picture;
             }
@@ -991,6 +1024,8 @@ class UserController extends ActiveController
                 $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@uploadsAbsolutePath') . '/no-image.jpg';
                 if (!empty($model) && $model instanceof User && !empty($model->profile_picture) && file_exists($thumbImagePath)) {
                     $profile_picture = Yii::$app->request->getHostInfo() . Yii::getAlias('@profilePictureThumbAbsolutePath') . '/' . $model->profile_picture;
+                } elseif (!empty($model->social_media_profile_picture)) {
+                    $profile_picture = $model->social_media_profile_picture;
                 }
                 $model->profile_picture = $profile_picture;
             }
@@ -1058,6 +1093,20 @@ class UserController extends ActiveController
             echo "Error : " . $e->getMessage();
         }
         return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function actionStripeEndpoint()
+    {
+        $getData = \Yii::$app->request->get();
+        $postData = \Yii::$app->request->post();
+
+        $data['getResult'] = $getData;
+        $data['postResult'] = $postData;
+        //$data['result'] = $postData;
+        return $data;
     }
 
 }
