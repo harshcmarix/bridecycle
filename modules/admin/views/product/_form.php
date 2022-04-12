@@ -83,15 +83,15 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="row">
-                <div class="col col-md-2">
+                <div class="col col-md-6">
                     <?= $form->field($model, 'height')->textInput()->label('Dress Length') ?>
                 </div>
-                <div class="col col-md-2">
-                    <?= $form->field($model, 'weight')->textInput() ?>
-                </div>
-                <div class="col col-md-2">
-                    <?= $form->field($model, 'width')->textInput() ?>
-                </div>
+<!--                <div class="col col-md-2">-->
+<!--                    --><?php //echo $form->field($model, 'weight')->textInput() ?>
+<!--                </div>-->
+<!--                <div class="col col-md-2">-->
+<!--                    --><?php //echo $form->field($model, 'width')->textInput() ?>
+<!--                </div>-->
                 <div class="col col-md-4">
                     <?php if (Yii::$app->controller->action->id == 'update') { //
                         $sizeIds = explode(",", $model->option_size);

@@ -84,15 +84,15 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="row">
-                <div class="col col-md-2">
+                <div class="col col-md-6">
                     <?= $form->field($model, 'height')->textInput()->label('Dress Length') ?>
                 </div>
-                <div class="col col-md-2">
-                    <?= $form->field($model, 'weight')->textInput() ?>
-                </div>
-                <div class="col col-md-2">
-                    <?= $form->field($model, 'width')->textInput() ?>
-                </div>
+                <!--                <div class="col col-md-2">-->
+                <!--                    --><?php //echo $form->field($model, 'weight')->textInput() ?>
+                <!--                </div>-->
+                <!--                <div class="col col-md-2">-->
+                <!--                    --><?php //echo $form->field($model, 'width')->textInput() ?>
+                <!--                </div>-->
                 <div class="col col-md-4">
                     <?php if (Yii::$app->controller->action->id == 'new-product-update') { //
                         $sizeIds = explode(",", $model->option_size);
@@ -155,7 +155,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                         }
                         $readonly = false;
                         if (Yii::$app->controller->action->id == 'new-product-update') {
-                           // $readonly = true;
+                            // $readonly = true;
                         }
                         ?>
                         <?php foreach ($shippingPrice as $key => $shippingPriceRow) { ?>
@@ -221,14 +221,14 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             </div>
 
             <div class="row">
-<!--                <div class="col col-md-2">-->
-<!--                    --><?php //echo $form->field($model, 'gender')->widget(Select2::classname(), [
-//                        'data' => $model->arrGender,
-//                        'pluginOptions' => [
-//                            'allowClear' => false
-//                        ],
-//                    ]); ?>
-<!--                </div>-->
+                <!--                <div class="col col-md-2">-->
+                <!--                    --><?php //echo $form->field($model, 'gender')->widget(Select2::classname(), [
+                //                        'data' => $model->arrGender,
+                //                        'pluginOptions' => [
+                //                            'allowClear' => false
+                //                        ],
+                //                    ]); ?>
+                <!--                </div>-->
                 <div class="col col-md-2">
                     <?= $form->field($model, 'is_admin_favourite')->widget(Select2::classname(), [
                         'data' => ['0' => 'No', '1' => 'Yes'],
@@ -292,9 +292,9 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
             </div>
 
-<!--            <div class="row">-->
-<!--                -->
-<!--            </div>-->
+            <!--            <div class="row">-->
+            <!--                -->
+            <!--            </div>-->
 
             <div class="row">
                 <div class="col col-md-6 receiptUpload"
@@ -533,7 +533,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             var html = '';
             "<?php if (Yii::$app->controller->action->id == 'new-product-update') { ?>"
             html += '<div class="form-group field-product-shipping_country_price">';
-            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + (idIndex-1) + '" name="Product[shipping_country_price][]" value="">';
+            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + (idIndex - 1) + '" name="Product[shipping_country_price][]" value="">';
             html += '<div class="help-block"></div></div>';
             $('.field-product-shipping_country_price').last().append(html);
             previousCheckedDataVal = previousCheckedDataVal + "," + idIndex;
@@ -545,7 +545,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         } else if ($(obj).prop("checked") == false) {
             "<?php if (Yii::$app->controller->action->id == 'new-product-update') { ?>"
             //$('.field-product-shipping_country_price').last().remove();
-            $('.shipping_country_cost_' + (idIndex-1)).parent('.field-product-shipping_country_price').remove();
+            $('.shipping_country_cost_' + (idIndex - 1)).parent('.field-product-shipping_country_price').remove();
             if (idIndex > 1) {
                 updatedString = previousCheckedDataVal.replace("," + idIndex, "");
             } else {
