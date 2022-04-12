@@ -28,7 +28,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                 </div>
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'category_id')->widget(Select2::classname(), [
+                    <?= $form->field($model, 'category_id')->widget(Select2::class, [
                         'data' => $category,
                         'options' => ['placeholder' => 'Select Category'],
                         'pluginOptions' => [
@@ -40,7 +40,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
             <div class="row">
                 <div class="col col-md-6">
-                    <?= $form->field($model, 'sub_category_id')->widget(Select2::classname(), [
+                    <?= $form->field($model, 'sub_category_id')->widget(Select2::class, [
                         'data' => $subcategory,
                         'options' => ['placeholder' => 'Select Sub-Category'],
                         'pluginOptions' => [
@@ -297,7 +297,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-3">
                     <?php
                     $disabled = false;
-                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status_id) && in_array($model->status_id, [\app\models\ProductStatus::STATUS_APPROVED, \app\models\ProductStatus::STATUS_IN_STOCK])) {
+                    //if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status_id) && in_array($model->status_id, [\app\models\ProductStatus::STATUS_APPROVED, \app\models\ProductStatus::STATUS_IN_STOCK])) {
+                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->status_id)) {
                         $disabled = true;
                     }
                     ?>

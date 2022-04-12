@@ -41,6 +41,7 @@ return [
 
 
     'allow_return_product_days' => '14',
+    'order_payment_transfer_days' => '15',
 
     /**
      * Use for payment gateway (paypal)

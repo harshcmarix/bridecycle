@@ -369,19 +369,17 @@ class CronjobController extends Controller
      */
     public function actionOrderSellerPaymentTransfer()
     {
-
         $stripe = new \Stripe\StripeClient(
             Yii::$app->params['stripe_secret_key']
         );
 
-        $time = new \DateTime('now');
-        $today = $time->format('Y-m-d');
-//p($today);
-        $models = PaymentTransferDetails::find()->where(['is_transferred' => PaymentTransferDetails::IS_TRANSFFERED_NO])->andWhere(['<', 'created_at', $today])->andWhere(['>', 'seller_id', 0])->all();
+        $createdDate = date('Y-m-d', strtotime('-'.Yii::$app->params['order_payment_transfer_days'].' days'));
+
+        $models = PaymentTransferDetails::find()->where(['is_transferred' => PaymentTransferDetails::IS_TRANSFFERED_NO])->where(['<=', 'created_at', $createdDate])->andWhere(['not', ['destination_id' => null]])->andWhere(['>', 'seller_id', 0])->all();
 
         if (!empty($models)) {
             foreach ($models as $key => $modelsRow) {
-                if (!empty($modelsRow) && $modelsRow instanceof PaymentTransferDetails && ($modelsRow->transfer_amount > 0)) {
+                if (!empty($modelsRow) && $modelsRow instanceof PaymentTransferDetails && ($modelsRow->transfer_amount > 0) && !empty($modelsRow->destination_id)) {
                     $sellerAmount = $modelsRow->transfer_amount;
                     $destinationID = $modelsRow->destination_id;
                     $orderID = $modelsRow->order_id;
@@ -418,8 +416,6 @@ class CronjobController extends Controller
                 }
             }
         }
-
         die("Transfer payment to seller done. \n");
-
     }
 }

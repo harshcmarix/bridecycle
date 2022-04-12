@@ -71,9 +71,10 @@ $this->params['breadcrumbs'][] = 'View Product';
                         'attribute' => 'option_size',
                         'value' => function ($model) {
                             $result = "";
-                            if (!empty($model) && $model instanceof Product) {
+                            if (!empty($model)) {
                                 $result = $model->getProductSizeString();
                             }
+
                             return $result;
                         }
                     ],

@@ -63,6 +63,9 @@ class BrandController extends Controller
         ]);
     }
 
+    /**
+     * @return string
+     */
     public function actionNewBrand()
     {
         $searchModel = new BrandSearch();
@@ -87,6 +90,11 @@ class BrandController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionNewBrandView($id)
     {
         return $this->render('new-brand-view', [
@@ -111,6 +119,11 @@ class BrandController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post())) {
+
+            $brandData = Yii::$app->request->post('Brand');
+            if (!empty($brandData['german_name'])) {
+                $model->german_name = $brandData['german_name'];
+            }
 
             if (!empty($brand_image)) {
                 $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
@@ -157,6 +170,9 @@ class BrandController extends Controller
         ]);
     }
 
+    /**
+     * @return array|string|Response
+     */
     public function actionNewBrandCreate()
     {
         $model = new Brand();
@@ -169,6 +185,11 @@ class BrandController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post())) {
+
+            $brandData = Yii::$app->request->post('Brand');
+            if (!empty($brandData['german_name'])) {
+                $model->german_name = $brandData['german_name'];
+            }
 
             if (!empty($brand_image)) {
                 $uploadDirPath = Yii::getAlias('@brandImageRelativePath');
@@ -237,6 +258,10 @@ class BrandController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
             $brandData = Yii::$app->request->post('Brand');
+
+            if (!empty($brandData['german_name'])) {
+                $model->german_name = $brandData['german_name'];
+            }
 
             $model->is_top_brand = (!empty($brandData['is_top_brand'])) ? $brandData['is_top_brand'] : Brand::NOT_TOP_BRAND;
             if (!empty($brandData['status'])) {
@@ -390,6 +415,11 @@ class BrandController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return array|string|Response
+     * @throws NotFoundHttpException
+     */
     public function actionNewBrandUpdate($id)
     {
         $model = $this->findModel($id);
@@ -405,6 +435,10 @@ class BrandController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
             $brandData = Yii::$app->request->post('Brand');
+
+            if (!empty($brandData['german_name'])) {
+                $model->german_name = $brandData['german_name'];
+            }
 
             $model->is_top_brand = (!empty($brandData['is_top_brand'])) ? $brandData['is_top_brand'] : Brand::NOT_TOP_BRAND;
             if (!empty($brandData['status'])) {
@@ -569,6 +603,13 @@ class BrandController extends Controller
         return $this->redirect(['index']);
     }
 
+    /**
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionNewBrandDelete($id)
     {
         $model = $this->findModel($id);

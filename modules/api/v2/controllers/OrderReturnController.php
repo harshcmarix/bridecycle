@@ -460,7 +460,7 @@ class OrderReturnController extends ActiveController
                                     $modelNotification->notification_text = $notificationText;
                                     $modelNotification->action = $action;
                                     $modelNotification->ref_type = "order_return";
-                                    $modelNotification->product_id = $modelProduct->id;
+                                    $modelNotification->product_id = (!empty($modelProduct) && !empty($modelProduct->id)) ? $modelProduct->id : "";
                                     $modelNotification->save(false);
 
                                     $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();
@@ -588,7 +588,7 @@ class OrderReturnController extends ActiveController
                                     $modelNotification->notification_text = $notificationText;
                                     $modelNotification->action = $action;
                                     $modelNotification->ref_type = "order_return";
-                                    $modelNotification->product_id = $modelProduct->id;
+                                    $modelNotification->product_id = (!empty($modelProduct) && !empty($modelProduct->id)) ? $modelProduct->id : "";
                                     $modelNotification->save(false);
 
                                     $badge = Notification::find()->where(['notification_receiver_id' => $userROW->id, 'is_read' => Notification::NOTIFICATION_IS_READ_NO])->count();

@@ -362,13 +362,13 @@ class OrderController extends ActiveController
                             $refundAmount = $refund->amount;
                             $modelProduct->status_id = ProductStatus::STATUS_IN_STOCK;
                             $modelProduct->available_quantity = ($modelProduct->available_quantity + 1);
+                            $modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
                             $modelProduct->save(false);
                         } elseif (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && in_array($refund->status, [Refund::STATUS_FAILED, Refund::STATUS_PENDING, Refund::STATUS_CANCELED])) {
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_NO;
                         } else {
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_NO;
                         }
-
 
                         // Insert into OrderPaumentRefund start
                         $modelOrerPaymentRefund = new OrderPaymentRefund();
@@ -378,7 +378,7 @@ class OrderController extends ActiveController
                         $modelOrerPaymentRefund->refund_status = (!empty($refundResult) && $refundResult instanceof Refund && !empty($refundResult->status)) ? $refundResult->status : Refund::STATUS_FAILED;
                         $modelOrerPaymentRefund->refund_response = $refundResult;
                         $modelOrerPaymentRefund->save(false);
-                        // Insert into OrderPaumentRefund end
+                        // Insert into OrderPaymentRefund end
 
                         // Cancel Order notification Start
 
@@ -504,7 +504,6 @@ class OrderController extends ActiveController
 ////                                        }
 
                                             // Refund Notification end
-
 
                                         }
 

@@ -62,6 +62,8 @@ $this->params['breadcrumbs'][] = 'View Customer';
                     ],
                     [
                         'attribute' => "user_type",
+                        'visible' => ($model->is_shop_owner == 0) ? true : false,
+                        "label" => 'Customer Type',
                         'value' => function ($model) {
                             $userType = "-";
                             if ($model->user_type == 1) {

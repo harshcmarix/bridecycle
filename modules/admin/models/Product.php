@@ -239,7 +239,6 @@ class Product extends \yii\db\ActiveRecord
 
             [['street', 'city', 'state', 'country', 'zip_code'], 'safe'],
 
-
             [['option_price'], 'number', 'message' => getValidationErrorMsg('option_price_number_validation', Yii::$app->language)],
             [['refer_price'], 'number', 'message' => getValidationErrorMsg('refer_price_number_validation', Yii::$app->language)],
 

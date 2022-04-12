@@ -240,7 +240,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-2">
                     <?php
                     $disabledProductType = false;
-                    if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
+                    //if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
+                    if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->type)) {
                         $disabledProductType = true;
                     }
                     ?>
