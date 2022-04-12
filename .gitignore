@@ -40,3 +40,5 @@ composer.lock
 /web/assets/
 
 /web/uploads/
+
+/config/params.php
