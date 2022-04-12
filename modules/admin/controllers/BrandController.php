@@ -669,7 +669,7 @@ class BrandController extends Controller
         }
         $model->image = null;
         if ($model->save()) {
-            return Json::encode(['success' => 'image successfully deleted']);
+            return Json::encode(['success' => true, 'message' => 'image successfully deleted']);
         }
     }
 

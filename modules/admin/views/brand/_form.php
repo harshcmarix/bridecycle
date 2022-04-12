@@ -122,14 +122,24 @@ echo Dialog::widget(
 
 <script>
 
-    var image_empty = <?php echo Brand::IMAGE_EMPTY ?>;
+    var image_empty = "<?php echo Brand::IMAGE_EMPTY ?>";
     $('.pjax-delete-link').on('click', function (e) {
         e.preventDefault();
         var deleteUrl = $(this).attr('delete-url');
         var result = krajeeDialog.confirm('Are you sure you want to delete this image ?', function (result) {
             if (result) {
-                $('.image-class').hide();
-                $('#brand-is_brand_image_empty').val(image_empty);
+
+                $.ajax({
+                    type: "POST",
+                    url: deleteUrl,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            $('.image-class').hide();
+                            $('#brand-is_brand_image_empty').val(image_empty);
+                        }
+                    }
+                });
             }
         });
     });
