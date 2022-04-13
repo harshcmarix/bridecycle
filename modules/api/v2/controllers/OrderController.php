@@ -360,10 +360,12 @@ class OrderController extends ActiveController
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_YES;
                             $refundId = $refund->id;
                             $refundAmount = $refund->amount;
-                            $modelProduct->status_id = ProductStatus::STATUS_IN_STOCK;
-                            $modelProduct->available_quantity = ($modelProduct->available_quantity + 1);
-                            $modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
-                            $modelProduct->save(false);
+                            if (!empty($modelProduct) && $modelProduct instanceof Product) {
+                                $modelProduct->status_id = ProductStatus::STATUS_IN_STOCK;
+                                $modelProduct->available_quantity = ($modelProduct->available_quantity + 1);
+                                $modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
+                                $modelProduct->save(false);
+                            }
                         } elseif (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && in_array($refund->status, [Refund::STATUS_FAILED, Refund::STATUS_PENDING, Refund::STATUS_CANCELED])) {
                             $model->is_payment_refunded = Order::IS_PAYMENT_REFUNDED_NO;
                         } else {
@@ -528,6 +530,11 @@ class OrderController extends ActiveController
                             }
                         }
                         // Refund Order Notification End
+                    }
+
+                    if (!empty($modelProduct) && $modelProduct instanceof Product) {
+                        $modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
+                        $modelProduct->save(false);
                     }
                 }
             }
