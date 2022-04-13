@@ -109,7 +109,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ]); ?>
                 </div>
                 <div class="col col-md-2">
-                    <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
+                    <?php if (in_array(Yii::$app->controller->action->id, ['new-product-update']) && !empty($model) && !empty($model->type) && $model->type == 'u') { ?>
+                        <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'value' => 1, 'disabled' => 'disabled']) ?>
+                    <?php } else { ?>
+                        <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
+                    <?php } ?>
                 </div>
             </div>
 
@@ -241,11 +245,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?php
                     $disabledProductType = false;
                     //if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
-                    if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->type)) {
+                    if (Yii::$app->controller->action->id == 'new-product-update' && !empty($model) && !empty($model->type) && in_array($model->type, [Product::PRODUCT_TYPE_USED, Product::PRODUCT_TYPE_NEW])) {
                         $disabledProductType = true;
                     }
                     ?>
-                    <?= $form->field($model, 'type')->widget(Select2::classname(), [
+                    <?= $form->field($model, 'type')->widget(Select2::class, [
                         'data' => ['n' => 'New', 'u' => 'Used'],
                         'pluginOptions' => [
                             'allowClear' => false,
@@ -255,7 +259,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 </div>
 
                 <div class="col col-md-2">
-                    <?= $form->field($model, 'is_cleaned')->widget(Select2::classname(), [
+                    <?= $form->field($model, 'is_cleaned')->widget(Select2::class, [
                         'data' => $model->arrIsCleaned,
                         'options' => ['placeholder' => 'Select'],
                         'pluginOptions' => [

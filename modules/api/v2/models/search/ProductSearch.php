@@ -400,6 +400,13 @@ class ProductSearch extends Product
             if (!empty($value) && $value instanceof Product) {
 
                 //$productModelData[$key]['price'] = $value->getReferPrice();
+
+                // For sale product listing screen
+//                if (!empty($requestParams['user_id']) && !empty($requestParams['is_from_sell_screen']) && $requestParams['is_from_sell_screen'] == 1) {
+//                    $value->price = ($value->getReferPrice() - $value->option_price);
+//                }else{
+//                    $value->price = $value->getReferPrice();
+//                }
                 $value->price = $value->getReferPrice();
             }
         }

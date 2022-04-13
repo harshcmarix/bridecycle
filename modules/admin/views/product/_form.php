@@ -86,12 +86,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-6">
                     <?= $form->field($model, 'height')->textInput()->label('Dress Length') ?>
                 </div>
-<!--                <div class="col col-md-2">-->
-<!--                    --><?php //echo $form->field($model, 'weight')->textInput() ?>
-<!--                </div>-->
-<!--                <div class="col col-md-2">-->
-<!--                    --><?php //echo $form->field($model, 'width')->textInput() ?>
-<!--                </div>-->
+                <!--                <div class="col col-md-2">-->
+                <!--                    --><?php //echo $form->field($model, 'weight')->textInput() ?>
+                <!--                </div>-->
+                <!--                <div class="col col-md-2">-->
+                <!--                    --><?php //echo $form->field($model, 'width')->textInput() ?>
+                <!--                </div>-->
                 <div class="col col-md-4">
                     <?php if (Yii::$app->controller->action->id == 'update') { //
                         $sizeIds = explode(",", $model->option_size);
@@ -108,7 +108,11 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ]); ?>
                 </div>
                 <div class="col col-md-2">
-                    <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
+                    <?php if (in_array(Yii::$app->controller->action->id, ['update']) && !empty($model) && !empty($model->type) && $model->type == 'u') { ?>
+                        <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'value' => 1, 'disabled' => 'disabled']) ?>
+                    <?php } else { ?>
+                        <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
+                    <?php } ?>
                 </div>
             </div>
 
@@ -165,7 +169,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                             $class = 'shipping_country_cost_' . $pKey;
                             $readonly = false;
                             if (Yii::$app->controller->action->id == 'update') {
-                               // $readonly = true;
+                                // $readonly = true;
                             }
                             ?>
 
@@ -261,7 +265,8 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 <div class="col col-md-2">
                     <?php
                     $disabledProductType = false;
-                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
+                    //if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->type) && $model->type == Product::PRODUCT_TYPE_USED) {
+                    if (Yii::$app->controller->action->id == 'update' && !empty($model) && !empty($model->type) && in_array($model->type, [Product::PRODUCT_TYPE_USED, Product::PRODUCT_TYPE_NEW])) {
                         $disabledProductType = true;
                     }
                     ?>
@@ -560,7 +565,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             var html = '';
             "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
             html += '<div class="form-group field-product-shipping_country_price">';
-            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + (idIndex-1) + '" name="Product[shipping_country_price][]" value="">';
+            html += '<input type="text" id="product-shipping_country_price" class="shipping_country_cost_' + (idIndex - 1) + '" name="Product[shipping_country_price][]" value="">';
             html += '<div class="help-block"></div></div>';
             $('.shipping_cost_price_tex_boxes').append(html);
             previousCheckedDataVal = previousCheckedDataVal + "," + idIndex;
@@ -572,7 +577,7 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         } else if ($(obj).prop("checked") == false) {
             //$('.shipping_country_' + idIndex).val('');
             "<?php if (Yii::$app->controller->action->id == 'update') { ?>"
-            $('.shipping_country_cost_' + (idIndex-1)).parent('.field-product-shipping_country_price').remove();
+            $('.shipping_country_cost_' + (idIndex - 1)).parent('.field-product-shipping_country_price').remove();
             if (idIndex > 1) {
                 updatedString = previousCheckedDataVal.replace("," + idIndex, "");
             } else {

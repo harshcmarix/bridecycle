@@ -363,7 +363,7 @@ class OrderController extends ActiveController
                             if (!empty($modelProduct) && $modelProduct instanceof Product) {
                                 $modelProduct->status_id = ProductStatus::STATUS_IN_STOCK;
                                 $modelProduct->available_quantity = ($modelProduct->available_quantity + 1);
-                                $modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
+                                $modelProduct->price = ($modelProduct->price - $modelProduct->option_price);
                                 $modelProduct->save(false);
                             }
                         } elseif (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && in_array($refund->status, [Refund::STATUS_FAILED, Refund::STATUS_PENDING, Refund::STATUS_CANCELED])) {
@@ -533,7 +533,7 @@ class OrderController extends ActiveController
                     }
 
                     if (!empty($modelProduct) && $modelProduct instanceof Product) {
-                        $modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
+                        $modelProduct->price = ($modelProduct->price - $modelProduct->option_price);
                         $modelProduct->save(false);
                     }
                 }
