@@ -166,6 +166,7 @@ class OrderController extends ActiveController
             if (in_array($orderData['Order']['status'], [Order::STATUS_ORDER_IN_TRANSIT, Order::STATUS_ORDER_DELIVERED, Order::STATUS_ORDER_CANCEL])) {
 
                 $modelProduct = (!empty($model->orderItems) && !empty($model->orderItems[0]) && !empty($model->orderItems[0]->product)) ? $model->orderItems[0]->product : "";
+                $modelOrderItem = (!empty($model->orderItems) && !empty($model->orderItems[0]))  ? $model->orderItems[0] : "";
 
                 $sender = User::find()->where(['id' => Yii::$app->user->identity->id])->one();
 
@@ -363,7 +364,8 @@ class OrderController extends ActiveController
                             if (!empty($modelProduct) && $modelProduct instanceof Product) {
                                 $modelProduct->status_id = ProductStatus::STATUS_IN_STOCK;
                                 $modelProduct->available_quantity = ($modelProduct->available_quantity + 1);
-                                $modelProduct->price = ($modelProduct->price - $modelProduct->option_price);
+                                //$modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
+                                $modelProduct->price = $modelOrderItem->price;
                                 $modelProduct->save(false);
                             }
                         } elseif (!empty($refund) && $refund instanceof Refund && !empty($refund->status) && in_array($refund->status, [Refund::STATUS_FAILED, Refund::STATUS_PENDING, Refund::STATUS_CANCELED])) {
@@ -533,7 +535,8 @@ class OrderController extends ActiveController
                     }
 
                     if (!empty($modelProduct) && $modelProduct instanceof Product) {
-                        $modelProduct->price = ($modelProduct->price - $modelProduct->option_price);
+                        //$modelProduct->price = ($modelProduct->getReferPrice() - $modelProduct->option_price);
+                        $modelProduct->price = $modelOrderItem->price;
                         $modelProduct->save(false);
                     }
                 }
