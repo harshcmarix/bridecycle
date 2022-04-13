@@ -32,6 +32,7 @@ echo Dialog::widget(
             <?php $form = ActiveForm::begin(); ?>
 
             <div class="row">
+
                 <div class="col col-md-6">
                     <?= $form->field($model, 'name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
                 </div>
@@ -108,6 +109,7 @@ echo Dialog::widget(
                     ]); ?>
 
                 </div>
+
             </div>
 
             <div class="form-group">
@@ -118,6 +120,7 @@ echo Dialog::widget(
             <?php ActiveForm::end(); ?>
 
         </div>
+        
     </div>
 </div>
 

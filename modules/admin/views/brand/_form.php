@@ -25,6 +25,7 @@ echo Dialog::widget(
 
 <div class="box box-default">
     <div class="box-header"></div>
+
     <div class="box-body">
 
         <div class="brand-form">
@@ -39,7 +40,6 @@ echo Dialog::widget(
                 <div class="col col-md-6">
                     <?= $form->field($model, 'german_name', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
                 </div>
-
             </div>
 
             <div class="row">
@@ -107,6 +107,7 @@ echo Dialog::widget(
                     ]); ?>
 
                 </div>
+
             </div>
 
             <div class="form-group">
@@ -118,6 +119,7 @@ echo Dialog::widget(
 
         </div>
     </div>
+
 </div>
 
 <script>
