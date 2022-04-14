@@ -369,7 +369,8 @@ class ProductSearch extends Product
                 $query->orderBy(['products.price' => SORT_ASC, 'products.option_price' => SORT_ASC]);
             }
         } else {
-            $query->orderBy(['products.created_at' => SORT_DESC, 'products.updated_at' => SORT_DESC]);
+            //$query->orderBy(['products.created_at' => SORT_DESC, 'products.updated_at' => SORT_DESC]);
+            $query->orderBy(['products.id' => SORT_DESC, 'products.updated_at' => SORT_DESC]);
         }
         /* ########## Prepare Query With custom Filter End ######### */
 

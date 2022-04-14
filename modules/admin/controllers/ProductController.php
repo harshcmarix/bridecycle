@@ -609,6 +609,15 @@ class ProductController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
+            if (!empty($postData['available_quantity']) && $postData['available_quantity'] >= 1) {
+                $model->available_quantity = $postData['available_quantity'];
+
+                //if(!in_array($model->available_quantity,[ProductStatus::STATUS_ARCHIVED,ProductStatus::STATUS_PENDING_APPROVAL])){
+                if (in_array($model->status_id, [ProductStatus::STATUS_SOLD])) {
+                    $model->status_id = ProductStatus::STATUS_IN_STOCK;
+                }
+            }
+
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];
             } else {
@@ -1103,6 +1112,15 @@ class ProductController extends Controller
         $productSizes = $model->productSizes;
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            if (!empty($postData['available_quantity']) && $postData['available_quantity'] >= 1) {
+                $model->available_quantity = $postData['available_quantity'];
+
+                //if(!in_array($model->available_quantity,[ProductStatus::STATUS_ARCHIVED,ProductStatus::STATUS_PENDING_APPROVAL])){
+                if (in_array($model->status_id, [ProductStatus::STATUS_SOLD])) {
+                    $model->status_id = ProductStatus::STATUS_IN_STOCK;
+                }
+            }
 
             if (!empty($postData['option_show_only'])) {
                 $model->option_show_only = $postData['option_show_only'];

@@ -16,6 +16,22 @@ use app\models\Product;
 $this->registerCssFile("@web/css/toggle-switch.css");
 $this->registerJsFile("@web/js/toggle-switch.js");
 ?>
+<style>
+    /* hide arrows
+ Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield !important;
+    }
+</style>
+
+
 <div class="box box-default">
 
     <div class="box-header"></div>
@@ -108,8 +124,19 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     ]); ?>
                 </div>
                 <div class="col col-md-2">
-                    <?php if (in_array(Yii::$app->controller->action->id, ['update']) && !empty($model) && !empty($model->type) && $model->type == 'u') { ?>
-                        <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'value' => 1, 'disabled' => 'disabled']) ?>
+                    <?php if (in_array(Yii::$app->controller->action->id, ['update']) && !empty($model) && !empty($model->type) && $model->type == 'u') {
+                        $availableQuantity = 0;
+                        $disabled = false;
+                        if (!empty($model->available_quantity) || ($model->available_quantity > 0 && $model->available_quantity <= 1)) {
+                            $availableQuantity = $model->available_quantity;
+                            $disabled = true;
+                        } elseif (!empty($model->available_quantity) && ($model->available_quantity > 1)) {
+                            $availableQuantity = 1;
+                            $disabled = true;
+                        }
+
+                        ?>
+                        <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'value' => $availableQuantity, 'disabled' => $disabled, 'max' => "1"]) ?>
                     <?php } else { ?>
                         <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'min' => 0]) ?>
                     <?php } ?>
@@ -540,6 +567,15 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 });
             }
         });
+
+        $('#product-available_quantity').on('keypress', function (event) {
+            if (isProductType == 'u' || isProductType == 'U') {
+                limitKeypress(event, this.value, 1);
+                if (event.keyCode != 49 && event.keyCode != 40) {
+                    return false;
+                }
+            }
+        });
     });
 
     function contentmodelProductImgEdit(id) {
@@ -591,6 +627,12 @@ $this->registerJsFile("@web/js/toggle-switch.js");
             "<?php } ?>"
         }
         $("#product-shipping_country_ids").val(updatedString);
+    }
+
+    function limitKeypress(event, value, maxLength) {
+        if (value != undefined && value.toString().length >= maxLength) {
+            event.preventDefault();
+        }
     }
 
 </script>

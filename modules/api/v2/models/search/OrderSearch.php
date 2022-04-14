@@ -120,7 +120,8 @@ class OrderSearch extends Order
         }
         /* ########## Prepare Query With Default Filter End ######### */
 
-        $query->orderBy(['orders.created_at' => SORT_DESC]);
+        //$query->orderBy(['orders.created_at' => SORT_DESC]);
+        $query->orderBy(['orders.id' => SORT_DESC, 'orders.updated_at' => SORT_DESC]);
         $query->groupBy('orders.id');
 
         $activeDataProvider = Yii::createObject([
@@ -143,12 +144,12 @@ class OrderSearch extends Order
         //$arrOrderStatus = $getStatusArray->arrOrderStatus;
 
         //foreach ($orderModels as $key => $value) {
-          //  if (!empty($value) && $value instanceof Order) {
+        //  if (!empty($value) && $value instanceof Order) {
 //                if (!empty($value->status) && array_key_exists($value->status, $arrOrderStatus)) {
 //                    $value->status = $arrOrderStatus[$value->status];
 //                }
-                //$orderModels[$key]['is_return_available'] = $value->getIsReturnAvailable();
-                //$value->is_return_available = $value->getIsReturnAvailable();
+        //$orderModels[$key]['is_return_available'] = $value->getIsReturnAvailable();
+        //$value->is_return_available = $value->getIsReturnAvailable();
 
 //            }
 //        }
