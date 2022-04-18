@@ -16,6 +16,22 @@ use app\models\Product;
 $this->registerCssFile("@web/css/toggle-switch.css");
 $this->registerJsFile("@web/js/toggle-switch.js");
 ?>
+
+<style type="text/css">
+    /* hide arrows
+ Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield !important;
+    }
+</style>
+
 <div class="box box-default">
     <div class="box-header"></div>
     <div class="box-body">
@@ -116,14 +132,18 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 //                        } elseif (!empty($model->available_quantity) && ($model->available_quantity > 1)) {
 //                            $availableQuantity = 1;
 //                        }
-                        $availableQuantity = 0;
-                        $disabled = false;
-                        if (!empty($model->available_quantity) || ($model->available_quantity > 0 && $model->available_quantity <= 1)) {
+                        if (empty($model->available_quantity) || $model->available_quantity == 0 || $model->available_quantity == "0" || $model->available_quantity == '' || $model->available_quantity == '-') {
+                            $availableQuantity = 0;
+                            $disabled = true;
+                        } elseif (!empty($model->available_quantity) || ($model->available_quantity > 0 && $model->available_quantity <= 1)) {
                             $availableQuantity = $model->available_quantity;
                             $disabled = true;
                         } elseif (!empty($model->available_quantity) && ($model->available_quantity > 1)) {
                             $availableQuantity = 1;
                             $disabled = true;
+                        } else {
+                            $availableQuantity = 0;
+                            $disabled = false;
                         }
                         ?>
                         <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'value' => $availableQuantity, 'disabled' => $disabled, 'max' => "1"]) ?>
@@ -141,7 +161,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                     <?= $form->field($model, 'other_info')->textarea(['rows' => 3]) ?>
                 </div>
             </div>
-            <!-- image validation -->
 
             <div class="row">
 
@@ -312,10 +331,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
 
             </div>
 
-            <!--            <div class="row">-->
-            <!--                -->
-            <!--            </div>-->
-
             <div class="row">
                 <div class="col col-md-6 receiptUpload"
                      style="display: <?php echo (Yii::$app->controller->action->id == 'new-product-update' && $model->is_cleaned == 1) ? 'block' : 'none'; ?>">
@@ -478,15 +493,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 }
             })
         });
-
-        // $('#product-is_cleaned').change(function () {
-        //     var valueData = $(this).val();
-        //     if (valueData == 1) {
-        //         $('.receiptUpload').show();
-        //     } else {
-        //         $('.receiptUpload').hide();
-        //     }
-        // });
 
         $('#product-is_receipt').change(function () {
             var valueData = $(this).val();

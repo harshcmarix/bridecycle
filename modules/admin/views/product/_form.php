@@ -16,7 +16,7 @@ use app\models\Product;
 $this->registerCssFile("@web/css/toggle-switch.css");
 $this->registerJsFile("@web/js/toggle-switch.js");
 ?>
-<style>
+<style type="text/css">
     /* hide arrows
  Chrome, Safari, Edge, Opera */
     input::-webkit-outer-spin-button,
@@ -30,7 +30,6 @@ $this->registerJsFile("@web/js/toggle-switch.js");
         -moz-appearance: textfield !important;
     }
 </style>
-
 
 <div class="box box-default">
 
@@ -125,16 +124,20 @@ $this->registerJsFile("@web/js/toggle-switch.js");
                 </div>
                 <div class="col col-md-2">
                     <?php if (in_array(Yii::$app->controller->action->id, ['update']) && !empty($model) && !empty($model->type) && $model->type == 'u') {
-                        $availableQuantity = 0;
-                        $disabled = false;
-                        if (!empty($model->available_quantity) || ($model->available_quantity > 0 && $model->available_quantity <= 1)) {
+
+                        if (empty($model->available_quantity) || $model->available_quantity == 0 || $model->available_quantity == "0" || $model->available_quantity == '' || $model->available_quantity == '-') {
+                            $availableQuantity = 0;
+                            $disabled = true;
+                        } elseif (!empty($model->available_quantity) || ($model->available_quantity > 0 && $model->available_quantity <= 1)) {
                             $availableQuantity = $model->available_quantity;
                             $disabled = true;
                         } elseif (!empty($model->available_quantity) && ($model->available_quantity > 1)) {
                             $availableQuantity = 1;
                             $disabled = true;
+                        } else {
+                            $availableQuantity = 0;
+                            $disabled = false;
                         }
-
                         ?>
                         <?= $form->field($model, 'available_quantity')->textInput(['type' => 'number', 'value' => $availableQuantity, 'disabled' => $disabled, 'max' => "1"]) ?>
                     <?php } else { ?>
