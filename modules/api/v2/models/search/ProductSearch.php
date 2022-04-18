@@ -214,7 +214,6 @@ class ProductSearch extends Product
                 'and',
                 ['IN', 'products.category_id', $categoryIDs],
             ]);
-
         }
 
         if (!empty($requestParams['sub_category_id'])) {
@@ -224,7 +223,6 @@ class ProductSearch extends Product
                 'and',
                 ['IN', 'products.sub_category_id', $subCategoryIDs],
             ]);
-
         }
 
         if (!empty($requestParams['color'])) {
@@ -368,10 +366,14 @@ class ProductSearch extends Product
             } elseif (strtolower($requestParams['sort_by']) == 'plh') {
                 $query->orderBy(['products.price' => SORT_ASC, 'products.option_price' => SORT_ASC]);
             }
+        } elseif (!empty($requestParams['user_id']) && !empty($requestParams['is_from_sell_screen']) && $requestParams['is_from_sell_screen'] == 1) {
+            $query->orderBy(['products.updated_at' => SORT_DESC, 'products.id' => SORT_DESC]);
         } else {
             //$query->orderBy(['products.created_at' => SORT_DESC, 'products.updated_at' => SORT_DESC]);
             $query->orderBy(['products.id' => SORT_DESC, 'products.updated_at' => SORT_DESC]);
         }
+
+
         /* ########## Prepare Query With custom Filter End ######### */
 
         $query->groupBy('products.id');
@@ -383,9 +385,9 @@ class ProductSearch extends Product
                 'params' => $requestParams,
                 'pageSize' => isset($requestParams['pageSize']) ? $requestParams['pageSize'] : Yii::$app->params['default_page_size'], //set page size here
             ],
-//            'sort' => [
-//                'params' => $requestParams,
-//            ],
+            'sort' => [
+                'params' => $requestParams,
+            ],
         ]);
 //p($requestParams);
         $productModelData = $activeDataProvider->getModels();

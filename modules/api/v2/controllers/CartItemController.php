@@ -467,14 +467,15 @@ class CartItemController extends ActiveController
                             if ($getUsersArrROW instanceof User && ($user_id == $getUsersArrROW->id)) {
 
                                 if (!empty($getUsersArrROW->email) && $getUsersArrROW->is_order_placed_email_notification_on == User::IS_NOTIFICATION_ON) {
-                                    $messageString = "Thank you for create an order.\nYour order placed.";
-
+                                    //$messageString = "Thank you for create an order.\nYour order placed.";
+                                    $messageString = "Thank you for placing the order. The seller is informed and as soon as the package has been shipped, you can find the status and tracking information wihtin the App under 'My Orders'. \n Thank you for choosing " . strtoupper(Yii::$app->name); //BRIDE CYCLE
                                     if (!empty($getUsersArrROW->email)) {
                                         try {
                                             Yii::$app->mailer->compose('api/addNewOrder', ['receiver' => $getUsersArrROW, 'message' => $messageString])
                                                 ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
                                                 ->setTo($getUsersArrROW->email)
-                                                ->setSubject('Order placed')
+                                                //->setSubject('Order placed')
+                                                ->setSubject('Order Confirmation')
                                                 ->send();
                                         } catch (HttpException $e) {
                                             //echo "Error: " . $e->getMessage();
@@ -701,10 +702,8 @@ class CartItemController extends ActiveController
                                                                 echo "Error: ";
 
                                                             }
-
                                                         }
                                                     }
-
                                                 }
                                             }
                                         }
